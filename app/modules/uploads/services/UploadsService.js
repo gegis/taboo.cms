@@ -1,7 +1,17 @@
 const sharp = require('sharp');
-const { config, Model, Helper } = require('@taboo/cms-core');
+const { config, Model, Helper, filesHelper } = require('@taboo/cms-core');
 
 class UploadsService {
+  getUploadFileName(fileName, appendTimestamp) {
+    let fileNameParts;
+    if (appendTimestamp) {
+      fileNameParts = filesHelper.getFileNameParts(fileName);
+      fileNameParts.name += '-' + Helper('core.Core').getUnixTimestamp();
+      fileName = [fileNameParts.name, fileNameParts.extension].join('.');
+    }
+    return fileName;
+  }
+
   async updateUserFiles(ctx, userId, document) {
     const {
       users: { documentTypes = ['documentPassport1', 'documentPassport2', 'documentIncorporation'] },

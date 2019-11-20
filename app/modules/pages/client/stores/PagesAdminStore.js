@@ -20,7 +20,7 @@ class PagesStore {
     this._page = 1;
     this.limit = 50;
     this.hasMoreResults = false;
-    this.search = true;
+    this.search = '';
     this.pages = [];
     this.sortBy = 'title';
     this.sortDirection = 'asc';

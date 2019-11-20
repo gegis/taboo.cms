@@ -1,4 +1,5 @@
-const { config, locales } = require('@taboo/cms-core');
+const { config, app } = require('@taboo/cms-core');
+const { locales } = app;
 const { defaultLanguage, defaultLocalesMapping } = config.i18n;
 
 class LanguageService {

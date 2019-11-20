@@ -26,7 +26,7 @@ const newUser = {
   phone: '',
   website: '',
   description: '',
-  verificationStatus: '',
+  verificationStatus: 'new',
   verificationNote: '',
 };
 

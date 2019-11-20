@@ -1,5 +1,5 @@
 const CoreController = require('./controllers/CoreController');
-const AdminCoreController = require('./controllers/AdminCoreController');
+const CoreAdminController = require('./controllers/CoreAdminController');
 
 module.exports = {
   acl: {
@@ -43,7 +43,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/admin*', // This path is match any admin path if authorised, so it loads react app
-      action: AdminCoreController.admin,
+      action: CoreAdminController.admin,
       policies: ['isAdmin', 'i18nAdmin'],
       order: 10000,
     },
@@ -68,7 +68,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/api/admin/settings/:key',
-      action: AdminCoreController.getSettings,
+      action: CoreAdminController.getSettings,
       policies: ['isAdmin'],
       order: 5000,
       options: {
@@ -78,7 +78,7 @@ module.exports = {
     {
       method: 'PUT',
       path: '/api/admin/settings/:key',
-      action: AdminCoreController.setSettings,
+      action: CoreAdminController.setSettings,
       policies: ['isAdmin'],
       order: 5000,
       options: {

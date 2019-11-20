@@ -5,10 +5,11 @@ class ACLService {
     this.roles = {};
     this.aclResounces = [];
     this.afterModelsSetup = this.afterModelsSetup.bind(this);
+    this.getAllResources = this.getAllResources.bind(this);
   }
 
   async afterModelsSetup() {
-    this.aclResounces = app.aclResounces;
+    this.aclResounces = app.aclResources;
   }
 
   getAllResources() {

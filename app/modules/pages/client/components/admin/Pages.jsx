@@ -70,16 +70,16 @@ class Pages extends React.Component {
   }
 
   openCreate() {
-    const { wrappedInstance } = this.createModal.current;
-    if (wrappedInstance) {
-      wrappedInstance.open();
+    const { current } = this.createModal;
+    if (current) {
+      current.open();
     }
   }
 
   openEdit(id) {
-    const { wrappedInstance } = this.editModal.current;
-    if (wrappedInstance) {
-      wrappedInstance.open(id);
+    const { current } = this.editModal;
+    if (current) {
+      current.open(id);
     }
   }
 

@@ -35,9 +35,9 @@ class GalleryForm extends React.Component {
   }
 
   addImages() {
-    const { wrappedInstance } = this.uploadSelect.current;
-    if (wrappedInstance) {
-      wrappedInstance.open();
+    const { current } = this.uploadSelect;
+    if (current) {
+      current.open();
     }
   }
 

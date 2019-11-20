@@ -17,9 +17,6 @@ class IndexPage extends Component {
     super(props);
     this.aclStore = props.aclStore;
     this.dispose = autorun(() => {
-      if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.reservations.view')) {
-        this.retrieveReservationsInfo();
-      }
       if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view')) {
         this.retrieveGalleriesInfo();
       }
@@ -31,14 +28,6 @@ class IndexPage extends Component {
       }
     });
     this.state = {
-      reservations: {
-        count: {
-          total: 0,
-          unconfirmed: 0,
-          cancelled: 0,
-          archived: 0,
-        },
-      },
       galleries: {
         count: 0,
       },
@@ -55,23 +44,12 @@ class IndexPage extends Component {
     this.dispose();
   }
 
-  retrieveReservationsInfo() {
-    axios
-      .get('/api/admin/reservations/count')
-      .then(response => {
-        if (response && response.data) {
-          this.setState({ reservations: { count: response.data } });
-        }
-      })
-      .catch(ResponseHelper.handleError);
-  }
-
   retrieveGalleriesInfo() {
     axios
       .get('/api/admin/galleries/count')
       .then(response => {
-        if (response && response.data) {
-          this.setState({ galleries: { count: response.data } });
+        if (response && response.data && response.data.count) {
+          this.setState({ galleries: { count: response.data.count } });
         }
       })
       .catch(ResponseHelper.handleError);
@@ -81,8 +59,8 @@ class IndexPage extends Component {
     axios
       .get('/api/admin/pages/count')
       .then(response => {
-        if (response && response.data) {
-          this.setState({ pages: { count: response.data } });
+        if (response && response.data && response.data.count) {
+          this.setState({ pages: { count: response.data.count } });
         }
       })
       .catch(ResponseHelper.handleError);
@@ -92,8 +70,8 @@ class IndexPage extends Component {
     axios
       .get('/api/admin/users/count')
       .then(response => {
-        if (response && response.data) {
-          this.setState({ users: { count: response.data } });
+        if (response && response.data && response.data.count) {
+          this.setState({ users: { count: response.data.count } });
         }
       })
       .catch(ResponseHelper.handleError);
@@ -102,11 +80,6 @@ class IndexPage extends Component {
   getHeaderNav() {
     return (
       <Nav>
-        {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.reservations.view') && (
-          <NavLink to="/admin/reservations" icon={<Icon icon="calendar" />}>
-            <span className="rs-hidden-xs">Reservations</span>
-          </NavLink>
-        )}
         {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view') && (
           <NavLink to="/admin/galleries" icon={<Icon icon="file-image-o" />}>
             <span className="rs-hidden-xs">Galleries</span>
@@ -126,29 +99,11 @@ class IndexPage extends Component {
     );
   }
   render() {
-    const { reservations, galleries, pages, users } = this.state;
+    const { galleries, pages, users } = this.state;
     return (
       <Layout pageTitle="Dashboard" headerNav={this.getHeaderNav()} className="dashboard">
         <Grid fluid className="grid-default-gutter">
           <Row>
-            {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.reservations.view') && (
-              <Col xs={24} sm={12}>
-                <Panel header={<Translation message="Reservations" />} className="shadow">
-                  <div className="counts">
-                    <h4>Unarchived</h4>
-                    <b>Total:</b> {reservations.count.total} <br />
-                    <b>Unconfirmed:</b> {reservations.count.unconfirmed} <br />
-                    <b>Cancelled:</b> {reservations.count.cancelled} <br />
-                    <h4>Archived</h4>
-                    <b>Total:</b> {reservations.count.archived} <br />
-                  </div>
-                  <p className="pull-right">
-                    <Link to={'/admin/reservations'}>Reservations</Link>
-                  </p>
-                  <div className="clearfix" />
-                </Panel>
-              </Col>
-            )}
             {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view') && (
               <Col xs={24} sm={12}>
                 <Panel header={<Translation message="Galleries" />} className="shadow">

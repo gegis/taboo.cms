@@ -69,27 +69,28 @@ class Users extends React.Component {
   }
 
   openCreate() {
-    const { wrappedInstance } = this.createModal.current;
-    if (wrappedInstance) {
+    const { current } = this.createModal;
+
+    if (current) {
       if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.acl.view')) {
         this.rolesStore.loadAllRolesForSelection().then(() => {
-          wrappedInstance.open();
+          current.open();
         });
       } else {
-        wrappedInstance.open();
+        current.open();
       }
     }
   }
 
   openEdit(id) {
-    const { wrappedInstance } = this.editModal.current;
-    if (wrappedInstance) {
+    const { current } = this.editModal;
+    if (current) {
       if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.acl.view')) {
         this.rolesStore.loadAllRolesForSelection().then(() => {
-          wrappedInstance.open(id);
+          current.open(id);
         });
       } else {
-        wrappedInstance.open(id);
+        current.open(id);
       }
     }
   }

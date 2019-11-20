@@ -125,7 +125,7 @@ class Header extends React.Component {
   getLogoLink() {
     const { authStore } = this.props;
     if (authStore.authenticated && authStore.user) {
-      return '/dashboard';
+      return '/my-profile';
     }
     return '/';
   }

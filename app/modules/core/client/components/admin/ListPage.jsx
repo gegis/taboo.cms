@@ -66,16 +66,16 @@ class ListPage extends React.Component {
   }
 
   openCreateModal() {
-    const { wrappedInstance } = this.createModal.current;
-    if (wrappedInstance) {
-      wrappedInstance.open();
+    const { current } = this.createModal;
+    if (current) {
+      current.open();
     }
   }
 
   openEditModal(id) {
-    const { wrappedInstance } = this.editModal.current;
-    if (wrappedInstance) {
-      wrappedInstance.open(id);
+    const { current } = this.editModal;
+    if (current) {
+      current.open(id);
     }
   }
 
@@ -155,9 +155,9 @@ ListPage.propTypes = {
   settingsStore: PropTypes.object.isRequired,
   entityStore: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
-  CreateModalComponent: PropTypes.func.isRequired,
-  EditModalComponent: PropTypes.func.isRequired,
-  ItemsListComponent: PropTypes.func.isRequired,
+  CreateModalComponent: PropTypes.object.isRequired,
+  EditModalComponent: PropTypes.object.isRequired,
+  ItemsListComponent: PropTypes.object.isRequired,
 };
 
 const enhance = compose(

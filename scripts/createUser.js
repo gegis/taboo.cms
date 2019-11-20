@@ -9,7 +9,6 @@ const user = {
   firstName: '',
   lastName: '',
   email: '',
-  username: '',
   password: '',
   roles: [],
   admin: false,
@@ -23,7 +22,6 @@ while (!user.email) {
 }
 user.firstName = user.email;
 user.lastName = user.email;
-user.username = user.email;
 
 while (!user.password) {
   user.password = readlineSync.question('Please enter password: ', {

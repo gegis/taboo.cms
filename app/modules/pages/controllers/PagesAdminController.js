@@ -1,24 +1,31 @@
 const { config, Service, apiHelper } = require('@taboo/cms-core');
-const GenericAdminController = require('../../core/controllers/GenericAdminController');
+const AdminController = require('../../core/controllers/AdminController');
 const {
   api: {
     pages: { defaultSort = null },
   },
 } = config;
-const props = {
-  model: 'pages.Page',
-  searchFields: ['_id', 'title', 'url', 'body'],
-  defaultSort,
-  populate: {
-    findById: ['createdBy', 'updatedBy'],
-  },
-  beforeCreate: async (ctx, data) => {
+
+class PagesAdminController extends AdminController {
+  constructor() {
+    super({
+      model: 'pages.Page',
+      searchFields: ['_id', 'title', 'url', 'body'],
+      defaultSort,
+      populate: {
+        findById: ['createdBy', 'updatedBy'],
+      },
+    });
+  }
+
+  async beforeCreate(ctx, data) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     Service('pages.Pages').populatePagesAndGalleries(data);
     data.createdBy = userId;
     return data;
-  },
-  beforeUpdate: async (ctx, id, data) => {
+  }
+
+  async beforeUpdate(ctx, id, data) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     // Save current version as previous revision
     await Service('core.RevisionService').save('pages.Page', ctx.params.id);
@@ -26,12 +33,6 @@ const props = {
     Service('pages.Pages').populatePagesAndGalleries(data);
     data.updatedBy = userId;
     return data;
-  },
-};
-
-class PagesAdminController extends GenericAdminController {
-  constructor(props) {
-    super(props);
   }
 
   async getPrevious(ctx) {
@@ -43,4 +44,4 @@ class PagesAdminController extends GenericAdminController {
   }
 }
 
-module.exports = new PagesAdminController(props);
+module.exports = new PagesAdminController();

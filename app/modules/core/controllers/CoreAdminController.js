@@ -1,6 +1,6 @@
 const { config, Service, isAllowed } = require('@taboo/cms-core');
 
-class AdminCoreController {
+class CoreAdminController {
   constructor() {
     this.adminTitle = config.admin.title;
     // Bind functions to this scope
@@ -33,4 +33,4 @@ class AdminCoreController {
   }
 }
 
-module.exports = new AdminCoreController();
+module.exports = new CoreAdminController();

@@ -1,6 +1,26 @@
-const { Model, Service, apiHelper, Helper, config, sockets } = require('@taboo/cms-core');
+const { Service, config, sockets } = require('@taboo/cms-core');
+const AdminController = require('../../core/controllers/AdminController');
+const {
+  api: {
+    users: { defaultSort = null },
+  },
+} = config;
 
-class UsersAdminController {
+class UsersAdminController extends AdminController {
+  constructor() {
+    super({
+      model: 'users.User',
+      searchFields: ['_id', 'firstName', 'lastName', 'email'],
+      defaultSort,
+      populate: {
+        findAll: 'roles',
+        findById: ['documentPassport1', 'documentPassport2', 'documentIncorporation'],
+        create: 'roles',
+        update: 'roles',
+      },
+    });
+  }
+
   async admin(ctx) {
     const { title } = config.admin;
     ctx.view = {
@@ -9,64 +29,38 @@ class UsersAdminController {
     };
   }
 
-  async findAll(ctx) {
-    const requestParams = ctx.request.query;
-    const {
-      api: {
-        users: { defaultSort = null },
-      },
-    } = config;
-    let { filter, fields, limit, skip, sort } = apiHelper.parseRequestParams(ctx.request.query, [
-      'filter',
-      'fields',
-      'limit',
-      'skip',
-      'sort',
-    ]);
-    let searchFields = ['firstName', 'lastName', 'email'];
-    if (requestParams && requestParams.search) {
-      Helper('core.Core').applySearchToFilter(requestParams.search, searchFields, filter);
+  async beforeFindAll(ctx, data) {
+    if (!data.fields) {
+      data.fields = '-password';
     }
-    if (sort === null) {
-      sort = defaultSort;
-    }
-    ctx.body = await Model('users.User')
-      .find(filter, fields, { limit, skip, sort })
-      .populate('roles');
+    return data;
   }
 
-  async findById(ctx) {
-    let { fields } = apiHelper.parseRequestParams(ctx.request.query, ['fields']);
-    if (!fields) {
-      fields = '-password';
+  async beforeFindById(ctx, id, data) {
+    if (!data.fields) {
+      data.fields = '-password';
     }
-    const user = await Model('users.User')
-      .findById(ctx.params.id, fields)
-      .populate(['documentPassport1', 'documentPassport2', 'documentIncorporation']);
-    ctx.body = user;
+    return data;
   }
 
-  async create(ctx) {
-    const data = ctx.request.body;
+  async beforeCreate(ctx, data) {
     data.password = await Service('users.Users').hashPassword(data.password);
-    ctx.body = await Model('users.User').create(data);
+    return data;
   }
 
-  async update(ctx) {
-    const data = ctx.request.body;
-    let user;
+  async beforeUpdate(ctx, id, data) {
     if (data.password) {
       data.password = await Service('users.Users').hashPassword(data.password);
     } else if (Object.prototype.hasOwnProperty.call(data, 'password')) {
       delete data.password;
     }
-    apiHelper.cleanTimestamps(data);
     if (data.verified) {
       data.verificationStatus = 'approved';
     }
-    user = await Model('users.User')
-      .findByIdAndUpdate(ctx.params.id, data, { new: true })
-      .populate('roles');
+    return data;
+  }
+
+  async afterUpdate(ctx, user) {
     await Service('users.Users').updateUserSession(user);
     sockets.emit('users', `user-${user._id}-user-update`, {
       _id: user.id,
@@ -74,18 +68,11 @@ class UsersAdminController {
       lastName: user.lastName,
       email: user.email,
     });
-    ctx.body = user;
+    return user;
   }
-
-  async delete(ctx) {
-    let user;
-    user = await Model('users.User').findByIdAndDelete(ctx.params.id);
+  async afterDelete(ctx, user) {
     await Service('acl.ACL').deleteUserSession(user);
-    ctx.body = user;
-  }
-
-  async count(ctx) {
-    ctx.body = await Model('users.User').estimatedDocumentCount();
+    return user;
   }
 }
 
