@@ -7,6 +7,12 @@ React CMS, Classic CMS, Headless CMS
 
 
 ## TODO
+reuse client admin abstract code
+fix admin styles and vars
+clean and make nice default tpl for frontend
+implement layouts module
+
+
 when creating admin and admin role first time - add all resources
 modules dependencies with each other in module.config.js
 also npm dependencies for each module

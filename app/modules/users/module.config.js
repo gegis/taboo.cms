@@ -2,6 +2,25 @@ const UsersController = require('./controllers/UsersController');
 const UsersAdminController = require('./controllers/UsersAdminController');
 
 module.exports = {
+  enabled: true,
+  installed: true,
+  moduleDependencies: ['core'],
+  npmDependencies: [
+    'mongoose',
+    'validator',
+    'mongoose-unique-validator',
+    'moment',
+    'uuid',
+    'bcrypt',
+    'axios',
+    'react',
+    'react-router-dom',
+    'prop-types',
+    'recompose',
+    'mobx',
+    'mobx-react',
+    'rsuite',
+  ],
   acl: {
     resources: ['admin.users.view', 'admin.users.manage'],
   },

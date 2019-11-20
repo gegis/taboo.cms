@@ -4,6 +4,8 @@ import { Icon } from 'rsuite';
 import Galleries from './components/admin/Galleries';
 import GalleriesStore from './stores/GalleriesStore';
 
+const enabled = true;
+
 const routes = [
   {
     path: '/admin/galleries',
@@ -29,4 +31,4 @@ const primaryMenu = [
   },
 ];
 
-export { routes, stores, primaryMenu };
+export { enabled, routes, stores, primaryMenu };

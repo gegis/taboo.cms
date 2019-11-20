@@ -4,6 +4,8 @@ import { Icon } from 'rsuite';
 import Uploads from './components/admin/Uploads';
 import UploadsAdminStore from './stores/UploadsAdminStore';
 
+const enabled = true;
+
 const routes = [
   {
     path: '/admin/uploads',
@@ -29,4 +31,4 @@ const primaryMenu = [
   },
 ];
 
-export { routes, stores, primaryMenu };
+export { enabled, routes, stores, primaryMenu };

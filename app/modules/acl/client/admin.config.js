@@ -4,6 +4,8 @@ import { Icon } from 'rsuite';
 import Roles from './components/admin/Roles';
 import { stores } from './stores.config';
 
+const enabled = true;
+
 const routes = [
   {
     path: '/admin/roles',
@@ -25,4 +27,4 @@ const primaryMenu = [
   },
 ];
 
-export { routes, stores, primaryMenu };
+export { enabled, routes, stores, primaryMenu };

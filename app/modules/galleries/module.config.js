@@ -1,6 +1,20 @@
 const GalleriesAdminController = require('./controllers/GalleriesAdminController');
 
 module.exports = {
+  enabled: true,
+  installed: true,
+  moduleDependencies: ['core'],
+  npmDependencies: [
+    'mongoose',
+    'axios',
+    'react',
+    'react-router-dom',
+    'prop-types',
+    'recompose',
+    'mobx',
+    'mobx-react',
+    'rsuite',
+  ],
   acl: {
     resources: ['admin.galleries.view', 'admin.galleries.manage'],
   },

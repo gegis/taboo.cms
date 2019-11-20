@@ -2,6 +2,22 @@ const PagesAdminController = require('./controllers/PagesAdminController');
 const PagesController = require('./controllers/PagesController');
 
 module.exports = {
+  enabled: true,
+  installed: true,
+  moduleDependencies: ['core'],
+  npmDependencies: [
+    'mongoose-unique-validator',
+    'mongoose',
+    'axios',
+    'react',
+    'react-router-dom',
+    'prop-types',
+    'recompose',
+    'mobx',
+    'mobx-react',
+    'js-beautify',
+    'rsuite',
+  ],
   acl: {
     resources: ['admin.pages.view', 'admin.pages.manage'],
   },

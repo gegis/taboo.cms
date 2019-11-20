@@ -2,6 +2,26 @@ const CoreController = require('./controllers/CoreController');
 const CoreAdminController = require('./controllers/CoreAdminController');
 
 module.exports = {
+  enabled: true,
+  installed: true,
+  moduleDependencies: [],
+  npmDependencies: [
+    'validator',
+    'mongoose',
+    'moment',
+    'axios',
+    'react',
+    'react-dom',
+    'react-intl',
+    'react-router-dom',
+    'prop-types',
+    'recompose',
+    'history',
+    'mobx',
+    'mobx-react',
+    'rsuite',
+    'ckeditor4-react',
+  ],
   acl: {
     resources: ['admin.dashboard'],
   },

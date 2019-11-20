@@ -3,6 +3,8 @@ import { Icon } from 'rsuite';
 import { stores } from './stores.config';
 import IndexPage from './components/admin/IndexPage';
 
+const enabled = true;
+
 const routes = [
   {
     path: '/admin',
@@ -24,4 +26,4 @@ const primaryMenu = [
   },
 ];
 
-export { routes, stores, primaryMenu };
+export { enabled, routes, stores, primaryMenu };

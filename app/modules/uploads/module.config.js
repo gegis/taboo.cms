@@ -2,6 +2,22 @@ const UploadsAdminController = require('./controllers/UploadsAdminController');
 const UploadsController = require('./controllers/UploadsController');
 
 module.exports = {
+  enabled: true,
+  installed: true,
+  moduleDependencies: ['core'],
+  npmDependencies: [
+    'sharp',
+    'mongoose',
+    'axios',
+    'react',
+    'react-router-dom',
+    'react-dropzone',
+    'prop-types',
+    'recompose',
+    'mobx',
+    'mobx-react',
+    'rsuite',
+  ],
   acl: {
     resources: ['admin.uploads.view', 'admin.uploads.manage', 'api.uploads.userFiles'],
   },

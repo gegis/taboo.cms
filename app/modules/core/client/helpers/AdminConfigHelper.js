@@ -21,7 +21,7 @@ class AdminConfigHelper {
   getRoutes() {
     const routes = [];
     [...this.modulesConfigs].map(config => {
-      if (config && config.routes) {
+      if (config && config.enabled && config.routes) {
         [...config.routes].map(route => {
           if (!route.order) {
             route.order = 0;
@@ -41,7 +41,7 @@ class AdminConfigHelper {
   getStores() {
     const stores = {};
     [...this.modulesConfigs].map(config => {
-      if (config && config.stores) {
+      if (config && config.enabled && config.stores) {
         Object.assign(stores, config.stores);
       }
     });
@@ -51,7 +51,7 @@ class AdminConfigHelper {
   getPrimaryMenuItems() {
     let items = [];
     [...this.modulesConfigs].map(config => {
-      if (config && config.primaryMenu) {
+      if (config && config.enabled && config.primaryMenu) {
         items = items.concat(config.primaryMenu);
       }
     });

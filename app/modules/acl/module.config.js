@@ -3,6 +3,20 @@ const ResourcesController = require('./controllers/ResourcesController');
 const ACLService = require('./services/ACLService');
 
 module.exports = {
+  enabled: true,
+  installed: true,
+  moduleDependencies: ['core'],
+  npmDependencies: [
+    'mongoose-unique-validator',
+    'axios',
+    'react',
+    'react-router-dom',
+    'prop-types',
+    'recompose',
+    'mobx',
+    'mobx-react',
+    'rsuite',
+  ],
   acl: {
     isAllowedImplementation: ACLService.isAllowed,
     resources: ['admin.acl.view', 'admin.acl.manage'],

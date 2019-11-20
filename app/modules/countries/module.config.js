@@ -1,6 +1,10 @@
 const CountriesController = require('./controllers/CountriesController');
 
 module.exports = {
+  enabled: true,
+  installed: true,
+  moduleDependencies: [],
+  npmDependencies: ['axios', 'mobx'],
   routes: [
     {
       method: 'GET',

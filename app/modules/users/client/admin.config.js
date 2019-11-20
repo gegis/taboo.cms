@@ -8,6 +8,8 @@ import ChangePassword from './components/admin/ChangePassword';
 
 import { stores as usersStores } from './stores.config';
 
+const enabled = true;
+
 const stores = {
   authStore: usersStores.authStore,
   usersStore: usersStores.usersAdminStore,
@@ -46,4 +48,4 @@ const primaryMenu = [
   },
 ];
 
-export { routes, stores, primaryMenu };
+export { enabled, routes, stores, primaryMenu };
