@@ -1,0 +1,20 @@
+{
+  "apps": [
+    {
+      "name": "taboo-cms",
+      "script": "index.js",
+      "max_memory_restart": "500M",
+      "env": {
+        "NODE_ENV": "develop"
+      },
+      "env_staging": {
+        "NODE_ENV": "staging",
+        "max_memory_restart": "500M"
+      },
+      "env_production": {
+        "NODE_ENV": "production",
+        "max_memory_restart": "500M"
+      }
+    }
+  ]
+}

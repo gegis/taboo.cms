@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "max-len": ["error", { "code": 200 }],
+    "quotes": ["off", "single"],
+//    "prettier/prettier": [
+//      "error",
+//      {
+//        "trailingComma": "es5",
+//        "singleQuote": true,
+//        "printWidth": 200
+//      }
+//    ]
+  }
+}

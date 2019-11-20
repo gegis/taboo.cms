@@ -1,0 +1,29 @@
+const path = require('path');
+const { filesHelper, Helper } = require('@taboo/cms-core');
+
+class UploadsHelper {
+  getFileName(fileName, appendTimestamp) {
+    let fileNameParts;
+    if (appendTimestamp) {
+      fileNameParts = filesHelper.getFileNameParts(fileName);
+      fileNameParts.name += '-' + Helper('core.Core').getUnixTimestamp();
+      fileName = [fileNameParts.name, fileNameParts.extension].join('.');
+    }
+    return fileName;
+  }
+
+  getFilePathWithSuffix(filePath, suffix) {
+    let newPath = null;
+    let dirPath;
+    let fileNameParts;
+    if (filePath && suffix) {
+      dirPath = path.dirname(filePath);
+      fileNameParts = filesHelper.getFileNameParts(filePath);
+      fileNameParts.name += '-' + suffix;
+      newPath = path.join(dirPath, [fileNameParts.name, fileNameParts.extension].join('.'));
+    }
+    return newPath;
+  }
+}
+
+module.exports = new UploadsHelper();

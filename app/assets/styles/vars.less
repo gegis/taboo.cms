@@ -1,0 +1,156 @@
+// You can find all rsuite vars in here:
+@import "../../../node_modules/rsuite/lib/styles/variables.less";
+
+// ---------------------------------------------------------------
+// To make rsuite icons load locally
+// ---------------------------------------------------------------
+@font-face {
+  font-family: 'rsuite-icon-font';
+  src: url('/fonts/rsuite-icon-font.eot');
+  src: url('/fonts/rsuite-icon-font.eot?#iefix') format('eot'),
+  url('/fonts/rsuite-icon-font.ttf') format('truetype'),
+  url('/fonts/rsuite-icon-font.woff') format('woff'),
+  url('/fonts/rsuite-icon-font.svg#rsuite-icon-font') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+// ---------------------------------------------------------------
+// Default variables and values
+// ---------------------------------------------------------------
+// Uncomment and replace value if needed
+// ---------------------------------------------------------------
+
+// Override default vars
+//@base-color: #4ba0ff;
+//@normal-color: #111622;
+//@error-color: @red;
+//@body-bg: @B100;
+//@text-color: @B800;
+//
+//@default-box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+//@headings-font-weight: 400;
+//@alert-padding: 10px;
+//@btn-default-bg: @B100;
+//@nav-item-font-default-color: @B700;
+//@font-size-base: 16px;
+//@font-size-large: 18px;
+//@font-size-small: 14px;
+//@border-radius-base: 2px;
+//@notify-padding: 10px;
+//@notify-max-width: 300px;
+//@notify-title-font-size: @font-size-large;
+//@notify-title-icon-size: @font-size-large;
+
+
+//** Gray levels.
+//@B000: #fff;
+@B025: #fafafa; // Custom gray level
+//@B050: #f7f7fa;
+//@B100: #f2f2f5;
+//@B200: #e5e5ea;
+//@B300: #d9d9d9;
+//@B400: #c5c6c7;
+//@B500: #a6a6a6;
+//@B600: #8e8e93;
+//@B700: #7a7a7a;
+//@B800: #575757;
+//@B900: #272c36;
+
+//** Pallete
+@base-color: #3498ff;
+//@H050: color(~`palette('@{base-color}', 50)`);
+//@H100: color(~`palette('@{base-color}', 100)`);
+//@H200: color(~`palette('@{base-color}', 200)`);
+//@H300: color(~`palette('@{base-color}', 300)`);
+//@H400: color(~`palette('@{base-color}', 400)`);
+//@H500: @base-color;
+//@H600: color(~`palette('@{base-color}', 600)`);
+//@H700: color(~`palette('@{base-color}', 700)`);
+//@H800: color(~`palette('@{base-color}', 800)`);
+//@H900: color(~`palette('@{base-color}', 900)`);
+
+//** spectrum
+//@red: #f44336;
+//@orange: #ff9800;
+//@yellow: #ffca28;
+//@green: #4caf50;
+//@cyan: #00bcd4;
+//@blue: #2196f3;
+//@violet: #673ab7;
+//@spectrum: red, orange, yellow, green, cyan, blue, violet;
+
+//** Sub colors.
+//@success-color: #4caf50;
+//@success-light-color: #edfae1;
+//@info-color: #2196f3;
+//@info-light-color: #e9f5fe;
+//@warning-color: #ffb300;
+//@warning-light-color: #fff9e6;
+//@error-color: #f44336;
+//@error-light-color: #fde9ef;
+
+//** Global textual link color.
+//@link-color: @H700;
+//** Link hover color.
+//@link-hover-color: @H800;
+//** Link Active color
+//@link-active-color: @H900;
+//** border base color.
+//@border-base-color: @B300;
+//** base bg color.
+//@base-bg-color: @B050;
+//** border primary color.
+//@border-primary-color: @H500;
+//** loading text color
+//@loading-text-color: @B800;
+
+//** Global button ripple switch
+//@button-ripple: true;
+
+
+
+//@primary-color: @H500;
+//@primary-bg-color: @H050;
+//@primary-border-color: @H300;
+
+//** Background color for `<body>`.
+//@body-bg: @B000;
+//** Global text color on `<body>`.
+//@text-color: @B800;
+//** Global textual link color.
+//@text-primary-color: @H500;
+
+//** Link hover decoration.
+//@link-hover-decoration: underline;
+//** Link active decoration.
+//@link-active-decoration: underline;
+//** border base color.
+//@border-base-color: @B300;
+
+//** Box shadows
+//@default-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.12), 0 0 10px rgba(0, 0, 0, 0.06);
+
+@font-family-base: "Roboto", "Helvetica", "Arial", sans-serif;
+
+//@font-size-large: 16px;
+//@font-size-base: 14px;
+//@font-size-small: 12px;
+//@font-size-extra-small: 12px;
+//
+//@font-size-h1: 46px;
+//@font-size-h2: 36px;
+//@font-size-h3: 28px;
+//@font-size-h4: 22px;
+//@font-size-h5: 18px;
+//@font-size-h6: 16px; // The same to font-size-base
+
+@border-radius-base: 4px;
+
+// ---------------------------------------------------------------
+// Custom Vars
+// ---------------------------------------------------------------
+@use-max-width: 1300px;
+@profile-picture-size: 100px;
+@profile-picture-size-sm: 74px;
+@profile-picture-size-xs: 38px;
