@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from 'rsuite';
-import { stores } from './stores.config';
+import { stores } from './stores';
 import IndexPage from './components/admin/IndexPage';
 
 const enabled = true;

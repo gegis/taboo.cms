@@ -13,6 +13,9 @@ class UploadsAdminController extends AdminController {
     super({
       model: 'uploads.Upload',
       searchFields: ['_id', 'name', 'url', 'user'],
+      searchOptions: {
+        idFields: ['_id', 'user'],
+      },
       defaultSort,
       populate: {
         findAll: ['user'],

@@ -1,6 +1,6 @@
-import { stores } from 'app/modules/core/client/stores.config';
-import { stores as aclStores } from 'app/modules/acl/client/stores.config';
-import { stores as userStores } from 'app/modules/users/client/stores.config';
+import { stores as coreStores } from 'app/modules/core/client/stores';
+import { stores as aclStores } from 'app/modules/acl/client/stores';
+import { stores as userStores } from 'app/modules/users/client/stores';
 
 class ResponseHelper {
   constructor() {
@@ -15,7 +15,7 @@ class ResponseHelper {
     } = err;
     const { response: { status: errResponseStatus = null } = {} } = err;
     let message = '';
-    stores.settingsStore.setLoading(false);
+    coreStores.settingsStore.setLoading(false);
     if (validationMessage && validationErrors) {
       this.handleValidationErrors(validationMessage, validationErrors);
     } else if (Object.keys(errors).length > 0) {
@@ -39,13 +39,13 @@ class ResponseHelper {
     } else if (message === 'Not Authorized' && errResponseStatus === 401) {
       this.handleNotAuthorized(err, message, errResponseStatus);
     } else if (message) {
-      stores.notificationsStore.push({ message, type: 'error', duration: 10000 });
+      coreStores.notificationsStore.push({ message, type: 'error', duration: 10000 });
     }
   }
 
   handleValidationErrors(validationMessage, validationErrors) {
     validationErrors.map(validationError => {
-      stores.notificationsStore.push({
+      coreStores.notificationsStore.push({
         title: validationMessage,
         message: validationError.message,
         type: 'error',
@@ -57,7 +57,7 @@ class ResponseHelper {
 
   handleModelErrors(errors) {
     Object.keys(errors).forEach(field => {
-      stores.notificationsStore.push({
+      coreStores.notificationsStore.push({
         title: 'Invalid Data',
         html: `<b>${errors[field].path}</b> ${errors[field].message}`,
         type: 'error',
@@ -69,7 +69,7 @@ class ResponseHelper {
 
   handleNotVerified(err, message, errResponseStatus) {
     userStores.authStore.setVerified(false);
-    stores.notificationsStore.push({
+    coreStores.notificationsStore.push({
       title: errResponseStatus,
       message: message,
       type: 'error',
@@ -80,7 +80,7 @@ class ResponseHelper {
 
   handleNotAuthorized(err, message, errResponseStatus) {
     userStores.authStore.loadUserAuth();
-    stores.notificationsStore.push({
+    coreStores.notificationsStore.push({
       title: errResponseStatus,
       message: message,
       type: 'error',

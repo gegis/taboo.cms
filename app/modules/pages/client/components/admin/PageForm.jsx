@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, FormControl, ControlLabel, Checkbox, CheckboxGroup, SelectPicker } from 'rsuite';
+import { Form, FormGroup, FormControl, ControlLabel, Checkbox, SelectPicker } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -16,7 +16,7 @@ class PageForm extends React.Component {
   }
 
   onCodeEditorChange(value) {
-    this.pagesStore.setPage({ body: value });
+    this.pagesStore.setItem({ body: value });
   }
 
   openInRichTextEditor() {
@@ -24,10 +24,10 @@ class PageForm extends React.Component {
   }
 
   render() {
-    const { page } = this.pagesStore;
+    const { setItem, item, setCheckboxItemValue } = this.pagesStore;
     return (
-      <Form layout="horizontal" fluid onChange={this.pagesStore.setPage} formValue={page}>
-        {page.id && (
+      <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
+        {item.id && (
           <FormGroup controlId="id" className="inline">
             <ControlLabel>
               <Translation message="ID" />
@@ -35,7 +35,7 @@ class PageForm extends React.Component {
             <FormControl name="id" disabled />
           </FormGroup>
         )}
-        {page.id && <div className="clearfix" />}
+        {item.id && <div className="clearfix" />}
         <FormGroup controlId="title" className="inline">
           <ControlLabel>
             <Translation message="Title" />
@@ -64,9 +64,9 @@ class PageForm extends React.Component {
           <ControlLabel>
             <Translation message="Published" />
           </ControlLabel>
-          <FormControl name="publishedGroup" accepter={CheckboxGroup}>
-            <Checkbox value="published" />
-          </FormControl>
+          <div className="rs-form-control-wrapper">
+            <Checkbox checked={item.published} onChange={setCheckboxItemValue.bind(null, 'published')} />
+          </div>
         </FormGroup>
         <FormGroup controlId="body">
           <ControlLabel>
@@ -74,7 +74,7 @@ class PageForm extends React.Component {
           </ControlLabel>
           <CodeEditor
             onChange={this.onCodeEditorChange}
-            value={this.pagesStore.page.body}
+            value={this.pagesStore.item.body}
             width="auto"
             height="400px"
             className="code-editor"

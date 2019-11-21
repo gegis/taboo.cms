@@ -5,22 +5,22 @@ Content Management System and more
 
 React CMS, Classic CMS, Headless CMS
 
-
 ## TODO
++modules dependencies with each other in module.config.js
++also npm dependencies for each module
++add enabled/installed flags to module configs
++make server side modules reuse generic classes
+
 reuse client admin abstract code
 fix admin styles and vars
 clean and make nice default tpl for frontend
 implement layouts module
 
-
-when creating admin and admin role first time - add all resources
-modules dependencies with each other in module.config.js
-also npm dependencies for each module
-add enabled/installed flags to module configs
 fix rsuite changes
-make modules reuse generic classes
+
 make layouts dynamic
 make auto run db setup, for things like to ensure admin user, basice pages, home, about, contact
+when creating admin and admin role first time - add all resources
 double check cms core for removing action from routes and other actions for health endpoint
 
 

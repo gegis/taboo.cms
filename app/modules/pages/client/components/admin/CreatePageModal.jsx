@@ -2,16 +2,17 @@ import React from 'react';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
+import { html as htmlBeautify } from 'js-beautify';
 
 import Modal from 'app/modules/core/client/components/admin/Modal';
-import RoleForm from './RoleForm';
 
-class CreateRoleModal extends React.Component {
+import PageForm from './PageForm';
+
+class CreatePageModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.aclStore = props.aclStore;
-    this.rolesStore = props.rolesStore;
+    this.pagesStore = props.pagesStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -19,27 +20,28 @@ class CreateRoleModal extends React.Component {
   }
 
   open() {
-    this.aclStore.loadAllResources().then(() => {
-      this.rolesStore.resetItem();
-      this.modal.current.open();
-    });
+    this.pagesStore.resetItem();
+    this.modal.current.open();
   }
 
   close() {
-    this.rolesStore.resetItem();
+    this.pagesStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    this.rolesStore.create(this.rolesStore.item).then(data => {
+    const { item } = this.pagesStore;
+    const page = Object.assign({}, item);
+    page.body = htmlBeautify(page.body);
+    this.pagesStore.create(page).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully created {item}',
-        translationVars: { item: data.name },
+        translationVars: { item: data.title },
         translate: true,
       });
-      this.rolesStore.resetItem();
-      this.rolesStore.loadAll();
+      this.pagesStore.resetItem();
+      this.pagesStore.loadAll();
       this.close();
     });
   }
@@ -48,28 +50,28 @@ class CreateRoleModal extends React.Component {
     return (
       <Modal
         full
+        keyboard={false}
         backdrop="static"
         className="use-max-width"
-        title="Create New Role"
+        title="Create New Page"
         ref={this.modal}
         onSubmit={this.onSave}
         submitName="Create"
       >
-        <RoleForm />
+        <PageForm />
       </Modal>
     );
   }
 }
 
-CreateRoleModal.propTypes = {
-  aclStore: PropTypes.object.isRequired,
-  rolesStore: PropTypes.object.isRequired,
+CreatePageModal.propTypes = {
+  pagesStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
-  inject('aclStore', 'rolesStore', 'notificationsStore'),
+  inject('pagesStore', 'notificationsStore'),
   observer
 );
 
-export default enhance(CreateRoleModal);
+export default enhance(CreatePageModal);

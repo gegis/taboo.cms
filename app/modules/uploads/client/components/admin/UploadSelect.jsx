@@ -19,6 +19,9 @@ class UploadSelect extends React.Component {
     this.notificationsStore = props.notificationsStore;
     this.settingsStore = props.settingsStore;
     this.searchTimeout = null;
+    this.state = {
+      search: '',
+    };
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
@@ -40,14 +43,15 @@ class UploadSelect extends React.Component {
     this.modal.current.close();
   }
 
-  onSearchChange(value) {
+  onSearchChange(search) {
     clearTimeout(this.searchTimeout);
+    this.setState({search});
     this.searchTimeout = setTimeout(() => {
       this.settingsStore.setLoading(true);
-      this.uploadsStore.loadAll({ search: value, filter: this.uploadsStore.filter }).then(() => {
+      this.uploadsStore.loadAll({ search: search, filter: this.uploadsStore.filter }).then(() => {
         this.settingsStore.setLoading(false);
       });
-    }, 700);
+    }, 500);
   }
 
   getUploadPreview(item, styles = {}) {
@@ -104,6 +108,7 @@ class UploadSelect extends React.Component {
   }
 
   render() {
+    const { search } = this.state;
     return (
       <Modal
         full
@@ -120,7 +125,7 @@ class UploadSelect extends React.Component {
               placeholder="Search Uploads"
               style={{ width: '45vw' }}
               onChange={this.onSearchChange}
-              value={this.uploadsStore.search}
+              value={search}
             />
           </FormGroup>
         </Form>

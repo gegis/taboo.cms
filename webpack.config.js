@@ -56,6 +56,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['*', '.js', '.jsx'],
+    mainFields: ['browser', 'module', 'main'],
     alias: {
       app: path.resolve(__dirname, 'app/'),
       modules: path.resolve(__dirname, 'app/modules'),

@@ -1,4 +1,4 @@
-import GenericEntityStore from 'app/modules/core/client/stores/GenericEntityStore';
+import EntityAdminStore from 'app/modules/core/client/stores/EntityAdminStore';
 import axios from 'axios';
 import { action, decorate, observable, runInAction } from 'mobx';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
@@ -9,7 +9,7 @@ const newItem = {
   resources: [],
 };
 
-class RolesStore extends GenericEntityStore {
+class RolesStore extends EntityAdminStore {
   constructor() {
     super({
       newItem: newItem,
@@ -26,7 +26,7 @@ class RolesStore extends GenericEntityStore {
           method: 'post',
           path: '/api/admin/acl/roles',
         },
-        updateById: {
+        update: {
           method: 'put',
           path: '/api/admin/acl/roles/:id',
         },

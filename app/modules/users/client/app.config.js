@@ -5,7 +5,7 @@ import ChangePassword from './components/ChangePassword';
 import MyProfile from './components/MyProfile';
 import AccountVerification from './components/AccountVerification';
 
-import { stores as usersStores } from './stores.config';
+import { stores as usersStores } from './stores';
 
 const stores = {
   authStore: usersStores.authStore,

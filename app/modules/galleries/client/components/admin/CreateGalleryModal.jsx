@@ -1,47 +1,43 @@
 import React from 'react';
-import { Notification } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import Modal from 'app/modules/core/client/components/admin/Modal';
+
 import GalleryForm from './GalleryForm';
 
-class EditGallery extends React.Component {
+class CreateGalleryModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
     this.galleriesStore = props.galleriesStore;
-    this.localeStore = props.localeStore;
+    this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
   }
 
-  open(id) {
-    this.galleriesStore.loadOne(id);
+  open() {
+    this.galleriesStore.resetItem();
     this.modal.current.open();
   }
 
   close() {
-    this.galleriesStore.resetGallery();
+    this.galleriesStore.resetItem();
     this.modal.current.close();
   }
 
-  getSuccessMessage(data) {
-    return {
-      __html: this.localeStore.getTranslation('Successfully updated {item}', { item: data.title }),
-    };
-  }
-
   onSave() {
-    const { gallery } = this.galleriesStore;
-    this.galleriesStore.updateGallery(gallery).then(() => {
-      Notification.open({
-        title: 'Message',
-        description: <span dangerouslySetInnerHTML={this.getSuccessMessage(gallery)} />,
-        duration: 5000,
+    const { item } = this.galleriesStore;
+    this.galleriesStore.create(item).then(data => {
+      this.notificationsStore.push({
+        html: 'Successfully created {item}',
+        translationVars: { item: data.title },
+        translate: true,
       });
+      this.galleriesStore.resetItem();
+      this.galleriesStore.loadAll();
       this.close();
     });
   }
@@ -52,10 +48,10 @@ class EditGallery extends React.Component {
         full
         backdrop="static"
         className="use-max-width"
-        title="Edit Gallery"
+        title="Create New Gallery"
         ref={this.modal}
         onSubmit={this.onSave}
-        submitName="Update"
+        submitName="Create"
       >
         <GalleryForm />
       </Modal>
@@ -63,14 +59,14 @@ class EditGallery extends React.Component {
   }
 }
 
-EditGallery.propTypes = {
+CreateGalleryModal.propTypes = {
   galleriesStore: PropTypes.object.isRequired,
-  localeStore: PropTypes.object.isRequired,
+  notificationsStore: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
-  inject('galleriesStore', 'localeStore'),
+  inject('galleriesStore', 'notificationsStore'),
   observer
 );
 
-export default enhance(EditGallery);
+export default enhance(CreateGalleryModal);

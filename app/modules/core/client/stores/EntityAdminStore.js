@@ -3,7 +3,7 @@ import axios from 'axios';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
 import ArrayHelper from 'app/modules/core/client/helpers/ArrayHelper';
 
-class GenericEntityStore {
+class EntityAdminStore {
   constructor(options) {
     this.options = options;
     this.page = 1;
@@ -17,6 +17,7 @@ class GenericEntityStore {
     this.setItem = this.setItem.bind(this);
     this.resetItem = this.resetItem.bind(this);
     this.getFormData = this.getFormData.bind(this);
+    this.setCheckboxItemValue = this.setCheckboxItemValue.bind(this);
   }
 
   resetItem() {
@@ -25,6 +26,10 @@ class GenericEntityStore {
 
   setItem(item) {
     this.item = Object.assign(this.item, item);
+  }
+
+  setCheckboxItemValue(field, event, value) {
+    this.item[field] = value;
   }
 
   loadAll(options = {}) {
@@ -110,10 +115,10 @@ class GenericEntityStore {
     });
   }
 
-  updateById(data) {
+  update(data) {
     return new Promise(resolve => {
-      const { updateById } = this.options.endpoints;
-      axios[updateById.method](updateById.path.replace(':id', data.id), data)
+      const { update } = this.options.endpoints;
+      axios[update.method](update.path.replace(':id', data.id), data)
         .then(response => {
           runInAction(() => {
             let index;
@@ -185,7 +190,7 @@ class GenericEntityStore {
   }
 }
 
-decorate(GenericEntityStore, {
+decorate(EntityAdminStore, {
   page: observable,
   hasMoreResults: observable,
   search: observable,
@@ -197,9 +202,11 @@ decorate(GenericEntityStore, {
   loadAll: action,
   loadNextPage: action,
   loadById: action,
-  updateById: action,
+  create: action,
+  update: action,
   deleteById: action,
   sortItems: action,
+  setCheckboxItemValue: action,
 });
 
-export default GenericEntityStore;
+export default EntityAdminStore;

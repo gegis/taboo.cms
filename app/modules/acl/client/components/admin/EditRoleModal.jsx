@@ -33,7 +33,7 @@ class EditRoleModal extends React.Component {
   }
 
   onSave() {
-    this.rolesStore.updateById(this.rolesStore.item).then(data => {
+    this.rolesStore.update(this.rolesStore.item).then(data => {
       this.notificationsStore.push({
         title: this.localeStore.getTranslation('Success'),
         html: this.localeStore.getTranslation('Successfully updated {item}', { item: data.name }),

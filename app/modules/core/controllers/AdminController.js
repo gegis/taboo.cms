@@ -8,16 +8,6 @@ class AdminController {
    *  searchFields - array
    *  defaultSort - object
    *  populate - string|array
-   *  beforeFindAll - async function
-   *  afterFindAll - async function
-   *  beforeFindById - async function
-   *  afterFindById - async function
-   *  beforeCreate - async function
-   *  afterCreate - async function
-   *  beforeUpdate - async function
-   *  afterUpdate - async function
-   *  beforeDelete - async function
-   *  afterDelete - async function
    */
   constructor(props) {
     this.props = props;

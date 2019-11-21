@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Notification } from 'rsuite';
+import { Button } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -9,12 +9,12 @@ import Modal from 'app/modules/core/client/components/admin/Modal';
 import PageForm from './PageForm';
 import Translation from 'app/modules/core/client/components/Translation';
 
-class EditPage extends React.Component {
+class EditPageModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
     this.pagesStore = props.pagesStore;
-    this.localeStore = props.localeStore;
+    this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -22,29 +22,26 @@ class EditPage extends React.Component {
   }
 
   open(id) {
-    this.pagesStore.loadOne(id);
-    this.modal.current.open();
+    this.pagesStore.loadById(id).then(() => {
+      this.modal.current.open();
+    });
   }
 
   close() {
-    this.pagesStore.resetPage();
+    this.pagesStore.resetItem();
     this.modal.current.close();
   }
 
-  getSuccessMessage(data) {
-    return {
-      __html: this.localeStore.getTranslation('Successfully updated {item}', { item: data.title }),
-    };
-  }
-
   onSave() {
-    const page = Object.assign({}, this.pagesStore.page);
+    const { item } = this.pagesStore;
+    const page = Object.assign({}, item);
     page.body = htmlBeautify(page.body);
-    this.pagesStore.updatePage(page).then(() => {
-      Notification.open({
-        title: 'Message',
-        description: <span dangerouslySetInnerHTML={this.getSuccessMessage(page)} />,
-        duration: 5000,
+    this.pagesStore.update(page).then(data => {
+      this.notificationsStore.push({
+        title: 'Success',
+        html: 'Successfully updated {item}',
+        translationVars: { item: data.title },
+        translate: true,
       });
       this.close();
     });
@@ -81,14 +78,11 @@ class EditPage extends React.Component {
   }
 }
 
-EditPage.propTypes = {
+EditPageModal.propTypes = {
   pagesStore: PropTypes.object.isRequired,
-  localeStore: PropTypes.object.isRequired,
+  notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('pagesStore', 'localeStore'),
-  observer
-);
+const enhance = compose(inject('pagesStore', 'notificationsStore'), observer);
 
-export default enhance(EditPage);
+export default enhance(EditPageModal);

@@ -1,5 +1,5 @@
 import socketIOClient from 'socket.io-client';
-import { stores } from 'app/modules/core/client/stores.config';
+import { stores } from 'app/modules/core/client/stores';
 
 class SocketsClient {
   constructor() {

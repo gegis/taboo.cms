@@ -86,7 +86,7 @@ class ACLStore {
   }
 
   /**
-   * Returns true is user is allowed or if acl is disabled
+   * Returns true if user is allowed or if acl is disabled
    * * IMPORTANT - we have same userACL in this.userACL, however, if 'isAllowed' function called from component
    * only with 'resource' - Mobx does not track this.userACL change and does not re-render component!
    *

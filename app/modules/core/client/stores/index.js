@@ -1,7 +1,7 @@
 import { RouterStore } from 'mobx-react-router';
-import LocaleStore from './stores/LocaleStore';
-import SettingsStore from './stores/SettingsStore';
-import NotificationsStore from './stores/NotificationsStore';
+import LocaleStore from './LocaleStore';
+import SettingsStore from './SettingsStore';
+import NotificationsStore from './NotificationsStore';
 
 const stores = {
   routerStore: new RouterStore(),

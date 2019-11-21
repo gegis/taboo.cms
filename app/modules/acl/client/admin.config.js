@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon } from 'rsuite';
 
 import Roles from './components/admin/Roles';
-import { stores } from './stores.config';
+import { stores } from './stores';
 
 const enabled = true;
 

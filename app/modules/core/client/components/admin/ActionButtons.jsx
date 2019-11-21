@@ -192,7 +192,7 @@ const ActionButtons = ({
 };
 
 ActionButtons.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   copyValue: PropTypes.string,
   copyTitle: PropTypes.string,
   onEdit: PropTypes.func,

@@ -1,5 +1,5 @@
-import RolesStore from './stores/RolesStore';
-import ACLStore from './stores/ACLStore';
+import RolesStore from './RolesStore';
+import ACLStore from './ACLStore';
 
 const stores = {
   rolesStore: new RolesStore(),

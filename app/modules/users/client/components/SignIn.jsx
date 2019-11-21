@@ -68,7 +68,7 @@ class SignIn extends React.Component {
             SocketsClient.on(this.getUserEventName('update'), () => {
               authStore.loadUserAuth();
             });
-            return history.push('/dashboard');
+            return history.push('/my-profile');
           } else {
             return history.push('/');
           }

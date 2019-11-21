@@ -6,7 +6,7 @@ import Login from './components/admin/Login';
 import ResetPassword from './components/admin/ResetPassword';
 import ChangePassword from './components/admin/ChangePassword';
 
-import { stores as usersStores } from './stores.config';
+import { stores as usersStores } from './stores';
 
 const enabled = true;
 

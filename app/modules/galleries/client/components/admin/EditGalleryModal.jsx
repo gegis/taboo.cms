@@ -4,42 +4,39 @@ import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import Modal from 'app/modules/core/client/components/admin/Modal';
-import RoleForm from './RoleForm';
+import GalleryForm from './GalleryForm';
 
-class CreateRoleModal extends React.Component {
+class EditGalleryModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.aclStore = props.aclStore;
-    this.rolesStore = props.rolesStore;
+    this.galleriesStore = props.galleriesStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
   }
 
-  open() {
-    this.aclStore.loadAllResources().then(() => {
-      this.rolesStore.resetItem();
+  open(id) {
+    this.galleriesStore.loadById(id).then(() => {
       this.modal.current.open();
     });
   }
 
   close() {
-    this.rolesStore.resetItem();
+    this.galleriesStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    this.rolesStore.create(this.rolesStore.item).then(data => {
+    const { item } = this.galleriesStore;
+    this.galleriesStore.update(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
-        html: 'Successfully created {item}',
-        translationVars: { item: data.name },
+        html: 'Successfully updated {item}',
+        translationVars: { item: data.title },
         translate: true,
       });
-      this.rolesStore.resetItem();
-      this.rolesStore.loadAll();
       this.close();
     });
   }
@@ -50,26 +47,25 @@ class CreateRoleModal extends React.Component {
         full
         backdrop="static"
         className="use-max-width"
-        title="Create New Role"
+        title="Edit Gallery"
         ref={this.modal}
         onSubmit={this.onSave}
-        submitName="Create"
+        submitName="Update"
       >
-        <RoleForm />
+        <GalleryForm />
       </Modal>
     );
   }
 }
 
-CreateRoleModal.propTypes = {
-  aclStore: PropTypes.object.isRequired,
-  rolesStore: PropTypes.object.isRequired,
+EditGalleryModal.propTypes = {
+  galleriesStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
-  inject('aclStore', 'rolesStore', 'notificationsStore'),
+  inject('galleriesStore', 'notificationsStore'),
   observer
 );
 
-export default enhance(CreateRoleModal);
+export default enhance(EditGalleryModal);

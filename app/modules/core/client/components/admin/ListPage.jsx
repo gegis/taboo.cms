@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, FormControl, Panel, IconButton, Icon, Notification, Button } from 'rsuite';
+import { Form, FormGroup, FormControl, Panel, IconButton, Icon, Button } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -81,18 +81,19 @@ class ListPage extends React.Component {
 
   handleDelete(id) {
     this.entityStore.deleteById(id).then(() => {
-      Notification.open({
-        title: 'Message',
-        description: this.localeStore.getTranslation('Successfully deleted'),
-        duration: 5000,
+      this.notificationsStore.push({
+        title: 'Success',
+        message: 'Successfully deleted',
+        translate: true,
       });
     });
   }
 
   handleCopy() {
     this.notificationsStore.push({
-      title: this.localeStore.getTranslation('Success'),
-      message: this.localeStore.getTranslation('Successfully copied'),
+      title: 'Success',
+      message: 'Successfully copied',
+      translate: true,
     });
   }
 

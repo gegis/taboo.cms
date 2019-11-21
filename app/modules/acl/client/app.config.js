@@ -1,4 +1,4 @@
-import { stores } from './stores.config';
+import { stores } from './stores';
 
 delete stores.rolesStore;
 
