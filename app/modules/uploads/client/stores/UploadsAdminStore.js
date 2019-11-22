@@ -1,7 +1,7 @@
-import { decorate, observable, action, computed, runInAction } from 'mobx';
+import { decorate, observable, action, runInAction } from 'mobx';
 import axios from 'axios';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
-import ArrayHelper from 'app/modules/core/client/helpers/ArrayHelper';
+import EntityAdminStore from 'modules/core/client/stores/EntityAdminStore';
 
 const newItem = {
   id: null,
@@ -10,167 +10,44 @@ const newItem = {
   path: '',
   size: '',
   type: '',
-  documentType: '',
   isUserDocument: false,
   verified: false,
   note: '',
   user: '',
+  documentType: '',
   createdAt: '',
   updatedAt: '',
 };
 
-class UploadsAdminStore {
+class UploadsAdminStore  extends EntityAdminStore {
   constructor() {
-    this.page = 1;
-    this.limit = 50;
-    this.hasMoreResults = false;
-    this.search = '';
-    this.filter = {};
-    this.items = [];
+    super({
+      newItem: newItem,
+      endpoints: {
+        loadAll: {
+          method: 'get',
+          path: '/api/admin/uploads',
+        },
+        loadById: {
+          method: 'get',
+          path: '/api/admin/uploads/:id',
+        },
+        // create: {
+        //   method: 'post',
+        //   path: '/api/admin/uploads',
+        // },
+        update: {
+          method: 'put',
+          path: '/api/admin/uploads/:id',
+        },
+        deleteById: {
+          method: 'delete',
+          path: '/api/admin/uploads/:id',
+        },
+      },
+    });
     this.itemsToUpload = [];
-    this.sortBy = 'createdAt';
-    this.sortDirection = 'desc';
-    this.item = Object.assign({}, newItem);
     this.typeOptions = [{ label: 'Image', value: 'image' }, { label: 'Video', value: 'video' }];
-    this.setItemData = this.setItemData.bind(this);
-    this.toggleItemValue = this.toggleItemValue.bind(this);
-  }
-
-  loadAll(options = {}) {
-    return new Promise(resolve => {
-      const opts = {
-        params: {
-          limit: this.limit,
-        },
-      };
-      this.page = 1;
-      this.hasMoreResults = false;
-      this.search = '';
-      if (options.search) {
-        this.search = options.search;
-        opts.params.search = options.search;
-      }
-      if (options.filter) {
-        this.filter = options.filter;
-        opts.params.filter = options.filter;
-      }
-      axios
-        .get('/api/admin/uploads', opts)
-        .then(response => {
-          runInAction(() => {
-            const { data = [] } = response;
-            this.items = data;
-            this.hasMoreResults = data.length === this.limit;
-            resolve(data);
-          });
-        })
-        .catch(ResponseHelper.handleError);
-    });
-  }
-
-  loadNextPage() {
-    return new Promise(resolve => {
-      this.page++;
-      const opts = {
-        params: {
-          page: this.page,
-          limit: this.limit,
-        },
-      };
-      if (this.search) {
-        opts.params.search = this.search;
-      }
-      if (this.filter) {
-        opts.params.filter = this.filter;
-      }
-      axios
-        .get('/api/admin/uploads', opts)
-        .then(response => {
-          runInAction(() => {
-            const { data = [] } = response;
-            this.hasMoreResults = data.length === this.limit;
-            this.items = this.items.concat(data);
-            resolve(data);
-          });
-        })
-        .catch(ResponseHelper.handleError);
-    });
-  }
-
-  loadItem(id) {
-    return new Promise(resolve => {
-      axios
-        .get('/api/admin/uploads/' + id)
-        .then(response => {
-          runInAction(() => {
-            const { data = {} } = response;
-            if (!data.id && data._id) {
-              data.id = data._id;
-            }
-            this.item = Object.assign(this.item, data);
-            resolve(data);
-          });
-        })
-        .catch(ResponseHelper.handleError);
-    });
-  }
-
-  resetItemData() {
-    this.item = Object.assign({}, newItem);
-  }
-
-  setItemData(item) {
-    this.item = Object.assign(this.item, item);
-  }
-
-  toggleItemValue(field, event, value) {
-    this.item[field] = value;
-  }
-
-  deleteItem(id) {
-    return new Promise(resolve => {
-      axios
-        .delete(`/api/admin/uploads/${id}`)
-        .then(response => {
-          runInAction(() => {
-            let index;
-            if (response && response.data) {
-              index = this.getItemIndexById(id);
-              if (index !== null) {
-                this.items.splice(index, 1);
-              }
-              resolve(response.data);
-            }
-          });
-        })
-        .catch(ResponseHelper.handleError);
-    });
-  }
-
-  saveItem() {
-    const data = {
-      name: this.item.name,
-      verified: this.item.verified,
-      note: this.item.note,
-    };
-    return new Promise(resolve => {
-      axios
-        .put('/api/admin/uploads/' + this.item.id, data)
-        .then(response => {
-          runInAction(() => {
-            let index;
-            if (response && response.data) {
-              this.resetItemData();
-              index = this.getItemIndexById(response.data._id);
-              if (index !== null) {
-                this.items[index] = response.data;
-              }
-              resolve(response.data);
-            }
-          });
-        })
-        .catch(ResponseHelper.handleError);
-    });
   }
 
   prependItemsToUpload(items) {
@@ -220,49 +97,14 @@ class UploadsAdminStore {
       }
     });
   }
-
-  getItemIndexById(id) {
-    let index = null;
-    this.items.find((item, i) => {
-      if (item._id === id) {
-        index = i;
-      }
-    });
-    return index;
-  }
-
-  sort(field, direction) {
-    this.sortBy = field;
-    this.sortDirection = direction;
-    this.items = ArrayHelper.sortByProperty([...this.items], this.sortBy, this.sortDirection);
-  }
-
-  get total() {
-    return this.items.length;
-  }
 }
 
 decorate(UploadsAdminStore, {
-  page: observable,
-  hasMoreResults: observable,
-  search: observable,
-  filter: observable,
-  limit: observable,
-  items: observable,
-  item: observable,
   itemsToUpload: observable,
   typeOptions: observable,
-  loadAll: action,
-  loadItem: action,
-  resetItemData: action,
-  setItemData: action,
-  sort: action,
   prependItemsToUpload: action,
   resetItemsToUpload: action,
   uploadItems: action,
-  loadNextPage: action,
-  toggleItemValue: action,
-  total: computed,
 });
 
 export default UploadsAdminStore;

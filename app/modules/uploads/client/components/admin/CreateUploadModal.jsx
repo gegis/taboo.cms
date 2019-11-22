@@ -9,13 +9,12 @@ import Modal from 'app/modules/core/client/components/admin/Modal';
 import Translation from 'app/modules/core/client/components/Translation';
 import UnitsHelper from 'app/modules/core/client/helpers/UnitsHelper';
 
-class CreateUpload extends React.Component {
+class CreateUploadModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
     this.uploadsStore = props.uploadsStore;
     this.notificationsStore = props.notificationsStore;
-    this.localeStore = props.localeStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onUpload = this.onUpload.bind(this);
@@ -48,8 +47,9 @@ class CreateUpload extends React.Component {
     this.uploadsStore.uploadItems((err, data) => {
       if (!err && data) {
         this.notificationsStore.push({
-          title: this.localeStore.getTranslation('Success'),
-          html: this.localeStore.getTranslation('Successfully uploaded {item}', { item: data.name }),
+          html: 'Successfully uploaded {item}',
+          translationVars: { item: data.name },
+          translate: true,
         });
       }
     });
@@ -113,15 +113,14 @@ class CreateUpload extends React.Component {
   }
 }
 
-CreateUpload.propTypes = {
+CreateUploadModal.propTypes = {
   uploadsStore: PropTypes.object.isRequired,
-  localeStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
-  inject('uploadsStore', 'localeStore', 'notificationsStore'),
+  inject('uploadsStore', 'notificationsStore'),
   observer
 );
 
-export default enhance(CreateUpload);
+export default enhance(CreateUploadModal);

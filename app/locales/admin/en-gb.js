@@ -171,4 +171,6 @@ module.exports = {
   'Account Verified': 'Account Verified',
   'External Email': 'External Email',
   'Edit External Wallet': 'Edit External Wallet',
+  'Document Type': 'Document Type',
+  Preview: 'Preview',
 };

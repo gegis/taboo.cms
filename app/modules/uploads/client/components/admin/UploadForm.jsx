@@ -14,9 +14,9 @@ class UploadForm extends React.Component {
   }
 
   render() {
-    const { item, setItemData, toggleItemValue } = this.uploadsStore;
+    const { item, setItem, setCheckboxItemValue } = this.uploadsStore;
     return (
-      <Form layout="horizontal" fluid onChange={setItemData} formValue={item}>
+      <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
           <FormGroup controlId="id" className="inline">
             <ControlLabel>
@@ -81,7 +81,11 @@ class UploadForm extends React.Component {
             <Translation message="Is User Document" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.isUserDocument} onChange={toggleItemValue.bind(null, 'isUserDocument')} disabled />
+            <Checkbox
+              checked={item.isUserDocument}
+              onChange={setCheckboxItemValue.bind(null, 'isUserDocument')}
+              disabled
+            />
           </div>
         </FormGroup>
         {/*TODO find out why it shows as not user document when it is*/}
@@ -90,7 +94,7 @@ class UploadForm extends React.Component {
             <Translation message="Verified" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.verified} onChange={toggleItemValue.bind(null, 'verified')} />
+            <Checkbox checked={item.verified} onChange={setCheckboxItemValue.bind(null, 'verified')} />
           </div>
         </FormGroup>
         <FormGroup controlId="documentType" className="inline">
@@ -116,9 +120,6 @@ UploadForm.propTypes = {
   uploadsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('uploadsStore'),
-  observer
-);
+const enhance = compose(inject('uploadsStore'), observer);
 
 export default enhance(UploadForm);

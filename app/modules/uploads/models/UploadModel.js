@@ -30,6 +30,7 @@ module.exports = {
     },
     documentType: {
       type: String,
+      default: '',
     },
     isUserDocument: {
       type: Boolean,
@@ -41,6 +42,7 @@ module.exports = {
     },
     note: {
       type: String,
+      default: '',
     },
     user: {
       type: Schema.Types.ObjectId,

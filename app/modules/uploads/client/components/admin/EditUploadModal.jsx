@@ -4,15 +4,13 @@ import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import Modal from 'app/modules/core/client/components/admin/Modal';
-
 import UploadForm from './UploadForm';
 
-class EditUpload extends React.Component {
+class EditUploadModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
     this.uploadsStore = props.uploadsStore;
-    this.localeStore = props.localeStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -20,19 +18,29 @@ class EditUpload extends React.Component {
   }
 
   open(id) {
-    this.uploadsStore.loadItem(id).then(this.modal.current.open());
+    this.uploadsStore.loadById(id).then(() => {
+      this.modal.current.open();
+    });
   }
 
   close() {
-    this.uploadsStore.resetItemData();
+    this.uploadsStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    this.uploadsStore.saveItem().then(data => {
+    const { item } = this.uploadsStore;
+    const updateItem = {
+      id: item.id,
+      name: item.name,
+      verified: item.verified,
+      note: item.note,
+    };
+    this.uploadsStore.update(updateItem).then(data => {
       this.notificationsStore.push({
-        title: this.localeStore.getTranslation('Success'),
-        html: this.localeStore.getTranslation('Successfully updated {item}', { item: data.name }),
+        html: 'Successfully updated {item}',
+        translationVars: { item: data.name },
+        translate: true,
       });
       this.close();
     });
@@ -55,15 +63,11 @@ class EditUpload extends React.Component {
   }
 }
 
-EditUpload.propTypes = {
+EditUploadModal.propTypes = {
   uploadsStore: PropTypes.object.isRequired,
-  localeStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('uploadsStore', 'localeStore', 'notificationsStore'),
-  observer
-);
+const enhance = compose(inject('uploadsStore', 'notificationsStore'), observer);
 
-export default enhance(EditUpload);
+export default enhance(EditUploadModal);
