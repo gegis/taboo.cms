@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
-import { Icon, Layout } from 'rsuite';
+import { Icon } from 'rsuite';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Dropzone from 'react-dropzone';
