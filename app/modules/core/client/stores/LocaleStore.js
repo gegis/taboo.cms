@@ -79,4 +79,4 @@ decorate(LocaleStore, {
   setTranslations: action,
 });
 
-export default LocaleStore;
+export default new LocaleStore();

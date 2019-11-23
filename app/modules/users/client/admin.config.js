@@ -6,13 +6,14 @@ import Login from './components/admin/Login';
 import ResetPassword from './components/admin/ResetPassword';
 import ChangePassword from './components/admin/ChangePassword';
 
-import { stores as usersStores } from './stores';
+import AuthStore from './stores/AuthStore';
+import UsersAdminStore from './stores/UsersAdminStore';
 
 const enabled = true;
 
 const stores = {
-  authStore: usersStores.authStore,
-  usersStore: usersStores.usersAdminStore,
+  authStore: AuthStore,
+  usersStore: UsersAdminStore,
 };
 
 const routes = [

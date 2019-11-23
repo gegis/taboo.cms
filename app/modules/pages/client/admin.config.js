@@ -16,7 +16,7 @@ const routes = [
 ];
 
 const stores = {
-  pagesStore: new PagesAdminStore(),
+  pagesStore: PagesAdminStore,
 };
 
 const primaryMenu = [

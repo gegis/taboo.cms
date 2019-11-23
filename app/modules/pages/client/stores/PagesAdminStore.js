@@ -15,7 +15,7 @@ const newItem = {
   published: false,
 };
 
-class PagesStore extends EntityAdminStore {
+class PagesAdminStore extends EntityAdminStore {
   constructor() {
     super({
       newItem: newItem,
@@ -80,7 +80,7 @@ class PagesStore extends EntityAdminStore {
   }
 }
 
-decorate(PagesStore, {
+decorate(PagesAdminStore, {
   layoutOptions: observable,
   languageOptions: observable,
   richTextEditorVisible: observable,
@@ -89,4 +89,4 @@ decorate(PagesStore, {
   loadPreviousVersion: action,
 });
 
-export default PagesStore;
+export default new PagesAdminStore();

@@ -33,4 +33,4 @@ decorate(NotificationsStore, {
   shift: action,
 });
 
-export default NotificationsStore;
+export default new NotificationsStore();

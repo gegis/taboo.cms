@@ -187,4 +187,4 @@ decorate(UsersStore, {
   getUserFormData: action,
 });
 
-export default UsersStore;
+export default new UsersStore();

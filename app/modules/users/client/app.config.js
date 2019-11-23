@@ -5,11 +5,12 @@ import ChangePassword from './components/ChangePassword';
 import MyProfile from './components/MyProfile';
 import AccountVerification from './components/AccountVerification';
 
-import { stores as usersStores } from './stores';
+import AuthStore from './stores/AuthStore';
+import UsersStore from './stores/UsersStore';
 
 const stores = {
-  authStore: usersStores.authStore,
-  usersStore: usersStores.usersStore,
+  authStore: AuthStore,
+  usersStore: UsersStore,
 };
 
 const routes = [

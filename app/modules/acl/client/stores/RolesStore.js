@@ -107,4 +107,4 @@ decorate(RolesStore, {
   loadAllRolesForSelection: action,
 });
 
-export default RolesStore;
+export default new RolesStore();

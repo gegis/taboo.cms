@@ -70,4 +70,4 @@ decorate(GalleriesStore, {
   reorderImages: action,
 });
 
-export default GalleriesStore;
+export default new GalleriesStore();

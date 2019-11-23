@@ -1,11 +1,11 @@
-import { decorate, observable, action, computed, runInAction } from 'mobx';
+import { decorate, observable, action, runInAction } from 'mobx';
 import axios from 'axios';
+import EntityAdminStore from 'app/modules/core/client/stores/EntityAdminStore';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
-import ArrayHelper from 'app/modules/core/client/helpers/ArrayHelper';
 
 const { userVerificationStatuses = [], userDocumentTypes = [] } = window.app.config;
 
-const newUser = {
+const newItem = {
   id: null,
   firstName: '',
   lastName: '',
@@ -30,82 +30,43 @@ const newUser = {
   verificationNote: '',
 };
 
-class UsersStore {
+class UsersAdminStore extends EntityAdminStore {
   constructor() {
-    this.page = 1;
-    this.limit = 50;
-    this.search = '';
-    this.hasMoreResults = false;
-    this.users = [];
-    this.sortBy = 'lastName';
-    this.sortDirection = 'asc';
-    this.user = Object.assign({}, newUser);
+    super({
+      newItem: newItem,
+      endpoints: {
+        loadAll: {
+          method: 'get',
+          path: '/api/admin/users',
+        },
+        loadById: {
+          method: 'get',
+          path: '/api/admin/users/:id',
+        },
+        create: {
+          method: 'post',
+          path: '/api/admin/users',
+        },
+        update: {
+          method: 'put',
+          path: '/api/admin/users/:id',
+        },
+        deleteById: {
+          method: 'delete',
+          path: '/api/admin/users/:id',
+        },
+      },
+    });
+
+    this.userDocumentTypes = userDocumentTypes;
     this.allVerificationStatuses = [];
     userVerificationStatuses.map(item => {
       this.allVerificationStatuses.push({ label: item, value: item });
     });
-    this.userDocumentTypes = userDocumentTypes;
-    this.setUser = this.setUser.bind(this);
-    this.toggleItemValue = this.toggleItemValue.bind(this);
     this.toggleUserDocumentVerified = this.toggleUserDocumentVerified.bind(this);
   }
 
-  loadAll(options = {}) {
-    return new Promise(resolve => {
-      const opts = {
-        params: {
-          limit: this.limit,
-        },
-      };
-      this.page = 1;
-      this.hasMoreResults = false;
-      this.search = '';
-      if (options.search) {
-        this.search = options.search;
-        opts.params.search = options.search;
-      }
-      axios
-        .get('/api/admin/users', opts)
-        .then(response => {
-          runInAction(() => {
-            const { data = [] } = response;
-            // this.users = ArrayHelper.sortByProperty(data, this.sortBy, this.sortDirection);
-            this.hasMoreResults = data.length === this.limit;
-            this.users = data;
-            resolve(data);
-          });
-        })
-        .catch(ResponseHelper.handleError);
-    });
-  }
-
-  loadNextPage() {
-    return new Promise(resolve => {
-      this.page++;
-      const opts = {
-        params: {
-          page: this.page,
-          limit: this.limit,
-        },
-      };
-      if (this.search) {
-        opts.params.search = this.search;
-      }
-      axios
-        .get('/api/admin/users', opts)
-        .then(response => {
-          runInAction(() => {
-            const { data = [] } = response;
-            this.hasMoreResults = data.length === this.limit;
-            this.users = this.users.concat(data);
-            resolve(data);
-          });
-        })
-        .catch(ResponseHelper.handleError);
-    });
-  }
-
-  loadOne(id) {
+  loadById(id) {
     return new Promise(resolve => {
       axios
         .get('/api/admin/users/' + id)
@@ -119,7 +80,7 @@ class UsersStore {
               data.verificationStatus = '';
             }
             data.password = '';
-            this.user = Object.assign(this.user, data);
+            this.item = data;
             resolve(data);
           });
         })
@@ -127,116 +88,30 @@ class UsersStore {
     });
   }
 
-  resetUser() {
-    this.user = Object.assign({}, newUser);
-  }
-
-  setUser(user) {
-    this.user = Object.assign(this.user, user);
-  }
-
-  toggleItemValue(field, event, value) {
-    this.user[field] = value;
-  }
-
   toggleUserDocumentVerified(docType, event, value) {
-    axios
-      .put('/api/admin/uploads/' + this.user[docType]._id, {
-        verified: value,
-      })
-      .then(response => {
-        const { data } = response;
-        runInAction(() => {
-          if (data) {
-            this.user[docType].verified = value;
-          }
-        });
-      })
-      .catch(ResponseHelper.handleError);
-  }
-
-  sortUsers(field, direction) {
-    this.sortBy = field;
-    this.sortDirection = direction;
-    this.users = ArrayHelper.sortByProperty([...this.users], this.sortBy, this.sortDirection);
-  }
-
-  getItemIndexById(id) {
-    let index = null;
-    this.users.find((item, i) => {
-      if (item._id === id) {
-        index = i;
-      }
-    });
-    return index;
-  }
-
-  updateUser(data) {
     return new Promise(resolve => {
       axios
-        .put('/api/admin/users/' + data.id, data)
+        .put('/api/admin/uploads/' + this.item[docType]._id, {
+          verified: value,
+        })
         .then(response => {
           runInAction(() => {
-            let index;
-            if (response && response.data) {
-              this.resetUser();
-              index = this.getItemIndexById(response.data._id);
-              if (index !== null) {
-                this.users[index] = response.data;
-              }
-              resolve(response.data);
+            const { data } = response;
+            if (data) {
+              this.item[docType].verified = value;
             }
+            resolve(data);
           });
         })
         .catch(ResponseHelper.handleError);
     });
-  }
-
-  deleteById(id) {
-    return new Promise(resolve => {
-      axios
-        .delete(`/api/admin/users/${id}`)
-        .then(response => {
-          runInAction(() => {
-            let index;
-            if (response && response.data) {
-              index = this.getItemIndexById(id);
-              if (index !== null) {
-                this.users.splice(index, 1);
-              }
-              resolve(response.data);
-            }
-          });
-        })
-        .catch(ResponseHelper.handleError);
-    });
-  }
-
-  get total() {
-    return this.users.length;
   }
 }
 
-decorate(UsersStore, {
+decorate(UsersAdminStore, {
   userDocumentTypes: observable,
   allVerificationStatuses: observable,
-  page: observable,
-  limit: observable,
-  hasMoreResults: observable,
-  search: observable,
-  users: observable,
-  user: observable,
-  loadAll: action,
-  loadOne: action,
-  setUser: action,
-  resetUser: action,
-  sortUsers: action,
-  loadNextPage: action,
-  updateUser: action,
-  deleteById: action,
-  toggleItemValue: action,
   toggleUserDocumentVerified: action,
-  total: computed,
 });
 
-export default UsersStore;
+export default new UsersAdminStore();

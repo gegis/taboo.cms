@@ -12,7 +12,7 @@ const routes = [
 ];
 
 const stores = {
-  pagesStore: new PagesStore(),
+  pagesStore: PagesStore,
 };
 
 export { routes, stores };

@@ -1,5 +1,5 @@
 import socketIOClient from 'socket.io-client';
-import { stores } from 'app/modules/core/client/stores';
+import NotificationsStore from 'app/modules/core/client/stores/NotificationsStore';
 
 class SocketsClient {
   constructor() {
@@ -29,7 +29,7 @@ class SocketsClient {
 
     this.sockets.on('disconnect', err => {
       if (this.socketDisconnectCount === 0) {
-        stores.notificationsStore.push({
+        NotificationsStore.push({
           title: 'Sockets Error',
           message: err,
           type: 'error',

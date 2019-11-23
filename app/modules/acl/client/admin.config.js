@@ -2,9 +2,16 @@ import React from 'react';
 import { Icon } from 'rsuite';
 
 import Roles from './components/admin/Roles';
-import { stores } from './stores';
+
+import RolesStore from './stores/RolesStore';
+import ACLStore from './stores/ACLStore';
 
 const enabled = true;
+
+const stores = {
+  aclStore: ACLStore,
+  rolesStore: RolesStore,
+};
 
 const routes = [
   {

@@ -60,4 +60,4 @@ decorate(SettingsStore, {
   setLoading: action,
 });
 
-export default SettingsStore;
+export default new SettingsStore();

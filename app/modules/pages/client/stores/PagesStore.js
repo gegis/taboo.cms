@@ -62,4 +62,4 @@ decorate(PagesStore, {
   resetPage: action,
 });
 
-export default PagesStore;
+export default new PagesStore();

@@ -16,7 +16,7 @@ const routes = [
 ];
 
 const stores = {
-  galleriesStore: new GalleriesStore(),
+  galleriesStore: GalleriesStore,
 };
 
 const primaryMenu = [

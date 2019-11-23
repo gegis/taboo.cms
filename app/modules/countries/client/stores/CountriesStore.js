@@ -45,4 +45,4 @@ decorate(CountriesStore, {
   loadAll: action,
 });
 
-export default CountriesStore;
+export default new CountriesStore();

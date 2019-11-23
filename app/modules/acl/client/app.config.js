@@ -1,5 +1,9 @@
-import { stores } from './stores';
+import ACLStore from './stores/ACLStore';
 
-delete stores.rolesStore;
+const enabled = true;
 
-export { stores };
+const stores = {
+  aclStore: ACLStore,
+};
+
+export { enabled, stores };

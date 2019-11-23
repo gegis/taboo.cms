@@ -1,7 +1,7 @@
 import UploadsStore from './stores/UploadsStore';
 
 const stores = {
-  uploadsStore: new UploadsStore(),
+  uploadsStore: UploadsStore,
 };
 
 export { stores };

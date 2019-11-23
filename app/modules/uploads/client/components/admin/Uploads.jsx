@@ -12,9 +12,6 @@ class Uploads extends React.Component {
   constructor(props) {
     super(props);
     this.entityStore = props.uploadsStore;
-    this.notificationsStore = props.notificationsStore;
-    this.localeStore = props.localeStore;
-    this.settingsStore = props.settingsStore;
   }
 
   render() {
@@ -32,11 +29,8 @@ class Uploads extends React.Component {
 
 Uploads.propTypes = {
   uploadsStore: PropTypes.object.isRequired,
-  notificationsStore: PropTypes.object.isRequired,
-  localeStore: PropTypes.object.isRequired,
-  settingsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('uploadsStore', 'notificationsStore', 'localeStore', 'settingsStore'), observer);
+const enhance = compose(inject('uploadsStore'), observer);
 
 export default enhance(Uploads);

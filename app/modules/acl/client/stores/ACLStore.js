@@ -120,4 +120,4 @@ decorate(ACLStore, {
   isAllowed: action,
 });
 
-export default ACLStore;
+export default new ACLStore();

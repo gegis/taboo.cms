@@ -45,20 +45,20 @@ class UserForm extends React.Component {
   }
 
   getUserDocumentsPreview() {
-    const { user, userDocumentTypes, toggleUserDocumentVerified } = this.usersStore;
+    const { item, userDocumentTypes, toggleUserDocumentVerified } = this.usersStore;
     let preview = [];
     userDocumentTypes.map(docType => {
-      if (user[docType]) {
+      if (item[docType]) {
         preview.push(
-          <div key={user[docType]._id} className="user-document-wrapper">
+          <div key={item[docType]._id} className="user-document-wrapper">
             <div className="user-document">
               <div>
                 <Translation message={docType} />
               </div>
-              <div className="document-file-preview">{this.getFilePreview(user[docType])}</div>
+              <div className="document-file-preview">{this.getFilePreview(item[docType])}</div>
               <div className="document-verified">
                 Verified:{' '}
-                <Checkbox checked={user[docType].verified} onChange={toggleUserDocumentVerified.bind(null, docType)} />
+                <Checkbox checked={item[docType].verified} onChange={toggleUserDocumentVerified.bind(null, docType)} />
               </div>
             </div>
           </div>
@@ -69,11 +69,11 @@ class UserForm extends React.Component {
   }
 
   render() {
-    const { user, toggleItemValue, allVerificationStatuses = [] } = this.usersStore;
+    const { item, setItem, setCheckboxItemValue, allVerificationStatuses } = this.usersStore;
     const { allRolesForSelection } = this.rolesStore;
     return (
-      <Form layout="horizontal" fluid onChange={this.usersStore.setUser} formValue={user} autoComplete="off">
-        {user.id && (
+      <Form layout="horizontal" fluid onChange={setItem} formValue={item} autoComplete="off">
+        {item.id && (
           <FormGroup controlId="id" className="inline">
             <ControlLabel>
               <Translation message="ID" />
@@ -81,7 +81,7 @@ class UserForm extends React.Component {
             <FormControl name="id" disabled />
           </FormGroup>
         )}
-        {user.id && <div className="clearfix" />}
+        {item.id && <div className="clearfix" />}
         <FormGroup controlId="firstName" className="inline">
           <ControlLabel>
             <Translation message="First Name" />
@@ -105,7 +105,7 @@ class UserForm extends React.Component {
             <Translation message="Password" />
           </ControlLabel>
           <FormControl name="password" type="password" autoComplete="off" />
-          {user.id && (
+          {item.id && (
             <HelpBlock tooltip>
               <Translation message="Leave it empty if you do not want to change it" />
             </HelpBlock>
@@ -116,7 +116,7 @@ class UserForm extends React.Component {
             <Translation message="Admin" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={user.admin} onChange={toggleItemValue.bind(null, 'admin')} />
+            <Checkbox checked={item.admin} onChange={setCheckboxItemValue.bind(null, 'admin')} />
           </div>
         </FormGroup>
         <FormGroup controlId="active" className="inline">
@@ -124,7 +124,7 @@ class UserForm extends React.Component {
             <Translation message="Active" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={user.active} onChange={toggleItemValue.bind(null, 'active')} />
+            <Checkbox checked={item.active} onChange={setCheckboxItemValue.bind(null, 'active')} />
           </div>
         </FormGroup>
         <FormGroup controlId="loginAttempts" className="inline">
@@ -164,7 +164,7 @@ class UserForm extends React.Component {
             <Translation message="Account Verified" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={user.verified} onChange={toggleItemValue.bind(null, 'verified')} />
+            <Checkbox checked={item.verified} onChange={setCheckboxItemValue.bind(null, 'verified')} />
           </div>
         </FormGroup>
         <FormGroup controlId="businessAccount" className="inline">
@@ -172,7 +172,7 @@ class UserForm extends React.Component {
             <Translation message="Business Account" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={user.businessAccount} onChange={toggleItemValue.bind(null, 'businessAccount')} />
+            <Checkbox checked={item.businessAccount} onChange={setCheckboxItemValue.bind(null, 'businessAccount')} />
           </div>
         </FormGroup>
         <FormGroup controlId="companyName" className="inline">

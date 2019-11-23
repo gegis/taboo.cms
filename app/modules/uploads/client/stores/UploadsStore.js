@@ -70,4 +70,4 @@ decorate(UploadsStore, {
   uploadDocument: action,
 });
 
-export default UploadsStore;
+export default new UploadsStore();

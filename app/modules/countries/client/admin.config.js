@@ -1,7 +1,7 @@
 import CountriesStore from './stores/CountriesStore';
 
 const stores = {
-  countriesStore: new CountriesStore(),
+  countriesStore: CountriesStore,
 };
 
 export { stores };

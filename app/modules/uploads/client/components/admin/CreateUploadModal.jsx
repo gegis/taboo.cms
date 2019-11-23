@@ -1,6 +1,7 @@
 import React from 'react';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
+import { Icon } from 'rsuite';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Dropzone from 'react-dropzone';
@@ -55,6 +56,21 @@ class CreateUploadModal extends React.Component {
     });
   }
 
+  getFileStatusIcon(status) {
+    let icon = null;
+    if (status === 'toUpload') {
+      icon = <Icon icon="cloud-upload" className="light-grey" title="Waiting for upload" />;
+    } else if (status === 'uploaded') {
+      icon = <Icon icon="cloud-upload" className="blue" title="Uploaded" />;
+    } else if (status === 'uploading') {
+      icon = <Icon icon="cloud-upload" className="dark-grey" title="Uploaded" />;
+    } else if (status === 'failed') {
+      icon = <Icon icon="cloud-upload" className="red" title="Failed to upload" />;
+    }
+
+    return icon;
+  }
+
   render() {
     return (
       <Modal
@@ -103,7 +119,7 @@ class CreateUploadModal extends React.Component {
                 <td>{file.name}</td>
                 <td>{file.type}</td>
                 <td>{UnitsHelper.parseSizeAuto(file.size)}</td>
-                <td>{file.status}</td>
+                <td>{this.getFileStatusIcon(file.status)}</td>
               </tr>
             ))}
           </tbody>
@@ -118,9 +134,6 @@ CreateUploadModal.propTypes = {
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('uploadsStore', 'notificationsStore'),
-  observer
-);
+const enhance = compose(inject('uploadsStore', 'notificationsStore'), observer);
 
 export default enhance(CreateUploadModal);

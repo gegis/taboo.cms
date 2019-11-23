@@ -19,7 +19,7 @@ const newItem = {
   updatedAt: '',
 };
 
-class UploadsAdminStore  extends EntityAdminStore {
+class UploadsAdminStore extends EntityAdminStore {
   constructor() {
     super({
       newItem: newItem,
@@ -47,7 +47,10 @@ class UploadsAdminStore  extends EntityAdminStore {
       },
     });
     this.itemsToUpload = [];
-    this.typeOptions = [{ label: 'Image', value: 'image' }, { label: 'Video', value: 'video' }];
+    this.typeOptions = [
+      { label: 'Image', value: 'image' },
+      { label: 'Video', value: 'video' },
+    ];
   }
 
   prependItemsToUpload(items) {
@@ -107,4 +110,4 @@ decorate(UploadsAdminStore, {
   uploadItems: action,
 });
 
-export default UploadsAdminStore;
+export default new UploadsAdminStore();

@@ -68,4 +68,4 @@ decorate(AuthStore, {
   setVerified: action,
 });
 
-export default AuthStore;
+export default new AuthStore();
