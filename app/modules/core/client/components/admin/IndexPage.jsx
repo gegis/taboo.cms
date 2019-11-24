@@ -17,11 +17,14 @@ class IndexPage extends Component {
     super(props);
     this.aclStore = props.aclStore;
     this.dispose = autorun(() => {
+      if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.pages.view')) {
+        this.retrievePagesInfo();
+      }
       if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view')) {
         this.retrieveGalleriesInfo();
       }
-      if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.pages.view')) {
-        this.retrievePagesInfo();
+      if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.uploads.view')) {
+        this.retrieveUploadsInfo();
       }
       if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.users.view')) {
         this.retrieveUsersInfo();
@@ -32,6 +35,9 @@ class IndexPage extends Component {
         count: 0,
       },
       pages: {
+        count: 0,
+      },
+      uploads: {
         count: 0,
       },
       users: {
@@ -66,6 +72,17 @@ class IndexPage extends Component {
       .catch(ResponseHelper.handleError);
   }
 
+  retrieveUploadsInfo() {
+    axios
+      .get('/api/admin/uploads/count')
+      .then(response => {
+        if (response && response.data && response.data.count) {
+          this.setState({ uploads: { count: response.data.count } });
+        }
+      })
+      .catch(ResponseHelper.handleError);
+  }
+
   retrieveUsersInfo() {
     axios
       .get('/api/admin/users/count')
@@ -80,14 +97,19 @@ class IndexPage extends Component {
   getHeaderNav() {
     return (
       <Nav>
+        {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.pages.view') && (
+          <NavLink to="/admin/pages" icon={<Icon icon="file" />}>
+            <span className="rs-hidden-xs">Pages</span>
+          </NavLink>
+        )}
         {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view') && (
           <NavLink to="/admin/galleries" icon={<Icon icon="file-image-o" />}>
             <span className="rs-hidden-xs">Galleries</span>
           </NavLink>
         )}
-        {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.pages.view') && (
-          <NavLink to="/admin/pages" icon={<Icon icon="file" />}>
-            <span className="rs-hidden-xs">Pages</span>
+        {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.uploads.view') && (
+          <NavLink to="/admin/uploads" icon={<Icon icon="file-upload" />}>
+            <span className="rs-hidden-xs">Uploads</span>
           </NavLink>
         )}
         {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.users.view') && (
@@ -98,25 +120,13 @@ class IndexPage extends Component {
       </Nav>
     );
   }
+
   render() {
-    const { galleries, pages, users } = this.state;
+    const { galleries, pages, users, uploads } = this.state;
     return (
       <Layout pageTitle="Dashboard" headerNav={this.getHeaderNav()} className="dashboard">
         <Grid fluid className="grid-default-gutter">
           <Row>
-            {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view') && (
-              <Col xs={24} sm={12}>
-                <Panel header={<Translation message="Galleries" />} className="shadow">
-                  <div className="counts">
-                    <b>Total Count:</b> {galleries.count}
-                  </div>
-                  <p className="pull-right">
-                    <Link to={'/admin/galleries'}>Galleries</Link>
-                  </p>
-                  <div className="clearfix" />
-                </Panel>
-              </Col>
-            )}
             {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.pages.view') && (
               <Col xs={24} sm={12}>
                 <Panel header={<Translation message="Pages" />} className="shadow">
@@ -125,6 +135,32 @@ class IndexPage extends Component {
                   </p>
                   <p className="pull-right">
                     <Link to={'/admin/pages'}>Pages</Link>
+                  </p>
+                  <div className="clearfix" />
+                </Panel>
+              </Col>
+            )}
+            {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view') && (
+              <Col xs={24} sm={12}>
+                <Panel header={<Translation message="Galleries" />} className="shadow">
+                  <p className="counts">
+                    <b>Total Count:</b> {galleries.count}
+                  </p>
+                  <p className="pull-right">
+                    <Link to={'/admin/galleries'}>Galleries</Link>
+                  </p>
+                  <div className="clearfix" />
+                </Panel>
+              </Col>
+            )}
+            {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.uploads.view') && (
+              <Col xs={24} sm={12}>
+                <Panel header={<Translation message="Uploads" />} className="shadow">
+                  <p className="counts">
+                    <b>Total Count:</b> {uploads.count}
+                  </p>
+                  <p className="pull-right">
+                    <Link to={'/admin/uploads'}>Uploads</Link>
                   </p>
                   <div className="clearfix" />
                 </Panel>
@@ -154,9 +190,6 @@ IndexPage.propTypes = {
   aclStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('aclStore'),
-  observer
-);
+const enhance = compose(inject('aclStore'), observer);
 
 export default enhance(IndexPage);

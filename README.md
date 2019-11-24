@@ -13,15 +13,15 @@ React CMS, Classic CMS, Headless CMS
 +reuse client admin abstract code
 +fix admin styles and vars
 +fix rsuite changes
++make auto run db setup, for things like to ensure admin user, basic pages, home, about, contact
++when creating admin and admin role first time - add all resources
 
-make auto run db setup, for things like to ensure admin user, basice pages, home, about, contact
-when creating admin and admin role first time - add all resources
-
-clean and make nice default tpl for frontend
+implement cms-cli
 implement layouts module
 make layouts dynamic
+clean and make nice default tpl for frontend
 double check cms core for removing action from routes and other actions for health endpoint
-
+implement migrations
 
 
 ## Build and Deploy

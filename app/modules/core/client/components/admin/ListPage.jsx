@@ -17,6 +17,9 @@ class ListPage extends React.Component {
     this.createModal = React.createRef();
     this.editModal = React.createRef();
     this.searchTimeout = null;
+    this.state = {
+      search: '',
+    };
     this.openCreateModal = this.openCreateModal.bind(this);
     this.openEditModal = this.openEditModal.bind(this);
     this.handleSort = this.handleSort.bind(this);
@@ -32,15 +35,17 @@ class ListPage extends React.Component {
 
   onSearchChange(value) {
     clearTimeout(this.searchTimeout);
+    this.setState({ search: value });
     this.searchTimeout = setTimeout(() => {
       this.settingsStore.setLoading(true);
-      this.entityStore.loadAll({ search: value }).then(() => {
+      this.entityStore.loadAll({ search: this.state.search }).then(() => {
         this.settingsStore.setLoading(false);
       });
-    }, 700);
+    }, 500);
   }
 
   getHeaderNav() {
+    const { search } = this.state;
     const { name } = this.props;
     return (
       <Form layout="inline">
@@ -50,7 +55,7 @@ class ListPage extends React.Component {
             placeholder={`Search ${name}`}
             style={{ width: '40vw' }}
             onChange={this.onSearchChange}
-            value={this.entityStore.search}
+            value={search}
           />
         </FormGroup>
       </Form>
@@ -161,9 +166,6 @@ ListPage.propTypes = {
   ItemsListComponent: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('localeStore', 'notificationsStore', 'settingsStore'),
-  observer
-);
+const enhance = compose(inject('localeStore', 'notificationsStore', 'settingsStore'), observer);
 
 export default enhance(ListPage);
