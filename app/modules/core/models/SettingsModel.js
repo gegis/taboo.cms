@@ -1,3 +1,5 @@
+const uniqueValidator = require('mongoose-unique-validator');
+
 module.exports = {
   connection: 'mongodb',
   schemaOptions: {
@@ -6,6 +8,8 @@ module.exports = {
   schema: {
     key: {
       type: String,
+      required: [true, 'is required'],
+      unique: true,
     },
     value: {
       type: Object,
@@ -14,5 +18,8 @@ module.exports = {
       type: Boolean,
       default: false,
     },
+  },
+  afterSchemaCreate(schema) {
+    schema.plugin(uniqueValidator, { message: 'is already taken' });
   },
 };

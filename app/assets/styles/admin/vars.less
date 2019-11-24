@@ -1,7 +1,5 @@
-// You can find all rsuite vars in here:
-@import '../../../../node_modules/rsuite/lib/styles/mixins/palette.less';
-@import '../../../../node_modules/rsuite/lib/styles/constants.less';
-
+// Import rsuite constants and variables
+@import "../../../../node_modules/rsuite/lib/styles/variables.less";
 
 //To make rsuite icons load locally
 @font-face {
@@ -37,16 +35,16 @@
 
 //** Pallete
 @base-color: #25a4dd;
-@H050: color(~`palette('@{base-color}', 50)`);
-@H100: color(~`palette('@{base-color}', 100)`);
-@H200: color(~`palette('@{base-color}', 200)`);
-@H300: color(~`palette('@{base-color}', 300)`);
-@H400: color(~`palette('@{base-color}', 400)`);
-@H500: @base-color;
-@H600: color(~`palette('@{base-color}', 600)`);
-@H700: color(~`palette('@{base-color}', 700)`);
-@H800: color(~`palette('@{base-color}', 800)`);
-@H900: color(~`palette('@{base-color}', 900)`);
+//@H050: color(~`palette('@{base-color}', 50)`);
+//@H100: color(~`palette('@{base-color}', 100)`);
+//@H200: color(~`palette('@{base-color}', 200)`);
+//@H300: color(~`palette('@{base-color}', 300)`);
+//@H400: color(~`palette('@{base-color}', 400)`);
+//@H500: @base-color;
+//@H600: color(~`palette('@{base-color}', 600)`);
+//@H700: color(~`palette('@{base-color}', 700)`);
+//@H800: color(~`palette('@{base-color}', 800)`);
+//@H900: color(~`palette('@{base-color}', 900)`);
 
 //** spectrum
 //@red: #f44336;
@@ -89,8 +87,6 @@
 //** Global button ripple switch
 //@button-ripple: true;
 
-@import "../../../../node_modules/rsuite/lib/styles/variables.less";
-
 //@primary-color: @H500;
 //@primary-bg-color: @H050;
 //@primary-border-color: @H300;
@@ -125,7 +121,7 @@
 //@font-size-h5: 18px;
 //@font-size-h6: 16px; // The same to font-size-base
 
-@border-radius-base: 4px;
+@border-radius-base: 6px;
 @body-bg: @B100;
 @text-color: @B800;
 @font-family-base: "Roboto", "Helvetica", "Arial", sans-serif;

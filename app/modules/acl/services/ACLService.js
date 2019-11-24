@@ -1,4 +1,4 @@
-const { app, Model, Service, logger, config } = require('@taboo/cms-core');
+const { Model, Service, logger, config } = require('@taboo/cms-core');
 
 class ACLService {
   constructor() {
@@ -8,8 +8,8 @@ class ACLService {
     this.getAllResources = this.getAllResources.bind(this);
   }
 
-  async afterModelsSetup() {
-    this.aclResounces = app.aclResources;
+  async afterModelsSetup(modules, aclResources) {
+    this.aclResounces = aclResources;
   }
 
   getAllResources() {
