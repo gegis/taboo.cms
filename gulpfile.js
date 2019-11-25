@@ -19,7 +19,7 @@ if (productionBuildEnvs.indexOf(appConfig.environment) !== -1) {
 }
 
 let config = {
-  lint: ['app/**/*.js', 'app/**/*.jsx', '!app/assets/scripts/lib/**/*.js'],
+  lint: ['app/**/*.js', 'lib/**/*.js', 'app/**/*.jsx', '!app/assets/scripts/lib/**/*.js'],
   clean: ['public/js', 'public/css', 'public/fonts'],
   server: {
     startScript: 'index.js',
