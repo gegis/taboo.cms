@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+
 mongodump --out /home/ubuntu/backups/mongodb-`date +"%m-%d-%y"`
 
 # From external server

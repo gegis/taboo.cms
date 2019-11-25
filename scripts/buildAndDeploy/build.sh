@@ -3,7 +3,7 @@
 set -e
 SETUP_PATH='/home/ubuntu/scripts'
 BUILD_FOLDER='app-build'
-REPO='TODO'
+REPO='YOUR-REPO'
 BRANCH='master'
 
 printf "\n # Remove current build folder $BUILD_FOLDER\n\n"

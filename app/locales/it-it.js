@@ -1,3 +1,1 @@
-module.exports = {
-  companyName: 'Taboo Solutions',
-};
+module.exports = {};

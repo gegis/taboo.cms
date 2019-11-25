@@ -19,7 +19,7 @@ use admin
 db.createUser(
   {
     user: "taboo-cms",
-    pwd: "8mNgavQBoQR6vrWJremv9tKe263PgtsPNdnupx4e", // or passwordPrompt() for prompt
+    pwd: "taboo-cms-password", // or passwordPrompt() for prompt
     roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
   }
 )

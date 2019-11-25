@@ -1,7 +1,7 @@
 ### Redirect any subdomain like www. to without it
 #server {
 #    server_name *.taboo.solutions;
-#    return 301 $scheme://taboo.systems$request_uri;
+#    return 301 $scheme://taboo.solutions$request_uri;
 #}
 
 ### Redirect from http to https and then actual server has to listen 443 ssl;

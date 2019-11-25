@@ -20,8 +20,8 @@ let db, UserModel, RoleModel, roles;
 while (!user.email) {
   user.email = readlineSync.question('Please enter email: ');
 }
-user.firstName = user.email;
-user.lastName = user.email;
+user.firstName = user.email.split('@')[0];
+user.lastName = user.email.split('@')[0];
 
 while (!user.password) {
   user.password = readlineSync.question('Please enter password: ', {
@@ -52,7 +52,7 @@ const run = async () => {
     } else {
       // Roles do not exist - create one!
       newRole = await RoleModel.create({
-        name: 'Admin',
+        name: 'Administrator',
         resources: ['admin.dashboard', 'admin.acl.view', 'admin.acl.manage', 'admin.users.view', 'admin.users.manage'],
       });
       userRoles.push(newRole._id);

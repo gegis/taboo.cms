@@ -1,7 +1,7 @@
 const path = require('path');
 const parse = require('csv-parse');
 const fs = require('fs');
-const { config, logger } = require('taboo-cms');
+const { config, logger } = require('@taboo/cms-core');
 
 const translationsFileName = 'translations.csv';
 

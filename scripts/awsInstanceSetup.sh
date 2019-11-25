@@ -1,7 +1,17 @@
 #!/bin/bash
 
-ORG_NAME='YOUR-ORGANISATION'
-APP_NAME='YOUR-APP'
+ORG_NAME=$1
+APP_NAME=$2
+
+if test -z "$ORG_NAME"
+then
+  read -p 'Enter ORG_NAME:' ORG_NAME
+fi
+
+if test -z "$APP_NAME"
+then
+  read -p 'Enter APP_NAME:' APP_NAME
+fi
 
 sudo apt update
 sudo apt install -y git htop curl build-essential
@@ -35,7 +45,7 @@ sudo sh -c "echo 'vm.swappiness=10' >> /etc/sysctl.conf"
 
 # configure nginx, in /etc/nginx/sites-available, create, ${APP_NAME}:
 cd /etc/nginx/sites-available/
-touch ${APP_NAME}
+sudo touch ${APP_NAME}
 : <<'COMMENT'
 # If needs redirecting from www. to without www
 #server {
@@ -95,7 +105,7 @@ ls -la
 #mv test /opt/${ORG_NAME}/${APP_NAME}
 #cd /opt/${ORG_NAME}/${APP_NAME}
 #npm i
-#pm2 start pm2.json
+#pm2 start pm2.json --env staging
 #pm2 save
 #pm2 startup
 #sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
