@@ -34,7 +34,7 @@ module.exports = {
       path: '/api/admin/galleries/count',
       action: GalleriesAdminController.count,
       policies: ['isAdmin'],
-      order: 1000,
+      order: 100,
       options: {
         errorResponseAsJson: true,
         aclResource: 'admin.galleries.view',
@@ -45,7 +45,7 @@ module.exports = {
       path: '/api/admin/galleries/:id',
       action: GalleriesAdminController.findById,
       policies: ['isAdmin'],
-      order: 1001,
+      order: 101,
       options: {
         errorResponseAsJson: true,
         aclResource: 'admin.galleries.view',
