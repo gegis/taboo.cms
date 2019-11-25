@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, FormControl, ControlLabel } from 'rsuite';
+import { Form, FormGroup, FormControl, ControlLabel, Checkbox } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -13,7 +13,7 @@ class ModelNameForm extends React.Component {
   }
 
   render() {
-    const { setItem, item } = this.moduleNameStore;
+    const { setItem, item, setCheckboxItemValue } = this.moduleNameStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
@@ -25,11 +25,19 @@ class ModelNameForm extends React.Component {
           </FormGroup>
         )}
         {item.id && <div className="clearfix" />}
-        <FormGroup controlId="todo" className="inline">
+        <FormGroup controlId="name" className="inline">
           <ControlLabel>
-            <Translation message="Todo" />
+            <Translation message="Name" />
           </ControlLabel>
-          <FormControl name="todo" />
+          <FormControl name="name" />
+        </FormGroup>
+        <FormGroup controlId="enabled" className="inline">
+          <ControlLabel>
+            <Translation message="Enabled" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <Checkbox checked={item.enabled} onChange={setCheckboxItemValue.bind(null, 'enabled')} />
+          </div>
         </FormGroup>
       </Form>
     );

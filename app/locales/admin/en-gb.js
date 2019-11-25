@@ -37,6 +37,7 @@ module.exports = {
   weekday7: 'Sunday',
   From: 'From',
   To: 'To',
+  Enabled: 'Enabled',
   Galleries: 'Galleries',
   Reservations: 'Reservations',
   'Reservations Enabled': 'Reservations Enabled',

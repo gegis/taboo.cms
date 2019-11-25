@@ -11,19 +11,19 @@ class ModuleName extends Component {
   }
 
   componentDidMount() {
-    this.props.moduleNameStore.loadTodo();
+    this.props.moduleNameStore.loadAll();
   }
 
   render() {
-    const { todo } = this.props.moduleNameStore;
+    const { items } = this.props.moduleNameStore;
     return (
       <Layout className="moduleName">
-        <div className="todo-list">
-          {todo.map(item => (
+        <div className="items-list">
+          {items.map(item => (
             <div key={item._id}>
               <span>{item._id}</span>
               {' - '}
-              <span>{item.todo}</span>
+              <span>{item.name}</span>
             </div>
           ))}
         </div>

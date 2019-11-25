@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import ActionButtons from 'app/modules/core/client/components/admin/ActionButtons';
+import BooleanIcon from 'modules/core/client/components/admin/BooleanIcon';
 
 class ModuleNameList extends React.Component {
   constructor(props) {
@@ -24,7 +25,8 @@ class ModuleNameList extends React.Component {
         <thead>
           <tr>
             <th className="rs-hidden-xs">ID</th>
-            <th>Todo</th>
+            <th>Name</th>
+            <th>Enabled</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
         </thead>
@@ -33,7 +35,10 @@ class ModuleNameList extends React.Component {
             <tr key={item._id}>
               <td className="id rs-hidden-xs">{item._id}</td>
               <td>
-                {item.todo}
+                {item.name}
+              </td>
+              <td>
+                <BooleanIcon value={item.enabled} />
               </td>
               <td>
                 <ActionButtons
