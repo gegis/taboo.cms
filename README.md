@@ -15,8 +15,8 @@ React CMS, Classic CMS, Headless CMS
 +fix rsuite changes
 +make auto run db setup, for things like to ensure admin user, basic pages, home, about, contact
 +when creating admin and admin role first time - add all resources
++implement cms-cli
 
-implement cms-cli
 implement layouts module
 make layouts dynamic
 clean and make nice default tpl for frontend
