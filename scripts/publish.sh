@@ -2,7 +2,7 @@
 
 git push origin master
 git push github --tags
-npm publish
+npm publish --access=public
 
 echo "Done."
 

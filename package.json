@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Taboo CMS",
   "main": "index.js",
+  "bin": {
+    "taboo-cms-cli": "./bin/taboo-cms-cli.js"
+  },
   "scripts": {
     "start": "./node_modules/.bin/gulp buildAndWatch",
     "build": "./node_modules/.bin/gulp build",
@@ -12,6 +15,14 @@
   },
   "pre-commit": [
     "lint"
+  ],
+  "keywords": [
+    "cms",
+    "headless",
+    "decoupled",
+    "api",
+    "koa",
+    "react"
   ],
   "author": "taboo.solutions",
   "license": "ISC",
@@ -26,7 +37,9 @@
     "@babel/preset-react": "^7.7.0",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
+    "colorprint": "^6.1.1",
     "del": "^3.0.0",
+    "enquirer": "^2.3.2",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
@@ -45,11 +58,14 @@
     "pre-commit": "^1.2.2",
     "prettier": "^1.19.1",
     "readline-sync": "^1.4.9",
+    "shelljs": "^0.8.3",
     "webpack": "^4.41.2",
-    "webpack-stream": "^5.2.1"
+    "webpack-stream": "^5.2.1",
+    "yargs": "^15.0.2"
   },
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
+    "@taboo/cms-core": "^1.0.0",
     "axios": "^0.19.0",
     "bcrypt": "^3.0.2",
     "brace": "^0.11.1",
