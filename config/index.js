@@ -17,6 +17,12 @@ module.exports = {
   },
   admin: {
     title: 'Taboo Solutions Admin',
+    initialUser: {
+      firstName: 'Admin',
+      lastName: 'Taboo',
+      email: 'admin@taboo.solutions',
+      pass: 'admin',
+    },
   },
   users: {
     verificationStatuses: verificationStatuses,

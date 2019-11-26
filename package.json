@@ -22,7 +22,10 @@
     "decoupled",
     "api",
     "koa",
-    "react"
+    "react",
+    "mongodb",
+    "mobx",
+    "rsuite"
   ],
   "author": "taboo.solutions",
   "license": "ISC",

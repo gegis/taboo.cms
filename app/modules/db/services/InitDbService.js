@@ -1,4 +1,4 @@
-const { logger } = require('@taboo/cms-core');
+const { logger, config } = require('@taboo/cms-core');
 
 // TODO - think of refactoring db adapter to move from app/db/adapters into this module
 // TODO - also implement db migrations
@@ -10,6 +10,7 @@ class InitDbService {
     this.newAdminUser = null;
     this.init = this.init.bind(this);
   }
+
   async init(modules, aclResources) {
     const { Settings: SettingsService } = modules.core.services;
     const dbValue = await SettingsService.getValue('db');
@@ -37,7 +38,7 @@ class InitDbService {
     const { Role: RoleModel } = modules.acl.models;
     this.newUserRole = await RoleModel.create({
       name: 'User',
-      resources: [],
+      resources: ['api.uploads.userFiles'],
     });
     logger.info(`Successfully created '${this.newUserRole.name}' role`);
   }
@@ -45,18 +46,20 @@ class InitDbService {
   async setupAdminUser(modules, role) {
     const { Users: UsersService } = modules.users.services;
     const { User: UserModel } = modules.users.models;
-    const pass = 'admin';
+    const { admin: { initialUser } = {} } = config;
     const userData = {
       admin: true,
       active: true,
-      firstName: 'Taboo',
-      lastName: 'CMS',
-      email: 'admin@taboo.solutions',
-      password: await UsersService.hashPassword(pass),
+      firstName: initialUser.firstName,
+      lastName: initialUser.lastName,
+      email: initialUser.email,
+      password: await UsersService.hashPassword(initialUser.pass),
       roles: [role],
     };
     this.newAdminUser = await UserModel.create(userData);
-    logger.info(`Successfully created ADMIN USER, email: '${this.newAdminUser.email}', password: ${pass}`);
+    logger.info('Successfully created ADMIN USER!');
+    logger.info(`EMAIL: '${this.newAdminUser.email}'`);
+    logger.info(`PASSWORD: ${initialUser.pass}`);
   }
 
   // TODO - setup initial pages, like home, about, contact
