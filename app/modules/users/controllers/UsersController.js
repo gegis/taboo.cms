@@ -62,7 +62,7 @@ class UsersController {
     try {
       user = await Model('users.User')
         .findById(ctx.session.user.id)
-        .populate(['documentPassport1', 'documentPassport2', 'documentIncorporation', 'profilePicture']);
+        .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
     } catch (e) {
       ctx.throw(404, e);
     }

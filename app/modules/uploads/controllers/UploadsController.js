@@ -8,7 +8,7 @@ class UploadsController {
       uploads: { appendTimestamp, secureAllowedTypes, secureAllowedImageTypes, secureUploadsDir, secureUrlPath },
     } = config.server;
     const {
-      users: { documentTypes = ['documentPassport1', 'documentPassport2', 'documentIncorporation'] },
+      users: { documentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'] },
     } = config;
     const {
       files: { file = null } = {},

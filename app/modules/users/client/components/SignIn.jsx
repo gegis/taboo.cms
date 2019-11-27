@@ -68,7 +68,7 @@ class SignIn extends React.Component {
             SocketsClient.on(this.getUserEventName('update'), () => {
               authStore.loadUserAuth();
             });
-            return history.push('/my-profile');
+            return history.push('/dashboard');
           } else {
             return history.push('/');
           }
@@ -122,7 +122,7 @@ class SignIn extends React.Component {
       <Layout className="sign-in-page" topRightMenu={this.getTopRightMenu()}>
         <Grid fluid>
           <Row>
-            <Col xs={24} sm={16} lg={12} smOffset={4} lgOffset={6}>
+            <Col xs={24} md={12} mdOffset={6}>
               <h1>
                 <Translation message="Sign in" />
               </h1>
@@ -160,6 +160,7 @@ class SignIn extends React.Component {
                       </Button>
                     </ButtonToolbar>
                   </FormGroup>
+                  <div className="clearfix" />
                 </Form>
               </Panel>
             </Col>
@@ -176,10 +177,6 @@ SignIn.propTypes = {
   history: PropTypes.object,
 };
 
-const enhance = compose(
-  withRouter,
-  inject('authStore', 'localeStore'),
-  observer
-);
+const enhance = compose(withRouter, inject('authStore', 'localeStore'), observer);
 
 export default enhance(SignIn);

@@ -1,4 +1,5 @@
-import IndexPage from './components/IndexPage';
+// import IndexPage from './components/IndexPage';
+import Dashboard from './components/Dashboard';
 
 import RouterStore from './stores/RouterStore';
 import SettingsStore from './stores/SettingsStore';
@@ -15,11 +16,18 @@ const stores = {
 };
 
 const routes = [
+  // ATM it is served as dynamic page.
+  // {
+  //   path: '/',
+  //   exact: true,
+  //   component: IndexPage,
+  //   authorised: false,
+  // },
   {
-    path: '/',
+    path: '/dashboard',
     exact: true,
-    component: IndexPage,
-    authorised: false,
+    component: Dashboard,
+    authorised: true,
   },
 ];
 

@@ -5,32 +5,26 @@ import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 
 class Footer extends React.Component {
-  getUserFooter() {
-    const { authStore, publicNav } = this.props;
-    if (authStore.authenticated && authStore.user) {
+  getFooterNavigation() {
+    const { navigation } = this.props;
+    if (navigation) {
       return (
-        <Grid className="user-footer">
-          <Row>
-            <Col md={12} className="rs-visible-xs rs-visible-sm">
-              <div className="public-nav-wrapper">{publicNav}</div>
-            </Col>
-            <Col md={12} className="rs-hidden-xs rs-hidden-sm">
-              <div className="pull-right public-nav-wrapper">{publicNav}</div>
-            </Col>
-          </Row>
-        </Grid>
+        <Row>
+          <Col>{navigation}</Col>
+        </Row>
       );
+    } else {
+      return null;
     }
-    return null;
   }
 
   render() {
     return (
       <RsFooter className="footer">
-        {this.getUserFooter()}
         <Grid fluid className="footer-copyright">
+          {this.getFooterNavigation()}
           <Row>
-            <Col md={24}>&copy; 2019. All rights reserved</Col>
+            <Col>&copy; 2019. All rights reserved</Col>
           </Row>
         </Grid>
       </RsFooter>
@@ -40,13 +34,10 @@ class Footer extends React.Component {
 
 Footer.propTypes = {
   authStore: PropTypes.object,
-  publicNav: PropTypes.node,
-  topRightMenu: PropTypes.node,
+  navigation: PropTypes.node,
+  userMenu: PropTypes.node,
 };
 
-const enhance = compose(
-  inject('authStore'),
-  observer
-);
+const enhance = compose(inject('authStore'), observer);
 
 export default enhance(Footer);

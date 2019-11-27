@@ -117,7 +117,7 @@ class SignUp extends React.Component {
       <Layout className="sign-up-page">
         <Grid fluid>
           <Row>
-            <Col xs={24} sm={16} lg={12} smOffset={4} lgOffset={6}>
+            <Col xs={24} md={16} mdOffset={4}>
               <h1>
                 <Translation message="Create your account" />
               </h1>
@@ -288,11 +288,12 @@ class SignUp extends React.Component {
                   </Row>
                   <FormGroup>
                     <ButtonToolbar>
-                      <Button appearance="primary" onClick={this.handleSubmit}>
+                      <Button appearance="primary"  className="pull-right" onClick={this.handleSubmit}>
                         <Translation message="Sign up" />
                       </Button>
                     </ButtonToolbar>
                   </FormGroup>
+                  <div className="clearfix" />
                 </Form>
               </Panel>
             </Col>

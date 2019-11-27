@@ -130,10 +130,10 @@ class AccountVerification extends React.Component {
       <Layout className="account-verification-page">
         <Grid fluid>
           <Row>
-            <Col xs={24} sm={16} lg={12} smOffset={4} lgOffset={6}>
-              <Panel className="account-verification-panel">
-                <h2>Account Verification</h2>
-                <h5>Verification Status</h5>
+            <Col xs={24} md={16} mdOffset={4}>
+              <h1>Account Verification</h1>
+              <Panel className="account-verification-panel" bordered>
+                <h3>Status</h3>
                 {this.getVerificationMessage()}
                 <Form
                   fluid
@@ -172,15 +172,15 @@ class AccountVerification extends React.Component {
                   )}
                   <Row>
                     <Col sm={24}>
-                      <h5>Passport</h5>
-                      <div className="text-sm">Upload clear images of the Cover and Data Pages</div>
+                      <h3>ID Card</h3>
+                      <p>Upload clear images of the front and back side</p>
                     </Col>
                     <Col sm={24} md={11}>
                       <DocumentUpload
-                        title="Passport Cover"
-                        onFileDrop={this.onDocumentDrop.bind(this, 'documentPassport1')}
-                        documentName="documentPassport1"
-                        currentDocument={usersStore.user.documentPassport1}
+                        title="Front Side"
+                        onFileDrop={this.onDocumentDrop.bind(this, 'documentPersonal1')}
+                        documentName="documentPersonal1"
+                        currentDocument={usersStore.user.documentPersonal1}
                       />
                     </Col>
                     <Col sm={24} md={2}>
@@ -188,10 +188,10 @@ class AccountVerification extends React.Component {
                     </Col>
                     <Col sm={24} md={11}>
                       <DocumentUpload
-                        title="Passport Data Page"
-                        onFileDrop={this.onDocumentDrop.bind(this, 'documentPassport2')}
-                        documentName="documentPassport2"
-                        currentDocument={usersStore.user.documentPassport2}
+                        title="Back Side"
+                        onFileDrop={this.onDocumentDrop.bind(this, 'documentPersonal2')}
+                        documentName="documentPersonal2"
+                        currentDocument={usersStore.user.documentPersonal2}
                       />
                     </Col>
                   </Row>

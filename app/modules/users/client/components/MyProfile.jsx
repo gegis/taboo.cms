@@ -107,10 +107,10 @@ class MyProfile extends React.Component {
         <Grid fluid>
           <Row>
             <Col xs={24} sm={16} lg={12} smOffset={4} lgOffset={6}>
-              <Panel className="my-profile-panel">
-                <h2>
-                  <Translation message={pageTitle} />
-                </h2>
+              <h1>
+                <Translation message={pageTitle} />
+              </h1>
+              <Panel className="my-profile-panel" bordered>
                 <Form
                   fluid
                   ref={this.form}

@@ -70,11 +70,11 @@ module.exports = {
       type: Schema.Types.ObjectId,
       ref: 'Upload',
     },
-    documentPassport1: {
+    documentPersonal1: {
       type: Schema.Types.ObjectId,
       ref: 'Upload',
     },
-    documentPassport2: {
+    documentPersonal2: {
       type: Schema.Types.ObjectId,
       ref: 'Upload',
     },

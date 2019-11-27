@@ -1,4 +1,5 @@
 const { logger, config } = require('@taboo/cms-core');
+const pages = require('../data/pages');
 
 // TODO - think of refactoring db adapter to move from app/db/adapters into this module
 // TODO - also implement db migrations
@@ -21,6 +22,7 @@ class InitDbService {
       await this.setupAdminRole(modules, aclResources);
       await this.setupUserRole(modules, aclResources);
       await this.setupAdminUser(modules, this.newAdminRole);
+      await this.setupPages(modules, pages);
       await SettingsService.setValue('db', { initialized: true });
     }
   }
@@ -63,7 +65,12 @@ class InitDbService {
   }
 
   // TODO - setup initial pages, like home, about, contact
-  async setupPages() {}
+  async setupPages(modules, pages = []) {
+    const { Page: PageModel } = modules.pages.models;
+    for (let i=0; i< pages.length; i++) {
+      await PageModel.create(pages[i]);
+    }
+  }
 }
 
 module.exports = new InitDbService();

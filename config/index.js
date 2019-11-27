@@ -5,7 +5,7 @@ const db = require('./db');
 const mailer = require('./mailer');
 const logger = require('./logger');
 const verificationStatuses = ['new', 'pending', 'failed', 'approved'];
-const userDocumentTypes = ['documentPassport1', 'documentPassport2', 'documentIncorporation'];
+const userDocumentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'];
 const socketsPath = '/socket.io';
 
 module.exports = {

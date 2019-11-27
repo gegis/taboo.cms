@@ -14,7 +14,7 @@ class UsersAdminController extends AdminController {
       defaultSort,
       populate: {
         findAll: 'roles',
-        findById: ['documentPassport1', 'documentPassport2', 'documentIncorporation'],
+        findById: ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'],
         create: 'roles',
         update: 'roles',
       },

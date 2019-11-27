@@ -26,13 +26,19 @@ module.exports = {
     resources: ['admin.dashboard'],
   },
   routes: [
-    // Home page is set in pages module
+    // ATM it is served as dynamic page.
     // {
     //   method: 'GET',
     //   path: '/',
     //   action: CoreController.index,
     //   policies: ['i18n'],
     // },
+    {
+      method: 'GET',
+      path: '/dashboard',
+      action: CoreController.index,
+      policies: ['i18n', 'isUser'],
+    },
     {
       method: 'GET',
       path: '/sign-up',

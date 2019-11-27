@@ -5,8 +5,8 @@ import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
 class UploadsStore {
   constructor() {
     this.documentsToUpload = {
-      documentPassport1: null,
-      documentPassport2: null,
+      documentPersonal1: null,
+      documentPersonal2: null,
       documentIncorporation: null,
       profilePicture: null,
     };

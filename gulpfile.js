@@ -88,7 +88,7 @@ let config = {
       file: 'lib.css',
       path: 'public/css',
     },
-    watch: ['app/assets/styles/lib/**/*.less'],
+    watch: ['app/assets/styles/lib/**/*.less', 'app/assets/styles/vars.less'],
     preProcessor: less.bind(this, { javascriptEnabled: true }),
   },
   appStyles: {

@@ -14,7 +14,7 @@ class UploadsService {
 
   async updateUserFiles(ctx, userId, document) {
     const {
-      users: { documentTypes = ['documentPassport1', 'documentPassport2', 'documentIncorporation'] },
+      users: { documentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'] },
     } = config;
     const user = await Model('users.User').findById(userId);
     const userDocType = document.documentType;
@@ -30,15 +30,15 @@ class UploadsService {
       });
       if (
         user.businessAccount &&
-        matchingTypes.indexOf('documentPassport1') !== -1 &&
-        matchingTypes.indexOf('documentPassport2') !== -1 &&
+        matchingTypes.indexOf('documentPersonal1') !== -1 &&
+        matchingTypes.indexOf('documentPersonal2') !== -1 &&
         matchingTypes.indexOf('documentIncorporation') !== -1
       ) {
         user.verificationStatus = 'pending';
       } else if (
         !user.businessAccount &&
-        matchingTypes.indexOf('documentPassport1') !== -1 &&
-        matchingTypes.indexOf('documentPassport2') !== -1
+        matchingTypes.indexOf('documentPersonal1') !== -1 &&
+        matchingTypes.indexOf('documentPersonal2') !== -1
       ) {
         user.verificationStatus = 'pending';
       }
