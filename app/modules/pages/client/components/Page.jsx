@@ -5,10 +5,14 @@ import { inject, observer } from 'mobx-react';
 import Layout from 'app/modules/core/client/components/Layout';
 import { withRouter } from 'react-router-dom';
 import Translation from 'app/modules/core/client/components/Translation';
+import GalleryModal from 'modules/galleries/client/components/GalleryModal';
 
 class Page extends Component {
   constructor(props) {
     super(props);
+    this.modal = React.createRef();
+    this.registerGalleryImageLinks = this.registerGalleryImageLinks.bind(this);
+    this.showGalleryImage = this.showGalleryImage.bind(this);
   }
 
   componentDidMount() {
@@ -29,6 +33,7 @@ class Page extends Component {
     const { pagesStore } = this.props;
     pagesStore.load(url).then(() => {
       window.scrollTo(0, 0);
+      this.registerGalleryImageLinks();
     });
   }
 
@@ -49,8 +54,29 @@ class Page extends Component {
     );
   }
 
+  registerGalleryImageLinks() {
+    const links = document.getElementsByClassName('gallery-image-link');
+    // TODO - build a list of next and prev images for gallery preview;
+    Array.from(links).forEach(link => {
+      link.addEventListener('click', this.showGalleryImage);
+    });
+  }
+
+  showGalleryImage(event) {
+    const { target: { dataset: { name = '', url = '' } = {} } = {} } = event;
+    const { current: currentModal = {} } = this.modal;
+    event.preventDefault();
+    event.stopPropagation();
+    currentModal.open(url, name);
+  }
+
   render() {
-    return <Layout>{this.getPage()}</Layout>;
+    return (
+      <Layout>
+        {this.getPage()}
+        <GalleryModal ref={this.modal} />
+      </Layout>
+    );
   }
 }
 
@@ -59,10 +85,6 @@ Page.propTypes = {
   match: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  withRouter,
-  inject('pagesStore'),
-  observer
-);
+const enhance = compose(withRouter, inject('pagesStore'), observer);
 
 export default enhance(Page);

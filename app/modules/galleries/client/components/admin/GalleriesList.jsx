@@ -17,8 +17,8 @@ class RolesList extends React.Component {
   }
 
   getCopyValue(item) {
-    const innerHtml = `<h1 class="text-center mb-5 first">${item.title}</h1>\n{{Gallery:${item._id}}}\n`;
-    return `<section class="gallery inverted">\n${innerHtml}</section>`;
+    const innerHtml = `<h2 class="text-center mb-5 first">${item.title}</h2>\n{{Gallery:${item._id}}}\n`;
+    return `<section class="gallery-section">\n${innerHtml}</section>`;
   }
 
   render() {

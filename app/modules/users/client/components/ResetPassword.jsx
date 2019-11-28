@@ -116,7 +116,7 @@ class ResetPassword extends React.Component {
       <Layout className="reset-password-page">
         <Grid fluid>
           <Row>
-            <Col xs={24} md={14} mdOffset={5}>
+            <Col xs={24} md={12} mdOffset={6}>
               <h1>
                 <Translation message="Forgot password?" />
               </h1>

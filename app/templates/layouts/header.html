@@ -1,33 +1,46 @@
 <div class="rs-header header">
   <div class="rs-grid-container">
-    <div class="rs-row rs-hidden-xs rs-hidden-sm">
-      <div class="rs-col-md-6 nav-brand-wrapper">
+    <div class="rs-row menu">
+      <div class="nav-brand-wrapper rs-col rs-col-xs-6 rs-col-md-3">
         <a class="nav-brand logo" href="/"><img src="/images/logo.png" alt="logo"/></a>
       </div>
-      <div class="rs-col-md-12">
-        <div class="rs-nav rs-nav-default top-menu rs-nav-horizontal">
-
+      <div class="navigation rs-col rs-hidden-xs rs-col-md-13">
+        <div class="rs-nav rs-nav-default navigation signed-out rs-nav-horizontal">
+          <ul>
+            <li role="presentation" class="rs-nav-item rs-nav-item-content">
+              <a aria-current="page" class="rs-nav-item-content active" role="button" tabindex="0" href="/"
+                >Home<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
+              ></a>
+            </li>
+            <li role="presentation" class="rs-nav-item rs-nav-item-content">
+              <a class="rs-nav-item-content" role="button" tabindex="0" href="/about"
+                >About<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
+              ></a>
+            </li>
+            <li role="presentation" class="rs-nav-item rs-nav-item-content">
+              <a class="rs-nav-item-content" role="button" tabindex="0" href="/contact"
+                >Contact<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
+              ></a>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="rs-col-md-6">
-        <div class="rs-nav rs-nav-default user-menu rs-navbar-right rs-nav-horizontal">
-
+      <div class="user-menu rs-col rs-col-xs-18 rs-col-md-8">
+        <div class="rs-nav rs-nav-default user-menu signed-out rs-navbar-right rs-nav-horizontal">
+          <ul>
+            <li role="presentation" class="rs-nav-item rs-nav-item-content">
+              <a class="rs-nav-item-content" role="button" tabindex="0" href="/sign-in"
+                >Sign In<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
+              ></a>
+            </li>
+            <li role="presentation" class="rs-nav-item rs-nav-item-content">
+              <a class="rs-nav-item-content" role="button" tabindex="0" href="/sign-up"
+                >Sign Up<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
+              ></a>
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
-    <div class="mobile-header rs-visible-xs rs-visible-sm">
-      <div class="rs-row">
-        <div class="rs-col-xs-4 menu-toggle-wrapper">
-          <button type="button" class="rs-btn rs-btn-subtle menu-toggle">
-            <i class="rs-icon rs-icon-bars"></i><span class="rs-ripple-pond"><span class="rs-ripple"></span></span>
-          </button>
-        </div>
-        <div class="rs-col-xs-16 nav-brand-wrapper">
-          <a class="nav-brand logo" href="/dashboard"><img src="/images/logo.png" alt="logo"/></a>
-        </div>
-        <div class="rs-col-xs-4 menu-search-toggle-wrapper"></div>
-      </div>
-      <div class="mobile-menu-wrapper"></div>
     </div>
   </div>
 </div>

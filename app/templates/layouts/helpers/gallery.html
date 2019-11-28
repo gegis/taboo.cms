@@ -1,18 +1,20 @@
-<div class="container-fluid wow zoomIn">
-  <div class="row p-0">
-    <% for(let i=0; i<images.length; i++) { %>
-      <div class="col-6 col-sm-4 col-xl-3 p-0">
-        <div>
-          <figure class="hover-effect p-0 m-0">
-            <img class="img-fluid" src="<%=images[i].url%>" alt="Dish-1" />
-            <a class="galleryItem" href="<%=images[i].url%>">
-              <div class="overlay">
-                <div class="hover-title"><i class="fa fa-plus gallery-icon"></i></div>
-              </div>
-            </a>
-          </figure>
-        </div>
-      </div>
-    <% } %>
+<div class="gallery">
+  <% for(let i = 0; i < images.length; i++) { %>
+  <div class="gallery-item">
+    <a
+      class="gallery-image-link"
+      href="<%=images[i].url%>"
+      data-name="<%=images[i].name%>"
+      data-url="<%=images[i].url%>"
+    >
+      <img
+        class="gallery-image"
+        src="<%=images[i].url%>"
+        alt="<%=images[i].name%>"
+        data-name="<%=images[i].name%>"
+        data-url="<%=images[i].url%>"
+      />
+    </a>
   </div>
+  <% } %>
 </div>
