@@ -33,7 +33,6 @@ class UsersList extends React.Component {
           <tr>
             <th className="rs-visible-xs">User</th>
             <th className="rs-hidden-sm rs-hidden-xs">User</th>
-            <th className="rs-hidden-xs">Company</th>
             <th className="rs-hidden-xs">Verified</th>
             <th className="rs-hidden-xs">Admin</th>
             <th className="rs-hidden-xs">Active</th>
@@ -71,9 +70,6 @@ class UsersList extends React.Component {
                 </div>
                 <div>{item.email}</div>
                 <div className="subject">{this.getUserRoles(item).join(', ')}</div>
-              </td>
-              <td className="rs-hidden-xs">
-                <BooleanIcon value={item.businessAccount} />
               </td>
               <td className="rs-hidden-xs">
                 <BooleanIcon value={item.verified} />

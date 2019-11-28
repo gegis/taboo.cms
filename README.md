@@ -32,6 +32,8 @@ npm i
 ```
 to make sure all required modules are installed.
 
+Also make sure you have MongoDB server installed and running.
+
 That's it, you can now start the server by running:
 ```
 npm start

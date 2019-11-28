@@ -81,10 +81,10 @@ class UsersStore {
     });
   }
 
-  saveUser() {
+  saveUser(userData) {
     return new Promise(resolve => {
       axios
-        .put('/api/users/current', this.user)
+        .put('/api/users/current', userData)
         .then(response => {
           const { data = {} } = response;
           if (data.password) {

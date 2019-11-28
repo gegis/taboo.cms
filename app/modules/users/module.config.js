@@ -38,6 +38,24 @@ module.exports = {
       policies: ['isUser'],
     },
     {
+      method: 'GET',
+      path: '/reset-password',
+      action: UsersController.userLandingPage,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
+      method: 'GET',
+      path: '/change-password/:userId/:token',
+      action: UsersController.userLandingPage,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
       method: 'POST',
       path: '/api/login',
       action: UsersController.login,

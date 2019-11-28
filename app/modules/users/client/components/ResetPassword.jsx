@@ -116,13 +116,10 @@ class ResetPassword extends React.Component {
       <Layout className="reset-password-page">
         <Grid fluid>
           <Row>
-            <Col xs={24} sm={16} lg={12} smOffset={4} lgOffset={6}>
+            <Col xs={24} md={14} mdOffset={5}>
               <h1>
                 <Translation message="Forgot password?" />
               </h1>
-              <p className="form-description">
-                <Translation message="Enter your email and we will send you a link to reset your password" />
-              </p>
               <Panel className="reset-pass-panel" bordered>
                 <Form
                   fluid
@@ -152,8 +149,12 @@ class ResetPassword extends React.Component {
                       </Button>
                     </ButtonToolbar>
                   </FormGroup>
+                  <div className="clearfix" />
                 </Form>
               </Panel>
+              <p className="color-passive">
+                <Translation message="Enter your email and we will send you a link to reset your password" />
+              </p>
             </Col>
           </Row>
         </Grid>

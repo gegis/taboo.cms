@@ -16,7 +16,7 @@ class UsersAdminController extends AdminController {
         findAll: 'roles',
         findById: ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'],
         create: 'roles',
-        update: 'roles',
+        update: ['roles'],
       },
     });
   }

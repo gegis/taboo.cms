@@ -19,6 +19,7 @@ module.exports = {
   'Create your account': 'Create your account',
   'Sign up': 'Sign up',
   Admin: 'Admin',
+  Reset: 'Reset',
   'Phone Number': 'Phone Number',
   Website: 'Website',
   Bio: 'Bio',
@@ -49,4 +50,5 @@ module.exports = {
   'Company Name': 'Company Name',
   'Description of the Business': 'Description of the Business',
   'Legal Representative': 'Legal Representative',
+  'Enter your email and we will send you a link to reset your password': 'Enter your email and we will send you a link to reset your password',
 };

@@ -58,10 +58,11 @@ class UsersController {
   }
 
   async getCurrent(ctx) {
+    const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user;
     try {
       user = await Model('users.User')
-        .findById(ctx.session.user.id)
+        .findById(userId)
         .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
     } catch (e) {
       ctx.throw(404, e);
@@ -71,6 +72,7 @@ class UsersController {
 
   async updateCurrent(ctx) {
     const { body = {} } = ctx.request;
+    const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user;
     try {
       if (Object.prototype.hasOwnProperty.call(body, 'id')) {
@@ -81,7 +83,9 @@ class UsersController {
       } else if (Object.prototype.hasOwnProperty.call(body, 'password')) {
         delete body.password;
       }
-      user = await Model('users.User').findByIdAndUpdate(ctx.session.user.id, body, { new: true });
+      user = await Model('users.User')
+        .findByIdAndUpdate(userId, body, { new: true })
+        .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
     } catch (e) {
       ctx.throw(404, e);
     }

@@ -45,6 +45,10 @@ class AccountVerification extends React.Component {
 
   handleSubmit() {
     const { localeStore, usersStore } = this.props;
+    const userData = Object.assign({}, usersStore.user);
+    if (Object.prototype.hasOwnProperty.call(userData, 'profilePicture')) {
+      delete userData.profilePicture;
+    }
     if (!this.form.current.check()) {
       Notification.error({
         title: 'Invalid Data',
@@ -52,7 +56,7 @@ class AccountVerification extends React.Component {
         duration: 10000,
       });
     } else {
-      usersStore.saveUser().then(data => {
+      usersStore.saveUser(userData).then(data => {
         if (data && data._id) {
           Notification.info({
             title: 'Success',

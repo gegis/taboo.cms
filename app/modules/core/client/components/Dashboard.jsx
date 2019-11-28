@@ -20,7 +20,7 @@ class IndexPage extends Component {
               <Panel className="dashboard" bordered>
                 <div>
                   <p>
-                    <ProfilePicture url={authStore.user.profilePictureUrl} size="sm" />
+                    <ProfilePicture url={authStore.user.profilePictureUrl} size="md" />
                   </p>
                   <p>
                     {authStore.user.firstName} {authStore.user.lastName}

@@ -1,4 +1,4 @@
-const { config, Model, Service, Helper, logger } = require('@taboo/cms-core');
+const { config, Model, Service, Helper, logger, mailer } = require('@taboo/cms-core');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
@@ -117,8 +117,9 @@ class UsersService {
   }
 
   async resetPassword(ctx, email, linkPrefix = '') {
+    const { mailer: { sendGrid: { apiKey: sendGridApiKey } = {} } = {} } = config;
     const options = {};
-    let success = true;
+    let success = false;
     let user;
     let emailResponse;
     if (linkPrefix && linkPrefix.charAt(0) !== '/') {
@@ -138,12 +139,17 @@ class UsersService {
             user,
             link: `${ctx.origin}${linkPrefix}/change-password/${user._id}/${user.passwordReset}`,
           });
-          emailResponse = await Service('mailer.SendGrid').send(options);
-          if (!emailResponse || !emailResponse.success) {
-            success = false;
+
+          if (sendGridApiKey) {
+            emailResponse = await Service('mailer.SendGrid').send(options);
+          } else {
+            emailResponse = await mailer.send(options);
+          }
+
+          if (emailResponse && (emailResponse.success || emailResponse.accepted)) {
+            success = true;
           }
         } catch (e) {
-          success = false;
           return ctx.throw(400, 'Failed to send email');
         }
       }
