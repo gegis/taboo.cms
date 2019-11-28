@@ -73,7 +73,7 @@ class ACLService {
         let acl;
         if (session.value && session.value.user) {
           acl = await this.getUserACL(session.value.user);
-          await SessionModel.update({ _id: session._id }, { $set: { 'value.user.acl': acl } });
+          await SessionModel.updateOne({ _id: session._id }, { $set: { 'value.user.acl': acl } });
         }
       });
     }
