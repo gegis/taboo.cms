@@ -1,5 +1,4 @@
-const { config, filesHelper, cmsHelper } = require('@taboo/cms-core');
-const path = require('path');
+const { config } = require('@taboo/cms-core');
 const moment = require('moment');
 const mongoose = require('mongoose');
 
@@ -98,40 +97,6 @@ class CoreHelper {
       phrase = moment(phrase, dateFormat).format('YYYY-MM-DD');
     }
     return phrase;
-  }
-
-  async getEmailTemplate(ctx, tplName, values = null) {
-    const {
-      emailTemplatesDir = null,
-      views: { extension = 'html' },
-    } = config.server;
-    let tplPath;
-    let tpl = null;
-
-    if (tplName && emailTemplatesDir) {
-      if (tplName.indexOf('.') === -1) {
-        tplName += `.${extension}`;
-      }
-      tplPath = path.resolve(emailTemplatesDir, tplName);
-      if (filesHelper.fileExists(tplPath)) {
-        tpl = await filesHelper.readFile(tplPath);
-      } else {
-        throw new Error(`Email template '${tplPath}' was not found`);
-      }
-
-      if (values) {
-        tpl = cmsHelper.composeTemplate(ctx, tpl, values);
-      }
-    }
-    return tpl;
-  }
-
-  //TODO remove this
-  capitalizeFirstLetter(string = '') {
-    if (string && string.length > 0) {
-      string = string.charAt(0).toUpperCase() + string.slice(1);
-    }
-    return string;
   }
 
   firstUpper(string = '') {

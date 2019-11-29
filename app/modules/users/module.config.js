@@ -41,7 +41,7 @@ module.exports = {
       method: 'GET',
       path: '/reset-password',
       action: UsersController.userLandingPage,
-      policies: ['i18n', 'isUser', 'loadNavigation'],
+      policies: ['i18n', 'loadNavigation'],
       options: {
         errorResponseAsJson: true,
       },
@@ -50,7 +50,7 @@ module.exports = {
       method: 'GET',
       path: '/change-password/:userId/:token',
       action: UsersController.userLandingPage,
-      policies: ['i18n', 'isUser', 'loadNavigation'],
+      policies: ['i18n', 'loadNavigation'],
       options: {
         errorResponseAsJson: true,
       },

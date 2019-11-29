@@ -1,4 +1,4 @@
-const { config, Model, Service, Helper, logger, mailer } = require('@taboo/cms-core');
+const { config, Model, Service, Helper, logger, mailer, cmsHelper } = require('@taboo/cms-core');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
@@ -122,9 +122,11 @@ class UsersService {
     let success = false;
     let user;
     let emailResponse;
+
     if (linkPrefix && linkPrefix.charAt(0) !== '/') {
       linkPrefix = `/${linkPrefix}`;
     }
+
     if (email) {
       user = await Model('users.User').findOne({ email });
       if (user) {
@@ -135,7 +137,7 @@ class UsersService {
           await user.save();
           options.to = email;
           options.subject = Helper('core.Locale').translate(ctx, 'email_subject_users_password_reset');
-          options.html = await Helper('core.Core').getEmailTemplate(ctx, 'users/passwordReset', {
+          options.html = await cmsHelper.composeEmailTemplate(ctx, 'users/passwordReset', {
             user,
             link: `${ctx.origin}${linkPrefix}/change-password/${user._id}/${user.passwordReset}`,
           });

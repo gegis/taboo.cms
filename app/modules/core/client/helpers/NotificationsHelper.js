@@ -12,7 +12,7 @@ class NotificationsHelper {
     };
     if (notificationsStore.notifications.length > 0) {
       notification = notificationsStore.shift();
-      notificationOptions.title = StringHelper.capitalizeFirstLetter(notification.type);
+      notificationOptions.title = StringHelper.firstUpper(notification.type);
 
       if (notification.title) {
         notificationOptions.title = notification.title;
