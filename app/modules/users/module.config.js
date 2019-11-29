@@ -29,19 +29,19 @@ module.exports = {
       method: 'GET',
       path: '/my-profile',
       action: UsersController.userLandingPage,
-      policies: ['isUser'],
+      policies: ['i18n', 'isUser', 'loadNavigation'],
     },
     {
       method: 'GET',
       path: '/account-verify',
       action: UsersController.userLandingPage,
-      policies: ['isUser'],
+      policies: ['i18n', 'isUser', 'loadNavigation'],
     },
     {
       method: 'GET',
       path: '/reset-password',
       action: UsersController.userLandingPage,
-      policies: [],
+      policies: ['i18n', 'isUser', 'loadNavigation'],
       options: {
         errorResponseAsJson: true,
       },
@@ -50,7 +50,7 @@ module.exports = {
       method: 'GET',
       path: '/change-password/:userId/:token',
       action: UsersController.userLandingPage,
-      policies: [],
+      policies: ['i18n', 'isUser', 'loadNavigation'],
       options: {
         errorResponseAsJson: true,
       },

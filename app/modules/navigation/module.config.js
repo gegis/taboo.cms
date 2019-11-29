@@ -12,15 +12,6 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/api/navigation/:type',
-      action: NavigationController.getOneType,
-      policies: [],
-      options: {
-        errorResponseAsJson: true,
-      },
-    },
-    {
-      method: 'GET',
       path: '/api/navigation',
       action: NavigationController.getAll,
       policies: ['isUser'],

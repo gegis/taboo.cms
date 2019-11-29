@@ -42,7 +42,12 @@ class NavigationForm extends React.Component {
           <ControlLabel>
             <Translation message="Language" />
           </ControlLabel>
-          <FormControl name="language" accepter={SelectPicker} data={this.localeStore.languageOptions} />
+          <FormControl
+            name="language"
+            accepter={SelectPicker}
+            data={this.localeStore.languageOptions}
+            cleanable={false}
+          />
         </FormGroup>
         <FormGroup controlId="enabled" className="inline">
           <ControlLabel>
@@ -62,9 +67,6 @@ NavigationForm.propTypes = {
   localeStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('navigationStore', 'localeStore'),
-  observer
-);
+const enhance = compose(inject('navigationStore', 'localeStore'), observer);
 
 export default enhance(NavigationForm);

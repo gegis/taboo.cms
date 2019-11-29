@@ -3,6 +3,7 @@ import { Footer as RsFooter, Grid, Row, Col } from 'rsuite';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
+import Translation from 'modules/core/client/components/Translation';
 
 class Footer extends React.Component {
   getFooterNavigation() {
@@ -24,7 +25,9 @@ class Footer extends React.Component {
         <Grid fluid className="footer-copyright">
           {this.getFooterNavigation()}
           <Row>
-            <Col>&copy; 2019. All rights reserved</Col>
+            <Col>
+              <Translation message="_footerCopy" />
+            </Col>
           </Row>
         </Grid>
       </RsFooter>

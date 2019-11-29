@@ -1,6 +1,7 @@
 module.exports = {
   companyName: 'Taboo Solutions',
   ' ': ' ',
+  _footerCopy: '© All rights reserved, 2019',
   'My Profile': 'My Profile',
   Logout: 'Logout',
   'My Personal Profile': 'My Personal Profile',

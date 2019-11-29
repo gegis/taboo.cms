@@ -7,21 +7,24 @@
       <div class="navigation rs-col rs-hidden-xs rs-col-md-13">
         <div class="rs-nav rs-nav-default navigation signed-out rs-nav-horizontal">
           <ul>
+            <%
+              let navigation = _clientConfig.navigation;
+              if (_clientConfig.userNavigation.length > 0) {
+                navigation = _clientConfig.userNavigation;
+              }
+            %>
+            <% for(let i = 0; i < navigation.length; i++) { %>
             <li role="presentation" class="rs-nav-item rs-nav-item-content">
-              <a aria-current="page" class="rs-nav-item-content active" role="button" tabindex="0" href="/"
-                >Home<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
+              <a
+                aria-current="page"
+                class="rs-nav-item-content active"
+                role="button"
+                tabindex="0"
+                href="<%-navigation[i].url%>"
+                ><%-navigation[i].title%><span class="rs-ripple-pond"><span class="rs-ripple"></span></span
               ></a>
             </li>
-            <li role="presentation" class="rs-nav-item rs-nav-item-content">
-              <a class="rs-nav-item-content" role="button" tabindex="0" href="/about"
-                >About<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
-              ></a>
-            </li>
-            <li role="presentation" class="rs-nav-item rs-nav-item-content">
-              <a class="rs-nav-item-content" role="button" tabindex="0" href="/contact"
-                >Contact<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
-              ></a>
-            </li>
+            <% } %>
           </ul>
         </div>
       </div>

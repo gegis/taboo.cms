@@ -7,6 +7,8 @@ import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
 import axios from 'axios';
 import { Container, Content, Grid, Row, Col, Nav, Message, Dropdown } from 'rsuite';
+import { MetaTags } from 'react-meta-tags';
+
 import Header from 'app/modules/core/client/components/Header';
 import Footer from 'app/modules/core/client/components/Footer';
 import NavLink from 'app/modules/core/client/components/NavLink';
@@ -127,39 +129,34 @@ class Layout extends React.Component {
   }
 
   getNavigation() {
-    const { navigation } = this.props;
+    const { navigation, navigationStore } = this.props;
     if (navigation) {
       return navigation;
     } else {
       return (
         <Nav className="navigation signed-out">
-          <NavLink className="rs-nav-item-content" to="/">
-            Home
-          </NavLink>
-          <NavLink className="rs-nav-item-content" to="/about">
-            About
-          </NavLink>
-          <NavLink className="rs-nav-item-content" to="/contact">
-            Contact
-          </NavLink>
+          {navigationStore.navigation.map((item, i) => (
+            <NavLink key={i} className="rs-nav-item-content" to={item.url}>
+              {item.title}
+            </NavLink>
+          ))}
         </Nav>
       );
     }
   }
 
   getUserNavigation() {
-    const { authStore, userNavigation } = this.props;
+    const { authStore, userNavigation, navigationStore } = this.props;
     if (userNavigation) {
       return userNavigation;
     } else if (authStore.authenticated && authStore.user) {
       return (
         <Nav className="navigation signed-in">
-          <NavLink className="rs-nav-item-content" to="/my-profile">
-            My Profile
-          </NavLink>
-          <Nav.Item key="logout" onClick={this.handleLogout}>
-            <Translation message="Logout" />
-          </Nav.Item>
+          {navigationStore.userNavigation.map((item, i) => (
+            <NavLink key={i} className="rs-nav-item-content" to={item.url}>
+              {item.title}
+            </NavLink>
+          ))}
         </Nav>
       );
     } else {
@@ -176,10 +173,22 @@ class Layout extends React.Component {
     }
   }
 
+  getMetaTitle() {
+    const { metaTitle } = this.props;
+    if (typeof metaTitle === 'undefined') {
+      return window.app.config.defaultPageTitle;
+    } else {
+      return metaTitle;
+    }
+  }
+
   render() {
     const { children, settingsStore, authStore, className } = this.props;
     return (
       <Container className={classNames('default-layout', className)}>
+        <MetaTags>
+          <title>{this.getMetaTitle()}</title>
+        </MetaTags>
         <Header navigation={this.getHeaderNavigation()} userMenu={this.getUserMenu()} />
         {settingsStore.loading && <div className="loader" />}
         {authStore.user.id && !authStore.verified && this.getVerificationMessage()}
@@ -208,17 +217,19 @@ Layout.propTypes = {
   navigation: PropTypes.node,
   userNavigation: PropTypes.node,
   className: PropTypes.string,
+  metaTitle: PropTypes.string,
   settingsStore: PropTypes.object,
   notificationsStore: PropTypes.object,
   localeStore: PropTypes.object,
   authStore: PropTypes.object,
+  navigationStore: PropTypes.object,
   location: PropTypes.object,
   history: PropTypes.object,
 };
 
 const enhance = compose(
   withRouter,
-  inject('settingsStore', 'authStore', 'notificationsStore', 'localeStore'),
+  inject('settingsStore', 'authStore', 'notificationsStore', 'localeStore', 'navigationStore'),
   observer
 );
 

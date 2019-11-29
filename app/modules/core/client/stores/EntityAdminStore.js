@@ -150,11 +150,13 @@ class EntityAdminStore {
       axios[deleteById.method](deleteById.path.replace(':id', id))
         .then(response => {
           runInAction(() => {
-            let index;
+            let index, items;
             if (response && response.data) {
               index = this.getItemIndexById(id);
               if (index !== null) {
-                this.items.splice(index, 1);
+                items = this.items.slice();
+                items.splice(index, 1);
+                this.items = items;
               }
               resolve(response.data);
             }

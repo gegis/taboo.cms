@@ -32,9 +32,7 @@ class PagesController {
       // TODO - cache this bit as it is recursive and it might become performance issue.
       await Service('pages.Pages').replacePageBodyRefs(ctx, page, galleryTpl);
       pageVariables = page.variables || {};
-      // TODO commented this out, because if you land on page with custom title and bootstraps react,
-      //  page title will stay
-      // pageVariables.pageTitle = page.title;
+      pageVariables.pageTitle = page.title;
       if (page.language) {
         Service('core.LanguageService').setLanguage(ctx, page.language);
       }

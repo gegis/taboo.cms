@@ -40,6 +40,7 @@ module.exports = {
     rooms: ['users'],
   },
   client: {
+    defaultPageTitle: server.views.defaultPageTitle,
     admin: {
       language: 'en',
       locale: 'en-gb',

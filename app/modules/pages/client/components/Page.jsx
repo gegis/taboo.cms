@@ -4,6 +4,7 @@ import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 import Layout from 'app/modules/core/client/components/Layout';
 import { withRouter } from 'react-router-dom';
+
 import Translation from 'app/modules/core/client/components/Translation';
 import GalleryModal from 'modules/galleries/client/components/GalleryModal';
 
@@ -37,21 +38,22 @@ class Page extends Component {
     });
   }
 
-  getPage() {
+  getPageTitle() {
     const { pagesStore } = this.props;
     let title = '404';
-    let body = <Translation message="Not Found" />;
     if (pagesStore.page && !pagesStore.pageNotFound) {
       title = pagesStore.page.title;
+    }
+    return title;
+  }
+
+  getPageBody() {
+    const { pagesStore } = this.props;
+    let body = <Translation message="Not Found" />;
+    if (pagesStore.page && !pagesStore.pageNotFound) {
       body = <div dangerouslySetInnerHTML={{ __html: pagesStore.page.body }} />;
     }
-
-    return (
-      <div className="page">
-        <h1 className="title">{title}</h1>
-        <div className="body">{body}</div>
-      </div>
-    );
+    return body;
   }
 
   registerGalleryImageLinks() {
@@ -72,8 +74,11 @@ class Page extends Component {
 
   render() {
     return (
-      <Layout>
-        {this.getPage()}
+      <Layout metaTitle={this.getPageTitle()}>
+        <div className="page">
+          <h1 className="title">{this.getPageTitle()}</h1>
+          <div className="body">{this.getPageBody()}</div>
+        </div>
         <GalleryModal ref={this.modal} />
       </Layout>
     );
