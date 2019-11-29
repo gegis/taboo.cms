@@ -93,11 +93,11 @@ class PageForm extends React.Component {
 
 PageForm.propTypes = {
   pagesStore: PropTypes.object.isRequired,
+  localeStore: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
-  inject('pagesStore'),
-  inject('localeStore'),
+  inject('pagesStore', 'localeStore'),
   observer
 );
 

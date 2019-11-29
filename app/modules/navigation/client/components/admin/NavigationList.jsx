@@ -36,7 +36,6 @@ class NavigationList extends React.Component {
       return;
     }
     this.navigationStore.reorderItems(result.source.index, result.destination.index).then(data => {
-      console.log(data);
       if (data && data.success) {
         this.notificationsStore.push({
           title: 'Success',
