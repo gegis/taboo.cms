@@ -174,4 +174,9 @@ module.exports = {
   'Edit External Wallet': 'Edit External Wallet',
   'Document Type': 'Document Type',
   Preview: 'Preview',
+  Navigation: 'Navigation',
+  'Website Navigation': 'Website Navigation',
+  'User Navigation': 'User Navigation',
+  'Create New Navigation Item': 'Create New Navigation Item',
+  'Edit Navigation Item': 'Edit Navigation Item',
 };

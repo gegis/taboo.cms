@@ -43,7 +43,6 @@ class PagesAdminStore extends EntityAdminStore {
       },
     });
     this.layoutOptions = [{ label: 'Default', value: 'default' }, { label: 'No Layout', value: 'no-layout' }];
-    this.languageOptions = [{ label: 'English', value: 'en' }, { label: 'Spanish', value: 'es' }];
     this.richTextEditorVisible = false;
   }
 

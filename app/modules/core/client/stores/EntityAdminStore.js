@@ -9,7 +9,7 @@ class EntityAdminStore {
     this.page = 1;
     this.limit = 50;
     this.hasMoreResults = false;
-    this.search = '';
+    (this.filter = null), (this.search = '');
     this.items = [];
     this.sortBy = this.options.sortBy || 'name';
     this.sortDirection = this.options.sortDirection || 'asc';
@@ -47,6 +47,9 @@ class EntityAdminStore {
         this.search = options.search;
         opts.params.search = options.search;
       }
+      if (this.filter) {
+        opts.params.filter = this.filter;
+      }
       axios[loadAll.method](loadAll.path, opts)
         .then(response => {
           runInAction(() => {
@@ -72,6 +75,9 @@ class EntityAdminStore {
       };
       if (this.search) {
         opts.params.search = this.search;
+      }
+      if (this.filter) {
+        opts.params.filter = this.filter;
       }
       axios[loadAll.method](loadAll.path, opts)
         .then(response => {
@@ -121,12 +127,14 @@ class EntityAdminStore {
       axios[update.method](update.path.replace(':id', data.id), data)
         .then(response => {
           runInAction(() => {
-            let index;
+            let index, items;
             if (response && response.data) {
               this.resetItem();
               index = this.getItemIndexById(response.data._id);
               if (index !== null) {
-                this.items[index] = response.data;
+                items = this.items.slice();
+                items[index] = response.data;
+                this.items = items;
               }
               resolve(response.data);
             }
@@ -156,6 +164,10 @@ class EntityAdminStore {
     });
   }
 
+  setFilter(filter) {
+    this.filter = filter;
+  }
+
   getItemIndexById(id) {
     let index = null;
     this.items.find((item, i) => {
@@ -170,6 +182,22 @@ class EntityAdminStore {
     this.sortBy = field;
     this.sortDirection = direction;
     this.items = ArrayHelper.sortByProperty([...this.items], this.sortBy, this.sortDirection);
+  }
+
+  reorderItems(startIndex, endIndex) {
+    return new Promise(resolve => {
+      const [removed] = this.items.splice(startIndex, 1);
+      const { loadAll } = this.options.endpoints;
+      runInAction(() => {
+        this.items.splice(endIndex, 0, removed);
+      });
+      axios
+        .put(`${loadAll.path}/reorder`, this.items)
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(ResponseHelper.handleError);
+    });
   }
 
   /**
@@ -193,6 +221,7 @@ class EntityAdminStore {
 decorate(EntityAdminStore, {
   page: observable,
   hasMoreResults: observable,
+  filter: observable,
   search: observable,
   limit: observable,
   items: observable,
@@ -205,6 +234,8 @@ decorate(EntityAdminStore, {
   create: action,
   update: action,
   deleteById: action,
+  setFilter: action,
+  reorderItems: action,
   sortItems: action,
   setCheckboxItemValue: action,
 });

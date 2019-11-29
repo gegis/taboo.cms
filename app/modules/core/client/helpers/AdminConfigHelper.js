@@ -57,16 +57,6 @@ class AdminConfigHelper {
     });
     return ArrayHelper.sortByProperty(items, 'order');
   }
-
-  getSecondaryMenuItems() {
-    let items = [];
-    [...this.modulesConfigs].map(config => {
-      if (config && config.secondaryMenu) {
-        items = items.concat(config.secondaryMenu);
-      }
-    });
-    return ArrayHelper.sortByProperty(items, 'order');
-  }
 }
 
 export default new AdminConfigHelper();

@@ -2,13 +2,14 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { compose } from 'recompose';
 import PropTypes from 'prop-types';
-import { Sidenav, Sidebar as RsSidebar, Nav, Navbar, Divider, Icon } from 'rsuite';
+import { Sidenav, Sidebar as RsSidebar, Nav, Navbar, Divider, Icon, Dropdown } from 'rsuite';
 import classNames from 'classnames';
 
 import NavBrand from './NavBrand';
 import AdminConfigHelper from 'app/modules/core/client/helpers/AdminConfigHelper';
 import Translation from 'app/modules/core/client/components/Translation';
 import NavLink from 'app/modules/core/client/components/admin/NavLink';
+import NavDropDownLink from 'app/modules/core/client/components/admin/NavDropDownLink';
 
 class Sidebar extends React.Component {
   constructor(props) {
@@ -20,13 +21,29 @@ class Sidebar extends React.Component {
   getPrimaryMenuItems() {
     const items = AdminConfigHelper.getPrimaryMenuItems();
     const menuItems = [];
+    const menuItemChildren = [];
     [...items].map((item, i) => {
       if (this.aclStore.isAllowed(this.aclStore.userACL, item.acl)) {
-        menuItems.push(
-          <NavLink key={i} icon={item.icon} {...item.linkProps}>
-            <Translation message={item.text} />
-          </NavLink>
-        );
+        if (item.dropdown && item.dropdown.length > 0) {
+          item.dropdown.map((child, j) => {
+            menuItemChildren.push(
+              <NavDropDownLink key={`${i}-${j}`} icon={child.icon} {...child.linkProps}>
+                <Translation message={child.text} />
+              </NavDropDownLink>
+            );
+          });
+          menuItems.push(
+            <Dropdown key={i} eventKey={i} title={item.text} icon={item.icon}>
+              {menuItemChildren}
+            </Dropdown>
+          );
+        } else {
+          menuItems.push(
+            <NavLink key={i} eventKey={i} icon={item.icon} {...item.linkProps}>
+              <Translation message={item.text} />
+            </NavLink>
+          );
+        }
       }
     });
     return menuItems;
@@ -52,25 +69,9 @@ class Sidebar extends React.Component {
             </Navbar.Header>
           </Navbar>
         </Sidenav.Header>
-        <Sidenav expanded={settingsStore.open} defaultOpenKeys={['3']} defaultactivekey="2" appearance="subtle">
+        <Sidenav expanded={settingsStore.open} defaultOpenKeys={[0, 1, 2, 3]} defaultactivekey={0} appearance="subtle">
           <Sidenav.Body>
-            <Nav>
-              {this.getPrimaryMenuItems()}
-              {/*TODO implement menu items with children*/}
-              {/*<Dropdown*/}
-              {/*eventKey="4"*/}
-              {/*trigger="hover"*/}
-              {/*title="Settings"*/}
-              {/*icon={<Icon icon="gear-circle" />}*/}
-              {/*placement="right"*/}
-              {/*>*/}
-              {/*<Dropdown.Item eventKey="4-1">Applications</Dropdown.Item>*/}
-              {/*<Dropdown.Item eventKey="4-2">Websites</Dropdown.Item>*/}
-              {/*<Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>*/}
-              {/*<Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>*/}
-              {/*<Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>*/}
-              {/*</Dropdown>*/}
-            </Nav>
+            <Nav>{this.getPrimaryMenuItems()}</Nav>
           </Sidenav.Body>
         </Sidenav>
         <Divider className="nav-toggle-divider" />
@@ -92,9 +93,6 @@ Sidebar.propTypes = {
   settingsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('aclStore', 'settingsStore'),
-  observer
-);
+const enhance = compose(inject('aclStore', 'settingsStore'), observer);
 
 export default enhance(Sidebar);

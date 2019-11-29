@@ -5,27 +5,16 @@ import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import Translation from 'app/modules/core/client/components/Translation';
-import CodeEditor from 'app/modules/core/client/components/CodeEditor';
 
-class PageForm extends React.Component {
+class NavigationForm extends React.Component {
   constructor(props) {
     super(props);
-    this.pagesStore = props.pagesStore;
+    this.navigationStore = props.navigationStore;
     this.localeStore = props.localeStore;
-    this.onCodeEditorChange = this.onCodeEditorChange.bind(this);
-    this.openInRichTextEditor = this.openInRichTextEditor.bind(this);
-  }
-
-  onCodeEditorChange(value) {
-    this.pagesStore.setItem({ body: value });
-  }
-
-  openInRichTextEditor() {
-    this.pagesStore.showRichTextEditor();
   }
 
   render() {
-    const { setItem, item, setCheckboxItemValue } = this.pagesStore;
+    const { setItem, item, setCheckboxItemValue } = this.navigationStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
@@ -49,41 +38,18 @@ class PageForm extends React.Component {
           </ControlLabel>
           <FormControl name="url" />
         </FormGroup>
-        <FormGroup controlId="layout" className="inline">
-          <ControlLabel>
-            <Translation message="Layout" />
-          </ControlLabel>
-          <FormControl name="layout" accepter={SelectPicker} data={this.pagesStore.layoutOptions} />
-        </FormGroup>
         <FormGroup controlId="language" className="inline">
           <ControlLabel>
             <Translation message="Language" />
           </ControlLabel>
           <FormControl name="language" accepter={SelectPicker} data={this.localeStore.languageOptions} />
         </FormGroup>
-        <FormGroup controlId="published" className="inline">
+        <FormGroup controlId="enabled" className="inline">
           <ControlLabel>
-            <Translation message="Published" />
+            <Translation message="Enabled" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.published} onChange={setCheckboxItemValue.bind(null, 'published')} />
-          </div>
-        </FormGroup>
-        <FormGroup controlId="body">
-          <ControlLabel>
-            <Translation message="Body" />
-          </ControlLabel>
-          <CodeEditor
-            onChange={this.onCodeEditorChange}
-            value={this.pagesStore.item.body}
-            width="auto"
-            height="400px"
-            className="code-editor"
-          />
-          <div className="richTextBtnWrapper">
-            <button onClick={this.openInRichTextEditor} className="rs-btn">
-              Open in Rich Text Editor
-            </button>
+            <Checkbox checked={item.enabled} onChange={setCheckboxItemValue.bind(null, 'enabled')} />
           </div>
         </FormGroup>
       </Form>
@@ -91,14 +57,14 @@ class PageForm extends React.Component {
   }
 }
 
-PageForm.propTypes = {
-  pagesStore: PropTypes.object.isRequired,
+NavigationForm.propTypes = {
+  navigationStore: PropTypes.object.isRequired,
+  localeStore: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
-  inject('pagesStore'),
-  inject('localeStore'),
+  inject('navigationStore', 'localeStore'),
   observer
 );
 
-export default enhance(PageForm);
+export default enhance(NavigationForm);

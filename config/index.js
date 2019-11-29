@@ -4,8 +4,13 @@ const api = require('./api');
 const db = require('./db');
 const mailer = require('./mailer');
 const logger = require('./logger');
+const navigation = require('./navigation');
 const verificationStatuses = ['new', 'pending', 'failed', 'approved'];
 const userDocumentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'];
+const languages = [
+  { code: 'en', title: 'English' },
+  { code: 'it', title: 'Italian' },
+];
 const socketsPath = '/socket.io';
 
 module.exports = {
@@ -24,6 +29,7 @@ module.exports = {
       pass: 'admin',
     },
   },
+  navigation: navigation,
   users: {
     verificationStatuses: verificationStatuses,
     documentTypes: userDocumentTypes,
@@ -40,6 +46,7 @@ module.exports = {
     },
     language: 'en',
     locale: 'en-gb',
+    languages: languages,
     dateFormat: 'DD/MM/YYYY',
     dateTimeFormat: 'DD/MM/YYYY HH:mm:ss',
     sockets: {
@@ -49,6 +56,7 @@ module.exports = {
     userInfoUpdateInterval: 1000 * 60,
     userVerificationStatuses: verificationStatuses,
     userDocumentTypes: userDocumentTypes,
+    navigationTypes: navigation.types,
   },
   server: server,
   i18n: i18n,
