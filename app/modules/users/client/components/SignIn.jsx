@@ -50,7 +50,7 @@ class SignIn extends React.Component {
   }
 
   handleSubmit() {
-    const { authStore, localeStore, history } = this.props;
+    const { authStore, localeStore, navigationStore, history } = this.props;
     const { email, password } = this.state.formValue;
     if (!this.form.current.check()) {
       Notification.error({
@@ -64,6 +64,7 @@ class SignIn extends React.Component {
       if (data) {
         authStore.loadUserAuth().then(user => {
           if (user) {
+            navigationStore.loadNavigationByType('user');
             // In case if user had to sign in, we register event with his id
             SocketsClient.on(this.getUserEventName('update'), () => {
               authStore.loadUserAuth();
@@ -174,9 +175,10 @@ class SignIn extends React.Component {
 SignIn.propTypes = {
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
+  navigationStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('authStore', 'localeStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'localeStore', 'navigationStore'), observer);
 
 export default enhance(SignIn);

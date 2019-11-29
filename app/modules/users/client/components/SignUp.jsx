@@ -85,10 +85,11 @@ class SignUp extends React.Component {
   }
 
   loginUser(email, password) {
-    const { usersStore, authStore, history } = this.props;
+    const { usersStore, authStore, history, navigationStore } = this.props;
     authStore.loginUser(email, password).then(data => {
       if (data) {
         usersStore.resetSignupUser();
+        navigationStore.loadNavigationByType('user');
         authStore.loadUserAuth().then(user => {
           if (user) {
             return history.push('/dashboard');
@@ -288,7 +289,7 @@ class SignUp extends React.Component {
                   </Row>
                   <FormGroup>
                     <ButtonToolbar>
-                      <Button appearance="primary"  className="pull-right" onClick={this.handleSubmit}>
+                      <Button appearance="primary" className="pull-right" onClick={this.handleSubmit}>
                         <Translation message="Sign up" />
                       </Button>
                     </ButtonToolbar>
@@ -309,9 +310,14 @@ SignUp.propTypes = {
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
   countriesStore: PropTypes.object.isRequired,
+  navigationStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('usersStore', 'authStore', 'localeStore', 'countriesStore'), observer);
+const enhance = compose(
+  withRouter,
+  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'navigationStore'),
+  observer
+);
 
 export default enhance(SignUp);
