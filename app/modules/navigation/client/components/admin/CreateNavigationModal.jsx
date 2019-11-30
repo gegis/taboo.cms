@@ -66,9 +66,6 @@ CreateNavigationModal.propTypes = {
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('navigationStore', 'notificationsStore'),
-  observer
-);
+const enhance = compose(inject('navigationStore', 'notificationsStore'), observer);
 
 export default enhance(CreateNavigationModal);

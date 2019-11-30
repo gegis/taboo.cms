@@ -12,7 +12,7 @@ class WebsiteNavigation extends React.Component {
   constructor(props) {
     super(props);
     this.entityStore = props.navigationStore;
-    this.entityStore.setFilter({type: 'website'});
+    this.entityStore.setFilter({ type: 'website' });
   }
 
   render() {
@@ -32,9 +32,6 @@ WebsiteNavigation.propTypes = {
   navigationStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('navigationStore'),
-  observer
-);
+const enhance = compose(inject('navigationStore'), observer);
 
 export default enhance(WebsiteNavigation);

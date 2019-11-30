@@ -217,10 +217,6 @@ AccountVerification.propTypes = {
   history: PropTypes.object,
 };
 
-const enhance = compose(
-  withRouter,
-  inject('usersStore', 'authStore', 'localeStore', 'uploadsStore'),
-  observer
-);
+const enhance = compose(withRouter, inject('usersStore', 'authStore', 'localeStore', 'uploadsStore'), observer);
 
 export default enhance(AccountVerification);

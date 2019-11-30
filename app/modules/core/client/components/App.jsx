@@ -77,10 +77,6 @@ App.propTypes = {
   location: PropTypes.object,
 };
 
-const enhance = compose(
-  withRouter,
-  inject('localeStore', 'authStore'),
-  observer
-);
+const enhance = compose(withRouter, inject('localeStore', 'authStore'), observer);
 
 export default enhance(App);

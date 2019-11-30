@@ -96,9 +96,6 @@ PageForm.propTypes = {
   localeStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('pagesStore', 'localeStore'),
-  observer
-);
+const enhance = compose(inject('pagesStore', 'localeStore'), observer);
 
 export default enhance(PageForm);

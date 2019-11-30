@@ -42,7 +42,10 @@ class PagesAdminStore extends EntityAdminStore {
         },
       },
     });
-    this.layoutOptions = [{ label: 'Default', value: 'default' }, { label: 'No Layout', value: 'no-layout' }];
+    this.layoutOptions = [
+      { label: 'Default', value: 'default' },
+      { label: 'No Layout', value: 'no-layout' },
+    ];
     this.richTextEditorVisible = false;
   }
 

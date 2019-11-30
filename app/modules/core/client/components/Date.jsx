@@ -28,9 +28,6 @@ Date.propTypes = {
 // WORKAROUND - Making to observe localeStore.locale - just to make this component re-render on language change
 // As in some child components when they are made observers,
 // suddenly intl locale and translations changes are not propagated down to them
-const enhance = compose(
-  inject('localeStore'),
-  observer
-);
+const enhance = compose(inject('localeStore'), observer);
 
 export default enhance(Date);

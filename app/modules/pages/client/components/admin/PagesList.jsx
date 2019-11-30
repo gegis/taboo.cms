@@ -18,13 +18,13 @@ class PagesList extends React.Component {
 
   getCopyValue(item) {
     let escapedUrl = item.url.replace(/\//, '');
+    let anchor;
     if (!escapedUrl) {
       escapedUrl = 'home';
     }
     escapedUrl = escapedUrl.replace(/\//g, '-');
-    return `<section class="section-${escapedUrl}">\n\t<a id="section-${escapedUrl}" class="anchor"></a>\n\t{{Page:${
-      item._id
-    }}}\n</section>`;
+    anchor = `<a id="section-${escapedUrl}" className="anchor"></a>`;
+    return `<section class="section-${escapedUrl}">\n\t${anchor}\n\t{{Page:${item._id}}}\n</section>`;
   }
 
   render() {

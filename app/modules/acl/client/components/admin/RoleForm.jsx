@@ -54,9 +54,6 @@ RoleForm.propTypes = {
   aclStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('aclStore', 'rolesStore'),
-  observer
-);
+const enhance = compose(inject('aclStore', 'rolesStore'), observer);
 
 export default enhance(RoleForm);

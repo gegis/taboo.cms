@@ -1,4 +1,4 @@
-const { config, Service} = require('@taboo/cms-core');
+const { config, Service } = require('@taboo/cms-core');
 const AdminController = require('../../core/controllers/AdminController');
 const {
   api: {

@@ -23,10 +23,7 @@ class MongoDbAdapter {
       }
       connectionString += this.connectedTo;
 
-      mongoose.connect(
-        connectionString,
-        config.options
-      );
+      mongoose.connect(connectionString, config.options);
 
       this.connection = mongoose.connection;
 

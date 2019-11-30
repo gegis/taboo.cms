@@ -57,6 +57,6 @@ GalleryForm.propTypes = {
   galleriesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject( 'galleriesStore'), observer);
+const enhance = compose(inject('galleriesStore'), observer);
 
 export default enhance(GalleryForm);

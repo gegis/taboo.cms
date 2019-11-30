@@ -97,9 +97,6 @@ Layout.propTypes = {
   authStore: PropTypes.object,
 };
 
-const enhance = compose(
-  inject('settingsStore', 'authStore', 'notificationsStore', 'localeStore'),
-  observer
-);
+const enhance = compose(inject('settingsStore', 'authStore', 'notificationsStore', 'localeStore'), observer);
 
 export default enhance(Layout);

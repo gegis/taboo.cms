@@ -56,9 +56,6 @@ RolesList.propTypes = {
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(
-  inject('rolesStore'),
-  observer
-);
+const enhance = compose(inject('rolesStore'), observer);
 
 export default enhance(RolesList);

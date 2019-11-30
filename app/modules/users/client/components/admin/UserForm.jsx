@@ -248,9 +248,6 @@ UserForm.propTypes = {
   rolesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('aclStore', 'usersStore', 'rolesStore'),
-  observer
-);
+const enhance = compose(inject('aclStore', 'usersStore', 'rolesStore'), observer);
 
 export default enhance(UserForm);

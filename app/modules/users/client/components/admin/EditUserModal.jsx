@@ -74,9 +74,6 @@ EditUserModal.propTypes = {
   rolesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('usersStore', 'notificationsStore', 'aclStore', 'rolesStore'),
-  observer
-);
+const enhance = compose(inject('usersStore', 'notificationsStore', 'aclStore', 'rolesStore'), observer);
 
 export default enhance(EditUserModal);

@@ -40,9 +40,6 @@ UserRoute.propTypes = {
   location: PropTypes.object,
 };
 
-const enhance = compose(
-  inject('aclStore', 'authStore'),
-  observer
-);
+const enhance = compose(inject('aclStore', 'authStore'), observer);
 
 export default enhance(UserRoute);

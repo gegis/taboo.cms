@@ -38,10 +38,6 @@ NoAccess.propTypes = {
   history: PropTypes.object,
 };
 
-const enhance = compose(
-  withRouter,
-  inject('authStore'),
-  observer
-);
+const enhance = compose(withRouter, inject('authStore'), observer);
 
 export default enhance(NoAccess);

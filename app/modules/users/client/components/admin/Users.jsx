@@ -8,8 +8,6 @@ import UsersList from './UsersList';
 import CreateModal from './CreateUserModal';
 import EditModal from './EditUserModal';
 
-
-
 class Users extends React.Component {
   constructor(props) {
     super(props);

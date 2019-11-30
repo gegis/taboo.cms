@@ -89,10 +89,6 @@ DocumentUpload.propTypes = {
   className: PropTypes.string,
 };
 
-const enhance = compose(
-  withRouter,
-  inject('uploadsStore'),
-  observer
-);
+const enhance = compose(withRouter, inject('uploadsStore'), observer);
 
 export default enhance(DocumentUpload);

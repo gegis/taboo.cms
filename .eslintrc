@@ -1,6 +1,6 @@
 {
-  "extends": ["eslint:recommended", "prettier", "plugin:react/recommended"],
   "plugins": ["prettier", "react"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:prettier/recommended"],
   "env": {
     "commonjs": true,
     "es6": true,
@@ -35,22 +35,25 @@
     "linebreak-style": ["error", "unix"],
     "no-console": 1,
     "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": false }],
-    "comma-dangle": ["error", {
-      "arrays": "always-multiline",
-      "exports": "always-multiline",
-      "functions": "never",
-      "imports": "always-multiline",
-      "objects": "always-multiline"}
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never",
+        "imports": "always-multiline",
+        "objects": "always-multiline"
+      }
     ],
     "semi": ["error", "always"],
-    "require-atomic-updates": "off"
-//    "prettier/prettier": [
-//      "error",
-//      {
-//        "trailingComma": "es5",
-//        "singleQuote": true,
-//        "printWidth": 120
-//      }
-//    ]
+    "require-atomic-updates": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "trailingComma": "es5",
+        "singleQuote": true,
+        "printWidth": 120
+      }
+    ]
   }
 }

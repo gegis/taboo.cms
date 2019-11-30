@@ -45,7 +45,7 @@ class UploadSelect extends React.Component {
 
   onSearchChange(search) {
     clearTimeout(this.searchTimeout);
-    this.setState({search});
+    this.setState({ search });
     this.searchTimeout = setTimeout(() => {
       this.settingsStore.setLoading(true);
       this.uploadsStore.loadAll({ search: search, filter: this.uploadsStore.filter }).then(() => {
@@ -165,9 +165,6 @@ UploadSelect.propTypes = {
   onAdd: PropTypes.func,
 };
 
-const enhance = compose(
-  inject('uploadsStore', 'localeStore', 'notificationsStore', 'settingsStore'),
-  observer
-);
+const enhance = compose(inject('uploadsStore', 'localeStore', 'notificationsStore', 'settingsStore'), observer);
 
 export default enhance(UploadSelect);

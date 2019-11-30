@@ -63,9 +63,6 @@ EditGalleryModal.propTypes = {
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('galleriesStore', 'notificationsStore'),
-  observer
-);
+const enhance = compose(inject('galleriesStore', 'notificationsStore'), observer);
 
 export default enhance(EditGalleryModal);

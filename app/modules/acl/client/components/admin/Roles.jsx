@@ -31,9 +31,6 @@ Roles.propTypes = {
   rolesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('rolesStore'),
-  observer
-);
+const enhance = compose(inject('rolesStore'), observer);
 
 export default enhance(Roles);

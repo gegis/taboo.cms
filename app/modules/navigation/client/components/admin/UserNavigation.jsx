@@ -12,7 +12,7 @@ class UserNavigation extends React.Component {
   constructor(props) {
     super(props);
     this.entityStore = props.navigationStore;
-    this.entityStore.setFilter({type: 'user'});
+    this.entityStore.setFilter({ type: 'user' });
   }
 
   render() {
@@ -32,9 +32,6 @@ UserNavigation.propTypes = {
   navigationStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('navigationStore'),
-  observer
-);
+const enhance = compose(inject('navigationStore'), observer);
 
 export default enhance(UserNavigation);

@@ -31,9 +31,6 @@ Pages.propTypes = {
   pagesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('pagesStore'),
-  observer
-);
+const enhance = compose(inject('pagesStore'), observer);
 
 export default enhance(Pages);

@@ -106,9 +106,6 @@ UserSelectDialog.propTypes = {
   onSelect: PropTypes.func,
 };
 
-const enhance = compose(
-  inject('usersStore', 'settingsStore'),
-  observer
-);
+const enhance = compose(inject('usersStore', 'settingsStore'), observer);
 
 export default enhance(UserSelectDialog);

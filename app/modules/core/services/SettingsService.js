@@ -29,7 +29,7 @@ class SettingsService {
   async set(key, data) {
     let item;
     apiHelper.cleanTimestamps(data);
-    item =  await Model('core.Settings').findOneAndUpdate({ key }, data, {
+    item = await Model('core.Settings').findOneAndUpdate({ key }, data, {
       new: true,
       runValidators: true,
     });

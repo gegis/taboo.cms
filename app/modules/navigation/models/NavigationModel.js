@@ -1,4 +1,4 @@
-const {config} = require('@taboo/cms-core');
+const { config } = require('@taboo/cms-core');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

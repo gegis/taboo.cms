@@ -32,9 +32,7 @@ class GalleryModal extends Component {
         <div className="gallery-image-wrapper">
           <img src={url} alt={name} />
         </div>
-        <div className="gallery-image-name">
-          {name}
-        </div>
+        <div className="gallery-image-name">{name}</div>
       </Modal>
     );
   }

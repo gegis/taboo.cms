@@ -85,9 +85,6 @@ Header.propTypes = {
   headerNav: PropTypes.node,
 };
 
-const enhance = compose(
-  inject('authStore'),
-  observer
-);
+const enhance = compose(inject('authStore'), observer);
 
 export default enhance(Header);

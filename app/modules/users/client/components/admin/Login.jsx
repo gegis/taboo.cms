@@ -163,10 +163,6 @@ Login.propTypes = {
   history: PropTypes.object,
 };
 
-const enhance = compose(
-  withRouter,
-  inject('authStore', 'localeStore'),
-  observer
-);
+const enhance = compose(withRouter, inject('authStore', 'localeStore'), observer);
 
 export default enhance(Login);

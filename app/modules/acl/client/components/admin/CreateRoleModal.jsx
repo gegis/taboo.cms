@@ -67,9 +67,6 @@ CreateRoleModal.propTypes = {
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('aclStore', 'rolesStore', 'notificationsStore'),
-  observer
-);
+const enhance = compose(inject('aclStore', 'rolesStore', 'notificationsStore'), observer);
 
 export default enhance(CreateRoleModal);

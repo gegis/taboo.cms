@@ -69,9 +69,6 @@ CreatePageModal.propTypes = {
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('pagesStore', 'notificationsStore'),
-  observer
-);
+const enhance = compose(inject('pagesStore', 'notificationsStore'), observer);
 
 export default enhance(CreatePageModal);
