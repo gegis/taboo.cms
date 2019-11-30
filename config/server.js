@@ -5,7 +5,6 @@ module.exports = {
   secretKeys: ['REPLACE-ME-123456', '654321-REPLACE-ME'],
   globalPolicies: ['acl'],
   views: {
-    defaultPageTitle: 'Taboo Solutions',
     extension: 'html',
     defaultLayout: 'default',
     defaultErrorLayout: 'error',

@@ -27,15 +27,27 @@ module.exports = {
   routes: [
     {
       method: 'GET',
+      path: '/sign-up',
+      action: UsersController.userLandingPage,
+      policies: ['i18n', 'loadNavigation'],
+    },
+    {
+      method: 'GET',
+      path: '/sign-in',
+      action: UsersController.userLandingPage,
+      policies: ['i18n', 'loadNavigation'],
+    },
+    {
+      method: 'GET',
       path: '/my-profile',
       action: UsersController.userLandingPage,
-      policies: ['i18n', 'isUser', 'loadNavigation'],
+      policies: ['i18n', 'loadNavigation', 'isUser'],
     },
     {
       method: 'GET',
       path: '/account-verify',
       action: UsersController.userLandingPage,
-      policies: ['i18n', 'isUser', 'loadNavigation'],
+      policies: ['i18n', 'loadNavigation', 'isUser'],
     },
     {
       method: 'GET',

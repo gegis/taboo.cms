@@ -36,11 +36,12 @@ module.exports = {
   },
   sockets: {
     enabled: true,
+    port: null, // set value only if port is different from server port
     path: socketsPath,
     rooms: ['users'],
   },
   client: {
-    defaultPageTitle: server.views.defaultPageTitle,
+    metaTitle: 'Taboo CMS',
     admin: {
       language: 'en',
       locale: 'en-gb',
@@ -50,9 +51,6 @@ module.exports = {
     languages: languages,
     dateFormat: 'DD/MM/YYYY',
     dateTimeFormat: 'DD/MM/YYYY HH:mm:ss',
-    sockets: {
-      path: socketsPath,
-    },
     userACLRefreshThreshold: 1000 * 60 * 5,
     userInfoUpdateInterval: 1000 * 60,
     userVerificationStatuses: verificationStatuses,

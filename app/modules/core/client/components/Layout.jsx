@@ -174,11 +174,12 @@ class Layout extends React.Component {
   }
 
   getMetaTitle() {
+    const { config: { metaTitle: defaultMetaTitle = '' } = {} } = window.app;
     const { metaTitle } = this.props;
-    if (typeof metaTitle === 'undefined') {
-      return window.app.config.defaultPageTitle;
+    if (!metaTitle) {
+      return defaultMetaTitle;
     } else {
-      return metaTitle;
+      return `${metaTitle} | ${defaultMetaTitle}`;
     }
   }
 

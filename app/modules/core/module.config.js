@@ -37,19 +37,7 @@ module.exports = {
       method: 'GET',
       path: '/dashboard',
       action: CoreController.index,
-      policies: ['i18n', 'isUser', 'loadNavigation'],
-    },
-    {
-      method: 'GET',
-      path: '/sign-up',
-      action: CoreController.index,
-      policies: ['i18n', 'loadNavigation'],
-    },
-    {
-      method: 'GET',
-      path: '/sign-in',
-      action: CoreController.index,
-      policies: ['i18n', 'loadNavigation'],
+      policies: ['i18n', 'loadNavigation', 'isUser'],
     },
     {
       method: 'GET',

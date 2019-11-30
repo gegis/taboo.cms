@@ -1,10 +1,11 @@
-const { Service, Model, cmsHelper } = require('@taboo/cms-core');
+const { Service, Model, cmsHelper, config } = require('@taboo/cms-core');
 
 class PagesController {
   // Dynamic Pages action
   async page(ctx, next) {
     const { request } = ctx;
     const { path: requestPath } = request;
+    const { client: { metaTitle = '' } = {} } = config;
     let route = requestPath;
     let layout, pageTpl, pageVariables, galleryTpl;
     if (route && route.length > 1 && route.slice(-1) === '/') {
@@ -33,6 +34,7 @@ class PagesController {
       // TODO - cache this bit as it is recursive and it might become performance issue.
       await Service('pages.Pages').replacePageBodyRefs(ctx, page, galleryTpl);
       pageVariables = page.variables || {};
+      pageVariables.metaTitle = `${page.title} | ${metaTitle}`;
       pageVariables.pageTitle = page.title;
       pageVariables.pageBody = page.body;
       if (page.language) {

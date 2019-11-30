@@ -25,7 +25,7 @@ class UsersAdminController extends AdminController {
     const { title } = config.admin;
     ctx.view = {
       _layout: 'admin',
-      pageTitle: title,
+      metaTitle: title,
     };
   }
 
