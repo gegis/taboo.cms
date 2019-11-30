@@ -1,5 +1,6 @@
 const { logger, config } = require('@taboo/cms-core');
 const pages = require('../data/pages');
+const navigation = require('../data/navigation');
 
 // TODO - think of refactoring db adapter to move from app/db/adapters into this module
 // TODO - also implement db migrations
@@ -23,6 +24,7 @@ class InitDbService {
       await this.setupUserRole(modules, aclResources);
       await this.setupAdminUser(modules, this.newAdminRole);
       await this.setupPages(modules, pages);
+      await this.setupNavigation(modules, navigation);
       await SettingsService.setValue('db', { initialized: true });
     }
   }
@@ -64,11 +66,17 @@ class InitDbService {
     logger.info(`PASSWORD: ${initialUser.pass}`);
   }
 
-  // TODO - setup initial pages, like home, about, contact
   async setupPages(modules, pages = []) {
     const { Page: PageModel } = modules.pages.models;
-    for (let i=0; i< pages.length; i++) {
+    for (let i = 0; i < pages.length; i++) {
       await PageModel.create(pages[i]);
+    }
+  }
+
+  async setupNavigation(modules, navigation = []) {
+    const { Navigation: NavigationModel } = modules.navigation.models;
+    for (let i = 0; i < navigation.length; i++) {
+      await NavigationModel.create(navigation[i]);
     }
   }
 }

@@ -1,0 +1,42 @@
+module.exports = [
+  {
+    title: 'Home',
+    type: 'website',
+    url: '/',
+    language: 'en',
+    sort: 1,
+    enabled: true,
+  },
+  {
+    title: 'About',
+    type: 'website',
+    url: '/about',
+    language: 'en',
+    sort: 2,
+    enabled: true,
+  },
+  {
+    title: 'Contact',
+    type: 'website',
+    url: '/contact',
+    language: 'en',
+    sort: 3,
+    enabled: true,
+  },
+  {
+    title: 'My Profile',
+    type: 'user',
+    url: '/my-profile',
+    language: 'en',
+    sort: 1,
+    enabled: true,
+  },
+  {
+    title: 'Account Verification',
+    type: 'user',
+    url: '/account-verify',
+    language: 'en',
+    sort: 2,
+    enabled: true,
+  },
+];
