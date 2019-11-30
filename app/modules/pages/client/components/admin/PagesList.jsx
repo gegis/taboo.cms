@@ -22,9 +22,9 @@ class PagesList extends React.Component {
       escapedUrl = 'home';
     }
     escapedUrl = escapedUrl.replace(/\//g, '-');
-    return `<section class="section-${escapedUrl}">\n\t<a id="section-${escapedUrl}" class="anchor"></a>\n\t<h1>${
-      item.title
-    }</h1>\n\t{{Page:${item._id}}}\n</section>`;
+    return `<section class="section-${escapedUrl}">\n\t<a id="section-${escapedUrl}" class="anchor"></a>\n\t{{Page:${
+      item._id
+    }}}\n</section>`;
   }
 
   render() {

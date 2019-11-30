@@ -34,6 +34,11 @@
     "type": "git",
     "url": "git@github.com:gegis/taboo.cms.git"
   },
+  "prettier": {
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 120
+  },
   "devDependencies": {
     "@babel/core": "^7.7.2",
     "@babel/preset-env": "^7.7.1",
@@ -73,6 +78,7 @@
     "crypto-random-string": "^3.0.1",
     "draft-js": "^0.10.5",
     "enquirer": "^2.3.2",
+    "flat-cache": "^2.0.1",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
     "immutable": "^4.0.0-rc.12",

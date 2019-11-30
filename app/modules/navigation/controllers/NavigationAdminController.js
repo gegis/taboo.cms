@@ -1,4 +1,4 @@
-const { config, logger, Model } = require('@taboo/cms-core');
+const { config, logger, Model, Service } = require('@taboo/cms-core');
 const AdminController = require('../../core/controllers/AdminController');
 const {
   api: { navigation: { defaultSort = { sort: 'asc' } } = {} },
@@ -12,6 +12,18 @@ class NavigationAdminController extends AdminController {
       populate: {},
       defaultSort,
     });
+  }
+
+  async afterUpdate(ctx, itemResult) {
+    // Clear navigation cache on update
+    Service('navigation.Navigation').deleteNavigationCache();
+    return itemResult;
+  }
+
+  async afterDelete(ctx, itemResult) {
+    // Clear navigation cache on delete
+    Service('navigation.Navigation').deleteNavigationCache();
+    return itemResult;
   }
 
   async reorder(ctx) {

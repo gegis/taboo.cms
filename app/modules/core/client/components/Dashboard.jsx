@@ -18,19 +18,24 @@ class IndexPage extends Component {
             <Col md={16} mdOffset={4}>
               <h1>Dashboard</h1>
               <Panel className="dashboard" bordered>
-                <div>
-                  <p>
-                    <ProfilePicture url={authStore.user.profilePictureUrl} size="md" />
-                  </p>
-                  <p>
-                    {authStore.user.firstName} {authStore.user.lastName}
-                    <br />
-                    {authStore.user.email}
-                  </p>
-                  <p>
-                    <Link to="/my-profile">My Profile</Link>
-                  </p>
-                </div>
+                <Row>
+                  <Col md={6}>
+                    <div style={{ textAlign: 'center' }}>
+                      <ProfilePicture url={authStore.user.profilePictureUrl} size="md" />
+                    </div>
+                    <div className="v-spacer-2" />
+                  </Col>
+                  <Col md={18}>
+                    <p>
+                      {authStore.user.firstName} {authStore.user.lastName}
+                      <br />
+                      {authStore.user.email}
+                    </p>
+                    <p>
+                      <Link to="/my-profile">My Profile</Link>
+                    </p>
+                  </Col>
+                </Row>
               </Panel>
             </Col>
           </Row>

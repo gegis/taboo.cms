@@ -1,9 +1,62 @@
-const { Helper, Model } = require('@taboo/cms-core');
+const { Helper, Model, Service, cmsHelper, config } = require('@taboo/cms-core');
 
 class PagesService {
+  async getPageResponse(ctx, route) {
+    const { client: { metaTitle } = {} } = config;
+    let layout, pageTpl, pageVariables, pageResponse;
+    const page = await this.getPage(ctx, route);
+
+    if (page) {
+      if (page.layout === 'no-layout') {
+        layout = '<%-_body%>';
+      } else {
+        layout = await cmsHelper.getLayout(page.layout);
+      }
+      pageTpl = await cmsHelper.getView(ctx.taboo.moduleRoute);
+      pageVariables = page.variables || {};
+      pageVariables.metaTitle = `${page.title} | ${metaTitle}`;
+      pageVariables.pageTitle = page.title;
+      pageVariables.pageBody = page.body;
+      if (page.language) {
+        Service('core.LanguageService').setLanguage(ctx, page.language);
+      }
+      pageResponse = cmsHelper.composeResponse(ctx, layout, pageTpl, pageVariables);
+    }
+
+    return pageResponse;
+  }
+
+  async getPage(ctx, route) {
+    let galleryTpl;
+    // Try to get from cache
+    let page = Service('cache.Cache').get('pages', `page:${route}`);
+    if (!page) {
+      // Not in cache - try to retrieve, parse and cache it
+      page = await Model('pages.Page')
+        .findOne({ $or: [{ url: route }, { url: `${route}/` }], published: true })
+        .populate([
+          'pages',
+          {
+            path: 'galleries',
+            populate: {
+              path: 'images',
+            },
+          },
+        ]);
+      if (page) {
+        // TODO allow page select gallery template.
+        galleryTpl = await cmsHelper.getTemplate('helpers/gallery');
+        await Service('pages.Pages').replacePageBodyRefs(ctx, page, galleryTpl);
+        Service('cache.Cache').set('pages', `page:${route}`, page);
+      }
+    }
+
+    return page;
+  }
+
   populatePagesAndGalleries(data) {
     if (data && data.body && data.body.indexOf('{{') !== -1 && data.body.indexOf('}}') !== -1) {
-      let items = data.body.split(/[{{}}]+/);
+      let items = data.body.split(/[{{*}}]+/);
       data.pages = [];
       data.galleries = [];
       items.map(item => {
@@ -26,7 +79,7 @@ class PagesService {
    * @param childGalleries
    * @returns {Promise<*>}
    */
-  async replacePageBodyRefs(ctx, page, galleryTpl, childPages = [], childGalleries = []) {
+  async replacePageBodyRefs(ctx, page, galleryTpl, childPages = null, childGalleries = null) {
     let data, pages, galleries;
     if (page) {
       if (page.pages) {
@@ -47,12 +100,12 @@ class PagesService {
         };
         this.populatePagesAndGalleries(data);
         if (data.pages && data.pages.length > 0) {
-          pages = await Model('pages.Page').find({ _id: { $in: data.pages } });
+          pages = await this.getPagesByIds(data.pages);
         }
         if (data.galleries && data.galleries.length > 0) {
-          galleries = await Model('galleries.Gallery').find({ _id: { $in: data.galleries } });
+          galleries = await this.getGalleriesByIds(data.galleries);
         }
-        if (pages.length > 0 || pages.galleries > 0) {
+        if ((pages && pages.length > 0) || (galleries && galleries.length > 0)) {
           await this.replacePageBodyRefs(ctx, page, galleryTpl, pages, galleries);
         } else {
           // If just in case pages are now missing, i.e. deleted, replace all with empty strings;
@@ -67,6 +120,26 @@ class PagesService {
     } else {
       return page;
     }
+  }
+
+  async getPagesByIds(ids) {
+    return await Model('pages.Page')
+      .find({ _id: { $in: ids } })
+      .populate([
+        'pages',
+        {
+          path: 'galleries',
+          populate: {
+            path: 'images',
+          },
+        },
+      ]);
+  }
+
+  async getGalleriesByIds(ids) {
+    return await Model('galleries.Gallery')
+      .find({ _id: { $in: ids } })
+      .populate('images');
   }
 
   replacePageBodyPages(body, pages) {
@@ -93,6 +166,17 @@ class PagesService {
     });
 
     return newBody;
+  }
+
+  deletePageCacheByUrl(url) {
+    Service('cache.Cache').delete('pages', `page:${url}`);
+    if (url && url.length > 1 && url.slice(-1) === '/') {
+      Service('cache.Cache').delete('pages', `page:${url.slice(0, -1)}`);
+    }
+  }
+
+  deleteAllPagesCache() {
+    Service('cache.Cache').clearCacheId('pages');
   }
 }
 

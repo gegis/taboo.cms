@@ -1,20 +1,23 @@
-<div class="gallery">
-  <% for(let i = 0; i < images.length; i++) { %>
-  <div class="gallery-item">
-    <a
-      class="gallery-image-link"
-      href="<%=images[i].url%>"
-      data-name="<%=images[i].name%>"
-      data-url="<%=images[i].url%>"
-    >
-      <img
-        class="gallery-image"
-        src="<%=images[i].url%>"
-        alt="<%=images[i].name%>"
+<section class="gallery-section">
+  <h2><%=title%></h2>
+  <div class="gallery">
+    <% for(let i = 0; i < images.length; i++) { %>
+    <div class="gallery-item">
+      <a
+        class="gallery-image-link"
+        href="<%=images[i].url%>"
         data-name="<%=images[i].name%>"
         data-url="<%=images[i].url%>"
-      />
-    </a>
+      >
+        <img
+          class="gallery-image"
+          src="<%=images[i].url%>"
+          alt="<%=images[i].name%>"
+          data-name="<%=images[i].name%>"
+          data-url="<%=images[i].url%>"
+        />
+      </a>
+    </div>
+    <% } %>
   </div>
-  <% } %>
-</div>
+</section>

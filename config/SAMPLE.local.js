@@ -3,6 +3,9 @@ module.exports = {
   debug: true,
   server: {
     port: 3000,
+    cache: {
+      enabled: false,
+    },
   },
   mailer: {
     enabled: true,

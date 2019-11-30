@@ -111,5 +111,6 @@ public/*
 logs/*
 !logs/.gitkeep
 !public/uploads/.gitkeep
-data/rates.json
+data/*
+!data/.gitkeep
 app/locales/_*.js

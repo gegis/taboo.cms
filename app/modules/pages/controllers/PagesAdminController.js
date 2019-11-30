@@ -35,6 +35,18 @@ class PagesAdminController extends AdminController {
     return data;
   }
 
+  async afterUpdate(ctx, itemResult) {
+    // Clear page cache on update
+    Service('pages.Pages').deletePageCacheByUrl(itemResult.url);
+    return itemResult;
+  }
+
+  async afterDelete(ctx, itemResult) {
+    // Clear page cache on delete
+    Service('pages.Pages').deletePageCacheByUrl(itemResult.url);
+    return itemResult;
+  }
+
   async getPrevious(ctx) {
     const item = await Service('core.RevisionService').get('pages.Page', ctx.params.id);
     if (!item) {
