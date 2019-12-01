@@ -25,6 +25,7 @@
     "react",
     "mongodb",
     "mobx",
+    "dashboard",
     "rsuite"
   ],
   "author": "taboo.solutions",
