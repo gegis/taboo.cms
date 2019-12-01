@@ -1,4 +1,4 @@
-const { Service, Model, Helper } = require('@taboo/cms-core');
+const { Service, Model, Helper, config } = require('@taboo/cms-core');
 const validator = require('validator');
 
 class UsersController {
@@ -7,9 +7,14 @@ class UsersController {
   async userLandingPage() {}
 
   async register(ctx) {
+    const { users: { signUpEnabled = false } = {} } = config;
     const { body: data = {} } = ctx.request;
     const validationError = Service('users.Users').validateUserRegisterFields(data);
     let user;
+
+    if (!signUpEnabled) {
+      return ctx.throw(403, 'Forbidden');
+    }
 
     if (validationError) {
       return ctx.throw(400, validationError);
@@ -25,9 +30,11 @@ class UsersController {
   }
 
   async login(ctx) {
-    const {
-      body: { email = null, password = null },
-    } = ctx.request;
+    const { users: { signInEnabled = false } = {} } = config;
+    const { body: { email = null, password = null } = {} } = ctx.request;
+    if (!signInEnabled) {
+      return ctx.throw(403, 'Forbidden');
+    }
     ctx.body = await Service('users.Users').authenticateUser(ctx, email, password);
   }
 
@@ -38,17 +45,24 @@ class UsersController {
   }
 
   async resetPassword(ctx) {
-    const {
-      body: { email = null, linkPrefix = '' },
-    } = ctx.request;
+    const { users: { signInEnabled = false } = {} } = config;
+    const { body: { email = null, linkPrefix = '' } = {} } = ctx.request;
+    if (!signInEnabled) {
+      return ctx.throw(403, 'Forbidden');
+    }
     ctx.body = {
       success: await Service('users.Users').resetPassword(ctx, email, linkPrefix),
     };
   }
 
   async changePassword(ctx) {
+    const { users: { signInEnabled = false } = {} } = config;
     const { body = null } = ctx.request;
-    const success = await Service('users.Users').changePassword(ctx, body);
+    let success;
+    if (!signInEnabled) {
+      return ctx.throw(403, 'Forbidden');
+    }
+    success = await Service('users.Users').changePassword(ctx, body);
     ctx.body = { success };
   }
 

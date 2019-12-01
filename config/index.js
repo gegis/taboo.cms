@@ -31,6 +31,8 @@ module.exports = {
   },
   navigation: navigation,
   users: {
+    signInEnabled: true,
+    signUpEnabled: true,
     verificationStatuses: verificationStatuses,
     documentTypes: userDocumentTypes,
   },
