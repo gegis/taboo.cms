@@ -1,6 +1,6 @@
 {
   "name": "@taboo/cms",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Node.js, Koa, MongoDB and React CMS with admin dashboard, pages, files, galleries, users and access control management. It can be used as React client side application, or as server side rendered cms, or as headless cms.",
   "main": "index.js",
   "bin": {
