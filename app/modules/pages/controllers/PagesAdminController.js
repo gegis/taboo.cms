@@ -36,14 +36,14 @@ class PagesAdminController extends AdminController {
   }
 
   async afterUpdate(ctx, itemResult) {
-    // Clear page cache on update
-    Service('pages.Pages').deletePageCacheByUrl(itemResult.url);
+    // Clear pages cache on update
+    Service('pages.Pages').deleteAllPagesCache();
     return itemResult;
   }
 
   async afterDelete(ctx, itemResult) {
-    // Clear page cache on delete
-    Service('pages.Pages').deletePageCacheByUrl(itemResult.url);
+    // Clear pages cache on delete
+    Service('pages.Pages').deleteAllPagesCache();
     return itemResult;
   }
 

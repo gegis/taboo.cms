@@ -39,6 +39,8 @@ class NavigationAdminController extends AdminController {
         });
       }
       await Promise.all(promises);
+      // Clear navigation cache on delete
+      Service('navigation.Navigation').deleteNavigationCache();
     } catch (e) {
       logger.error(e);
       return ctx.throw(e);

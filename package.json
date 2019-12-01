@@ -28,7 +28,7 @@
     "rsuite"
   ],
   "author": "taboo.solutions",
-  "license": "ISC",
+  "license": "MIT",
   "homepage": "http://taboo.solutions",
   "repository": {
     "type": "git",

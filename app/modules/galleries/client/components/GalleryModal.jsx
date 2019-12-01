@@ -28,7 +28,7 @@ class GalleryModal extends Component {
   render() {
     const { name, url } = this.state;
     return (
-      <Modal full ref={this.modal} cancelName="" title=" " className="gallery-image-modal">
+      <Modal full ref={this.modal} cancelName="" title=" " className="gallery-image-modal use-max-width">
         <div className="gallery-image-wrapper">
           <img src={url} alt={name} />
         </div>
