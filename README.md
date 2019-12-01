@@ -2,9 +2,29 @@
 
 ## Description
 
-A node.js and React Content Management System.
+A node.js powered CMS (Content Management System) that is built on Koa web framework, uses mongoose for 
+MongoDB connections and has admin dashboard built in React with Mobx and Rsuite.
 
-React CMS, Classic CMS, Headless CMS in one.
+It can be used as React client side application, or as server side rendered templates (EJS) CMS, or simply as 
+Headless CMS for your REST APIs.
+
+Taboo CMS was built keeping modular architecture in mind, which means you can easily add or remove self sustained
+modules. 
+
+It provides a CLI for you to quickly bootstrap a new module, which contains all of the server side and
+client side files, including controllers, models, helpers, services, views, client side components and stores
+together with the config files for easier module setup.
+
+Main application modules:
+- navigation - cms navigation (menus) management module
+- pages - cms pages (content) management module
+- galleries - galleries module to easily organise your uploaded images
+- uploads - file uploads management module
+- users - cms users management module
+- acl - users access control management module
+- cache - cms content caching module
+- mailer - implements SendGrid api for sending emails (@taboo/cms-core also implements nodemailer)
+- core - all of the core functionality for the cms
 
 ## How To Install
 
