@@ -1,4 +1,4 @@
-app.Settings = {
+class Settings {
   get(key, next) {
     $.ajax({
       type: 'GET',
@@ -10,5 +10,7 @@ app.Settings = {
         next(err);
       },
     });
-  },
-};
+  }
+}
+
+export default new Settings();

@@ -1,4 +1,4 @@
-window.app.Translations = {
+class Translations {
   get(key, variables) {
     const { config: { translations = {} } = {} } = window.app;
     let translation = key;
@@ -16,5 +16,7 @@ window.app.Translations = {
       console.error(`Missing translation: ${translation}`); // eslint-disable-line no-console
       return translation;
     }
-  },
-};
+  }
+}
+
+export default new Translations();

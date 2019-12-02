@@ -19,7 +19,13 @@ if (productionBuildEnvs.indexOf(appConfig.environment) !== -1) {
 }
 
 let config = {
-  lint: ['app/**/*.js', 'lib/**/*.js', 'app/**/*.jsx', '!app/assets/scripts/lib/**/*.js'],
+  lint: [
+    'app/**/*.js',
+    'lib/**/*.js',
+    'app/**/*.jsx',
+    '!app/assets/scripts/lib/**/*.js',
+    '!app/modules/**/client/scripts/lib/**/*.js',
+  ],
   clean: ['public/js', 'public/css', 'public/fonts'],
   server: {
     startScript: 'index.js',
@@ -41,23 +47,13 @@ let config = {
     },
     watch: ['app/modules/**/client/**/*.js', 'app/modules/**/client/**/*.jsx', 'app/locales'],
   },
-  scripts: {
-    src: [
-      'app/assets/scripts/**/*.js',
-      '!app/assets/scripts/lib/**/*.js',
-      'app/modules/**/client/scripts/**/*.js',
-      '!app/modules/**/client/scripts/admin/**/*.js',
-    ],
+  libScripts: {
+    src: ['app/assets/scripts/lib/**/*.js', 'app/modules/**/client/scripts/lib/**/*.js'],
     dest: {
-      file: 'app.js',
+      file: 'lib.js',
       path: 'public/js',
     },
-    watch: [
-      'app/assets/scripts/**/*.js',
-      '!app/assets/scripts/lib/**/*.js',
-      'app/modules/**/client/scripts/**/*.js',
-      '!app/modules/**/client/scripts/admin/**/*.js',
-    ],
+    watch: ['app/assets/scripts/lib/**/*.js', 'app/modules/**/client/scripts/lib/**/*.js'],
     babel: true,
   },
   adminLibStyles: {
@@ -162,8 +158,8 @@ const webpack = () => {
   return webpackTask(config.webpack, production, watch);
 };
 
-const scripts = () => {
-  return scriptsTask(config.scripts, production, watch);
+const libScripts = () => {
+  return scriptsTask(config.libScripts, production, watch);
 };
 
 const copy = () => {
@@ -185,14 +181,14 @@ const buildAndWatch = gulp.series(
   enableWatch,
   clean,
   lint,
-  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, webpack, scripts, copy),
+  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, webpack, libScripts, copy),
   startServer
 );
 
 const build = gulp.series(
   clean,
   lint,
-  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, webpack, scripts, copy)
+  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, webpack, libScripts, copy)
 );
 
 module.exports = {
