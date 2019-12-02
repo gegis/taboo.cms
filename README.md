@@ -104,6 +104,11 @@ It uses gulp and webpack to build app assets and run the server, they can be use
 you can run server as normal either with `node` or `pm2` or any other lib you like. All the built assets
 are served from `./public` folder.
 
+#### Entry Points
+- server entry point - `./index.js`
+- react cms type client entry point - `./app/modules/core/client/index.jsx`
+- classic cms type client entry point - `./app/modules/core/client/index.js`
+
 #### Application Structure
 
 Application files can be found in `./app`.

@@ -47,6 +47,16 @@ class ConfigHelper {
     });
     return stores;
   }
+
+  getModules() {
+    const modules = {};
+    [...this.modulesConfigs].map(config => {
+      if (config && config.modules) {
+        Object.assign(modules, config.modules);
+      }
+    });
+    return modules;
+  }
 }
 
 export default new ConfigHelper();

@@ -107,6 +107,9 @@ module.exports = {
       path: '/api/pages',
       action: PagesController.getPageJson,
       policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
     },
   ],
 };
