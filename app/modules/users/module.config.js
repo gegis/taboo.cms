@@ -34,7 +34,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/sign-in',
-      action: UsersController.userLandingPage,
+      action: UsersController.signIn,
       policies: ['i18n', 'loadNavigation'],
     },
     {
@@ -52,11 +52,8 @@ module.exports = {
     {
       method: 'GET',
       path: '/reset-password',
-      action: UsersController.userLandingPage,
+      action: UsersController.resetPassword,
       policies: ['i18n', 'loadNavigation'],
-      options: {
-        errorResponseAsJson: true,
-      },
     },
     {
       method: 'GET',
@@ -88,7 +85,7 @@ module.exports = {
     {
       method: 'POST',
       path: '/api/reset-password',
-      action: UsersController.resetPassword,
+      action: UsersController.resetPasswordApi,
       policies: [],
       options: {
         errorResponseAsJson: true,
@@ -97,7 +94,7 @@ module.exports = {
     {
       method: 'POST',
       path: '/api/change-password',
-      action: UsersController.changePassword,
+      action: UsersController.changePasswordApi,
       policies: [],
       options: {
         errorResponseAsJson: true,

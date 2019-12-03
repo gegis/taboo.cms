@@ -6,6 +6,10 @@ class UsersController {
 
   async userLandingPage() {}
 
+  async signIn() {}
+
+  async resetPassword() {}
+
   async register(ctx) {
     const { users: { signUpEnabled = false } = {} } = config;
     const { body: data = {} } = ctx.request;
@@ -44,7 +48,7 @@ class UsersController {
     };
   }
 
-  async resetPassword(ctx) {
+  async resetPasswordApi(ctx) {
     const { users: { signInEnabled = false } = {} } = config;
     const { body: { email = null, linkPrefix = '' } = {} } = ctx.request;
     if (!signInEnabled) {
@@ -55,7 +59,7 @@ class UsersController {
     };
   }
 
-  async changePassword(ctx) {
+  async changePasswordApi(ctx) {
     const { users: { signInEnabled = false } = {} } = config;
     const { body = null } = ctx.request;
     let success;
