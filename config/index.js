@@ -5,6 +5,7 @@ const db = require('./db');
 const mailer = require('./mailer');
 const logger = require('./logger');
 const navigation = require('./navigation');
+const gulp = require('./gulp');
 const verificationStatuses = ['new', 'pending', 'failed', 'approved'];
 const userDocumentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'];
 const languages = [
@@ -65,4 +66,5 @@ module.exports = {
   db: db,
   mailer: mailer,
   logger: logger,
+  gulp: gulp,
 };

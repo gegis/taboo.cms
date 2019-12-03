@@ -106,9 +106,11 @@ coverage
 # Taboo CMS
 ############################
 config/local.js
-public
+public/*
 !public/.gitkeep
+logs/*
 !logs/.gitkeep
 !public/uploads/.gitkeep
-data/rates.json
+data/*
+!data/.gitkeep
 app/locales/_*.js
