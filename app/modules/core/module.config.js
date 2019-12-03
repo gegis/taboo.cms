@@ -36,7 +36,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/dashboard',
-      action: CoreController.index,
+      action: CoreController.dashboard,
       policies: ['i18n', 'loadNavigation', 'isUser'],
     },
     {

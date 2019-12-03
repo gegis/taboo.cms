@@ -14,6 +14,7 @@ class PagesService {
       }
       pageTpl = await cmsHelper.getView(ctx.taboo.moduleRoute);
       pageVariables = page.variables || {};
+      pageVariables = Object.assign({}, ctx.view, pageVariables);
       pageVariables.metaTitle = `${page.title} | ${metaTitle}`;
       pageVariables.pageTitle = page.title;
       pageVariables.pageBody = page.body;

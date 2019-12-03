@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h1>Sign Up</h1>
+      <div class="card">
+        <div class="card-body">
+          <form id="sign-up-form">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstName" value="" required />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastName" value="" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" value="" required />
+            </div>
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" value="" required />
+            </div>
+            <div class="form-group">
+              <label for="passwordRepeat" class="form-label">Repeat Password</label>
+              <input type="password" class="form-control" id="passwordRepeat" value="" required />
+            </div>
+            <div class="form-group">
+              <label for="street" class="form-label">Street Address</label>
+              <input type="text" class="form-control" id="street" />
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control" id="city" />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="state" class="form-label">State</label>
+                <input type="text" class="form-control" id="state" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="country" class="form-label">Country</label>
+                <select type="text" class="form-control" id="country">
+                  <option value="">Please Select...</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6 ">
+                <label for="postCode" class="form-label">ZIP Code</label>
+                <input type="text" class="form-control" id="postCode" />
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="userAgreement" />
+                <label class="form-check-label" for="userAgreement">
+                  I agree to <a target="_blank" href="/user-agreement">User Agreement</a> and
+                  <a target="_blank" href="/privacy-policy">Privacy Policy</a>
+                </label>
+              </div>
+            </div>
+            <a href="/sign-in">Sign In</a>
+            <button type="submit" class="btn btn-primary pull-right form-submit">Sign Up</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

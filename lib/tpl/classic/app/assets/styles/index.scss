@@ -17,20 +17,6 @@ body {
   font-weight: 400;
   line-height: 1.5;
 }
-#root {
-  display: flex;
-  height: 100%;
-  .loading {
-    color: #fafafa;
-    background-color: #142a3e;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    position: absolute;
-    z-index: 1000;
-  }
-}
 .helper-copy-value-input {
   position: absolute;
   left: -10000px;
@@ -80,62 +66,67 @@ body {
   }
 }
 
-.rs-notification {
-  top: 14px !important;
-  right: 20px !important;
-  &.rs-notification-notify {
-    .rs-notification-notice-content {
-      //background-color: @B025;
-    }
+.loader {
+  border: 6px solid $primary;
+  border-top: 6px solid transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  position: fixed;
+  top: calc(50vh - 20px);
+  left: calc(50vw - 20px);
+  z-index: 10000;
+  display: none;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-}
-.rs-nav-item {
-  padding: 25px 5px;
-}
-.rs-form-group {
-  margin-bottom: 15px;
-}
-.rs-message {
-  .rs-message-container {
-    padding: 10px 15px;
-    text-align: center;
+  100% {
+    transform: rotate(360deg);
   }
-}
-.rs-picker-select {
-  width: 100%;
 }
 
+.default-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 .main-content {
-  padding: 15px 15px 50px;
+  padding: 50px 15px 50px;
 }
 .header {
   //border-bottom: 1px solid @B200;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  .rs-dropdown {
-    padding: 20px 0 0;
-  }
-  .rs-dropdown-toggle-caret {
-    top: 14px;
-  }
-  .rs-nav .rs-dropdown > .rs-dropdown-toggle {
-    height: 48px;
+  .navbar-brand {
+    padding: 0;
+    img {
+      height: 80px;
+    }
   }
   .user-menu {
     text-align: right;
   }
 }
-.header-notification {
-  border-radius: 0;
-  border-bottom: 1px solid #ead4da;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-}
+
 .footer {
   background-color: #142a3e;
-  //color: @B025;
+  color: $gray-100;
   text-align: center;
   padding: 20px 0 30px;
+  margin-top: auto;
   .rs-nav-item-content {
     //color: @B025;
   }
 }
 
+.toast-notifications {
+  position: fixed;
+  top: 80px;
+  right: 10px;
+  z-index: 10000;
+  .toast-body {
+    min-width: 200px;
+  }
+}

@@ -276,11 +276,11 @@ class SignUp extends React.Component {
                           value={usersStore.userAgreement}
                         >
                           I agree to{' '}
-                          <a target="_blank" href="/">
+                          <a target="_blank" href="/user-agreement">
                             User Agreement
                           </a>{' '}
                           and{' '}
-                          <a target="_blank" href="/">
+                          <a target="_blank" href="/privacy-policy">
                             Privacy Policy
                           </a>
                         </Checkbox>

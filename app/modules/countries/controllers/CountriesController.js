@@ -1,8 +1,8 @@
-const countries = require('../data/countries');
+const { Service } = require('@taboo/cms-core');
 
 class CountriesController {
   async getAll(ctx) {
-    ctx.body = countries;
+    ctx.body = Service('countries.Countries').getAll();
   }
 }
 

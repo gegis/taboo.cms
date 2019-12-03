@@ -69,6 +69,11 @@ That's it, you can now start the server by running:
 npm start
 ```
 
+Admin login page:
+```
+http://localhost:3000/admin/login
+```
+
 ## Create New Module
 
 From your application root folder run this command:
@@ -238,11 +243,17 @@ isAllowed   - implementation of ACL based logic to get if resource
 \* - You can find more information here: [@taboo/cms-core](https://www.npmjs.com/package/@taboo/cms-core)
 
 ## Roadmap
-- Implement install of classic cms
-- Implement install of headless cms
-- Implement page construction blocks for easier content management
-- Implement client side frontend script to modify pages, navigation and gallery on the go
-- Implement DB migrations
+- Install of Classic CMS
+- Logo upload via Admin Dashboard
+- Images resize during Admin Dashboard Upload
+- Classic CMS - profile picture upload
+- Classic CMS - account verification
+- Install of Headless CMS
+- API keys with JWT auth
+- Hierarchical navigation
+- Page construction blocks for easier content management
+- Client side frontend script to modify pages, navigation and gallery on the go
+- DB migrations
 
 ## How to build and deploy on remote server
 

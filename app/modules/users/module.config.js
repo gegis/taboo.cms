@@ -28,7 +28,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/sign-up',
-      action: UsersController.userLandingPage,
+      action: UsersController.signUp,
       policies: ['i18n', 'loadNavigation'],
     },
     {
@@ -40,13 +40,13 @@ module.exports = {
     {
       method: 'GET',
       path: '/my-profile',
-      action: UsersController.userLandingPage,
+      action: UsersController.myProfile,
       policies: ['i18n', 'loadNavigation', 'isUser'],
     },
     {
       method: 'GET',
       path: '/account-verify',
-      action: UsersController.userLandingPage,
+      action: UsersController.accountVerify,
       policies: ['i18n', 'loadNavigation', 'isUser'],
     },
     {
@@ -58,7 +58,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/change-password/:userId/:token',
-      action: UsersController.userLandingPage,
+      action: UsersController.changePassword,
       policies: ['i18n', 'loadNavigation'],
       options: {
         errorResponseAsJson: true,

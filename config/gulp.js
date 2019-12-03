@@ -23,7 +23,7 @@ module.exports = {
       admin: './app/modules/core/client/admin.jsx',
     },
     output: {
-      path: `${__dirname}/public/js/`,
+      path: `${__dirname}/../public/js/`,
       publicPath: '/js/',
       filename: '[name].bundle.js',
     },

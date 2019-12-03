@@ -1,7 +1,7 @@
 const { config, app, Service } = require('@taboo/cms-core');
 
 class CoreController {
-  async index() {}
+  async dashboard() {}
 
   async health(ctx) {
     const data = {

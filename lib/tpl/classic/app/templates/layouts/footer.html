@@ -2,14 +2,15 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col">
-        <ul class="navbar-nav mr-auto">
-          <% let navigation = _clientConfig.navigation; %>
-          <% for(let i = 0; i < navigation.length; i++) { %>
-          <li class="nav-item">
-            <a class="nav-link" href="<%-navigation[i].url%>"><%-navigation[i].title%></a>
-          </li>
-          <% } %>
-        </ul>
+        <div class="navbar navbar-expand navbar-dark justify-content-md-center">
+          <ul class="navbar-nav">
+            <% let navigation = _clientConfig.navigation; %> <% for(let i = 0; i < navigation.length; i++) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="<%-navigation[i].url%>"><%-navigation[i].title%></a>
+            </li>
+            <% } %>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="row"><div class="col"><%=helpers.translate('_footerCopy')%></div></div>

@@ -5,10 +5,38 @@ class UsersController {
   constructor() {}
 
   async userLandingPage() {}
-
+  async signUp() {}
   async signIn() {}
-
   async resetPassword() {}
+  async changePassword() {}
+
+  async myProfile(ctx) {
+    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    let user, countryOptions;
+    try {
+      user = await Model('users.User')
+        .findById(userId)
+        .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
+      countryOptions = Service('countries.Countries').getKeyValueArray();
+    } catch (e) {
+      ctx.throw(404, e);
+    }
+    ctx.view.userData = user;
+    ctx.view.countryOptions = countryOptions;
+  }
+
+  async accountVerify(ctx) {
+    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    let user;
+    try {
+      user = await Model('users.User')
+        .findById(userId)
+        .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
+    } catch (e) {
+      ctx.throw(404, e);
+    }
+    ctx.view.userData = user;
+  }
 
   async register(ctx) {
     const { users: { signUpEnabled = false } = {} } = config;
@@ -104,6 +132,12 @@ class UsersController {
       user = await Model('users.User')
         .findByIdAndUpdate(userId, body, { new: true })
         .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
+      ctx.session.user.firstName = user.firstName;
+      ctx.session.user.lastName = user.lastName;
+      ctx.session.user.email = user.email;
+      if (user.profilePicture && user.profilePicture.url) {
+        ctx.session.user.profilePictureUrl = user.profilePicture.url;
+      }
     } catch (e) {
       ctx.throw(404, e);
     }
