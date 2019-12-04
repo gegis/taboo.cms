@@ -31,9 +31,6 @@ ModuleName.propTypes = {
   moduleNameStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('moduleNameStore'),
-  observer
-);
+const enhance = compose(inject('moduleNameStore'), observer);
 
 export default enhance(ModuleName);

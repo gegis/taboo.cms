@@ -66,9 +66,6 @@ CreateModelNameModal.propTypes = {
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(
-  inject('moduleNameStore', 'notificationsStore'),
-  observer
-);
+const enhance = compose(inject('moduleNameStore', 'notificationsStore'), observer);
 
 export default enhance(CreateModelNameModal);

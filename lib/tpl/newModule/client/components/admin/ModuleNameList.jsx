@@ -34,9 +34,7 @@ class ModuleNameList extends React.Component {
           {this.moduleNameStore.items.map(item => (
             <tr key={item._id}>
               <td className="id rs-hidden-xs">{item._id}</td>
-              <td>
-                {item.name}
-              </td>
+              <td>{item.name}</td>
               <td>
                 <BooleanIcon value={item.enabled} />
               </td>
