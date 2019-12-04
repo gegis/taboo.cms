@@ -31,7 +31,6 @@ class ResetPassword extends React.Component {
       email: '',
     };
     this.state = {
-      loading: false,
       formValue: formValue,
       formError: {},
     };
@@ -48,7 +47,7 @@ class ResetPassword extends React.Component {
   }
 
   handleSubmit() {
-    const { localeStore, history } = this.props;
+    const { localeStore, history, settingsStore } = this.props;
     if (!this.form.current.check()) {
       Notification.error({
         title: 'Form Validation',
@@ -57,13 +56,13 @@ class ResetPassword extends React.Component {
       });
       return;
     }
-    this.setState({ loading: true });
+    settingsStore.setLoading(true);
     axios
       .post('/api/reset-password', {
         email: this.state.formValue.email,
       })
       .then(response => {
-        this.setState({ loading: false });
+        settingsStore.setLoading(false);
         if (response && response.data) {
           if (response.data.success) {
             Notification.info({
@@ -102,7 +101,7 @@ class ResetPassword extends React.Component {
 
   render() {
     const { authStore } = this.props;
-    const { formValue, formError, loading } = this.state;
+    const { formValue, formError } = this.state;
 
     if (authStore && authStore.authenticated) {
       if (authStore.admin) {
@@ -132,7 +131,6 @@ class ResetPassword extends React.Component {
                   model={this.model}
                   onSubmit={this.handleSubmit}
                 >
-                  {loading && <div className="loader" />}
                   <FormGroup>
                     <ControlLabel>
                       <Translation message="Email" />
@@ -166,9 +164,10 @@ class ResetPassword extends React.Component {
 ResetPassword.propTypes = {
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
+  settingsStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('authStore', 'localeStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'localeStore', 'settingsStore'), observer);
 
 export default enhance(ResetPassword);

@@ -245,11 +245,12 @@ isAllowed   - implementation of ACL based logic to get if resource
 ## Roadmap
 - Install of Classic CMS
 - Logo upload via Admin Dashboard
-- Images resize during Admin Dashboard Upload
-- Classic CMS - profile picture upload
-- Classic CMS - account verification
 - Install of Headless CMS
 - API keys with JWT auth
+- Images (optional) resize during Admin Dashboard Upload 
+- Classic CMS - profile picture upload
+- Classic CMS - account verification
+- Atomic CLI commands to create each asset separately
 - Hierarchical navigation
 - Page construction blocks for easier content management
 - Client side frontend script to modify pages, navigation and gallery on the go
