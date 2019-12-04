@@ -254,6 +254,7 @@ isAllowed   - implementation of ACL based logic to get if resource
 - Hierarchical navigation
 - Page construction blocks for easier content management
 - Client side frontend script to modify pages, navigation and gallery on the go
+- Api routes with params automated documentation like swagger
 - DB migrations
 
 ## How to build and deploy on remote server
