@@ -2,10 +2,15 @@ import React from 'react';
 import AceEditor from 'react-ace';
 import PropTypes from 'prop-types';
 
-import 'brace/mode/html';
-import 'brace/theme/chrome';
-import 'brace/ext/language_tools';
-// import 'brace/ext/beautify'; // Does not seem to work
+import 'ace-builds/src-noconflict/mode-html';
+import 'ace-builds/src-noconflict/snippets/html';
+import 'ace-builds/src-noconflict/theme-chrome';
+import 'ace-builds/src-min-noconflict/ext-language_tools';
+import 'ace-builds/src-min-noconflict/ext-spellcheck'; // Does not seem to work
+// import 'ace-builds/src-min-noconflict/ext-beautify'; // Does not seem to work
+// import 'ace-builds/src-min-noconflict/ext-searchbox';
+// import 'ace-builds/src-min-noconflict/ext-prompt';
+// import 'ace-builds/src-min-noconflict/ext-options';
 
 class CodeEditor extends React.Component {
   render() {
@@ -14,6 +19,7 @@ class CodeEditor extends React.Component {
       value,
       id = 'code-editor',
       tabSize = 2,
+      fontSize = 12,
       enableBasicAutocompletion = true,
       enableLiveAutocompletion = true,
       ...rest
@@ -25,10 +31,24 @@ class CodeEditor extends React.Component {
         onChange={onChange}
         name={id}
         value={value}
-        editorProps={{ $blockScrolling: Infinity }}
-        enableBasicAutocompletion={enableBasicAutocompletion}
-        enableLiveAutocompletion={enableLiveAutocompletion}
-        tabSize={tabSize}
+        fontSize={fontSize}
+        setOptions={{
+          useWorker: false,
+          tabSize: tabSize,
+          useSoftTabs: false,
+          enableBasicAutocompletion: enableBasicAutocompletion,
+          enableLiveAutocompletion: enableLiveAutocompletion,
+          enableSnippets: true,
+          showLineNumbers: true,
+          scrollPastEnd: true,
+          vScrollBarAlwaysVisible: true,
+          showGutter: true,
+          showPrintMargin: true,
+          printMargin: true,
+          printMarginColumn: 100,
+          showFoldWidgets: true,
+          highlightActiveLine: true,
+        }}
         {...rest}
       />
     );
@@ -40,6 +60,7 @@ CodeEditor.propTypes = {
   id: PropTypes.string,
   value: PropTypes.string,
   tabSize: PropTypes.number,
+  fontSize: PropTypes.number,
   enableBasicAutocompletion: PropTypes.bool,
   enableLiveAutocompletion: PropTypes.bool,
 };

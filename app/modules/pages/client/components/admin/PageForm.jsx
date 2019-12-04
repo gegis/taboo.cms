@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 import Translation from 'app/modules/core/client/components/Translation';
 import CodeEditor from 'app/modules/core/client/components/CodeEditor';
+import RichTextModal from 'modules/pages/client/components/admin/RichTextModal';
 
 class PageForm extends React.Component {
   constructor(props) {
@@ -86,6 +87,7 @@ class PageForm extends React.Component {
             </button>
           </div>
         </FormGroup>
+        <RichTextModal />
       </Form>
     );
   }

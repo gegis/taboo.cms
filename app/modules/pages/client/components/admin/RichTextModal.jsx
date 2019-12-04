@@ -47,7 +47,7 @@ class RichTextModal extends React.Component {
   }
 
   onOpen() {
-    this.setState({ value: this.pagesStore.page.body });
+    this.setState({ value: this.pagesStore.item.body });
   }
 
   onClose() {
@@ -55,7 +55,7 @@ class RichTextModal extends React.Component {
   }
 
   onSave() {
-    this.pagesStore.setPage({ body: htmlBeautify(this.state.value) });
+    this.pagesStore.setItem({ body: htmlBeautify(this.state.value) });
     this.close();
   }
 

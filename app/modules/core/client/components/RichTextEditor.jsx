@@ -64,7 +64,14 @@ class RichTextEditor extends React.Component {
     const { data } = this.state;
     const { config = this.defultConfig } = this.props;
     return (
-      <CKEditor ref={ref => (this.editor = ref)} data={data} onChange={this.onChange} config={config} type="classic" />
+      <CKEditor
+        ref={ref => (this.editor = ref)}
+        data={data}
+        onChange={this.onChange}
+        config={config}
+        type="classic"
+        onBeforeLoad={CKEDITOR => (CKEDITOR.disableAutoInline = true)} // to solve Error code: editor-element-conflict
+      />
     );
   }
 }
