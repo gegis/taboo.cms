@@ -1,0 +1,70 @@
+@import "../../../../assets/styles/vars";
+
+.gallery {
+  margin: 5px -5px;
+  .gallery-item {
+    display: block;
+    float: left;
+    width: 33.33%;
+    height: 210px;
+    overflow: hidden;
+    margin: 5px 0;
+    .gallery-image-link {
+      display: flex;
+      justify-content: center;
+      height: 210px;
+      overflow: hidden;
+      margin: 0 5px;
+      .gallery-image {
+        align-self: center;
+        width: 120%;
+      }
+    }
+  }
+  &:before,
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+.gallery-image-modal {
+  .gallery-image-wrapper {
+    img {
+      width: 100%;
+    }
+  }
+  .gallery-image-name {
+    text-align: right;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+  .gallery {
+    .gallery-item {
+      width: 100%;
+    }
+  }
+}
+@include media-breakpoint-up(md) {
+  .gallery {
+    .gallery-item {
+      width: 50%;
+    }
+  }
+}
+@include media-breakpoint-up(lg) {
+  .gallery {
+    .gallery-item {
+      width: 33.33%;
+    }
+  }
+}
+@include media-breakpoint-up(xl) {
+  .gallery {
+    .gallery-item {
+      width: 25%;
+    }
+  }
+}
