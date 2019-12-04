@@ -1,8 +1,8 @@
 module.exports = {
-  environment: 'development',
+  environment: process.env.NODE_ENV || 'development',
   debug: true,
   server: {
-    port: 3000,
+    port: process.env.PORT || 3000,
     cache: {
       enabled: false,
     },
