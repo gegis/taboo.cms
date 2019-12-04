@@ -6,18 +6,18 @@
     display: block;
     float: left;
     width: 33.33%;
-    height: 210px;
+    height: 175px;
     overflow: hidden;
     margin: 5px 0;
     .gallery-image-link {
       display: flex;
       justify-content: center;
-      height: 210px;
+      height: 175px;
       overflow: hidden;
       margin: 0 5px;
       .gallery-image {
         align-self: center;
-        width: 120%;
+        width: 125%;
       }
     }
   }
@@ -44,7 +44,11 @@
 @media (max-width: @screen-phone) {
   .gallery {
     .gallery-item {
+      height: 260px;
       width: 100%;
+      .gallery-image-link {
+        height: 260px;
+      }
     }
   }
 }
@@ -60,7 +64,7 @@
 @media (min-width: @screen-desktop) and (max-width: @screen-desktop-max) {
   .gallery {
     .gallery-item {
-      width: 33.33%;
+      width: 25%;
     }
   }
 }
@@ -68,7 +72,7 @@
 @media (min-width: @screen-lg-desktop) {
   .gallery {
     .gallery-item {
-      width: 25%;
+      width: 20%;
     }
   }
 }

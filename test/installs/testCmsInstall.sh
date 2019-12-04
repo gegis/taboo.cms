@@ -29,7 +29,7 @@ fi
 cp -r ${SRC_DIR} ${DEST_DIR}
 cd ${DEST_DIR}
 npm i @taboo/cms
-npx taboo-cms-cli install react egidijus.gegeckas@gmail.com
+npx taboo-cms-cli install ${CMS_TYPE} egis@taboo.solutions
 npm i
 cp ./config/SAMPLE.local.js ./config/local.js
 chromium-browser --auto-open-devtools-for-tabs http://localhost:${PORT}
