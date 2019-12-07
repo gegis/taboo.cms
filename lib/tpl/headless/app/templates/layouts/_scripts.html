@@ -1,0 +1,15 @@
+<div id="scripts">
+  <script type="text/javascript">
+    window.app = {
+      admin: false,
+      config: {},
+      routes: {},
+    };
+  </script>
+  <% if(_clientConfigJson) { %>
+  <script type="text/javascript">
+    window.app.config = <%-_clientConfigJson%>;
+  </script>
+  <% } %>
+  <script src="/js/lib.js?v=<%=_version%>"></script>
+</div>

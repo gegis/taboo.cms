@@ -1,40 +1,14 @@
 <!DOCTYPE html>
 <html lang="<%=language%>">
-  <head>
-    <title><%=metaTitle%></title>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" type="text/css" href="/css/lib.css?v=<%=_version%>" />
-    <link rel="stylesheet" type="text/css" href="/css/app.css?v=<%=_version%>" />
-  </head>
+<%- include('/templates/layouts/_head.html', {helpers: helpers}) %>
   <body>
     <div id="root">
-      <div class="loading">
-        <div class="loader"></div>
-      </div>
-      <div class="rs-container default-layout">
-        <%- include('/templates/layouts/header.html', {helpers: helpers}) %>
-        <div class="rs-content main-content error-layout"><%-_body %></div>
-        <%- include('/templates/layouts/footer.html', {helpers: helpers}) %>
+      <div class="error-layout">
+        <%- include('/templates/layouts/_header.html', {helpers: helpers}) %>
+        <div class="main-content"><%-_body %></div>
+        <%- include('/templates/layouts/_footer.html', {helpers: helpers}) %>
       </div>
     </div>
-    <div id="scripts">
-      <script type="text/javascript">
-        window.app = {
-          admin: false,
-          config: {},
-          routes: {},
-        };
-      </script>
-      <% if(_clientConfigJson) { %>
-      <script type="text/javascript">
-        window.app.config = <%-_clientConfigJson%>;
-      </script>
-      <% } %>
-      <script src="/js/lib.js?v=<%=_version%>"></script>
-    </div>
+    <%- include('/templates/layouts/_scripts.html', {helpers: helpers}) %>
   </body>
 </html>
