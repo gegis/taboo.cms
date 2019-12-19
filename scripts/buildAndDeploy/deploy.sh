@@ -16,7 +16,7 @@ rm -rf $DEPLOY_FOLDER
 #mkdir $DEPLOY_FOLDER
 cp -R ./$BUILD_FOLDER ./$DEPLOY_FOLDER
 # Backup current uploads
-cp -R $RUNNING_APP_PATH/public/uploads ./$DEPLOY_FOLDER/public
+#cp -R $RUNNING_APP_PATH/public/uploads ./$DEPLOY_FOLDER/public
 
 printf "\n # Removing .git folder from $DEPLOY_FOLDER app\n\n"
 cd $DEPLOY_FOLDER

@@ -28,13 +28,19 @@ class PagesService {
   }
 
   async getPage(ctx, route) {
+    const { session: { user: { admin = false } = {} } = {} } = ctx;
     let galleryTpl;
-    // Try to get from cache
-    let page = Service('cache.Cache').get('pages', `page:${route}`);
+    let page;
+    let filter = { $or: [{ url: route }, { url: `${route}/` }] };
+    if (!admin) {
+      filter.published = true;
+      // If not admin - try to get from cache
+      page = Service('cache.Cache').get('pages', `page:${route}`);
+    }
     if (!page) {
       // Not in cache - try to retrieve, parse and cache it
       page = await Model('pages.Page')
-        .findOne({ $or: [{ url: route }, { url: `${route}/` }], published: true })
+        .findOne(filter)
         .populate([
           'pages',
           {
@@ -48,10 +54,12 @@ class PagesService {
         // TODO allow page select gallery template.
         galleryTpl = await cmsHelper.getTemplate('helpers/gallery');
         await Service('pages.Pages').replacePageBodyRefs(ctx, page, galleryTpl);
-        Service('cache.Cache').set('pages', `page:${route}`, page);
+        // Cache only published pages
+        if (page.published) {
+          Service('cache.Cache').set('pages', `page:${route}`, page);
+        }
       }
     }
-
     return page;
   }
 
