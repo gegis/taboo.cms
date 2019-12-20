@@ -63,7 +63,7 @@ class Sidebar extends React.Component {
         collapsible
       >
         <Sidenav.Header>
-          <Navbar appearance="inverse">
+          <Navbar appearance="default">
             <Navbar.Header>
               <NavBrand />
             </Navbar.Header>

@@ -4,14 +4,25 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Header as RsHeader, Row, Col, Grid } from 'rsuite';
 import { Link, withRouter } from 'react-router-dom';
+import Sidebar from 'modules/core/client/components/Sidebar';
 
 class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.openSidebar = this.openSidebar.bind(this);
+  }
+
   getLogoLinkTo() {
     const { authStore } = this.props;
     if (authStore.authenticated && authStore.user) {
       return '/dashboard';
     }
     return '/';
+  }
+
+  openSidebar() {
+    const { settingsStore } = this.props;
+    settingsStore.openUserSidebar();
   }
 
   render() {
@@ -28,11 +39,17 @@ class Header extends React.Component {
             <Col md={13} xsHidden className="navigation">
               {navigation}
             </Col>
-            <Col xs={18} md={8} className="user-menu">
+            <Col md={8} xsHidden className="user-menu">
               {userMenu}
+            </Col>
+            <Col xs={18} className="sidebar-toggle-wrapper rs-visible-xs">
+              <button type="button" className="rs-btn rs-btn-subtle sidebar-toggle" onClick={this.openSidebar}>
+                <i className="rs-icon rs-icon-bars"></i>
+              </button>
             </Col>
           </Row>
         </Grid>
+        <Sidebar navigation={navigation} userMenu={userMenu} />
       </RsHeader>
     );
   }
@@ -40,10 +57,11 @@ class Header extends React.Component {
 
 Header.propTypes = {
   authStore: PropTypes.object,
+  settingsStore: PropTypes.object,
   navigation: PropTypes.node,
   userMenu: PropTypes.node,
 };
 
-const enhance = compose(withRouter, inject('authStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'settingsStore'), observer);
 
 export default enhance(Header);

@@ -58,13 +58,9 @@ class Header extends React.Component {
 
   render() {
     const { sidebar, headerNav = null } = this.props;
-    let appearance = 'subtle';
-    if (!sidebar) {
-      appearance = 'inverse';
-    }
     return (
       <RsHeader className="header">
-        <Navbar appearance={appearance}>
+        <Navbar appearance="default">
           {!sidebar && (
             <Navbar.Header>
               <NavBrand />

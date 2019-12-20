@@ -110,7 +110,7 @@ class MyProfile extends React.Component {
       <Layout className="my-profile-page">
         <Grid fluid>
           <Row>
-            <Col xs={24} sm={16} lg={12} smOffset={4} lgOffset={6}>
+            <Col sm={24} md={12} mdOffset={6}>
               <h1>
                 <Translation message={pageTitle} />
               </h1>

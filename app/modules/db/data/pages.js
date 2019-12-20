@@ -8,8 +8,19 @@ module.exports = [
     body: `<section>
     <div class="rs-panel rs-panel-default rs-panel-bordered">
       <div class="rs-panel-body">
-        <h3>A node.js and React Content Management System.</h3>
-        <p>React CMS, Classic CMS, Headless CMS in one.</p>
+        <h2>Taboo CMS</h2>
+        <p>A node.js powered Content Management System with has built-in admin dashboard.</p>
+        <p>
+          It can be installed as SPA (Single Page Application), or as server side rendered templates (EJS)
+          applications, or simply as Headless CMS for your REST APIs.
+        </p>
+        <p>
+          Taboo CMS was built keeping modular architecture in mind, which means you can easily add or remove self
+          sustained modules.
+        </p>
+        <p>
+          <a href="/admin/login">Visit Admin Panel</a>
+        </p>
       </div>
     </div>
     <div class="v-spacer-3"></div>

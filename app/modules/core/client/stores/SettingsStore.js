@@ -1,14 +1,12 @@
 import { decorate, observable, action } from 'mobx';
 
 const sidebarOpenKey = 'sidebar-open';
-const userMenuOpenKey = 'user-menu-open';
 
 class SettingsStore {
   constructor() {
     const openPref = window.localStorage.getItem(sidebarOpenKey) !== 'false';
-    const userMenuOpenPref = window.localStorage.getItem(sidebarOpenKey) !== 'false';
     this.open = openPref;
-    this.userMenuOpen = userMenuOpenPref;
+    this.userSidebarOpen = false;
     this.loading = false;
   }
 
@@ -27,19 +25,16 @@ class SettingsStore {
     window.localStorage.setItem(sidebarOpenKey, this.open);
   }
 
-  toggleUserMenu() {
-    this.userMenuOpen = !this.userMenuOpen;
-    window.localStorage.setItem(userMenuOpenKey, this.userMenuOpen);
+  toggleUserSidebar() {
+    this.userSidebarOpen = !this.userSidebarOpen;
   }
 
-  openUserMenu() {
-    this.userMenuOpen = true;
-    window.localStorage.setItem(userMenuOpenKey, this.userMenuOpen);
+  openUserSidebar() {
+    this.userSidebarOpen = true;
   }
 
-  closeUserMenu() {
-    this.userMenuOpen = false;
-    window.localStorage.setItem(userMenuOpenKey, this.userMenuOpen);
+  closeUserSidebar() {
+    this.userSidebarOpen = false;
   }
 
   setLoading(value) {
@@ -49,14 +44,14 @@ class SettingsStore {
 
 decorate(SettingsStore, {
   open: observable,
-  userMenuOpen: observable,
+  userSidebarOpen: observable,
   loading: observable,
   toggleAdminSidebar: action,
   openAdminSidebar: action,
   closeAdminSidebar: action,
-  toggleUserMenu: action,
-  openUserMenu: action,
-  closeUserMenu: action,
+  toggleUserSidebar: action,
+  openUserSidebar: action,
+  closeUserSidebar: action,
   setLoading: action,
 });
 
