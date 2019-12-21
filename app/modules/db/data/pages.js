@@ -9,7 +9,7 @@ module.exports = [
     <div class="rs-panel rs-panel-default rs-panel-bordered">
       <div class="rs-panel-body">
         <h2>Taboo CMS</h2>
-        <p>A node.js powered Content Management System with has built-in admin dashboard.</p>
+        <p>A node.js powered Content Management System with the built-in administration panel.</p>
         <p>
           It can be installed as SPA (Single Page Application), or as server side rendered templates (EJS)
           applications, or simply as Headless CMS for your REST APIs.
