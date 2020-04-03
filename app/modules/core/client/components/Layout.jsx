@@ -184,14 +184,14 @@ class Layout extends React.Component {
   }
 
   render() {
-    const { children, settingsStore, authStore, className } = this.props;
+    const { children, uiStore, authStore, className } = this.props;
     return (
       <Container className={classNames('default-layout', className)}>
         <MetaTags>
           <title>{this.getMetaTitle()}</title>
         </MetaTags>
         <Header navigation={this.getHeaderNavigation()} userMenu={this.getUserMenu()} />
-        {settingsStore.loading && <div className="loader" />}
+        {uiStore.loading && <div className="loader" />}
         {authStore.user.id && !authStore.verified && this.getVerificationMessage()}
         <Content className="main-content">
           <Grid>
@@ -219,7 +219,7 @@ Layout.propTypes = {
   userNavigation: PropTypes.node,
   className: PropTypes.string,
   metaTitle: PropTypes.string,
-  settingsStore: PropTypes.object,
+  uiStore: PropTypes.object,
   notificationsStore: PropTypes.object,
   localeStore: PropTypes.object,
   authStore: PropTypes.object,
@@ -230,7 +230,7 @@ Layout.propTypes = {
 
 const enhance = compose(
   withRouter,
-  inject('settingsStore', 'authStore', 'notificationsStore', 'localeStore', 'navigationStore'),
+  inject('uiStore', 'authStore', 'notificationsStore', 'localeStore', 'navigationStore'),
   observer
 );
 

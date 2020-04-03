@@ -51,14 +51,14 @@ class Layout extends React.Component {
   }
 
   render() {
-    const { children, headerNav, className, settingsStore, authStore } = this.props;
+    const { children, headerNav, className, uiAdminStore, authStore } = this.props;
     let { sidebar = true } = this.props;
     let sidebarClass = '';
     if (!authStore.authenticated) {
       sidebar = false;
     }
     if (sidebar) {
-      sidebarClass = settingsStore.open ? 'sidebar-open' : 'sidebar-closed';
+      sidebarClass = uiAdminStore.open ? 'sidebar-open' : 'sidebar-closed';
       sidebarClass += ' rs-container-has-sidebar';
     }
     return (
@@ -66,7 +66,7 @@ class Layout extends React.Component {
         {sidebar && <Sidebar />}
         <Container>
           <Header sidebar={sidebar} headerNav={headerNav} />
-          {settingsStore.loading && <div className="loader" />}
+          {uiAdminStore.loading && <div className="loader" />}
           <Content className="main-content">
             {this.getContentHeader()}
             {children}
@@ -91,12 +91,12 @@ Layout.propTypes = {
   sidebar: PropTypes.bool,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  settingsStore: PropTypes.object,
+  uiAdminStore: PropTypes.object,
   notificationsStore: PropTypes.object,
   localeStore: PropTypes.object,
   authStore: PropTypes.object,
 };
 
-const enhance = compose(inject('settingsStore', 'authStore', 'notificationsStore', 'localeStore'), observer);
+const enhance = compose(inject('uiAdminStore', 'authStore', 'notificationsStore', 'localeStore'), observer);
 
 export default enhance(Layout);

@@ -20,15 +20,15 @@ class Sidebar extends React.Component {
 
   handleClick(event) {
     const { tagName = '' } = event.target;
-    const { settingsStore } = this.props;
+    const { uiStore } = this.props;
     if (tagName === 'A' || tagName === 'BUTTON') {
-      settingsStore.closeUserSidebar();
+      uiStore.closeUserSidebar();
     }
   }
 
   close() {
-    const { settingsStore } = this.props;
-    settingsStore.closeUserSidebar();
+    const { uiStore } = this.props;
+    uiStore.closeUserSidebar();
   }
 
   handleLogout() {
@@ -52,12 +52,12 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    const { authStore, navigation, settingsStore } = this.props;
+    const { authStore, navigation, uiStore } = this.props;
     return (
       <Drawer
         placement="right"
         size="xs"
-        show={settingsStore.userSidebarOpen}
+        show={uiStore.userSidebarOpen}
         onHide={this.close}
         backdrop={true}
         className="user-sidebar"
@@ -106,11 +106,11 @@ class Sidebar extends React.Component {
 
 Sidebar.propTypes = {
   authStore: PropTypes.object,
-  settingsStore: PropTypes.object,
+  uiStore: PropTypes.object,
   navigation: PropTypes.node,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('authStore', 'settingsStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'uiStore'), observer);
 
 export default enhance(Sidebar);

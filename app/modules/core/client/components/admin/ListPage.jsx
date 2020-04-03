@@ -13,7 +13,7 @@ class ListPage extends React.Component {
     this.entityStore = props.entityStore;
     this.localeStore = props.localeStore;
     this.notificationsStore = props.notificationsStore;
-    this.settingsStore = props.settingsStore;
+    this.uiAdminStore = props.uiAdminStore;
     this.createModal = React.createRef();
     this.editModal = React.createRef();
     this.searchTimeout = null;
@@ -37,9 +37,9 @@ class ListPage extends React.Component {
     clearTimeout(this.searchTimeout);
     this.setState({ search: value });
     this.searchTimeout = setTimeout(() => {
-      this.settingsStore.setLoading(true);
+      this.uiAdminStore.setLoading(true);
       this.entityStore.loadAll({ search: this.state.search }).then(() => {
-        this.settingsStore.setLoading(false);
+        this.uiAdminStore.setLoading(false);
       });
     }, 500);
   }
@@ -107,9 +107,9 @@ class ListPage extends React.Component {
   }
 
   onLoadMore() {
-    this.settingsStore.setLoading(true);
+    this.uiAdminStore.setLoading(true);
     this.entityStore.loadNextPage().then(() => {
-      this.settingsStore.setLoading(false);
+      this.uiAdminStore.setLoading(false);
     });
   }
 
@@ -158,7 +158,7 @@ class ListPage extends React.Component {
 ListPage.propTypes = {
   localeStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
-  settingsStore: PropTypes.object.isRequired,
+  uiAdminStore: PropTypes.object.isRequired,
   entityStore: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   CreateModalComponent: PropTypes.object.isRequired,
@@ -166,6 +166,6 @@ ListPage.propTypes = {
   ItemsListComponent: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('localeStore', 'notificationsStore', 'settingsStore'), observer);
+const enhance = compose(inject('localeStore', 'notificationsStore', 'uiAdminStore'), observer);
 
 export default enhance(ListPage);

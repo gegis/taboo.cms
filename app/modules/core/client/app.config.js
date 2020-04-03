@@ -2,15 +2,15 @@
 import Dashboard from './components/Dashboard';
 
 import RouterStore from './stores/RouterStore';
-import SettingsStore from './stores/SettingsStore';
 import NotificationsStore from './stores/NotificationsStore';
 import LocaleStore from './stores/LocaleStore';
+import UIStore from 'modules/core/client/stores/UIStore';
 
 const enabled = true;
 
 const stores = {
   routerStore: RouterStore,
-  settingsStore: SettingsStore,
+  uiStore: UIStore,
   notificationsStore: NotificationsStore,
   localeStore: LocaleStore,
 };

@@ -2,11 +2,10 @@ import { decorate, observable, action } from 'mobx';
 
 const sidebarOpenKey = 'sidebar-open';
 
-class SettingsStore {
+class UIAdminStore {
   constructor() {
     const openPref = window.localStorage.getItem(sidebarOpenKey) !== 'false';
     this.open = openPref;
-    this.userSidebarOpen = false;
     this.loading = false;
   }
 
@@ -25,34 +24,18 @@ class SettingsStore {
     window.localStorage.setItem(sidebarOpenKey, this.open);
   }
 
-  toggleUserSidebar() {
-    this.userSidebarOpen = !this.userSidebarOpen;
-  }
-
-  openUserSidebar() {
-    this.userSidebarOpen = true;
-  }
-
-  closeUserSidebar() {
-    this.userSidebarOpen = false;
-  }
-
   setLoading(value) {
     this.loading = value;
   }
 }
 
-decorate(SettingsStore, {
+decorate(UIAdminStore, {
   open: observable,
-  userSidebarOpen: observable,
   loading: observable,
   toggleAdminSidebar: action,
   openAdminSidebar: action,
   closeAdminSidebar: action,
-  toggleUserSidebar: action,
-  openUserSidebar: action,
-  closeUserSidebar: action,
   setLoading: action,
 });
 
-export default new SettingsStore();
+export default new UIAdminStore();

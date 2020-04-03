@@ -50,15 +50,15 @@ class Sidebar extends React.Component {
   }
 
   handleToggle() {
-    const { settingsStore } = this.props;
-    settingsStore.toggleAdminSidebar();
+    const { uiAdminStore } = this.props;
+    uiAdminStore.toggleAdminSidebar();
   }
 
   render() {
-    const { settingsStore } = this.props;
+    const { uiAdminStore } = this.props;
     return (
       <RsSidebar
-        className={classNames('sidebar', settingsStore.open && 'open', !settingsStore.open && 'closed')}
+        className={classNames('sidebar', uiAdminStore.open && 'open', !uiAdminStore.open && 'closed')}
         width="auto"
         collapsible
       >
@@ -69,7 +69,7 @@ class Sidebar extends React.Component {
             </Navbar.Header>
           </Navbar>
         </Sidenav.Header>
-        <Sidenav expanded={settingsStore.open} defaultOpenKeys={[0, 1, 2, 3]} defaultactivekey={0} appearance="subtle">
+        <Sidenav expanded={uiAdminStore.open} defaultOpenKeys={[0, 1, 2, 3]} defaultactivekey={0} appearance="subtle">
           <Sidenav.Body>
             <Nav>{this.getPrimaryMenuItems()}</Nav>
           </Sidenav.Body>
@@ -79,7 +79,7 @@ class Sidebar extends React.Component {
           <Navbar.Body>
             <Nav pullRight>
               <Nav.Item onClick={this.handleToggle} className="sidebar-toggle-btn">
-                <Icon icon={settingsStore.open ? 'angle-left' : 'angle-right'} />
+                <Icon icon={uiAdminStore.open ? 'angle-left' : 'angle-right'} />
               </Nav.Item>
             </Nav>
           </Navbar.Body>
@@ -90,9 +90,9 @@ class Sidebar extends React.Component {
 }
 Sidebar.propTypes = {
   aclStore: PropTypes.object.isRequired,
-  settingsStore: PropTypes.object.isRequired,
+  uiAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('aclStore', 'settingsStore'), observer);
+const enhance = compose(inject('aclStore', 'uiAdminStore'), observer);
 
 export default enhance(Sidebar);

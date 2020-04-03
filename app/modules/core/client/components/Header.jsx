@@ -21,8 +21,8 @@ class Header extends React.Component {
   }
 
   openSidebar() {
-    const { settingsStore } = this.props;
-    settingsStore.openUserSidebar();
+    const { uiStore } = this.props;
+    uiStore.openUserSidebar();
   }
 
   render() {
@@ -57,11 +57,11 @@ class Header extends React.Component {
 
 Header.propTypes = {
   authStore: PropTypes.object,
-  settingsStore: PropTypes.object,
+  uiStore: PropTypes.object,
   navigation: PropTypes.node,
   userMenu: PropTypes.node,
 };
 
-const enhance = compose(withRouter, inject('authStore', 'settingsStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'uiStore'), observer);
 
 export default enhance(Header);

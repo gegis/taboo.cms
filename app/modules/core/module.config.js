@@ -61,43 +61,5 @@ module.exports = {
       policies: ['isAdmin', 'i18nAdmin'],
       order: 10000,
     },
-    {
-      method: 'GET',
-      path: '/api/settings/:key',
-      action: CoreController.getPublicSettings,
-      order: 5000,
-      options: {
-        errorResponseAsJson: true,
-      },
-    },
-    {
-      method: 'GET',
-      path: '/api/acl/enabled',
-      action: CoreController.getACLEnabled,
-      order: 5000,
-      options: {
-        errorResponseAsJson: true,
-      },
-    },
-    {
-      method: 'GET',
-      path: '/api/admin/settings/:key',
-      action: CoreAdminController.getSettings,
-      policies: ['isAdmin'],
-      order: 5000,
-      options: {
-        errorResponseAsJson: true,
-      },
-    },
-    {
-      method: 'PUT',
-      path: '/api/admin/settings/:key',
-      action: CoreAdminController.setSettings,
-      policies: ['isAdmin'],
-      order: 5000,
-      options: {
-        errorResponseAsJson: true,
-      },
-    },
   ],
 };

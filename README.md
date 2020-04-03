@@ -37,7 +37,7 @@ npm init
 Fill in all the required fields and run:
 
 ```
-npm i @taboo/cms
+npm i --save-dev @taboo/cms
 ```
 
 it will also create a symlink in `./node_modules/.bin/taboo-cms-cli`.
@@ -184,7 +184,7 @@ Accessing Model:
  * ModelName is model file name without 'Model.js' suffix.
  */
 const { Model } = require('@taboo/cms-core');
-const results = await Model('core.Settings').find();
+const results = await Model('settings.Settings').find();
 ```
 
 Accessing Helper:
@@ -244,11 +244,11 @@ isAllowed   - implementation of ACL based logic to get if resource
 
 ## Roadmap
 
-- Logo upload via Admin Dashboard
+- Admin settings page, with main info and Logo upload
 - Hierarchical navigation
+- API keys with JWT auth
 - Page construction blocks for easier content management
 - Client side frontend script to modify pages, navigation and gallery on the go
-- API keys with JWT auth
 - Images (optional) resize during Admin Dashboard Upload 
 - Classic CMS - profile picture upload
 - Classic CMS - account verification

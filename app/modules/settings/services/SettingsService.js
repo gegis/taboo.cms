@@ -7,29 +7,26 @@ class SettingsService {
   }
 
   async getPublic(key) {
-    let item = await Model('core.Settings').findOne({ key, public: true }, ['value']);
+    let item = await Model('settings.Settings').findOne({ key, public: true }, ['value']);
     if (item && item.value) {
       return item.value;
     }
-    return {};
+    return null;
   }
 
   async get(key) {
-    let item = await Model('core.Settings').findOne({ key }, ['key', 'value', 'public']);
-    if (!item) {
-      item = {
-        key,
-        value: null,
-        public: false,
-      };
-    }
-    return item;
+    return await Model('settings.Settings').findOne({ key }, ['key', 'value', 'public']);
+  }
+
+  async setPublic(key, value) {
+    let item = { key, value };
+    return await this.set(key, item);
   }
 
   async set(key, data) {
     let item;
     apiHelper.cleanTimestamps(data);
-    item = await Model('core.Settings').findOneAndUpdate({ key }, data, {
+    item = await Model('settings.Settings').findOneAndUpdate({ key }, data, {
       new: true,
       runValidators: true,
     });
@@ -37,7 +34,7 @@ class SettingsService {
       if (!Object.prototype.hasOwnProperty.call(data, 'key')) {
         data.key = key;
       }
-      item = await Model('core.Settings').create(data);
+      item = await Model('settings.Settings').create(data);
     }
     return item;
   }
@@ -67,4 +64,5 @@ class SettingsService {
     return isAllowed() !== undefined;
   }
 }
+
 module.exports = new SettingsService();

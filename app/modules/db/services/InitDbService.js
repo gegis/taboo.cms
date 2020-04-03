@@ -14,7 +14,7 @@ class InitDbService {
   }
 
   async init(modules, aclResources) {
-    const { Settings: SettingsService } = modules.core.services;
+    const { Settings: SettingsService } = modules.settings.services;
     const dbValue = await SettingsService.getValue('db');
     if (dbValue && dbValue.initialized) {
       this.dbInitialized = true;

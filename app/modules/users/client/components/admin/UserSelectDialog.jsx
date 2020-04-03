@@ -13,7 +13,7 @@ class UserSelectDialog extends React.Component {
     super(props);
     this.modal = React.createRef();
     this.usersStore = props.usersStore;
-    this.settingsStore = props.settingsStore;
+    this.uiAdminStore = props.uiAdminStore;
     this.searchTimeout = null;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -33,9 +33,9 @@ class UserSelectDialog extends React.Component {
   onSearchChange(value) {
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
-      this.settingsStore.setLoading(true);
+      this.uiAdminStore.setLoading(true);
       this.usersStore.loadAll({ search: value, filter: this.usersStore.filter }).then(() => {
-        this.settingsStore.setLoading(false);
+        this.uiAdminStore.setLoading(false);
       });
     }, 500);
   }
@@ -102,10 +102,10 @@ class UserSelectDialog extends React.Component {
 
 UserSelectDialog.propTypes = {
   usersStore: PropTypes.object.isRequired,
-  settingsStore: PropTypes.object.isRequired,
+  uiAdminStore: PropTypes.object.isRequired,
   onSelect: PropTypes.func,
 };
 
-const enhance = compose(inject('usersStore', 'settingsStore'), observer);
+const enhance = compose(inject('usersStore', 'uiAdminStore'), observer);
 
 export default enhance(UserSelectDialog);

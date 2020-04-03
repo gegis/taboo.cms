@@ -3,7 +3,7 @@ import { Icon } from 'rsuite';
 import IndexPage from './components/admin/IndexPage';
 
 import RouterStore from './stores/RouterStore';
-import SettingsStore from './stores/SettingsStore';
+import UIAdminStore from './stores/UIAdminStore';
 import NotificationsStore from './stores/NotificationsStore';
 import LocaleStore from './stores/LocaleStore';
 
@@ -11,7 +11,7 @@ const enabled = true;
 
 const stores = {
   routerStore: RouterStore,
-  settingsStore: SettingsStore,
+  uiAdminStore: UIAdminStore,
   notificationsStore: NotificationsStore,
   localeStore: LocaleStore,
 };

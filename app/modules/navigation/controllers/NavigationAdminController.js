@@ -1,10 +1,10 @@
 const { config, logger, Model, Service } = require('@taboo/cms-core');
-const AdminController = require('../../core/controllers/AdminController');
+const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
 const {
   api: { navigation: { defaultSort = { sort: 'asc' } } = {} },
 } = config;
 
-class NavigationAdminController extends AdminController {
+class NavigationAdminController extends AbstractAdminController {
   constructor() {
     super({
       model: 'navigation.Navigation',

@@ -17,7 +17,7 @@ class UploadSelect extends React.Component {
     this.uploadsStore = props.uploadsStore;
     this.localeStore = props.localeStore;
     this.notificationsStore = props.notificationsStore;
-    this.settingsStore = props.settingsStore;
+    this.uiAdminStore = props.uiAdminStore;
     this.searchTimeout = null;
     this.state = {
       search: '',
@@ -47,9 +47,9 @@ class UploadSelect extends React.Component {
     clearTimeout(this.searchTimeout);
     this.setState({ search });
     this.searchTimeout = setTimeout(() => {
-      this.settingsStore.setLoading(true);
+      this.uiAdminStore.setLoading(true);
       this.uploadsStore.loadAll({ search: search, filter: this.uploadsStore.filter }).then(() => {
-        this.settingsStore.setLoading(false);
+        this.uiAdminStore.setLoading(false);
       });
     }, 500);
   }
@@ -63,9 +63,9 @@ class UploadSelect extends React.Component {
   }
 
   onLoadMore() {
-    this.settingsStore.setLoading(true);
+    this.uiAdminStore.setLoading(true);
     this.uploadsStore.loadNextPage().then(() => {
-      this.settingsStore.setLoading(false);
+      this.uiAdminStore.setLoading(false);
     });
   }
 
@@ -160,11 +160,11 @@ UploadSelect.propTypes = {
   uploadsStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
-  settingsStore: PropTypes.object.isRequired,
+  uiAdminStore: PropTypes.object.isRequired,
   filter: PropTypes.object,
   onAdd: PropTypes.func,
 };
 
-const enhance = compose(inject('uploadsStore', 'localeStore', 'notificationsStore', 'settingsStore'), observer);
+const enhance = compose(inject('uploadsStore', 'localeStore', 'notificationsStore', 'uiAdminStore'), observer);
 
 export default enhance(UploadSelect);

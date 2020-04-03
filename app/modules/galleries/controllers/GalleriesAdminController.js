@@ -1,12 +1,12 @@
 const { config, Service } = require('@taboo/cms-core');
-const AdminController = require('../../core/controllers/AdminController');
+const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
 const {
   api: {
     galleries: { defaultSort = null },
   },
 } = config;
 
-class GalleriesAdminController extends AdminController {
+class GalleriesAdminController extends AbstractAdminController {
   constructor() {
     super({
       model: 'galleries.Gallery',

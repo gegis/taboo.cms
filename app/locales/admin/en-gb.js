@@ -40,6 +40,7 @@ module.exports = {
   Enabled: 'Enabled',
   Galleries: 'Galleries',
   Reservations: 'Reservations',
+  Settings: 'Settings',
   'Reservations Enabled': 'Reservations Enabled',
   'Reservation Settings': 'Reservation Settings',
   'You can drag and drop files in here, or click to select files to upload.': 'You can drag and drop files in here, or click to select files to upload.',

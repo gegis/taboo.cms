@@ -1,12 +1,12 @@
 const { config, Service } = require('@taboo/cms-core');
-const AdminController = require('../../core/controllers/AdminController');
+const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
 const {
   api: {
     roles: { defaultSort = null },
   },
 } = config;
 
-class RolesAdminController extends AdminController {
+class RolesAdminController extends AbstractAdminController {
   constructor() {
     super({
       model: 'acl.Role',

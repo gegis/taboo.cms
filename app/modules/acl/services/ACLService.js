@@ -24,7 +24,7 @@ class ACLService {
   isAllowed(subject, resource) {
     let allowed = false;
     let user;
-    if (!resource || !Service('core.Settings').getACLEnabled()) {
+    if (!resource || !Service('settings.Settings').getACLEnabled()) {
       allowed = true;
     } else {
       if (subject.request && subject.response) {

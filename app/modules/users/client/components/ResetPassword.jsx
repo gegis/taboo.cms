@@ -47,7 +47,7 @@ class ResetPassword extends React.Component {
   }
 
   handleSubmit() {
-    const { localeStore, history, settingsStore } = this.props;
+    const { localeStore, history, uiStore } = this.props;
     if (!this.form.current.check()) {
       Notification.error({
         title: 'Form Validation',
@@ -56,13 +56,13 @@ class ResetPassword extends React.Component {
       });
       return;
     }
-    settingsStore.setLoading(true);
+    uiStore.setLoading(true);
     axios
       .post('/api/reset-password', {
         email: this.state.formValue.email,
       })
       .then(response => {
-        settingsStore.setLoading(false);
+        uiStore.setLoading(false);
         if (response && response.data) {
           if (response.data.success) {
             Notification.info({
@@ -164,10 +164,10 @@ class ResetPassword extends React.Component {
 ResetPassword.propTypes = {
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
-  settingsStore: PropTypes.object.isRequired,
+  uiStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('authStore', 'localeStore', 'settingsStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'localeStore', 'uiStore'), observer);
 
 export default enhance(ResetPassword);

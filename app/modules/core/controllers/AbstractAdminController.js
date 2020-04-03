@@ -1,6 +1,6 @@
 const { Model, Helper, apiHelper, logger } = require('@taboo/cms-core');
 
-class AdminController {
+class AbstractAdminController {
   /**
    * Available props:
    * @param props:
@@ -194,4 +194,4 @@ class AdminController {
   }
 }
 
-module.exports = AdminController;
+module.exports = AbstractAdminController;

@@ -1,14 +1,14 @@
 const { config, filesHelper, Service } = require('@taboo/cms-core');
 const path = require('path');
 
-const AdminController = require('../../core/controllers/AdminController');
+const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
 const {
   api: {
     uploads: { defaultSort = null },
   },
 } = config;
 
-class UploadsAdminController extends AdminController {
+class UploadsAdminController extends AbstractAdminController {
   constructor() {
     super({
       model: 'uploads.Upload',

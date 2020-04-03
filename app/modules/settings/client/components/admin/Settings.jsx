@@ -4,22 +4,22 @@ import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import ListPage from 'modules/core/client/components/admin/ListPage';
-import UsersList from './UsersList';
-import CreateModal from './CreateUserModal';
-import EditModal from './EditUserModal';
+import SettingsList from './SettingsList';
+import CreateModal from './CreateSettingsModal';
+import EditModal from './EditSettingsModal';
 
-class Users extends React.Component {
+class Settings extends React.Component {
   constructor(props) {
     super(props);
-    this.entityStore = props.usersStore;
+    this.entityStore = props.settingsStore;
   }
 
   render() {
     return (
       <ListPage
-        name="Users"
+        name="Settings"
         entityStore={this.entityStore}
-        ItemsListComponent={UsersList}
+        ItemsListComponent={SettingsList}
         CreateModalComponent={CreateModal}
         EditModalComponent={EditModal}
       />
@@ -27,10 +27,10 @@ class Users extends React.Component {
   }
 }
 
-Users.propTypes = {
-  usersStore: PropTypes.object.isRequired,
+Settings.propTypes = {
+  settingsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('usersStore'), observer);
+const enhance = compose(inject('settingsStore'), observer);
 
-export default enhance(Users);
+export default enhance(Settings);
