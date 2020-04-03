@@ -8,16 +8,17 @@ import SettingsList from './SettingsList';
 import CreateModal from './CreateSettingsModal';
 import EditModal from './EditSettingsModal';
 
-class Settings extends React.Component {
+class SettingsGeneric extends React.Component {
   constructor(props) {
     super(props);
     this.entityStore = props.settingsStore;
+    this.entityStore.setFilter({ category: 'generic' });
   }
 
   render() {
     return (
       <ListPage
-        name="Settings"
+        name="Generic Settings"
         entityStore={this.entityStore}
         ItemsListComponent={SettingsList}
         CreateModalComponent={CreateModal}
@@ -27,10 +28,10 @@ class Settings extends React.Component {
   }
 }
 
-Settings.propTypes = {
+SettingsGeneric.propTypes = {
   settingsStore: PropTypes.object.isRequired,
 };
 
 const enhance = compose(inject('settingsStore'), observer);
 
-export default enhance(Settings);
+export default enhance(SettingsGeneric);

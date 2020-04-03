@@ -5,23 +5,28 @@ const sidebarOpenKey = 'sidebar-open';
 class UIAdminStore {
   constructor() {
     const openPref = window.localStorage.getItem(sidebarOpenKey) !== 'false';
-    this.open = openPref;
+    this.sidebarOpen = openPref;
+    this.expandedSidebarItems = [];
     this.loading = false;
   }
 
   toggleAdminSidebar() {
-    this.open = !this.open;
-    window.localStorage.setItem(sidebarOpenKey, this.open);
+    this.sidebarOpen = !this.sidebarOpen;
+    window.localStorage.setItem(sidebarOpenKey, this.sidebarOpen);
   }
 
   openAdminSidebar() {
-    this.open = true;
-    window.localStorage.setItem(sidebarOpenKey, this.open);
+    this.sidebarOpen = true;
+    window.localStorage.setItem(sidebarOpenKey, this.sidebarOpen);
   }
 
   closeAdminSidebar() {
-    this.open = false;
-    window.localStorage.setItem(sidebarOpenKey, this.open);
+    this.sidebarOpen = false;
+    window.localStorage.setItem(sidebarOpenKey, this.sidebarOpen);
+  }
+
+  setExpandedSidebarItems(itemKeys) {
+    this.expandedSidebarItems = itemKeys;
   }
 
   setLoading(value) {
@@ -30,11 +35,13 @@ class UIAdminStore {
 }
 
 decorate(UIAdminStore, {
-  open: observable,
+  sidebarOpen: observable,
   loading: observable,
+  expandedSidebarItems: observable,
   toggleAdminSidebar: action,
   openAdminSidebar: action,
   closeAdminSidebar: action,
+  setExpandedSidebarItems: action,
   setLoading: action,
 });
 

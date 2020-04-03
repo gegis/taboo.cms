@@ -1,16 +1,16 @@
 import React from 'react';
 import { Icon } from 'rsuite';
 
-import Settings from './components/admin/Settings';
+import SettingsGeneric from './components/admin/SettingsGeneric';
 import SettingsAdminStore from './stores/SettingsAdminStore';
 
 const enabled = true;
 
 const routes = [
   {
-    path: '/admin/settings',
+    path: '/admin/settings/generic',
     exact: true,
-    component: Settings,
+    component: SettingsGeneric,
     admin: true,
   },
 ];
@@ -22,12 +22,19 @@ const stores = {
 const primaryMenu = [
   {
     order: 2000,
-    icon: React.createElement(Icon, { icon: 'sliders' }),
+    icon: React.createElement(Icon, { icon: 'cog' }),
     text: 'Settings',
-    linkProps: {
-      to: '/admin/settings',
-    },
     acl: 'admin.settings.view',
+    dropdown: [
+      {
+        icon: React.createElement(Icon, { icon: 'sliders' }),
+        text: 'Generic',
+        linkProps: {
+          to: '/admin/settings/generic',
+        },
+        acl: 'admin.settings.view',
+      },
+    ],
   },
 ];
 

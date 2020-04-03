@@ -25,7 +25,7 @@ class InitDbService {
       await this.setupAdminUser(modules, this.newAdminRole);
       await this.setupPages(modules, pages);
       await this.setupNavigation(modules, navigation);
-      await SettingsService.setValue('db', { initialized: true });
+      await SettingsService.setValue('db', { initialized: true }, 'object');
     }
   }
 

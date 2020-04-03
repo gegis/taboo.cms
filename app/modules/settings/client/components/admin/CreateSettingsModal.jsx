@@ -50,7 +50,7 @@ class CreateSettingsModal extends React.Component {
         keyboard={false}
         backdrop="static"
         className="use-max-width"
-        title="Create New Settings"
+        title="Create New Settings Value"
         ref={this.modal}
         onSubmit={this.onSave}
         submitName="Create"

@@ -8,6 +8,7 @@ const navigation = require('./navigation');
 const gulp = require('./gulp');
 const verificationStatuses = ['new', 'pending', 'failed', 'approved'];
 const userDocumentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'];
+const settingsTypes = ['string', 'integer', 'float', 'object', 'boolean'];
 const languages = [
   { code: 'en', title: 'English' },
   { code: 'it', title: 'Italian' },
@@ -59,6 +60,12 @@ module.exports = {
     userVerificationStatuses: verificationStatuses,
     userDocumentTypes: userDocumentTypes,
     navigationTypes: navigation.types,
+    settings: {
+      types: settingsTypes,
+    },
+  },
+  settings: {
+    types: settingsTypes,
   },
   server: server,
   i18n: i18n,

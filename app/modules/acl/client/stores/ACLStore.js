@@ -51,7 +51,7 @@ class ACLStore {
   loadACLEnabled() {
     return new Promise(resolve => {
       axios
-        .get('/api/acl/enabled')
+        .get('/api/settings/acl/enabled')
         .then(response => {
           runInAction(() => {
             const { data = [] } = response;

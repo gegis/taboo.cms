@@ -16,7 +16,7 @@ class SettingsList extends React.Component {
   }
 
   getCopyValue(item) {
-    return item._id;
+    return item.value;
   }
 
   render() {
@@ -24,19 +24,21 @@ class SettingsList extends React.Component {
       <table>
         <thead>
           <tr>
-            <th className="rs-hidden-xs">ID</th>
-            <th>Name</th>
-            <th>Enabled</th>
+            <th>Key</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Public</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
         </thead>
         <tbody>
           {this.settingsStore.items.map(item => (
             <tr key={item._id}>
-              <td className="id rs-hidden-xs">{item._id}</td>
-              <td>{item.name}</td>
+              <td>{item.key}</td>
+              <td>{item.type}</td>
+              <td>{item.value}</td>
               <td>
-                <BooleanIcon value={item.enabled} />
+                <BooleanIcon value={item.public} />
               </td>
               <td>
                 <ActionButtons

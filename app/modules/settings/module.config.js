@@ -21,7 +21,7 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/api/acl/enabled',
+      path: '/api/settings/acl/enabled',
       action: SettingsController.getACLEnabled,
       order: 5000,
       options: {
@@ -30,8 +30,8 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/api/admin/settings/:key',
-      action: SettingsAdminController.getSettings,
+      path: '/api/admin/settings/key/:key',
+      action: SettingsAdminController.getByKey,
       policies: ['isAdmin'],
       order: 5000,
       options: {
@@ -40,8 +40,8 @@ module.exports = {
     },
     {
       method: 'PUT',
-      path: '/api/admin/settings/:key',
-      action: SettingsAdminController.setSettings,
+      path: '/api/admin/settings/key/:key',
+      action: SettingsAdminController.setByKey,
       policies: ['isAdmin'],
       order: 5000,
       options: {

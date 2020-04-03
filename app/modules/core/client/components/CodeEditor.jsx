@@ -2,6 +2,7 @@ import React from 'react';
 import AceEditor from 'react-ace';
 import PropTypes from 'prop-types';
 
+import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/snippets/html';
 import 'ace-builds/src-noconflict/theme-chrome';
@@ -18,6 +19,8 @@ class CodeEditor extends React.Component {
       onChange,
       value,
       id = 'code-editor',
+      mode = 'html',
+      theme = 'chrome',
       tabSize = 2,
       fontSize = 12,
       enableBasicAutocompletion = true,
@@ -26,8 +29,8 @@ class CodeEditor extends React.Component {
     } = this.props;
     return (
       <AceEditor
-        mode="html"
-        theme="chrome"
+        mode={mode}
+        theme={theme}
         onChange={onChange}
         name={id}
         value={value}
@@ -59,6 +62,8 @@ CodeEditor.propTypes = {
   onChange: PropTypes.func,
   id: PropTypes.string,
   value: PropTypes.string,
+  mode: PropTypes.string,
+  theme: PropTypes.string,
   tabSize: PropTypes.number,
   fontSize: PropTypes.number,
   enableBasicAutocompletion: PropTypes.bool,

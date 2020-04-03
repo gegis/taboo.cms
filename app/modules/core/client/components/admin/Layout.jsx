@@ -58,7 +58,7 @@ class Layout extends React.Component {
       sidebar = false;
     }
     if (sidebar) {
-      sidebarClass = uiAdminStore.open ? 'sidebar-open' : 'sidebar-closed';
+      sidebarClass = uiAdminStore.sidebarOpen ? 'sidebar-open' : 'sidebar-closed';
       sidebarClass += ' rs-container-has-sidebar';
     }
     return (

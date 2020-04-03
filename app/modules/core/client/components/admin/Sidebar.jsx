@@ -15,16 +15,28 @@ class Sidebar extends React.Component {
   constructor(props) {
     super(props);
     this.aclStore = props.aclStore;
+    this.uiAdminStore = props.uiAdminStore;
     this.handleToggle = this.handleToggle.bind(this);
+    this.onDropdownOpen = this.onDropdownOpen.bind(this);
+    this.onDropdownSelect = this.onDropdownSelect.bind(this);
+  }
+
+  onDropdownOpen(keys) {
+    this.uiAdminStore.setExpandedSidebarItems(keys);
+  }
+
+  onDropdownSelect(key) {
+    this.uiAdminStore.setExpandedSidebarItems([key]);
   }
 
   getPrimaryMenuItems() {
     const items = AdminConfigHelper.getPrimaryMenuItems();
     const menuItems = [];
-    const menuItemChildren = [];
+    let menuItemChildren = [];
     [...items].map((item, i) => {
       if (this.aclStore.isAllowed(this.aclStore.userACL, item.acl)) {
         if (item.dropdown && item.dropdown.length > 0) {
+          menuItemChildren = [];
           item.dropdown.map((child, j) => {
             menuItemChildren.push(
               <NavDropDownLink key={`${i}-${j}`} icon={child.icon} {...child.linkProps}>
@@ -39,7 +51,7 @@ class Sidebar extends React.Component {
           );
         } else {
           menuItems.push(
-            <NavLink key={i} eventKey={i} icon={item.icon} {...item.linkProps}>
+            <NavLink key={i} eventKey={i} icon={item.icon} onSelect={this.onDropdownSelect} {...item.linkProps}>
               <Translation message={item.text} />
             </NavLink>
           );
@@ -50,15 +62,17 @@ class Sidebar extends React.Component {
   }
 
   handleToggle() {
-    const { uiAdminStore } = this.props;
-    uiAdminStore.toggleAdminSidebar();
+    this.uiAdminStore.toggleAdminSidebar();
   }
 
   render() {
-    const { uiAdminStore } = this.props;
     return (
       <RsSidebar
-        className={classNames('sidebar', uiAdminStore.open && 'open', !uiAdminStore.open && 'closed')}
+        className={classNames(
+          'sidebar',
+          this.uiAdminStore.sidebarOpen && 'open',
+          !this.uiAdminStore.sidebarOpen && 'closed'
+        )}
         width="auto"
         collapsible
       >
@@ -69,7 +83,13 @@ class Sidebar extends React.Component {
             </Navbar.Header>
           </Navbar>
         </Sidenav.Header>
-        <Sidenav expanded={uiAdminStore.open} defaultOpenKeys={[0, 1, 2, 3]} defaultactivekey={0} appearance="subtle">
+        <Sidenav
+          expanded={this.uiAdminStore.sidebarOpen}
+          openKeys={this.uiAdminStore.expandedSidebarItems}
+          defaultactivekey={0}
+          onOpenChange={this.onDropdownOpen}
+          appearance="subtle"
+        >
           <Sidenav.Body>
             <Nav>{this.getPrimaryMenuItems()}</Nav>
           </Sidenav.Body>
@@ -79,7 +99,7 @@ class Sidebar extends React.Component {
           <Navbar.Body>
             <Nav pullRight>
               <Nav.Item onClick={this.handleToggle} className="sidebar-toggle-btn">
-                <Icon icon={uiAdminStore.open ? 'angle-left' : 'angle-right'} />
+                <Icon icon={this.uiAdminStore.sidebarOpen ? 'angle-left' : 'angle-right'} />
               </Nav.Item>
             </Nav>
           </Navbar.Body>
