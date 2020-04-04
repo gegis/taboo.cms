@@ -1,5 +1,5 @@
 import { decorate, action } from 'mobx';
-import EntityAdminStore from 'modules/core/client/stores/EntityAdminStore';
+import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 
 const newItem = {
   id: null,
@@ -9,7 +9,7 @@ const newItem = {
   published: false,
 };
 
-class GalleriesStore extends EntityAdminStore {
+class GalleriesStore extends AbstractAdminStore {
   constructor() {
     super({
       newItem: newItem,

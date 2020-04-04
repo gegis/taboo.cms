@@ -1,7 +1,7 @@
 import { decorate, observable, action, runInAction } from 'mobx';
 import axios from 'axios';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
-import EntityAdminStore from 'modules/core/client/stores/EntityAdminStore';
+import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 
 const newItem = {
   id: null,
@@ -19,7 +19,7 @@ const newItem = {
   updatedAt: '',
 };
 
-class UploadsAdminStore extends EntityAdminStore {
+class UploadsAdminStore extends AbstractAdminStore {
   constructor() {
     super({
       newItem: newItem,

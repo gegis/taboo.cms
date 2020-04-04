@@ -3,13 +3,14 @@ import axios from 'axios';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
 import ArrayHelper from 'app/modules/core/client/helpers/ArrayHelper';
 
-class EntityAdminStore {
+class AbstractAdminStore {
   constructor(options) {
     this.options = options;
     this.page = 1;
     this.limit = 50;
     this.hasMoreResults = false;
-    (this.filter = null), (this.search = '');
+    this.filter = null;
+    this.search = '';
     this.items = [];
     this.sortBy = this.options.sortBy || 'name';
     this.sortDirection = this.options.sortDirection || 'asc';
@@ -170,6 +171,10 @@ class EntityAdminStore {
     this.filter = filter;
   }
 
+  setSearch(search) {
+    this.search = search;
+  }
+
   getItemIndexById(id) {
     let index = null;
     this.items.find((item, i) => {
@@ -220,7 +225,7 @@ class EntityAdminStore {
   }
 }
 
-decorate(EntityAdminStore, {
+decorate(AbstractAdminStore, {
   page: observable,
   hasMoreResults: observable,
   filter: observable,
@@ -237,9 +242,10 @@ decorate(EntityAdminStore, {
   update: action,
   deleteById: action,
   setFilter: action,
+  setSearch: action,
   reorderItems: action,
   sortItems: action,
   setCheckboxItemValue: action,
 });
 
-export default EntityAdminStore;
+export default AbstractAdminStore;

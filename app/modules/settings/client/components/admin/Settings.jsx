@@ -21,6 +21,7 @@ class Settings extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { match: { params: { category = 'generic' } = {} } = {} } = nextProps;
     if (category !== prevState.category) {
+      nextProps.settingsStore.setSearch('');
       nextProps.settingsStore.setFilter({ category });
       nextProps.settingsStore.loadAll();
       return { category };

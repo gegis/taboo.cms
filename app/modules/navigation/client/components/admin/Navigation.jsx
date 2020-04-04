@@ -21,6 +21,7 @@ class Navigation extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { match: { params: { type = 'website' } = {} } = {} } = nextProps;
     if (type !== prevState.type) {
+      nextProps.navigationStore.setSearch('');
       nextProps.navigationStore.setFilter({ type });
       nextProps.navigationStore.loadAll();
       return { type };

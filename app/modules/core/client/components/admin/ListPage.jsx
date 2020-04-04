@@ -17,9 +17,6 @@ class ListPage extends React.Component {
     this.createModal = React.createRef();
     this.editModal = React.createRef();
     this.searchTimeout = null;
-    this.state = {
-      search: '',
-    };
     this.openCreateModal = this.openCreateModal.bind(this);
     this.openEditModal = this.openEditModal.bind(this);
     this.handleSort = this.handleSort.bind(this);
@@ -30,22 +27,24 @@ class ListPage extends React.Component {
   }
 
   componentDidMount() {
+    this.entityStore.setSearch('');
     this.entityStore.loadAll();
   }
 
   onSearchChange(value) {
     clearTimeout(this.searchTimeout);
-    this.setState({ search: value });
+    this.entityStore.setSearch(value);
     this.searchTimeout = setTimeout(() => {
       this.uiAdminStore.setLoading(true);
-      this.entityStore.loadAll({ search: this.state.search }).then(() => {
+      const { search = '' } = this.entityStore;
+      this.entityStore.loadAll({ search }).then(() => {
         this.uiAdminStore.setLoading(false);
       });
     }, 500);
   }
 
   getHeaderNav() {
-    const { search } = this.state;
+    const { search } = this.entityStore;
     const { name } = this.props;
     return (
       <Form layout="inline">

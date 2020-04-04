@@ -1,4 +1,4 @@
-import EntityAdminStore from 'app/modules/core/client/stores/EntityAdminStore';
+import AbstractAdminStore from 'app/modules/core/client/stores/AbstractAdminStore';
 import axios from 'axios';
 import { action, decorate, observable, runInAction } from 'mobx';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
@@ -9,7 +9,7 @@ const newItem = {
   resources: [],
 };
 
-class RolesStore extends EntityAdminStore {
+class RolesStore extends AbstractAdminStore {
   constructor() {
     super({
       newItem: newItem,

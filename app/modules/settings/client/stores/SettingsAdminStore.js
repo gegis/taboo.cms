@@ -1,4 +1,4 @@
-import EntityAdminStore from 'modules/core/client/stores/EntityAdminStore';
+import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 import { runInAction, action, observable, decorate } from 'mobx';
 import ResponseHelper from 'modules/core/client/helpers/ResponseHelper';
 
@@ -15,7 +15,7 @@ const newItem = {
   booleanValue: false,
 };
 
-class SettingsAdminStore extends EntityAdminStore {
+class SettingsAdminStore extends AbstractAdminStore {
   constructor() {
     super({
       newItem: newItem,

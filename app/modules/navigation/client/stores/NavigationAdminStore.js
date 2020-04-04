@@ -1,6 +1,6 @@
 import { action, decorate, observable } from 'mobx';
 import axios from 'axios';
-import EntityAdminStore from 'modules/core/client/stores/EntityAdminStore';
+import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 import ResponseHelper from 'modules/core/client/helpers/ResponseHelper';
 
 const newItem = {
@@ -11,7 +11,7 @@ const newItem = {
   enabled: false,
 };
 
-class NavigationAdminStore extends EntityAdminStore {
+class NavigationAdminStore extends AbstractAdminStore {
   constructor() {
     super({
       newItem: newItem,

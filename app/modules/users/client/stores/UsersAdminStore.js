@@ -1,6 +1,6 @@
 import { decorate, observable, action, runInAction } from 'mobx';
 import axios from 'axios';
-import EntityAdminStore from 'app/modules/core/client/stores/EntityAdminStore';
+import AbstractAdminStore from 'app/modules/core/client/stores/AbstractAdminStore';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
 
 const { userVerificationStatuses = [], userDocumentTypes = [] } = window.app.config;
@@ -30,7 +30,7 @@ const newItem = {
   verificationNote: '',
 };
 
-class UsersAdminStore extends EntityAdminStore {
+class UsersAdminStore extends AbstractAdminStore {
   constructor() {
     super({
       newItem: newItem,
