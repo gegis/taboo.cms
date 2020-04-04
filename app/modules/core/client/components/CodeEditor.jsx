@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-html';
+import 'ace-builds/src-noconflict/snippets/json';
 import 'ace-builds/src-noconflict/snippets/html';
 import 'ace-builds/src-noconflict/theme-chrome';
 import 'ace-builds/src-min-noconflict/ext-language_tools';

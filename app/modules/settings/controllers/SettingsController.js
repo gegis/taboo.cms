@@ -2,7 +2,11 @@ const { Service } = require('@taboo/cms-core');
 
 class SettingsController {
   async getSettings(ctx) {
-    ctx.body = await Service('settings.Settings').getPublic(ctx.params.key);
+    const item = await Service('settings.Settings').getPublic(ctx.params.key);
+    if (!item) {
+      ctx.throw(404);
+    }
+    ctx.body = item;
   }
 
   async getACLEnabled(ctx) {

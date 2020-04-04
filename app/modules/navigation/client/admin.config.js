@@ -1,23 +1,16 @@
 import React from 'react';
 import { Icon } from 'rsuite';
 
-import WebsiteNavigation from './components/admin/WebsiteNavigation';
-import UserNavigation from './components/admin/UserNavigation';
+import Navigation from './components/admin/Navigation';
 import NavigationAdminStore from './stores/NavigationAdminStore';
 
 const enabled = true;
 
 const routes = [
   {
-    path: '/admin/navigation/website',
+    path: '/admin/navigation/:type',
     exact: true,
-    component: WebsiteNavigation,
-    admin: true,
-  },
-  {
-    path: '/admin/navigation/user',
-    exact: true,
-    component: UserNavigation,
+    component: Navigation,
     admin: true,
   },
 ];

@@ -15,6 +15,7 @@ class InitDbService {
 
   async init(modules, aclResources) {
     const { Settings: SettingsService } = modules.settings.services;
+    // TODO - think of putting this db value not in db - to have every restart faster
     const dbValue = await SettingsService.getValue('db');
     if (dbValue && dbValue.initialized) {
       this.dbInitialized = true;
@@ -25,6 +26,7 @@ class InitDbService {
       await this.setupAdminUser(modules, this.newAdminRole);
       await this.setupPages(modules, pages);
       await this.setupNavigation(modules, navigation);
+      // TODO setup any settings to db if needed in here
       await SettingsService.setValue('db', { initialized: true }, 'object');
     }
   }

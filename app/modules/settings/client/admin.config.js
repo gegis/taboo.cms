@@ -1,16 +1,16 @@
 import React from 'react';
 import { Icon } from 'rsuite';
 
-import SettingsGeneric from './components/admin/SettingsGeneric';
+import Settings from './components/admin/Settings';
 import SettingsAdminStore from './stores/SettingsAdminStore';
 
 const enabled = true;
 
 const routes = [
   {
-    path: '/admin/settings/generic',
+    path: '/admin/settings/:category',
     exact: true,
-    component: SettingsGeneric,
+    component: Settings,
     admin: true,
   },
 ];

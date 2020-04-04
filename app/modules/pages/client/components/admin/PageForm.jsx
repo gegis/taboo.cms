@@ -78,7 +78,7 @@ class PageForm extends React.Component {
             onChange={this.onCodeEditorChange}
             value={this.pagesStore.item.body}
             width="auto"
-            height="400px"
+            height="360px"
             className="code-editor"
           />
           <div className="richTextBtnWrapper">

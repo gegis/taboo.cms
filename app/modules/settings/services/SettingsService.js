@@ -19,7 +19,7 @@ class SettingsService {
 
   async get(key) {
     let itemData = null;
-    const item = await Model('settings.Settings').findOne({ key }, ['key', 'value', 'public', 'type']);
+    const item = await Model('settings.Settings').findOne({ key }, ['key', 'value', 'public', 'type', 'category']);
     if (item) {
       itemData = item._doc;
       itemData = this.parseValue(itemData);
@@ -59,15 +59,7 @@ class SettingsService {
   }
 
   async setValue(key, value, type = 'string') {
-    let item = await this.set(key, { value, type });
-    if (!item) {
-      item = {
-        key,
-        value: null,
-        public: false,
-      };
-    }
-    return item;
+    return await this.set(key, { value, type });
   }
 
   parseValue(item) {
