@@ -2,19 +2,9 @@ import React from 'react';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import SortableTree from 'react-sortable-tree';
 
 import ActionButtons from 'app/modules/core/client/components/admin/ActionButtons';
-import BooleanIcon from 'modules/core/client/components/admin/BooleanIcon';
-
-const CustomDroppable = props => {
-  const { children, ...rest } = props;
-  return <Droppable {...rest}>{children}</Droppable>;
-};
-
-CustomDroppable.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-};
 
 class NavigationList extends React.Component {
   constructor(props) {
@@ -24,101 +14,47 @@ class NavigationList extends React.Component {
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
-    this.onDragEnd = this.onDragEnd.bind(this);
+    this.generateNodeProps = this.generateNodeProps.bind(this);
+    this.onTreeChange = this.onTreeChange.bind(this);
   }
 
-  getCopyValue(item) {
-    return item._id;
+  getActionButtons(node) {
+    const buttons = [];
+    buttons.push(
+      <ActionButtons
+        value={node._id}
+        onEdit={this.openEditModal}
+        onDelete={this.handleDelete}
+        btnClassName="rs-btn-sm"
+      />
+    );
+
+    return buttons;
   }
 
-  onDragEnd(result) {
-    if (!result.destination) {
-      return;
-    }
-    this.navigationStore.reorderItems(result.source.index, result.destination.index).then(data => {
-      if (data && data.success) {
-        this.notificationsStore.push({
-          title: 'Success',
-          html: 'Sort order has been saved',
-          translate: true,
-        });
-      }
-    });
+  generateNodeProps({ node }) {
+    return {
+      title: <span>{node.title}</span>,
+      subtitle: <span>{node._id}</span>,
+      buttons: this.getActionButtons(node),
+    };
   }
 
-  getDraggableStyle(style, snapshot) {
-    if (snapshot.isDropAnimating) {
-      // Make dropping animation very short
-      return {
-        ...style,
-        left: '300px%',
-        top: `${parseInt(style.top) - 10}px`,
-        transitionDuration: '0.1s',
-      };
-    } else if (snapshot.isDragging) {
-      return {
-        ...style,
-        left: '300px',
-        top: `${parseInt(style.top) - 10}px`,
-      };
-    }
-    return style;
+  onTreeChange(items) {
+    this.navigationStore.setItems(items);
   }
 
   render() {
     const { items } = this.navigationStore;
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>URL</th>
-              <th>Language</th>
-              <th>Enabled</th>
-              <th className="action-buttons-3">Actions</th>
-            </tr>
-          </thead>
-          <CustomDroppable droppableId="droppable-navigation">
-            {provided => (
-              <tbody ref={provided.innerRef} {...provided.droppableProps}>
-                {items.map((item, i) => (
-                  <Draggable key={item._id + i} draggableId={item._id + i} index={i}>
-                    {(provided, snapshot) => (
-                      <tr
-                        key={item._id + i}
-                        ref={provided.innerRef}
-                        {...provided.dragHandleProps}
-                        {...provided.draggableProps}
-                        className="draggable-tr"
-                        style={this.getDraggableStyle(provided.draggableProps.style, snapshot)}
-                      >
-                        <td>{item.title}</td>
-                        <td>{item.url}</td>
-                        <td>{item.language}</td>
-                        <td>
-                          <BooleanIcon value={item.enabled} />
-                        </td>
-                        <td>
-                          <ActionButtons
-                            value={item._id}
-                            onEdit={this.openEditModal}
-                            onDelete={this.handleDelete}
-                            copyValue={this.getCopyValue(item)}
-                            onCopy={this.handleCopy}
-                            copyTitle="Copy value"
-                          />
-                        </td>
-                      </tr>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </tbody>
-            )}
-          </CustomDroppable>
-        </table>
-      </DragDropContext>
+      <div style={{ height: '100%' }}>
+        <SortableTree
+          isVirtualized={false}
+          treeData={items}
+          generateNodeProps={this.generateNodeProps}
+          onChange={this.onTreeChange}
+        />
+      </div>
     );
   }
 }

@@ -2,11 +2,13 @@ import React from 'react';
 import { Icon, ButtonToolbar, IconButton, Whisper, Popover } from 'rsuite';
 import Translation from 'app/modules/core/client/components/Translation';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 const ActionButtons = ({
   value,
   copyValue,
   copyTitle = 'Copy value',
+  btnClassName = 'rs-btn-md',
   onEdit,
   onDelete,
   onAdd,
@@ -87,7 +89,7 @@ const ActionButtons = ({
   if (onEdit) {
     buttons.push(
       <IconButton
-        className="edit-btn"
+        className={classNames('edit-btn', btnClassName)}
         key="edit"
         appearance="default"
         onClick={handleEdit}
@@ -100,7 +102,7 @@ const ActionButtons = ({
   if (onAdd) {
     buttons.push(
       <IconButton
-        className="add-btn"
+        className={classNames('add-btn', btnClassName)}
         key="add"
         appearance="primary"
         title="Add"
@@ -113,7 +115,7 @@ const ActionButtons = ({
   if (onSelect) {
     buttons.push(
       <IconButton
-        className="select-btn"
+        className={classNames('select-btn', btnClassName)}
         key="select"
         appearance="primary"
         title="Select"
@@ -126,7 +128,7 @@ const ActionButtons = ({
   if (copyValue) {
     buttons.push(
       <IconButton
-        className="copy-btn"
+        className={classNames('copy-btn', btnClassName)}
         key="copy"
         appearance="default"
         onClick={handleCopy}
@@ -154,7 +156,7 @@ const ActionButtons = ({
       >
         <IconButton
           color="orange"
-          className="archive-btn"
+          className={classNames('archive-btn', btnClassName)}
           title={archiveButtonOptions.title}
           icon={<Icon icon={archiveButtonOptions.icon} />}
         />
@@ -175,7 +177,7 @@ const ActionButtons = ({
       >
         <IconButton
           appearance="default"
-          className="delete-btn"
+          className={classNames('delete-btn', btnClassName)}
           color="red"
           title="Delete"
           icon={<Icon icon="trash-o" />}
@@ -193,6 +195,7 @@ const ActionButtons = ({
 
 ActionButtons.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  btnClassName: PropTypes.string,
   copyValue: PropTypes.string,
   copyTitle: PropTypes.string,
   onEdit: PropTypes.func,

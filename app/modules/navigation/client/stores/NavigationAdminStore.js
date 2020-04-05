@@ -53,11 +53,17 @@ class NavigationAdminStore extends AbstractAdminStore {
         .catch(ResponseHelper.handleError);
     });
   }
+
+  setItems(items) {
+    this.items = items;
+  }
 }
 
 decorate(NavigationAdminStore, {
+  items: observable,
   languageOptions: observable,
   create: action,
+  setItems: action,
 });
 
 export default new NavigationAdminStore();
