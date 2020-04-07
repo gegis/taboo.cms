@@ -10,15 +10,15 @@ class NavigationStore {
     this.userNavigation = userNavigation;
   }
 
-  loadNavigationByType(type) {
+  loadNavigationBySlug(slug) {
     return new Promise(resolve => {
       axios
-        .get('/api/navigation/:type'.replace(':type', type))
+        .get('/api/navigation/:slug'.replace(':slug', slug))
         .then(response => {
           runInAction(() => {
             const { data = {} } = response;
             if (data) {
-              if (type === 'user') {
+              if (slug === 'user') {
                 this.userNavigation = data;
               } else {
                 this.navigation = data;
@@ -33,9 +33,9 @@ class NavigationStore {
 }
 
 decorate(NavigationStore, {
-  loadUserNavigation: action,
   navigation: observable,
   userNavigation: observable,
+  loadUserNavigation: action,
 });
 
 export default new NavigationStore();

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import ActionButtons from 'app/modules/core/client/components/admin/ActionButtons';
 import BooleanIcon from 'modules/core/client/components/admin/BooleanIcon';
+import Translation from 'modules/core/client/components/Translation';
 
 class NavigationList extends React.Component {
   constructor(props) {
@@ -25,19 +26,39 @@ class NavigationList extends React.Component {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Slug</th>
-            <th>Language</th>
-            <th>Enabled</th>
+            <th className="rs-hidden-xs">Slug</th>
+            <th className="rs-hidden-xs">Language</th>
+            <th className="rs-hidden-xs">Enabled</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
         </thead>
         <tbody>
           {this.navigationStore.items.map(item => (
             <tr key={item._id}>
-              <td>{item.name}</td>
-              <td>{item.slug}</td>
-              <td>{item.language}</td>
               <td>
+                <div>{item.name}</div>
+                <div className="rs-visible-xs">
+                  <span className="subject md">
+                    <Translation message="Slug" />:
+                  </span>{' '}
+                  {item.slug}
+                </div>
+                <div className="rs-visible-xs">
+                  <span className="subject md">
+                    <Translation message="Language" />:
+                  </span>{' '}
+                  {item.language}
+                </div>
+                <div className="rs-visible-xs">
+                  <span className="subject md">
+                    <Translation message="Enabled" />:
+                  </span>{' '}
+                  <BooleanIcon value={item.enabled} />
+                </div>
+              </td>
+              <td className="rs-hidden-xs">{item.slug}</td>
+              <td className="rs-hidden-xs">{item.language}</td>
+              <td className="rs-hidden-xs">
                 <BooleanIcon value={item.enabled} />
               </td>
               <td>

@@ -64,7 +64,7 @@ class SignIn extends React.Component {
       if (data) {
         authStore.loadUserAuth().then(user => {
           if (user) {
-            navigationStore.loadNavigationByType('user');
+            navigationStore.loadNavigationBySlug('user');
             // In case if user had to sign in, we register event with his id
             SocketsClient.on(this.getUserEventName('update'), () => {
               authStore.loadUserAuth();

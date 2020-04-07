@@ -22,7 +22,7 @@ const stores = {
 const primaryMenu = [
   {
     order: 325,
-    icon: React.createElement(Icon, { icon: 'bars' }),
+    icon: React.createElement(Icon, { icon: 'sitemap' }),
     text: 'Navigation',
     linkProps: {
       to: '/admin/navigation',

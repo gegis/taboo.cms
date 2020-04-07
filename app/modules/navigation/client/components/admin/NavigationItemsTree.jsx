@@ -49,7 +49,7 @@ class NavigationList extends React.Component {
         value={row}
         onEdit={this.onNavigationItemEdit}
         onDelete={this.onNavigationItemDelete}
-        btnClassName="rs-btn-sm"
+        btnClassName="rs-btn-xs"
       />
     );
 
@@ -63,8 +63,12 @@ class NavigationList extends React.Component {
 
   generateNodeProps(row) {
     const { node } = row;
+    let titleClassName = 'node-title';
+    if (!node.enabled) {
+      titleClassName += ' disabled';
+    }
     return {
-      title: <div>{node.title}</div>,
+      title: <div className={titleClassName}>{node.title}</div>,
       subtitle: (
         <div>
           <a href={node.url} target="_blank" rel="noopener noreferrer">
@@ -116,6 +120,7 @@ class NavigationList extends React.Component {
             <SortableTree
               isVirtualized={false}
               treeData={this.getNavigationItems()}
+              rowHeight={44}
               getNodeKey={this.getNodeKey}
               generateNodeProps={this.generateNodeProps}
               onChange={this.onTreeChange}
