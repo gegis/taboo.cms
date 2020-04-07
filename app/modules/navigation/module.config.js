@@ -10,30 +10,11 @@ module.exports = {
     resources: ['admin.navigation.view', 'admin.navigation.manage'],
   },
   routes: [
-    // TODO implement this
-    // {
-    //   method: 'GET',
-    //   path: '/api/navigation/:slug',
-    //   action: NavigationController.findOneBySlug,
-    //   policies: [],
-    //   options: {
-    //     errorResponseAsJson: true,
-    //   },
-    // },
     {
       method: 'GET',
-      path: '/api/navigation/website',
-      action: NavigationController.getWebsiteNavigation,
+      path: '/api/navigation/:slug',
+      action: NavigationController.findOneBySlug,
       policies: [],
-      options: {
-        errorResponseAsJson: true,
-      },
-    },
-    {
-      method: 'GET',
-      path: '/api/navigation/user',
-      action: NavigationController.geUserNavigation,
-      policies: ['isUser'],
       options: {
         errorResponseAsJson: true,
       },
