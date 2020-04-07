@@ -1,7 +1,7 @@
 module.exports = {
   companyName: 'Taboo Solutions',
   ' ': ' ',
-  _footerCopy: '© All rights reserved. 2019',
+  _footerCopy: '© All rights reserved. 2020',
   _we_use_cookies_message: 'We use cookies to ensure you get the best experience on our website. <a href="https://cookiesandyou.com/" target="_blank">Learn more</a>',
   'I agree': 'I agree',
   'My Profile': 'My Profile',
