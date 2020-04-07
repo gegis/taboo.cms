@@ -10,6 +10,16 @@ module.exports = {
     resources: ['admin.navigation.view', 'admin.navigation.manage'],
   },
   routes: [
+    // TODO implement this
+    // {
+    //   method: 'GET',
+    //   path: '/api/navigation/:slug',
+    //   action: NavigationController.findOneBySlug,
+    //   policies: [],
+    //   options: {
+    //     errorResponseAsJson: true,
+    //   },
+    // },
     {
       method: 'GET',
       path: '/api/navigation/website',
@@ -55,6 +65,16 @@ module.exports = {
       action: NavigationAdminController.findById,
       policies: ['isAdmin'],
       order: 101,
+      options: {
+        errorResponseAsJson: true,
+        aclResource: 'admin.navigation.view',
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/admin/navigation/slug/:slug',
+      action: NavigationAdminController.findOneBySlug,
+      policies: ['isAdmin'],
       options: {
         errorResponseAsJson: true,
         aclResource: 'admin.navigation.view',

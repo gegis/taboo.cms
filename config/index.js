@@ -4,7 +4,6 @@ const api = require('./api');
 const db = require('./db');
 const mailer = require('./mailer');
 const logger = require('./logger');
-const navigation = require('./navigation');
 const gulp = require('./gulp');
 const verificationStatuses = ['new', 'pending', 'failed', 'approved'];
 const userDocumentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'];
@@ -31,7 +30,6 @@ module.exports = {
       pass: 'admin',
     },
   },
-  navigation: navigation,
   users: {
     signInEnabled: true,
     signUpEnabled: true,
@@ -59,7 +57,6 @@ module.exports = {
     userInfoUpdateInterval: 1000 * 60,
     userVerificationStatuses: verificationStatuses,
     userDocumentTypes: userDocumentTypes,
-    navigationTypes: navigation.types,
     settings: {
       types: settingsTypes,
     },

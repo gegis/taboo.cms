@@ -23,6 +23,7 @@ const language = window.app.config.language || defaultLanguage;
 const locale = window.app.config.locale || defaultLocale;
 const translations = window.app.config.translations || defaultTranslations;
 const languages = window.app.config.languages || defaultLanguages;
+const localeMapping = window.app.config.localeMapping || defaultLocaleMapping;
 
 class LocaleStore {
   constructor() {
@@ -31,10 +32,14 @@ class LocaleStore {
     this.language = language;
     this.locale = locale;
     this.translations = translations;
+    this.localesOptions = [];
     this.languageOptions = [];
     languages.map(language => {
       this.languageOptions.push({ label: language.title, value: language.code });
     });
+    for (let locale in localeMapping) {
+      this.localesOptions.push({ label: defaultLocaleMapping[locale], value: defaultLocaleMapping[locale] });
+    }
   }
 
   setLanguage(language, admin = false) {

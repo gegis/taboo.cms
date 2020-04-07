@@ -1,4 +1,4 @@
-const { config, logger, Model, Service } = require('@taboo/cms-core');
+const { config, logger, apiHelper, Model, Service } = require('@taboo/cms-core');
 const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
 const {
   api: { navigation: { defaultSort = { sort: 'asc' } } = {} },
@@ -12,6 +12,23 @@ class NavigationAdminController extends AbstractAdminController {
       populate: {},
       defaultSort,
     });
+    this.findOneBySlug = this.findOneBySlug.bind(this);
+  }
+
+  async findOneBySlug(ctx) {
+    const { model } = this.props;
+    let { fields } = apiHelper.parseRequestParams(ctx.request.query, ['fields']);
+    let item = null;
+    try {
+      item = await Model(model).findOne({ slug: ctx.params.slug }, fields);
+    } catch (err) {
+      logger.error(err);
+      return ctx.throw(400, err);
+    }
+    if (!item) {
+      return ctx.throw(404);
+    }
+    ctx.body = item;
   }
 
   async afterUpdate(ctx, itemResult) {

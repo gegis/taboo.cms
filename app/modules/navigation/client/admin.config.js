@@ -8,7 +8,7 @@ const enabled = true;
 
 const routes = [
   {
-    path: '/admin/navigation/:type',
+    path: '/admin/navigation',
     exact: true,
     component: Navigation,
     admin: true,
@@ -24,25 +24,10 @@ const primaryMenu = [
     order: 325,
     icon: React.createElement(Icon, { icon: 'bars' }),
     text: 'Navigation',
+    linkProps: {
+      to: '/admin/navigation',
+    },
     acl: 'admin.navigation.view',
-    dropdown: [
-      {
-        icon: React.createElement(Icon, { icon: 'project' }),
-        text: 'Website Navigation',
-        linkProps: {
-          to: '/admin/navigation/website',
-        },
-        acl: 'admin.navigation.view',
-      },
-      {
-        icon: React.createElement(Icon, { icon: 'street-view' }),
-        text: 'User Navigation',
-        linkProps: {
-          to: '/admin/navigation/user',
-        },
-        acl: 'admin.navigation.view',
-      },
-    ],
   },
 ];
 

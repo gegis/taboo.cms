@@ -50,7 +50,7 @@ class CreateNavigationModal extends React.Component {
         keyboard={false}
         backdrop="static"
         className="use-max-width"
-        title="Create New Navigation Item"
+        title="Create New Navigation"
         ref={this.modal}
         onSubmit={this.onSave}
         submitName="Create"

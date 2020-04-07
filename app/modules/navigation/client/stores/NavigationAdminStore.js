@@ -1,14 +1,24 @@
 import { action, decorate, observable } from 'mobx';
-import axios from 'axios';
+import uuidv1 from 'uuid/v1';
+import { removeNodeAtPath, changeNodeAtPath } from 'react-sortable-tree';
 import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
-import ResponseHelper from 'modules/core/client/helpers/ResponseHelper';
 
 const newItem = {
   id: null,
-  title: '',
-  url: '',
+  name: '',
+  slug: '',
+  items: [],
   language: 'en',
   enabled: false,
+};
+
+const newNavigationItem = {
+  id: null,
+  title: '',
+  url: '',
+  pageLink: '',
+  openInNewPage: false,
+  enabled: true,
 };
 
 class NavigationAdminStore extends AbstractAdminStore {
@@ -38,32 +48,83 @@ class NavigationAdminStore extends AbstractAdminStore {
         },
       },
     });
+    this.navigationItem = Object.assign({}, newNavigationItem);
+    this.navigationItemRow = {};
+    this.resetNavigationItem = this.resetNavigationItem.bind(this);
+    this.setNavigationItem = this.setNavigationItem.bind(this);
+    this.setCheckboxNavigationItemValue = this.setCheckboxNavigationItemValue.bind(this);
+    this.addNewNavigationItem = this.addNewNavigationItem.bind(this);
+    this.updateNavigationItem = this.updateNavigationItem.bind(this);
+    this.deleteNavigationItem = this.deleteNavigationItem.bind(this);
   }
 
-  create(data) {
-    if (this.filter && this.filter.type) {
-      data.type = this.filter.type;
+  resetNavigationItem() {
+    this.navigationItem = Object.assign({}, newNavigationItem);
+    this.navigationItemRow = {};
+  }
+
+  setNavigationItem(item) {
+    this.navigationItem = Object.assign(this.navigationItem, item);
+  }
+
+  setNavigationItemRow(row) {
+    this.navigationItemRow = Object.assign(this.navigationItemRow, row);
+  }
+
+  setCheckboxNavigationItemValue(field, event, value) {
+    this.navigationItem[field] = value;
+  }
+
+  addNewNavigationItem(navigationItem) {
+    if (!navigationItem.id) {
+      navigationItem.id = uuidv1();
     }
-    return new Promise(resolve => {
-      const { create } = this.options.endpoints;
-      axios[create.method](create.path, data)
-        .then(response => {
-          resolve(response.data);
-        })
-        .catch(ResponseHelper.handleError);
-    });
+    if (this.item && this.item.items && Array.isArray(this.item.items)) {
+      this.item.items.push(navigationItem);
+    }
   }
 
-  setItems(items) {
-    this.items = items;
+  updateNavigationItem(navigationItem, navigationItemRow) {
+    const { items = [] } = this.item;
+    const newItems = changeNodeAtPath({
+      treeData: items,
+      path: navigationItemRow.path,
+      newNode: navigationItem,
+      getNodeKey: nodeRow => {
+        const { node } = nodeRow;
+        return node.id;
+      },
+      ignoreCollapsed: false,
+    });
+    this.setItem({ items: newItems });
+  }
+
+  deleteNavigationItem(navigationItemRow) {
+    const { items = [] } = this.item;
+    const newItems = removeNodeAtPath({
+      treeData: items,
+      path: navigationItemRow.path,
+      getNodeKey: nodeRow => {
+        const { node } = nodeRow;
+        return node.id;
+      },
+      ignoreCollapsed: false,
+    });
+    this.setItem({ items: newItems });
   }
 }
 
 decorate(NavigationAdminStore, {
-  items: observable,
-  languageOptions: observable,
-  create: action,
-  setItems: action,
+  item: observable,
+  navigationItem: observable,
+  navigationItemRow: observable,
+  resetNavigationItem: action,
+  setNavigationItem: action,
+  setNavigationItemRow: action,
+  setCheckboxNavigationItemValue: action,
+  addNewNavigationItem: action,
+  updateNavigationItem: action,
+  deleteNavigationItem: action,
 });
 
 export default new NavigationAdminStore();

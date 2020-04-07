@@ -5,6 +5,7 @@ import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import Translation from 'app/modules/core/client/components/Translation';
+import NavigationItemsTree from 'modules/navigation/client/components/admin/NavigationItemsTree';
 
 class NavigationForm extends React.Component {
   constructor(props) {
@@ -26,17 +27,17 @@ class NavigationForm extends React.Component {
           </FormGroup>
         )}
         {item.id && <div className="clearfix" />}
-        <FormGroup controlId="title" className="inline">
+        <FormGroup controlId="name" className="inline">
           <ControlLabel>
-            <Translation message="Title" />
+            <Translation message="Name" />
           </ControlLabel>
-          <FormControl name="title" />
+          <FormControl name="name" />
         </FormGroup>
-        <FormGroup controlId="url" className="inline">
+        <FormGroup controlId="slug" className="inline">
           <ControlLabel>
-            <Translation message="URL" />
+            <Translation message="Slug" />
           </ControlLabel>
-          <FormControl name="url" />
+          <FormControl name="slug" />
         </FormGroup>
         <FormGroup controlId="language" className="inline">
           <ControlLabel>
@@ -57,6 +58,7 @@ class NavigationForm extends React.Component {
             <Checkbox checked={item.enabled} onChange={setCheckboxItemValue.bind(null, 'enabled')} />
           </div>
         </FormGroup>
+        <NavigationItemsTree />
       </Form>
     );
   }

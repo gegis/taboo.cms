@@ -1,6 +1,4 @@
-const { config } = require('@taboo/cms-core');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const uniqueValidator = require('mongoose-unique-validator');
 
 module.exports = {
   connection: 'mongodb',
@@ -8,34 +6,28 @@ module.exports = {
     timestamps: true,
   },
   schema: {
-    title: {
+    name: {
       type: String,
       required: [true, 'is required'],
     },
-    type: {
+    slug: {
       type: String,
-      enum: config.navigation.types,
-      default: 'website',
+      required: [true, 'is required'],
+      unique: true,
     },
-    url: {
-      type: String,
-    },
-    pageLink: {
-      type: Schema.Types.ObjectId,
-      ref: 'Page',
+    items: {
+      type: Array,
     },
     language: {
       type: String,
-    },
-    sort: {
-      type: Number,
-      default: -1,
     },
     enabled: {
       type: Boolean,
       default: false,
     },
   },
-  // afterSchemaCreate(schema) {}, // Implement logic after schema create in here
+  afterSchemaCreate(schema) {
+    schema.plugin(uniqueValidator, { message: 'must be unique' });
+  },
   // afterModelCreate(model, schema) {}, // Implement logic after model create in here
 };
