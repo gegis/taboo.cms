@@ -1,10 +1,9 @@
+#!/usr/bin/env node
+require('app-module-path').addPath(`${__dirname}/../app`);
 const readlineSync = require('readline-sync');
 const { config } = require('@taboo/cms-core');
-const userModelConfig = require('../app/modules/users/models/UserModel');
-const roleModelConfig = require('../app/modules/acl/models/RoleModel');
-const UsersService = require('../app/modules/users/services/UsersService');
-const { connection } = userModelConfig;
-const { adapter } = config.db.connections[connection];
+const connectionName = 'mongodb';
+const { adapter } = config.db.connections[connectionName];
 const user = {
   firstName: '',
   lastName: '',
@@ -14,66 +13,85 @@ const user = {
   admin: false,
   active: true,
 };
-const userRoles = [];
-let db, UserModel, RoleModel, roles;
 
-while (!user.email) {
-  user.email = readlineSync.question('Please enter email: ');
-}
-user.firstName = user.email.split('@')[0];
-user.lastName = user.email.split('@')[0];
+const prompt = () => {
+  while (!user.email) {
+    user.email = readlineSync.question('Please enter email: ');
+  }
+  user.firstName = user.email.split('@')[0];
+  user.lastName = user.email.split('@')[0];
 
-while (!user.password) {
-  user.password = readlineSync.question('Please enter password: ', {
-    hideEchoBack: true,
-  });
-}
-
-user.admin = readlineSync.keyInYN('Create as admin?');
-if (!user.admin) {
-  user.admin = false;
-}
-
-const run = async () => {
-  let result;
-  let newRole;
-  db = new adapter(config.db.connections[connection]);
-  await db.connect();
-
-  UserModel = await db.setupModel('User', userModelConfig);
-  RoleModel = await db.setupModel('Role', roleModelConfig);
-
-  if (user.admin) {
-    roles = await RoleModel.find();
-    if (roles && roles.length > 0) {
-      roles.map(role => {
-        userRoles.push(role._id);
-      });
-    } else {
-      // Roles do not exist - create one!
-      newRole = await RoleModel.create({
-        name: 'Administrator',
-        resources: ['admin.dashboard', 'admin.acl.view', 'admin.acl.manage', 'admin.users.view', 'admin.users.manage'],
-      });
-      userRoles.push(newRole._id);
-    }
+  while (!user.password) {
+    user.password = readlineSync.question('Please enter password: ', {
+      hideEchoBack: true,
+    });
   }
 
-  user.password = await UsersService.hashPassword(user.password);
-
-  user.roles = userRoles;
-  result = await UserModel.create(user).catch(e => {
-    console.log(e.message);
-    process.exit(1);
-  });
-
-  if (result) {
-    console.log('\n\nA new user was successfully created!\n');
-    delete result.password;
-    console.log(result);
+  user.admin = readlineSync.keyInYN('Create as admin?');
+  if (!user.admin) {
+    user.admin = false;
   }
-
-  process.exit(0);
 };
 
-run();
+const connectDb = async () => {
+  await adapter.connect(config.db.connections[connectionName]);
+};
+
+const setAdminRoles = async () => {
+  const RoleModel = require('modules/acl/models/RoleModel');
+  const userRoles = [];
+  let roles, newRole;
+
+  roles = await RoleModel.find();
+  if (roles && roles.length > 0) {
+    roles.map(role => {
+      userRoles.push(role._id);
+    });
+  } else {
+    // Roles do not exist - create one!
+    newRole = await RoleModel.create({
+      name: 'Administrator',
+      resources: ['admin.dashboard', 'admin.acl.view', 'admin.acl.manage', 'admin.users.view', 'admin.users.manage'],
+    });
+    userRoles.push(newRole._id);
+  }
+  return userRoles;
+};
+
+const create = async () => {
+  const UserModel = require('modules/users/models/UserModel');
+  const UsersService = require('modules/users/services/UsersService');
+  let userRoles = [];
+  let result;
+  if (user.admin) {
+    userRoles = await setAdminRoles();
+  }
+  user.password = await UsersService.hashPassword(user.password);
+  user.roles = userRoles;
+  result = await UserModel.create(user);
+  return result;
+};
+
+prompt();
+connectDb()
+  .then(() => {
+    create()
+      .then(result => {
+        if (result) {
+          console.info('\n\nA new user was successfully created!\n');
+          console.info(result);
+        } else {
+          console.error('Failed to create User');
+          process.exit(1);
+        }
+        process.exit(0);
+      })
+      .catch(e => {
+        console.error(e);
+        process.exit(1);
+      });
+  })
+  .catch(e => {
+    console.error(e);
+    process.exit(1);
+  });

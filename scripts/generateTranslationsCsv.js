@@ -1,12 +1,14 @@
+#!/usr/bin/env node
+require('app-module-path').addPath(`${__dirname}/../app`);
 const path = require('path');
 const fs = require('fs');
-const { config, start, logger, locales, cmsHelper } = require('@taboo/cms-core');
+const { config, start, logger, cmsHelper } = require('@taboo/cms-core');
+const { i18n: { defaultLocalesMapping = {} } = {} } = config;
 const Json2csvParser = require('json2csv').Parser;
 
-const translationsFileName = 'translations.csv';
-
 const run = async () => {
-  let localesArray;
+  const translationsFileName = 'translations.csv';
+  const adminTranslationsFileName = 'translations-admin.csv';
   const fields = [
     {
       label: 'key',
@@ -14,24 +16,26 @@ const run = async () => {
       default: '',
     },
   ];
-  const destination = path.resolve(config.server.localesDir, translationsFileName);
-
-  await start();
-
-  for (let locale in locales) {
+  for (let language in defaultLocalesMapping) {
     fields.push({
-      label: locale,
-      value: locale,
+      label: defaultLocalesMapping[language],
+      value: defaultLocalesMapping[language],
       default: '',
     });
   }
 
-  localesArray = cmsHelper.getLocalesArray();
+  await start();
+  createCsv(fields, cmsHelper.getLocalesArray(), translationsFileName);
+  createCsv(fields, cmsHelper.getLocalesArray(true), adminTranslationsFileName);
+  process.exit(0);
+};
 
+const createCsv = (fields, data, fileName) => {
+  const destination = path.resolve(config.server.localesDir, fileName);
   const json2csvParser = new Json2csvParser({ fields });
   let csv = '';
   try {
-    csv = json2csvParser.parse(localesArray);
+    csv = json2csvParser.parse(data);
   } catch (e) {
     logger.error(e);
   }
@@ -39,8 +43,8 @@ const run = async () => {
   fs.writeFileSync(destination, csv);
 
   logger.info('Translations CSV generated in ' + destination);
-
-  process.exit(0);
 };
 
-run();
+run().catch(e => {
+  console.error(e);
+});

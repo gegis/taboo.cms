@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const path = require('path');
 const parse = require('csv-parse');
 const fs = require('fs');
