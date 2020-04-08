@@ -20,7 +20,7 @@ class InitDbService {
   }
 
   async init(modules, aclResources) {
-    // TODO - think of putting this db value not in db - to have every restart faster
+    // TODO - think of putting this db value not in db - to have every restart faster - put in config like init user!!!
     const dbValue = await SettingsService.getValue('db');
     if (dbValue && dbValue.initialized) {
       this.dbInitialized = true;
@@ -67,6 +67,7 @@ class InitDbService {
     logger.info('Successfully created ADMIN USER!');
     logger.info(`EMAIL: '${this.newAdminUser.email}'`);
     logger.info(`PASSWORD: ${initialUser.pass}`);
+    logger.warn('Make sure to change the password!');
   }
 
   async setupPages(pages = []) {

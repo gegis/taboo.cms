@@ -3,7 +3,7 @@ const AbstractAdminController = require('modules/core/controllers/AbstractAdminC
 const NavigationService = require('modules/navigation/services/NavigationService');
 const NavigationModel = require('modules/navigation/models/NavigationModel');
 const {
-  api: { navigation: { defaultSort = { sort: 'asc' } } = {} },
+  api: { navigation: { defaultSort = { name: 'asc' } } = {} },
 } = config;
 
 class NavigationAdminController extends AbstractAdminController {
