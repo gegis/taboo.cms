@@ -1,7 +1,13 @@
-const { config, Model, Service, Helper, logger, mailer, cmsHelper } = require('@taboo/cms-core');
+const { config, logger, mailer, cmsHelper } = require('@taboo/cms-core');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
+const ACLService = require('modules/acl/services/ACLService');
+const SendGridService = require('modules/mailer/services/SendGridService');
+const LocaleHelper = require('modules/core/helpers/LocaleHelper');
+const ValidationHelper = require('modules/core/helpers/ValidationHelper');
+const UserModel = require('modules/users/models/UserModel');
+const RoleModel = require('modules/acl/models/RoleModel');
 
 class UsersService {
   async passwordsMatch(plainPass, hashedPass) {
@@ -29,9 +35,7 @@ class UsersService {
     if (!password) {
       return ctx.throw(404, 'Password is required');
     }
-    const user = await Model('users.User')
-      .findOne({ email })
-      .populate('profilePicture');
+    const user = await UserModel.findOne({ email }).populate('profilePicture');
     if (!user) {
       return ctx.throw(404, 'User not found');
     }
@@ -42,7 +46,7 @@ class UsersService {
     if (!passMatch) {
       if (user && user._id) {
         userUpdateData.loginAttempts = user.loginAttempts + 1;
-        await Model('users.User').findByIdAndUpdate(user._id, userUpdateData);
+        await UserModel.findByIdAndUpdate(user._id, userUpdateData);
       }
       if (user.loginAttempts >= maxLoginAttempts) {
         return ctx.throw(404, 'Too many bad attempts');
@@ -54,9 +58,9 @@ class UsersService {
         lastLogin: new Date(),
         loginAttempts: 0, // Successful login, reset loginAttempts
       };
-      await Model('users.User').findByIdAndUpdate(user._id, userUpdateData);
+      await UserModel.findByIdAndUpdate(user._id, userUpdateData);
     }
-    acl = await Service('acl.ACL').getUserACL(user);
+    acl = await ACLService.getUserACL(user);
     if (user.profilePicture && user.profilePicture.url) {
       profilePictureUrl = user.profilePicture.url;
     }
@@ -77,7 +81,7 @@ class UsersService {
 
   async updateUserSession(user) {
     const { session: sessionConfig } = config.server;
-    const acl = await Service('acl.ACL').getUserACL(user);
+    const acl = await ACLService.getUserACL(user);
     const roles = [];
     let SessionModel;
     let userSession;
@@ -128,7 +132,7 @@ class UsersService {
     }
 
     if (email) {
-      user = await Model('users.User').findOne({ email });
+      user = await UserModel.findOne({ email });
       if (user) {
         user.passwordReset = uuidv1();
         user.passwordResetRequested = new Date();
@@ -136,14 +140,14 @@ class UsersService {
         try {
           await user.save();
           options.to = email;
-          options.subject = Helper('core.Locale').translate(ctx, 'email_subject_users_password_reset');
+          options.subject = LocaleHelper.translate(ctx, 'email_subject_users_password_reset');
           options.html = await cmsHelper.composeEmailTemplate(ctx, 'users/passwordReset', {
             user,
             link: `${ctx.origin}${linkPrefix}/change-password/${user._id}/${user.passwordReset}`,
           });
 
           if (sendGridApiKey) {
-            emailResponse = await Service('mailer.SendGrid').send(options);
+            emailResponse = await SendGridService.send(options);
           } else {
             emailResponse = await mailer.send(options);
           }
@@ -178,7 +182,7 @@ class UsersService {
       return ctx.throw(400, 'Password change token is missing');
     }
     try {
-      user = await Model('users.User').findById(data.userId);
+      user = await UserModel.findById(data.userId);
     } catch (e) {
       logger.error(e);
       return ctx.throw(400, 'User not found');
@@ -215,7 +219,7 @@ class UsersService {
 
   async registerNewUser(data) {
     const userData = Object.assign({}, data);
-    const role = await Model('acl.Role').findOne({ name: 'User' });
+    const role = await RoleModel.findOne({ name: 'User' });
     let user;
     userData.password = await this.hashPassword(data.password);
     if (!Object.prototype.hasOwnProperty.call(userData, 'active')) {
@@ -228,7 +232,7 @@ class UsersService {
     userData.verified = false;
     userData.verificationStatus = 'new';
 
-    user = await Model('users.User').create(userData);
+    user = await UserModel.create(userData);
 
     return user;
   }
@@ -295,7 +299,7 @@ class UsersService {
         },
       ],
     };
-    const validationErrors = Helper('core.ValidationHelper').validateData(rules, data);
+    const validationErrors = ValidationHelper.validateData(rules, data);
     let response = null;
 
     if (validationErrors && validationErrors.length > 0) {

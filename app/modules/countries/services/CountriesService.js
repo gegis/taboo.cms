@@ -1,4 +1,4 @@
-const ArrayHelper = require('../../core/helpers/ArrayHelper');
+const ArrayHelper = require('modules/core/helpers/ArrayHelper');
 const countries = require('../data/countries');
 
 class CountriesService {

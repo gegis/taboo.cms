@@ -1,10 +1,11 @@
-const { Model, Helper, apiHelper, logger } = require('@taboo/cms-core');
+const { apiHelper, logger } = require('@taboo/cms-core');
+const CoreHelper = require('modules/core/helpers/CoreHelper');
 
 class AbstractAdminController {
   /**
    * Available props:
    * @param props:
-   *  model - string
+   *  model - Model object
    *  searchFields - array
    *  defaultSort - object
    *  populate - string|array
@@ -54,7 +55,7 @@ class AbstractAdminController {
     let query;
     try {
       if (requestParams && requestParams.search) {
-        Helper('core.Core').applySearchToFilter(requestParams.search, searchFields, filter, searchOptions);
+        CoreHelper.applySearchToFilter(requestParams.search, searchFields, filter, searchOptions);
       }
       if (sort === null) {
         sort = defaultSort;
@@ -62,7 +63,7 @@ class AbstractAdminController {
       options = { limit, skip, sort };
       data = { filter, fields, options };
       data = await this.beforeFindAll(ctx, data);
-      query = Model(model).find(data.filter, data.fields, data.options);
+      query = model.find(data.filter, data.fields, data.options);
       this.applyPopulateToQuery('findAll', query);
       itemsResult = await query.exec();
       items = await this.afterFindAll(ctx, itemsResult, data);
@@ -88,7 +89,7 @@ class AbstractAdminController {
     let query;
     try {
       data = await this.beforeFindById(ctx, ctx.params.id, data);
-      query = Model(model).findById(ctx.params.id, data.fields);
+      query = model.findById(ctx.params.id, data.fields);
       this.applyPopulateToQuery('findById', query);
       itemResult = await query.exec();
       item = await this.afterFindById(ctx, itemResult, data);
@@ -112,7 +113,7 @@ class AbstractAdminController {
     let itemResult;
     try {
       data = await this.beforeCreate(ctx, data);
-      itemResult = await Model(model).create(data);
+      itemResult = await model.create(data);
       item = await this.afterCreate(ctx, itemResult, data);
     } catch (err) {
       logger.error(err);
@@ -136,7 +137,7 @@ class AbstractAdminController {
     try {
       apiHelper.cleanTimestamps(data);
       data = await this.beforeUpdate(ctx, ctx.params.id, data);
-      query = Model(model).findByIdAndUpdate(
+      query = model.findByIdAndUpdate(
         ctx.params.id,
         { $set: data },
         { new: true, runValidators: true, context: 'query' }
@@ -162,7 +163,7 @@ class AbstractAdminController {
     let query;
     try {
       await this.beforeDelete(ctx, ctx.params.id);
-      query = Model(model).findByIdAndDelete(ctx.params.id);
+      query = model.findByIdAndDelete(ctx.params.id);
       this.applyPopulateToQuery('delete', query);
       itemResult = await query.exec();
       item = await this.afterDelete(ctx, itemResult);
@@ -177,7 +178,7 @@ class AbstractAdminController {
     const { model } = this.props;
     let count = 0;
     try {
-      count = await Model(model).estimatedDocumentCount();
+      count = await model.estimatedDocumentCount();
     } catch (err) {
       logger.error(err);
       return ctx.throw(400, err);

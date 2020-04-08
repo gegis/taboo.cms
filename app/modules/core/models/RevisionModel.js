@@ -1,7 +1,6 @@
 const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
 
-const modelConfig = {
-  connection: 'mongodb',
+const RevisionModel = MongoDbAdapter.setupModel('Revision', {
   schemaOptions: {
     timestamps: true,
   },
@@ -13,6 +12,6 @@ const modelConfig = {
       type: Object,
     },
   },
-};
+});
 
-module.exports = MongoDbAdapter.setupModel('Revision', modelConfig);
+module.exports = RevisionModel;

@@ -1,9 +1,7 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
+const SchemaTypes = MongoDbAdapter.getSchemaTypes();
 
-const modelConfig = {
-  connection: 'mongodb',
+const GalleryModel = MongoDbAdapter.setupModel('Gallery', {
   schemaOptions: {
     timestamps: true,
   },
@@ -12,7 +10,7 @@ const modelConfig = {
       type: String,
       required: [true, 'is required'],
     },
-    images: [{ type: Schema.Types.ObjectId, ref: 'Upload' }],
+    images: [{ type: SchemaTypes.ObjectId, ref: 'Upload' }],
     meta: {
       type: Object,
     },
@@ -21,10 +19,10 @@ const modelConfig = {
       default: false,
     },
     user: {
-      type: Schema.Types.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: 'User',
     },
   },
-};
+});
 
-module.exports = MongoDbAdapter.setupModel('Gallery', modelConfig);
+module.exports = GalleryModel;

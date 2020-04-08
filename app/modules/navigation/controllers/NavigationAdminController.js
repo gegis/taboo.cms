@@ -1,5 +1,7 @@
-const { config, logger, apiHelper, Model, Service } = require('@taboo/cms-core');
-const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
+const { config, logger, apiHelper } = require('@taboo/cms-core');
+const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
+const NavigationService = require('modules/navigation/services/NavigationService');
+const NavigationModel = require('modules/navigation/models/NavigationModel');
 const {
   api: { navigation: { defaultSort = { sort: 'asc' } } = {} },
 } = config;
@@ -7,7 +9,7 @@ const {
 class NavigationAdminController extends AbstractAdminController {
   constructor() {
     super({
-      model: 'navigation.Navigation',
+      model: NavigationModel,
       searchFields: ['_id', 'name', 'slug'],
       populate: {},
       defaultSort,
@@ -16,11 +18,10 @@ class NavigationAdminController extends AbstractAdminController {
   }
 
   async findOneBySlug(ctx) {
-    const { model } = this.props;
     let { fields } = apiHelper.parseRequestParams(ctx.request.query, ['fields']);
     let item = null;
     try {
-      item = await Model(model).findOne({ slug: ctx.params.slug }, fields);
+      item = await NavigationModel.findOne({ slug: ctx.params.slug }, fields);
     } catch (err) {
       logger.error(err);
       return ctx.throw(400, err);
@@ -33,13 +34,13 @@ class NavigationAdminController extends AbstractAdminController {
 
   async afterUpdate(ctx, itemResult) {
     // Clear navigation cache on update
-    Service('navigation.Navigation').deleteNavigationCache();
+    NavigationService.deleteNavigationCache();
     return itemResult;
   }
 
   async afterDelete(ctx, itemResult) {
     // Clear navigation cache on delete
-    Service('navigation.Navigation').deleteNavigationCache();
+    NavigationService.deleteNavigationCache();
     return itemResult;
   }
 
@@ -52,12 +53,12 @@ class NavigationAdminController extends AbstractAdminController {
       if (items && items.length > 0) {
         promises = items.map(async item => {
           sort++;
-          return await Model('navigation.Navigation').updateOne({ _id: item._id }, { sort });
+          return await NavigationModel.updateOne({ _id: item._id }, { sort });
         });
       }
       await Promise.all(promises);
       // Clear navigation cache on delete
-      Service('navigation.Navigation').deleteNavigationCache();
+      NavigationService.deleteNavigationCache();
     } catch (e) {
       logger.error(e);
       return ctx.throw(e);

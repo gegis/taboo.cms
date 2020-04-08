@@ -1,12 +1,15 @@
 const sharp = require('sharp');
-const { config, Model, Helper, filesHelper } = require('@taboo/cms-core');
+const { config, filesHelper } = require('@taboo/cms-core');
+const CoreHelper = require('modules/core/helpers/CoreHelper');
+const UploadsHelper = require('modules/uploads/helpers/UploadsHelper');
+const UserModel = require('modules/users/models/UserModel');
 
 class UploadsService {
   getUploadFileName(fileName, appendTimestamp) {
     let fileNameParts;
     if (appendTimestamp) {
       fileNameParts = filesHelper.getFileNameParts(fileName);
-      fileNameParts.name += '-' + Helper('core.Core').getUnixTimestamp();
+      fileNameParts.name += '-' + CoreHelper.getUnixTimestamp();
       fileName = [fileNameParts.name, fileNameParts.extension].join('.');
     }
     return fileName;
@@ -16,7 +19,7 @@ class UploadsService {
     const {
       users: { documentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'] },
     } = config;
-    const user = await Model('users.User').findById(userId);
+    const user = await UserModel.findById(userId);
     const userDocType = document.documentType;
     const matchingTypes = [];
 
@@ -70,13 +73,13 @@ class UploadsService {
     };
     const result = await this.resizeImage(
       filePath,
-      Helper('uploads.Uploads').getFilePathWithSuffix(filePath, 'resized'),
+      UploadsHelper.getFilePathWithSuffix(filePath, 'resized'),
       defaultSize
     );
     if (isProfilePicture) {
-      await this.resizeImage(filePath, Helper('uploads.Uploads').getFilePathWithSuffix(result.newPath, 'md'), mdSize);
-      await this.resizeImage(filePath, Helper('uploads.Uploads').getFilePathWithSuffix(result.newPath, 'sm'), smSize);
-      await this.resizeImage(filePath, Helper('uploads.Uploads').getFilePathWithSuffix(result.newPath, 'xs'), xsSize);
+      await this.resizeImage(filePath, UploadsHelper.getFilePathWithSuffix(result.newPath, 'md'), mdSize);
+      await this.resizeImage(filePath, UploadsHelper.getFilePathWithSuffix(result.newPath, 'sm'), smSize);
+      await this.resizeImage(filePath, UploadsHelper.getFilePathWithSuffix(result.newPath, 'xs'), xsSize);
     }
 
     return result;

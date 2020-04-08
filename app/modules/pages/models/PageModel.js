@@ -1,10 +1,8 @@
 const uniqueValidator = require('mongoose-unique-validator');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
+const SchemaTypes = MongoDbAdapter.getSchemaTypes();
 
-const modelConfig = {
-  connection: 'mongodb',
+const PageModel = MongoDbAdapter.setupModel('Page', {
   schemaOptions: {
     timestamps: true,
   },
@@ -41,20 +39,20 @@ const modelConfig = {
       type: Boolean,
       default: false,
     },
-    pages: [{ type: Schema.Types.ObjectId, ref: 'Page' }],
-    galleries: [{ type: Schema.Types.ObjectId, ref: 'Gallery' }],
+    pages: [{ type: SchemaTypes.ObjectId, ref: 'Page' }],
+    galleries: [{ type: SchemaTypes.ObjectId, ref: 'Gallery' }],
     createdBy: {
-      type: Schema.Types.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: 'User',
     },
     updatedBy: {
-      type: Schema.Types.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: 'User',
     },
   },
   afterSchemaCreate(schema) {
     schema.plugin(uniqueValidator, { message: 'has to be unique.' });
   },
-};
+});
 
-module.exports = MongoDbAdapter.setupModel('Page', modelConfig);
+module.exports = PageModel;

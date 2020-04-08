@@ -9,7 +9,7 @@ class MongoDbAdapter {
 
   /**
    * Method return current connection
-   * @returns object|null
+   * @returns {object|null}
    */
   getConnection() {
     return this.connection;
@@ -17,7 +17,7 @@ class MongoDbAdapter {
 
   /**
    * Method returns connection name to server string
-   * @returns string
+   * @returns {string}
    */
   getConnectionName() {
     return this.connectionName;
@@ -26,7 +26,7 @@ class MongoDbAdapter {
   /**
    * Connects to database
    * @param config
-   * @returns Promise
+   * @returns {Promise}
    */
   connect(config) {
     this.config = config;
@@ -61,11 +61,17 @@ class MongoDbAdapter {
   /**
    * @param modelName
    * @param modelConfig
-   * @returns mongoose{Model}
+   * @returns {mongoose}
    */
   setupModel(modelName, modelConfig) {
+    if (!modelName) {
+      throw new Error('modelName must be specified');
+    }
     if (!modelConfig.schema) {
-      throw new Error(`Model ${modelName} must have 'schema' specified`);
+      throw new Error(`modelConfig ${modelName} must have 'schema' specified`);
+    }
+    if (!this.connection) {
+      throw new Error('connection is not setup');
     }
 
     const schemaOptions = modelConfig.schemaOptions || {};
@@ -82,6 +88,10 @@ class MongoDbAdapter {
     }
 
     return model;
+  }
+
+  getSchemaTypes() {
+    return mongoose.Schema.Types;
   }
 }
 

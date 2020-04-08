@@ -1,6 +1,9 @@
-const { Model, logger, config, filesHelper, Helper, Service } = require('@taboo/cms-core');
+const { logger, config, filesHelper } = require('@taboo/cms-core');
 const fs = require('fs');
 const path = require('path');
+const UploadsService = require('modules/uploads/services/UploadsService');
+const UploadsHelper = require('modules/uploads/helpers/UploadsHelper');
+const UploadModel = require('modules/uploads/models/UploadModel');
 
 class UploadsController {
   async uploadUserFile(ctx) {
@@ -39,13 +42,13 @@ class UploadsController {
 
       tmpPath = file.path;
       prettyFileName = file.name;
-      fileName = Helper('uploads.Uploads').getFileName(file.name, appendTimestamp);
+      fileName = UploadsHelper.getFileName(file.name, appendTimestamp);
       url = path.join(secureUrlPath, file.type, fileName);
       filePath = path.resolve(secureUploadsDir, file.type, fileName);
       await filesHelper.moveFile(tmpPath, filePath);
 
       if (!isUserDocument) {
-        resizeResult = await Service('uploads.Uploads').processUserImage(filePath, isProfilePicture);
+        resizeResult = await UploadsService.processUserImage(filePath, isProfilePicture);
         if (resizeResult && resizeResult.newPath) {
           await filesHelper.unlinkFile(resizeResult.oldPath);
           filePath = resizeResult.newPath;
@@ -62,12 +65,12 @@ class UploadsController {
       data.isUserDocument = isUserDocument;
       data.documentType = userDocType;
 
-      dbItem = await Model('uploads.Upload').create(data);
+      dbItem = await UploadModel.create(data);
       if (secureUrlPath) {
         dbItem.url = path.join(secureUrlPath, dbItem._id.toString());
         await dbItem.save();
       }
-      await Service('uploads.Uploads').updateUserFiles(ctx, userId, dbItem);
+      await UploadsService.updateUserFiles(ctx, userId, dbItem);
     } catch (e) {
       logger.error(e);
       if (filePath && filesHelper.fileExists(filePath)) {
@@ -80,7 +83,7 @@ class UploadsController {
 
   async serveSecureUserFiles(ctx) {
     const { session: { user: { id: userId, admin } = {} } = {} } = ctx;
-    const file = await Model('uploads.Upload').findById(ctx.params.id);
+    const file = await UploadModel.findById(ctx.params.id);
     const params = Object.assign({}, ctx.request.query);
     let filePath;
     if (!file) {
@@ -91,7 +94,7 @@ class UploadsController {
     }
     filePath = file.path;
     if (params.size) {
-      filePath = Helper('uploads.Uploads').getFilePathWithSuffix(filePath, params.size);
+      filePath = UploadsHelper.getFilePathWithSuffix(filePath, params.size);
     }
     if (!filesHelper.fileExists(filePath)) {
       return ctx.throw(404, 'Not Found');

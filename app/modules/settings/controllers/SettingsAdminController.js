@@ -1,5 +1,8 @@
-const { config, Service, isAllowed } = require('@taboo/cms-core');
-const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
+const { config, isAllowed } = require('@taboo/cms-core');
+const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
+const SettingsService = require('modules/settings/services/SettingsService');
+const SettingsModel = require('modules/settings/models/SettingsModel');
+
 const {
   api: { settings: { defaultSort = { key: 'asc' } } = {} },
 } = config;
@@ -7,7 +10,7 @@ const {
 class SettingsAdminController extends AbstractAdminController {
   constructor() {
     super({
-      model: 'settings.Settings',
+      model: SettingsModel,
       searchFields: ['_id', 'key'],
       populate: {},
       defaultSort,
@@ -18,17 +21,17 @@ class SettingsAdminController extends AbstractAdminController {
     let itemData = null;
     if (itemResult) {
       itemData = itemResult._doc;
-      itemData = Service('settings.Settings').parseValue(itemData);
+      itemData = SettingsService.parseValue(itemData);
     }
     return itemData;
   }
 
   async beforeCreate(ctx, data) {
-    return Service('settings.Settings').stringifyValue(data);
+    return SettingsService.stringifyValue(data);
   }
 
   async beforeUpdate(ctx, id, data) {
-    return Service('settings.Settings').stringifyValue(data);
+    return SettingsService.stringifyValue(data);
   }
 
   async getByKey(ctx) {
@@ -36,7 +39,7 @@ class SettingsAdminController extends AbstractAdminController {
     if (allowed === false) {
       return ctx.throw(403, 'Forbidden');
     } else {
-      ctx.body = await Service('settings.Settings').get(ctx.params.key);
+      ctx.body = await SettingsService.get(ctx.params.key);
     }
   }
 
@@ -45,7 +48,7 @@ class SettingsAdminController extends AbstractAdminController {
     if (allowed === false) {
       return ctx.throw(403, 'Forbidden');
     } else {
-      ctx.body = await Service('settings.Settings').set(ctx.params.key, ctx.request.body);
+      ctx.body = await SettingsService.set(ctx.params.key, ctx.request.body);
     }
   }
 }

@@ -1,5 +1,8 @@
-const { config, Service } = require('@taboo/cms-core');
+const { config } = require('@taboo/cms-core');
 const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
+const PagesService = require('modules/pages/services/PagesService');
+const GalleryModel = require('modules/galleries/models/GalleryModel');
+
 const {
   api: {
     galleries: { defaultSort = null },
@@ -9,7 +12,7 @@ const {
 class GalleriesAdminController extends AbstractAdminController {
   constructor() {
     super({
-      model: 'galleries.Gallery',
+      model: GalleryModel,
       searchFields: ['_id', 'title'],
       populate: {
         findById: 'images',
@@ -20,13 +23,13 @@ class GalleriesAdminController extends AbstractAdminController {
 
   async afterUpdate(ctx, itemResult) {
     // Clear all pages cache on update
-    Service('pages.Pages').deleteAllPagesCache();
+    PagesService.deleteAllPagesCache();
     return itemResult;
   }
 
   async afterDelete(ctx, itemResult) {
     // Clear all pages cache on delete
-    Service('pages.Pages').deleteAllPagesCache();
+    PagesService.deleteAllPagesCache();
     return itemResult;
   }
 }

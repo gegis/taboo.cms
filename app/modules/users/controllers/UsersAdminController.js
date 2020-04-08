@@ -1,5 +1,8 @@
-const { Service, config, sockets } = require('@taboo/cms-core');
-const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
+const { config, sockets } = require('@taboo/cms-core');
+const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
+const UsersService = require('modules/users/services/UsersService');
+const ACLService = require('modules/acl/services/ACLService');
+const UserModel = require('modules/users/models/UserModel');
 const {
   api: {
     users: { defaultSort = null },
@@ -9,7 +12,7 @@ const {
 class UsersAdminController extends AbstractAdminController {
   constructor() {
     super({
-      model: 'users.User',
+      model: UserModel,
       searchFields: ['_id', 'firstName', 'lastName', 'email'],
       defaultSort,
       populate: {
@@ -44,13 +47,13 @@ class UsersAdminController extends AbstractAdminController {
   }
 
   async beforeCreate(ctx, data) {
-    data.password = await Service('users.Users').hashPassword(data.password);
+    data.password = await UsersService.hashPassword(data.password);
     return data;
   }
 
   async beforeUpdate(ctx, id, data) {
     if (data.password) {
-      data.password = await Service('users.Users').hashPassword(data.password);
+      data.password = await UsersService.hashPassword(data.password);
     } else if (Object.prototype.hasOwnProperty.call(data, 'password')) {
       delete data.password;
     }
@@ -61,7 +64,7 @@ class UsersAdminController extends AbstractAdminController {
   }
 
   async afterUpdate(ctx, user) {
-    await Service('users.Users').updateUserSession(user);
+    await UsersService.updateUserSession(user);
     sockets.emit('users', `user-${user._id}-user-update`, {
       _id: user.id,
       firstName: user.firstName,
@@ -71,7 +74,7 @@ class UsersAdminController extends AbstractAdminController {
     return user;
   }
   async afterDelete(ctx, user) {
-    await Service('acl.ACL').deleteUserSession(user);
+    await ACLService.deleteUserSession(user);
     return user;
   }
 }

@@ -1,12 +1,12 @@
-const { Model } = require('@taboo/cms-core');
+const RevisionModel = require('modules/core/models/RevisionModel');
 
 class RevisionService {
-  async get(model, id) {
-    const key = `${model}-${id}`;
-    let revision;
+  async getById(model, id) {
+    let key, revision;
     let value = null;
     if (model && id) {
-      revision = await Model('core.Revision').findOne({ key });
+      key = this.getKeyName(model, id);
+      revision = await RevisionModel.findOne({ key });
       if (revision) {
         value = revision.value;
       }
@@ -14,21 +14,25 @@ class RevisionService {
     return value;
   }
 
-  async save(model, id) {
-    const key = `${model}-${id}`;
-    let item, revision, newRevision;
+  async saveById(model, id) {
+    let key, item, revision, newRevision;
     if (model && id) {
-      item = await Model(model).findById(id);
+      key = this.getKeyName(model, id);
+      item = await model.findById(id);
       if (item) {
-        revision = await Model('core.Revision').findOne({ key });
+        revision = await RevisionModel.findOne({ key });
         if (revision) {
-          newRevision = await Model('core.Revision').findByIdAndUpdate(revision._id, { key, value: item });
+          newRevision = await RevisionModel.findByIdAndUpdate(revision._id, { key, value: item });
         } else {
-          newRevision = await Model('core.Revision').create({ key, value: item });
+          newRevision = await RevisionModel.create({ key, value: item });
         }
       }
     }
     return newRevision;
+  }
+
+  getKeyName(model, id) {
+    return `${model.collection.collectionName}-${id}`;
   }
 }
 module.exports = new RevisionService();

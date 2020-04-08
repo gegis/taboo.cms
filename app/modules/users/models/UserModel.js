@@ -1,12 +1,10 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 const { config } = require('@taboo/cms-core');
 const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
+const SchemaTypes = MongoDbAdapter.getSchemaTypes();
 
-const modelConfig = {
-  connection: 'mongodb',
+const UserModel = MongoDbAdapter.setupModel('User', {
   schemaOptions: {
     timestamps: true,
   },
@@ -68,19 +66,19 @@ const modelConfig = {
       type: String,
     },
     profilePicture: {
-      type: Schema.Types.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: 'Upload',
     },
     documentPersonal1: {
-      type: Schema.Types.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: 'Upload',
     },
     documentPersonal2: {
-      type: Schema.Types.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: 'Upload',
     },
     documentIncorporation: {
-      type: Schema.Types.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: 'Upload',
     },
     verified: {
@@ -109,7 +107,7 @@ const modelConfig = {
     },
     roles: [
       {
-        type: Schema.Types.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: 'Role',
       },
     ],
@@ -121,6 +119,6 @@ const modelConfig = {
     schema.plugin(uniqueValidator, { message: 'is already taken' });
   },
   // afterModelCreate(model, schema) {}, // Implement logic after model create in here
-};
+});
 
-module.exports = MongoDbAdapter.setupModel('User', modelConfig);
+module.exports = UserModel;

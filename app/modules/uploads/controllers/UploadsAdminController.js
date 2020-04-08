@@ -1,7 +1,8 @@
-const { config, filesHelper, Service } = require('@taboo/cms-core');
+const { config, filesHelper } = require('@taboo/cms-core');
 const path = require('path');
-
-const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
+const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
+const UploadsService = require('modules/uploads/services/UploadsService');
+const UploadModel = require('modules/uploads/models/UploadModel');
 const {
   api: {
     uploads: { defaultSort = null },
@@ -11,7 +12,7 @@ const {
 class UploadsAdminController extends AbstractAdminController {
   constructor() {
     super({
-      model: 'uploads.Upload',
+      model: UploadModel,
       searchFields: ['_id', 'name', 'url', 'user'],
       searchOptions: {
         idFields: ['_id', 'user'],
@@ -47,7 +48,7 @@ class UploadsAdminController extends AbstractAdminController {
 
       tmpPath = file.path;
       prettyFileName = file.name;
-      fileName = Service('uploads.Uploads').getUploadFileName(file.name, appendTimestamp);
+      fileName = UploadsService.getUploadFileName(file.name, appendTimestamp);
       url = path.join(urlPath, file.type, fileName);
       filePath = path.resolve(uploadsDir, file.type, fileName);
       await filesHelper.moveFile(tmpPath, filePath);

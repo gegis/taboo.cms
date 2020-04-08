@@ -1,8 +1,8 @@
-const { Service } = require('@taboo/cms-core');
+const SettingsService = require('modules/settings/services/SettingsService');
 
 class SettingsController {
   async getSettings(ctx) {
-    const item = await Service('settings.Settings').getPublic(ctx.params.key);
+    const item = await SettingsService.getPublic(ctx.params.key);
     if (!item) {
       ctx.throw(404);
     }
@@ -11,7 +11,7 @@ class SettingsController {
 
   async getACLEnabled(ctx) {
     ctx.body = {
-      enabled: Service('settings.Settings').getACLEnabled(),
+      enabled: SettingsService.getACLEnabled(),
     };
   }
 }

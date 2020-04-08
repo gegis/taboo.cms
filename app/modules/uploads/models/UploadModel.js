@@ -1,9 +1,7 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
+const SchemaTypes = MongoDbAdapter.getSchemaTypes();
 
-const modelConfig = {
-  connection: 'mongodb',
+const UploadModel = MongoDbAdapter.setupModel('Upload', {
   schemaOptions: {
     timestamps: true,
   },
@@ -46,10 +44,10 @@ const modelConfig = {
       default: '',
     },
     user: {
-      type: Schema.Types.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: 'User',
     },
   },
-};
+});
 
-module.exports = MongoDbAdapter.setupModel('Upload', modelConfig);
+module.exports = UploadModel;
