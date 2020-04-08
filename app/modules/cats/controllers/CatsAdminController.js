@@ -1,14 +1,14 @@
 const { config } = require('@taboo/cms-core');
-const ModelNameModel = require('modules/moduleName/models/ModelNameModel');
+const CatModel = require('modules/cats/models/CatModel');
 const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
 const {
-  api: { moduleName: { defaultSort = { createdAt: 'desc' } } = {} },
+  api: { cats: { defaultSort = { createdAt: 'desc' } } = {} },
 } = config;
 
-class ModuleNameAdminController extends AbstractAdminController {
+class CatsAdminController extends AbstractAdminController {
   constructor() {
     super({
-      model: ModelNameModel,
+      model: CatModel,
       searchFields: ['_id', 'name'],
       populate: {},
       defaultSort,
@@ -22,4 +22,4 @@ class ModuleNameAdminController extends AbstractAdminController {
   }
 }
 
-module.exports = new ModuleNameAdminController();
+module.exports = new CatsAdminController();
