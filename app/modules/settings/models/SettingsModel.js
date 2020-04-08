@@ -1,7 +1,8 @@
 const { config } = require('@taboo/cms-core');
 const uniqueValidator = require('mongoose-unique-validator');
+const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
 
-module.exports = {
+const modelConfig = {
   connection: 'mongodb',
   schemaOptions: {
     timestamps: true,
@@ -35,3 +36,5 @@ module.exports = {
     schema.plugin(uniqueValidator, { message: 'must be unique' });
   },
 };
+
+module.exports = MongoDbAdapter.setupModel('Settings', modelConfig);

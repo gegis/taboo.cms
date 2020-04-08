@@ -21,7 +21,7 @@ module.exports = {
     isAllowedImplementation: ACLService.isAllowed,
     resources: ['admin.acl.view', 'admin.acl.manage'],
   },
-  afterModelsSetup: ACLService.afterModelsSetup,
+  afterModulesSetup: ACLService.afterModulesSetup,
   routes: [
     {
       method: 'GET',

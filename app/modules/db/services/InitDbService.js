@@ -1,9 +1,15 @@
 const { logger, config } = require('@taboo/cms-core');
+const UsersService = require('modules/users/services/UsersService');
+const SettingsService = require('modules/settings/services/SettingsService');
+const UserModel = require('modules/users/models/UserModel');
+const RoleModel = require('modules/acl/models/RoleModel');
+const PageModel = require('modules/pages/models/PageModel');
+const NavigationModel = require('modules/navigation/models/NavigationModel');
+
 const pages = require('../data/pages');
 const navigation = require('../data/navigation');
 
-// TODO - think of refactoring db adapter to move from app/db/adapters into this module
-// TODO - also implement db migrations
+// TODO - implement db migrations and data fixtures
 class InitDbService {
   constructor() {
     this.dbInitialized = false;
@@ -14,25 +20,23 @@ class InitDbService {
   }
 
   async init(modules, aclResources) {
-    const { Settings: SettingsService } = modules.settings.services;
     // TODO - think of putting this db value not in db - to have every restart faster
     const dbValue = await SettingsService.getValue('db');
     if (dbValue && dbValue.initialized) {
       this.dbInitialized = true;
     }
     if (!this.dbInitialized) {
-      await this.setupAdminRole(modules, aclResources);
-      await this.setupUserRole(modules, aclResources);
-      await this.setupAdminUser(modules, this.newAdminRole);
-      await this.setupPages(modules, pages);
-      await this.setupNavigation(modules, navigation);
+      await this.setupAdminRole(aclResources);
+      await this.setupUserRole(aclResources);
+      await this.setupAdminUser(this.newAdminRole);
+      await this.setupPages(pages);
+      await this.setupNavigation(navigation);
       // TODO setup any settings to db if needed in here
       await SettingsService.setValue('db', { initialized: true }, 'object');
     }
   }
 
-  async setupAdminRole(modules, aclResources) {
-    const { Role: RoleModel } = modules.acl.models;
+  async setupAdminRole(aclResources) {
     this.newAdminRole = await RoleModel.create({
       name: 'Administrator',
       resources: aclResources,
@@ -40,8 +44,7 @@ class InitDbService {
     logger.info(`Successfully created '${this.newAdminRole.name}' role`);
   }
 
-  async setupUserRole(modules) {
-    const { Role: RoleModel } = modules.acl.models;
+  async setupUserRole() {
     this.newUserRole = await RoleModel.create({
       name: 'User',
       resources: ['api.uploads.userFiles'],
@@ -49,9 +52,7 @@ class InitDbService {
     logger.info(`Successfully created '${this.newUserRole.name}' role`);
   }
 
-  async setupAdminUser(modules, role) {
-    const { Users: UsersService } = modules.users.services;
-    const { User: UserModel } = modules.users.models;
+  async setupAdminUser(role) {
     const { admin: { initialUser } = {} } = config;
     const userData = {
       admin: true,
@@ -68,15 +69,13 @@ class InitDbService {
     logger.info(`PASSWORD: ${initialUser.pass}`);
   }
 
-  async setupPages(modules, pages = []) {
-    const { Page: PageModel } = modules.pages.models;
+  async setupPages(pages = []) {
     for (let i = 0; i < pages.length; i++) {
       await PageModel.create(pages[i]);
     }
   }
 
-  async setupNavigation(modules, navigation = []) {
-    const { Navigation: NavigationModel } = modules.navigation.models;
+  async setupNavigation(navigation = []) {
     for (let i = 0; i < navigation.length; i++) {
       await NavigationModel.create(navigation[i]);
     }

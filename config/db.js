@@ -1,4 +1,4 @@
-const MongoDbAdapter = require('../app/db/adapters/MongoDbAdapter');
+const MongoDbAdapter = require('../app/modules/db/adapters/MongoDbAdapter');
 
 module.exports = {
   connections: {

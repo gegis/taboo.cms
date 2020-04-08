@@ -5,5 +5,5 @@ module.exports = {
   installed: true,
   moduleDependencies: [],
   npmDependencies: [],
-  afterModelsSetup: InitDbService.init,
+  afterModulesSetup: InitDbService.init,
 };

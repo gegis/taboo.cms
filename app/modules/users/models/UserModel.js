@@ -3,8 +3,9 @@ const Schema = mongoose.Schema;
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 const { config } = require('@taboo/cms-core');
+const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
 
-module.exports = {
+const modelConfig = {
   connection: 'mongodb',
   schemaOptions: {
     timestamps: true,
@@ -121,3 +122,5 @@ module.exports = {
   },
   // afterModelCreate(model, schema) {}, // Implement logic after model create in here
 };
+
+module.exports = MongoDbAdapter.setupModel('User', modelConfig);

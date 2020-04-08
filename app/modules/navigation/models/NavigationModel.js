@@ -1,6 +1,7 @@
 const uniqueValidator = require('mongoose-unique-validator');
+const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
 
-module.exports = {
+const modelConfig = {
   connection: 'mongodb',
   schemaOptions: {
     timestamps: true,
@@ -31,3 +32,5 @@ module.exports = {
   },
   // afterModelCreate(model, schema) {}, // Implement logic after model create in here
 };
+
+module.exports = MongoDbAdapter.setupModel('Navigation', modelConfig);

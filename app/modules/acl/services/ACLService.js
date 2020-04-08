@@ -4,11 +4,11 @@ class ACLService {
   constructor() {
     this.roles = {};
     this.aclResounces = [];
-    this.afterModelsSetup = this.afterModelsSetup.bind(this);
+    this.afterModulesSetup = this.afterModulesSetup.bind(this);
     this.getAllResources = this.getAllResources.bind(this);
   }
 
-  async afterModelsSetup(modules, aclResources) {
+  async afterModulesSetup(modules, aclResources) {
     this.aclResounces = aclResources;
   }
 

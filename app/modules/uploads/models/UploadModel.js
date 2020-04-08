@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
 
-module.exports = {
+const modelConfig = {
   connection: 'mongodb',
   schemaOptions: {
     timestamps: true,
@@ -50,3 +51,5 @@ module.exports = {
     },
   },
 };
+
+module.exports = MongoDbAdapter.setupModel('Upload', modelConfig);

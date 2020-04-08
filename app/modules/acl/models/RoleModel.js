@@ -1,7 +1,8 @@
 const { Model } = require('@taboo/cms-core');
 const uniqueValidator = require('mongoose-unique-validator');
+const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
 
-module.exports = {
+const modelConfig = {
   connection: 'mongodb',
   schemaOptions: {
     timestamps: true,
@@ -22,5 +23,6 @@ module.exports = {
       await Model('users.User').updateMany({ roles: doc._id }, { $pull: { roles: doc._id } });
     });
   },
-  // afterModelCreate(model, schema) {}, // Implement logic after model create in here
 };
+
+module.exports = MongoDbAdapter.setupModel('Role', modelConfig);

@@ -1,5 +1,5 @@
 const { config, Service } = require('@taboo/cms-core');
-const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
+const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
 const {
   api: {
     galleries: { defaultSort = null },
