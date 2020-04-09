@@ -11,7 +11,7 @@ class SettingsAdminController extends AbstractAdminController {
   constructor() {
     super({
       model: SettingsModel,
-      searchFields: ['_id', 'key'],
+      searchFields: ['_id', 'key', 'value'],
       populate: {},
       defaultSort,
     });

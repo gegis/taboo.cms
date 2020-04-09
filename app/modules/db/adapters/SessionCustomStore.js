@@ -1,6 +1,5 @@
 const SessionModel = require('modules/db/models/SessionModel');
 
-// TODO - refactor this - as it should reuse MongoDbAdapter connection
 class SessionCustomStore {
   async destroy(key) {
     return SessionModel.deleteOne({ key });

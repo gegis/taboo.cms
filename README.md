@@ -139,6 +139,7 @@ as long as it follows the structure below:
 ```
 client           - it contains client related JS assets, by default
                    they bootsrap React application.
+commands         - it contains custom cli commands
 controllers      - server side controllers, keep them small only to
                    bind to route actions, and implement all the logic
                    inside services.
@@ -176,85 +177,103 @@ const { config } = require('@taboo/cms-core');
 const { server } = config;
 ```
 
-Accessing Model:
+Using Models:
 
 ```
-/**
- * Model('moduleName.ModelName)
- * ModelName is model file name without 'Model.js' suffix.
- */
-const { Model } = require('@taboo/cms-core');
-const results = await Model('settings.Settings').find();
+const SettingsModel = require('modules/settings/models/SettingsModel');
+const results = await SettingsModel.find();
 ```
 
-Accessing Helper:
+Using Services:
 
 ```
-/**
- * Helper('moduleName.HelperName)
- * HelperName is helper file name without 'Helper.js' suffix.
- */
-const { Helper } = require('@taboo/cms-core');
-const err = new Error('Test Error');
-const results = Helper('core.Response').parseError(err);
+const SettingsService = require('modules/settings/services/SettingsService');
+const results = await SettingsService.set('key', 'value);
 ```
 
-Accessing Service:
+Using Helpers:
 
 ```
-/**
- * Service('moduleName.ServiceName)
- * ServiceName is service file name without 'Service.js' suffix.
- */
-const { Service } = require('@taboo/cms-core');
-const results = await Service('core.Revision').get(...);
+const UploadsHelper = require('modules/uploads/helpers/UploadsHelper');
+const newFileName = UploadsHelper.getFileName('fileName.js', true);
 ```
 
 Available imports from `@taboo/cms-core` module:
 
 ```
-_           - lodash
-start       - to start and bootstrap the server and other utils
-cwd         - current working directory
-config      - merged application config
-app         - app related attributes
-modules     - all the bootsrtapped modules from ./app/modules
-logger      - logger function, logger.info('Info'), logger.warn('Warn'),
-              logger.error('Error')
-arrayHelper - helper for array manipulations
-filesHelper - helper for file system manipulations
-apiHelper   - helper for api related functions
-ejsHelper   - server side templating helper, it uses ejs templates
-cmsHelper   - cms related (mostly koa.js and variation between apiHelper
-              and filesHelper logic)
-mailer      - node mailer to send emails
-sockets     - sockets server io to emit/receive messages
-events      - events receiver/emitter
-koaApp      - bootsrapped koa app
-router      - koa router
-passport    - authentication passport
-Model       - to access application Model
-Service     - to access application Service
-Helper      - to access application Helper
-isAllowed   - implementation of ACL based logic to get if resource
-              is allowed.
+_               - lodash
+start           - to start and bootstrap the server and other utils
+cwd             - current working directory
+config          - merged application config
+app             - app related attributes
+modules         - all the bootsrtapped modules from ./app/modules
+logger          - logger function, logger.info('Info'), logger.warn('Warn'),
+                  logger.error('Error')
+arrayHelper     - helper for array manipulations
+filesHelper     - helper for file system manipulations
+apiHelper       - helper for api related functions
+ejsHelper       - server side templating helper, it uses ejs templates
+cmsHelper       - cms related (mostly koa.js and variation between apiHelper
+                  and filesHelper logic)
+mailer          - node mailer to send emails
+sockets         - sockets server io to emit/receive messages
+events          - events receiver/emitter
+koaApp          - bootsrapped koa app
+router          - koa router
+passport        - authentication passport
+loadLocales     - preloads all locales
+getAclResources - returns (preloads if needed) acl resources
+getLocales      - returns all locales
+isAllowed       - implementation of ACL based logic to get if resource
+                  is allowed.
+```
+
+#### CMS CLI Commands
+ Create New User:
+```
+npm run taboo-cms-cli user create
+```
+Export all locales to csv files:
+```
+npm run taboo-cms-cli locale export
+```
+Import all locales from csv files:
+```
+npm run taboo-cms-cli locale export --type=both
+```
+Run DB migrations:
+```
+npm run taboo-cms-cli db migrate
+```
+Run DB migration UP:
+```
+npm run taboo-cms-cli db up --file=2020-04-10-load-initial-data.js
+```
+Run DB migration DOWN:
+```
+npm run taboo-cms-cli db down --file=2020-04-10-load-initial-data.js
 ```
 
 \* - You can find more information here: [@taboo/cms-core](https://www.npmjs.com/package/@taboo/cms-core)
 
 ## Roadmap
 
-- Admin settings page, with main info and Logo upload
-- Hierarchical navigation
-- API keys with JWT auth
+- Control main info and logo via settings page
+- User API keys
+- User JWT auth
+- API routes with params automated documentation like swagger
 - Page construction blocks for easier content management
 - Client side frontend script to modify pages, navigation and gallery on the go
 - Images (optional) resize during Admin Dashboard Upload 
 - Classic CMS - profile picture upload
 - Classic CMS - account verification
 - Atomic CLI commands to create each asset separately
-- Api routes with params automated documentation like swagger
-- DB migrations
+- Make uploads module easily reusable
+- Implement classic tpl files next to the original ones for installation and new module
+- Implement React Server Side templates rendering
+- Kick off from admin dashboard if session has expired
+- Have an option on delete to only set deleted=true, or move to Deleted documents
+
 
 ## How to build and deploy on remote server
 
