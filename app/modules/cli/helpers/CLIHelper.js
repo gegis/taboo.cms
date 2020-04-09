@@ -4,10 +4,6 @@ const fs = require('fs');
 const fsPromises = fs.promises;
 
 class CLIHelper {
-  constructor(config) {
-    this.config = config;
-  }
-
   async copyFolder(src, dest, options = {}) {
     return new Promise((resolve, reject) => {
       ncp(src, dest, options, function(err) {
@@ -96,4 +92,4 @@ class CLIHelper {
   }
 }
 
-module.exports = CLIHelper;
+module.exports = new CLIHelper();

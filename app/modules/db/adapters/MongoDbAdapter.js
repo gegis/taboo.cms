@@ -61,7 +61,7 @@ class MongoDbAdapter {
   /**
    * @param modelName
    * @param modelConfig
-   * @returns {mongoose}
+   * @returns {mongoose.model}
    */
   setupModel(modelName, modelConfig) {
     if (!modelName) {

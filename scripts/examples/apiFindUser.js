@@ -12,14 +12,11 @@ axios
   .then(response => {
     const cookies = response.headers['set-cookie'];
     axios
-      .get(
-        `${config.host}/api/admin/users/USERID`,
-        {
-          headers: {
-            Cookie: cookies.join(';'),
-          },
-        }
-      )
+      .get(`${config.host}/api/admin/users/USERID`, {
+        headers: {
+          Cookie: cookies.join(';'),
+        },
+      })
       .then(response => {
         console.log(response.data);
       })

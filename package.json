@@ -11,7 +11,7 @@
     "build": "./node_modules/.bin/gulp build",
     "buildAndWatch": "./node_modules/.bin/gulp buildAndWatch",
     "lint": "./node_modules/.bin/gulp lint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "taboo-cms-command": "./bin/taboo-cms-command.js"
   },
   "pre-commit": [
     "lint"
@@ -59,7 +59,6 @@
     "gulp-uglify": "^3.0.2",
     "merge-stream": "^2.0.0",
     "pre-commit": "^1.2.2",
-    "readline-sync": "^1.4.9",
     "webpack": "^4.41.2",
     "webpack-stream": "^5.2.1"
   },
@@ -75,6 +74,7 @@
     "classnames": "^2.2.6",
     "colorprint": "^6.1.1",
     "crypto-random-string": "^3.0.1",
+    "csv-parse": "^4.8.8",
     "draft-js": "^0.10.5",
     "enquirer": "^2.3.2",
     "flat-cache": "^2.0.1",

@@ -1,6 +1,7 @@
 const MongoDbAdapter = require('../app/modules/db/adapters/MongoDbAdapter');
 
 module.exports = {
+  defaultConnection: 'mongodb',
   connections: {
     mongodb: {
       adapter: MongoDbAdapter,
