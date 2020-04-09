@@ -1,5 +1,8 @@
-const { config, Service } = require('@taboo/cms-core');
-const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
+const { config } = require('@taboo/cms-core');
+const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
+const ACLService = require('modules/acl/services/ACLService');
+const RoleModel = require('modules/acl/models/RoleModel');
+
 const {
   api: {
     roles: { defaultSort = null },
@@ -9,17 +12,17 @@ const {
 class RolesAdminController extends AbstractAdminController {
   constructor() {
     super({
-      model: 'acl.Role',
+      model: RoleModel,
       searchFields: ['_id', 'name'],
       defaultSort,
     });
   }
   async afterUpdate(ctx, role) {
-    await Service('acl.ACL').updateUserSessionsACL(role);
+    await ACLService.updateUserSessionsACL(role);
     return role;
   }
   async afterDelete(ctx, role) {
-    await Service('acl.ACL').removeUserSessionsRole(role);
+    await ACLService.removeUserSessionsRole(role);
     return role;
   }
 }

@@ -1,4 +1,9 @@
-const { Helper, Model, Service, cmsHelper, config } = require('@taboo/cms-core');
+const { cmsHelper, config } = require('@taboo/cms-core');
+const LanguageService = require('modules/core/services/LanguageService');
+const CacheService = require('modules/cache/services/CacheService');
+const GalleryHelper = require('modules/galleries/helpers/GalleryHelper');
+const PageModel = require('modules/pages/models/PageModel');
+const GalleryModel = require('modules/galleries/models/GalleryModel');
 
 class PagesService {
   async getPageResponse(ctx, route) {
@@ -19,7 +24,7 @@ class PagesService {
       pageVariables.pageTitle = page.title;
       pageVariables.pageBody = page.body;
       if (page.language) {
-        Service('core.LanguageService').setLanguage(ctx, page.language);
+        LanguageService.setLanguage(ctx, page.language);
       }
       pageResponse = cmsHelper.composeResponse(ctx, layout, pageTpl, pageVariables);
     }
@@ -35,28 +40,26 @@ class PagesService {
     if (!admin) {
       filter.published = true;
       // If not admin - try to get from cache
-      page = Service('cache.Cache').get('pages', `page:${route}`);
+      page = CacheService.get('pages', `page:${route}`);
     }
     if (!page) {
       // Not in cache - try to retrieve, parse and cache it
-      page = await Model('pages.Page')
-        .findOne(filter)
-        .populate([
-          'pages',
-          {
-            path: 'galleries',
-            populate: {
-              path: 'images',
-            },
+      page = await PageModel.findOne(filter).populate([
+        'pages',
+        {
+          path: 'galleries',
+          populate: {
+            path: 'images',
           },
-        ]);
+        },
+      ]);
       if (page) {
         // TODO allow page select gallery template.
         galleryTpl = await cmsHelper.getTemplate('helpers/gallery');
-        await Service('pages.Pages').replacePageBodyRefs(ctx, page, galleryTpl);
+        await this.replacePageBodyRefs(ctx, page, galleryTpl);
         // Cache only published pages
         if (page.published) {
-          Service('cache.Cache').set('pages', `page:${route}`, page);
+          CacheService.set('pages', `page:${route}`, page);
         }
       }
     }
@@ -132,23 +135,19 @@ class PagesService {
   }
 
   async getPagesByIds(ids) {
-    return await Model('pages.Page')
-      .find({ _id: { $in: ids } })
-      .populate([
-        'pages',
-        {
-          path: 'galleries',
-          populate: {
-            path: 'images',
-          },
+    return await PageModel.find({ _id: { $in: ids } }).populate([
+      'pages',
+      {
+        path: 'galleries',
+        populate: {
+          path: 'images',
         },
-      ]);
+      },
+    ]);
   }
 
   async getGalleriesByIds(ids) {
-    return await Model('galleries.Gallery')
-      .find({ _id: { $in: ids } })
-      .populate('images');
+    return await GalleryModel.find({ _id: { $in: ids } }).populate('images');
   }
 
   replacePageBodyPages(body, pages) {
@@ -168,24 +167,21 @@ class PagesService {
   replacePageBodyGalleries(ctx, body, galleries, galleryTpl) {
     let newBody = body;
     galleries.map(item => {
-      newBody = newBody.replace(
-        `{{Gallery:${item._id}}}`,
-        Helper('galleries.Gallery').getTemplate(ctx, item, galleryTpl)
-      );
+      newBody = newBody.replace(`{{Gallery:${item._id}}}`, GalleryHelper.getTemplate(ctx, item, galleryTpl));
     });
 
     return newBody;
   }
 
   deletePageCacheByUrl(url) {
-    Service('cache.Cache').delete('pages', `page:${url}`);
+    CacheService.delete('pages', `page:${url}`);
     if (url && url.length > 1 && url.slice(-1) === '/') {
-      Service('cache.Cache').delete('pages', `page:${url.slice(0, -1)}`);
+      CacheService.delete('pages', `page:${url.slice(0, -1)}`);
     }
   }
 
   deleteAllPagesCache() {
-    Service('cache.Cache').clearCacheId('pages');
+    CacheService.clearCacheId('pages');
   }
 }
 

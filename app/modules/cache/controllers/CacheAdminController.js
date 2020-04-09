@@ -1,8 +1,8 @@
-const { Service } = require('@taboo/cms-core');
+const CacheService = require('modules/cache/services/CacheService');
 
 class CacheAdminController {
   async clearAll(ctx) {
-    Service('cache.Cache').clearAll();
+    CacheService.clearAll();
     ctx.body = {
       success: true,
     };

@@ -1,5 +1,3 @@
-const SessionCustomStore = require('../app/db/adapters/SessionCustomStore');
-
 module.exports = {
   port: process.env.PORT || 3000,
   secretKeys: ['REPLACE-ME-123456', '654321-REPLACE-ME'],
@@ -11,7 +9,7 @@ module.exports = {
     defaultErrorView: 'index',
   },
   session: {
-    store: SessionCustomStore, // default is 'cookie' or can be custom class that implements destroy, set, get methods
+    store: 'modules/db/adapters/SessionCustomStore', // 'cookie' or can be a relative path 'modules/db/adapters/CustomStore' to custom class that implements destroy, set, get methods
     options: {
       key: 'taboo.sid',
       maxAge: 1000 * 60 * 60 * 4, //4h

@@ -1,5 +1,8 @@
-const { config, Service, apiHelper } = require('@taboo/cms-core');
-const AbstractAdminController = require('../../core/controllers/AbstractAdminController');
+const { config, apiHelper } = require('@taboo/cms-core');
+const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
+const PagesService = require('modules/pages/services/PagesService');
+const RevisionService = require('modules/core/services/RevisionService');
+const PageModel = require('modules/pages/models/PageModel');
 const {
   api: {
     pages: { defaultSort = null },
@@ -9,7 +12,7 @@ const {
 class PagesAdminController extends AbstractAdminController {
   constructor() {
     super({
-      model: 'pages.Page',
+      model: PageModel,
       searchFields: ['_id', 'title', 'url', 'body'],
       defaultSort,
       populate: {
@@ -20,7 +23,7 @@ class PagesAdminController extends AbstractAdminController {
 
   async beforeCreate(ctx, data) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
-    Service('pages.Pages').populatePagesAndGalleries(data);
+    PagesService.populatePagesAndGalleries(data);
     data.createdBy = userId;
     return data;
   }
@@ -28,27 +31,27 @@ class PagesAdminController extends AbstractAdminController {
   async beforeUpdate(ctx, id, data) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     // Save current version as previous revision
-    await Service('core.RevisionService').save('pages.Page', ctx.params.id);
+    await RevisionService.saveById(PageModel, ctx.params.id);
     apiHelper.cleanTimestamps(data);
-    Service('pages.Pages').populatePagesAndGalleries(data);
+    PagesService.populatePagesAndGalleries(data);
     data.updatedBy = userId;
     return data;
   }
 
   async afterUpdate(ctx, itemResult) {
     // Clear pages cache on update
-    Service('pages.Pages').deleteAllPagesCache();
+    PagesService.deleteAllPagesCache();
     return itemResult;
   }
 
   async afterDelete(ctx, itemResult) {
     // Clear pages cache on delete
-    Service('pages.Pages').deleteAllPagesCache();
+    PagesService.deleteAllPagesCache();
     return itemResult;
   }
 
   async getPrevious(ctx) {
-    const item = await Service('core.RevisionService').get('pages.Page', ctx.params.id);
+    const item = await RevisionService.getById(PageModel, ctx.params.id);
     if (!item) {
       return ctx.throw(404, 'Previous version not found');
     }

@@ -1,12 +1,13 @@
 const path = require('path');
-const { filesHelper, Helper } = require('@taboo/cms-core');
+const { filesHelper } = require('@taboo/cms-core');
+const CoreHelper = require('modules/core/helpers/CoreHelper');
 
 class UploadsHelper {
   getFileName(fileName, appendTimestamp) {
     let fileNameParts;
     if (appendTimestamp) {
       fileNameParts = filesHelper.getFileNameParts(fileName);
-      fileNameParts.name += '-' + Helper('core.Core').getUnixTimestamp();
+      fileNameParts.name += '-' + CoreHelper.getUnixTimestamp();
       fileName = [fileNameParts.name, fileNameParts.extension].join('.');
     }
     return fileName;

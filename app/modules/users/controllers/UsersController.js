@@ -1,5 +1,9 @@
-const { Service, Model, Helper, config } = require('@taboo/cms-core');
+const { config } = require('@taboo/cms-core');
 const validator = require('validator');
+const CountriesService = require('modules/countries/services/CountriesService');
+const UsersService = require('modules/users/services/UsersService');
+const CoreHelper = require('modules/core/helpers/CoreHelper');
+const UserModel = require('modules/users/models/UserModel');
 
 class UsersController {
   constructor() {}
@@ -14,10 +18,13 @@ class UsersController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user, countryOptions;
     try {
-      user = await Model('users.User')
-        .findById(userId)
-        .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
-      countryOptions = Service('countries.Countries').getKeyValueArray();
+      user = await UserModel.findById(userId).populate([
+        'documentPersonal1',
+        'documentPersonal2',
+        'documentIncorporation',
+        'profilePicture',
+      ]);
+      countryOptions = CountriesService.getKeyValueArray();
     } catch (e) {
       ctx.throw(404, e);
     }
@@ -29,9 +36,12 @@ class UsersController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user;
     try {
-      user = await Model('users.User')
-        .findById(userId)
-        .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
+      user = await UserModel.findById(userId).populate([
+        'documentPersonal1',
+        'documentPersonal2',
+        'documentIncorporation',
+        'profilePicture',
+      ]);
     } catch (e) {
       ctx.throw(404, e);
     }
@@ -41,7 +51,7 @@ class UsersController {
   async register(ctx) {
     const { users: { signUpEnabled = false } = {} } = config;
     const { body: data = {} } = ctx.request;
-    const validationError = Service('users.Users').validateUserRegisterFields(data);
+    const validationError = UsersService.validateUserRegisterFields(data);
     let user;
 
     if (!signUpEnabled) {
@@ -53,7 +63,7 @@ class UsersController {
     }
 
     try {
-      user = await Service('users.Users').registerNewUser(data);
+      user = await UsersService.registerNewUser(data);
     } catch (err) {
       return ctx.throw(400, err);
     }
@@ -67,12 +77,12 @@ class UsersController {
     if (!signInEnabled) {
       return ctx.throw(403, 'Forbidden');
     }
-    ctx.body = await Service('users.Users').authenticateUser(ctx, email, password);
+    ctx.body = await UsersService.authenticateUser(ctx, email, password);
   }
 
   async logout(ctx) {
     ctx.body = {
-      success: await Service('users.Users').logoutUser(ctx),
+      success: await UsersService.logoutUser(ctx),
     };
   }
 
@@ -83,7 +93,7 @@ class UsersController {
       return ctx.throw(403, 'Forbidden');
     }
     ctx.body = {
-      success: await Service('users.Users').resetPassword(ctx, email, linkPrefix),
+      success: await UsersService.resetPassword(ctx, email, linkPrefix),
     };
   }
 
@@ -94,7 +104,7 @@ class UsersController {
     if (!signInEnabled) {
       return ctx.throw(403, 'Forbidden');
     }
-    success = await Service('users.Users').changePassword(ctx, body);
+    success = await UsersService.changePassword(ctx, body);
     ctx.body = { success };
   }
 
@@ -107,9 +117,12 @@ class UsersController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user;
     try {
-      user = await Model('users.User')
-        .findById(userId)
-        .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
+      user = await UserModel.findById(userId).populate([
+        'documentPersonal1',
+        'documentPersonal2',
+        'documentIncorporation',
+        'profilePicture',
+      ]);
     } catch (e) {
       ctx.throw(404, e);
     }
@@ -125,13 +138,16 @@ class UsersController {
         delete body._id;
       }
       if (body.newPassword) {
-        body.password = await Service('users.Users').hashPassword(body.newPassword);
+        body.password = await UsersService.hashPassword(body.newPassword);
       } else if (Object.prototype.hasOwnProperty.call(body, 'password')) {
         delete body.password;
       }
-      user = await Model('users.User')
-        .findByIdAndUpdate(userId, body, { new: true })
-        .populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
+      user = await UserModel.findByIdAndUpdate(userId, body, { new: true }).populate([
+        'documentPersonal1',
+        'documentPersonal2',
+        'documentIncorporation',
+        'profilePicture',
+      ]);
       ctx.session.user.firstName = user.firstName;
       ctx.session.user.lastName = user.lastName;
       ctx.session.user.email = user.email;
@@ -146,7 +162,7 @@ class UsersController {
 
   async searchUser(ctx) {
     const { request: { body: { email = null } = {} } = {} } = ctx;
-    const escapeValue = Helper('core.Core').escapeFormValue;
+    const escapeValue = CoreHelper.escapeFormValue;
     const isEmail = validator.isEmail(email);
     let profilePictureUrl = null;
     let user;
@@ -159,9 +175,7 @@ class UsersController {
       return ctx.throw(400, 'Email Address is not valid');
     }
     if (isEmail) {
-      user = await Model('users.User')
-        .findOne({ email: escapeValue(email) })
-        .populate('profilePicture');
+      user = await UserModel.findOne({ email: escapeValue(email) }).populate('profilePicture');
       if (!user) {
         return ctx.throw(404, 'User Not Found');
       }

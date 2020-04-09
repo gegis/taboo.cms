@@ -1,8 +1,8 @@
-const { Service } = require('@taboo/cms-core');
+const ACLService = require('modules/acl/services/ACLService');
 
 class ResourcesController {
   async getAll(ctx) {
-    ctx.body = Service('acl.ACL').getAllResources();
+    ctx.body = ACLService.getAllResources();
   }
 
   async getUserACL(ctx) {

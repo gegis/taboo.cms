@@ -1,14 +1,16 @@
-const { Model, Service, logger, config } = require('@taboo/cms-core');
+const { logger, config } = require('@taboo/cms-core');
+const SettingsService = require('modules/settings/services/SettingsService');
+const RoleModel = require('modules/acl/models/RoleModel');
 
 class ACLService {
   constructor() {
     this.roles = {};
     this.aclResounces = [];
-    this.afterModelsSetup = this.afterModelsSetup.bind(this);
+    this.afterModulesSetup = this.afterModulesSetup.bind(this);
     this.getAllResources = this.getAllResources.bind(this);
   }
 
-  async afterModelsSetup(modules, aclResources) {
+  async afterModulesSetup(modules, aclResources) {
     this.aclResounces = aclResources;
   }
 
@@ -24,7 +26,7 @@ class ACLService {
   isAllowed(subject, resource) {
     let allowed = false;
     let user;
-    if (!resource || !Service('settings.Settings').getACLEnabled()) {
+    if (!resource || !SettingsService.getACLEnabled()) {
       allowed = true;
     } else {
       if (subject.request && subject.response) {
@@ -44,7 +46,7 @@ class ACLService {
     let roles;
     try {
       if (user && user.roles) {
-        roles = await Model('acl.Role').find({ _id: { $in: user.roles } });
+        roles = await RoleModel.find({ _id: { $in: user.roles } });
         if (roles) {
           roles.map(role => {
             role.resources.map(resource => {

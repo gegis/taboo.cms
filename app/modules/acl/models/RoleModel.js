@@ -1,8 +1,8 @@
-const { Model } = require('@taboo/cms-core');
 const uniqueValidator = require('mongoose-unique-validator');
+const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
+const UserModel = require('modules/users/models/UserModel');
 
-module.exports = {
-  connection: 'mongodb',
+const RoleModel = MongoDbAdapter.setupModel('Role', {
   schemaOptions: {
     timestamps: true,
   },
@@ -19,8 +19,9 @@ module.exports = {
   afterSchemaCreate(schema) {
     schema.plugin(uniqueValidator, { message: 'has to be unique.' });
     schema.post('remove', async doc => {
-      await Model('users.User').updateMany({ roles: doc._id }, { $pull: { roles: doc._id } });
+      await UserModel.updateMany({ roles: doc._id }, { $pull: { roles: doc._id } });
     });
   },
-  // afterModelCreate(model, schema) {}, // Implement logic after model create in here
-};
+});
+
+module.exports = RoleModel;

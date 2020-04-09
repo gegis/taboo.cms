@@ -1,4 +1,4 @@
-const { Service } = require('@taboo/cms-core');
+const PagesService = require('modules/pages/services/PagesService');
 
 class PagesController {
   async page(ctx) {
@@ -9,13 +9,12 @@ class PagesController {
     if (route && route.length > 1 && route.slice(-1) === '/') {
       route = route.slice(0, -1);
     }
-    pageResponse = await Service('pages.Pages').getPageResponse(ctx, route);
+    pageResponse = await PagesService.getPageResponse(ctx, route);
     if (pageResponse) {
       ctx.body = pageResponse;
     } else {
       return ctx.throw(404);
     }
-
     // TODO - Not sure why it was here before - needs double checking
     // await next();
   }
@@ -27,7 +26,7 @@ class PagesController {
     if (route && route.length > 1 && route.slice(-1) === '/') {
       route = route.slice(0, -1);
     }
-    page = await Service('pages.Pages').getPage(ctx, route);
+    page = await PagesService.getPage(ctx, route);
     if (page) {
       ctx.body = page;
     } else {

@@ -1,7 +1,7 @@
 const uniqueValidator = require('mongoose-unique-validator');
+const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
 
-module.exports = {
-  connection: 'mongodb',
+const NavigationModel = MongoDbAdapter.setupModel('Navigation', {
   schemaOptions: {
     timestamps: true,
   },
@@ -30,4 +30,6 @@ module.exports = {
     schema.plugin(uniqueValidator, { message: 'must be unique' });
   },
   // afterModelCreate(model, schema) {}, // Implement logic after model create in here
-};
+});
+
+module.exports = NavigationModel;

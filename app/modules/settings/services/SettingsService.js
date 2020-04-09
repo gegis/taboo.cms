@@ -1,4 +1,5 @@
-const { Model, apiHelper, isAllowed, logger } = require('@taboo/cms-core');
+const { apiHelper, isAllowed, logger } = require('@taboo/cms-core');
+const SettingsModel = require('modules/settings/models/SettingsModel');
 
 class SettingsService {
   constructor() {
@@ -8,7 +9,7 @@ class SettingsService {
 
   async getPublic(key) {
     let itemData = null;
-    let item = await Model('settings.Settings').findOne({ key, public: true }, ['value', 'type']);
+    let item = await SettingsModel.findOne({ key, public: true }, ['value', 'type']);
     if (item && item.value) {
       itemData = item._doc;
       itemData = this.parseValue(itemData);
@@ -19,7 +20,7 @@ class SettingsService {
 
   async get(key) {
     let itemData = null;
-    const item = await Model('settings.Settings').findOne({ key }, ['key', 'value', 'public', 'type', 'category']);
+    const item = await SettingsModel.findOne({ key }, ['key', 'value', 'public', 'type', 'category']);
     if (item) {
       itemData = item._doc;
       itemData = this.parseValue(itemData);
@@ -27,8 +28,8 @@ class SettingsService {
     return itemData;
   }
 
-  async setPublic(key, value) {
-    let item = { key, value, public: true };
+  async setPublic(key, value, type = 'string') {
+    let item = { key, value, type, public: true };
     return await this.set(key, item);
   }
 
@@ -36,15 +37,16 @@ class SettingsService {
     let item;
     apiHelper.cleanTimestamps(data);
     data = this.stringifyValue(data);
-    item = await Model('settings.Settings').findOneAndUpdate({ key }, data, {
+    item = await SettingsModel.findOneAndUpdate({ key }, data, {
       new: true,
       runValidators: true,
+      context: 'query',
     });
     if (item === null) {
       if (!Object.prototype.hasOwnProperty.call(data, 'key')) {
         data.key = key;
       }
-      item = await Model('settings.Settings').create(data);
+      item = await SettingsModel.create(data);
     }
     return item;
   }

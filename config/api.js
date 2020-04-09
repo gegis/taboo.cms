@@ -18,4 +18,10 @@ module.exports = {
   roles: {
     defaultSort: { name: 'asc' },
   },
+  navigation: {
+    defaultSort: { name: 'asc' },
+  },
+  settings: {
+    defaultSort: { key: 'asc' },
+  },
 };

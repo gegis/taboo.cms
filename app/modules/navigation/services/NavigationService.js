@@ -1,16 +1,17 @@
-const { Model, Service } = require('@taboo/cms-core');
+const CacheService = require('modules/cache/services/CacheService');
+const NavigationModel = require('modules/navigation/models/NavigationModel');
 
 class NavigationService {
   async getEnabledBySlug(slug, language = 'en') {
     let navigation;
-    let items = Service('cache.Cache').get('navigation', `${slug}-${language}-enabled`);
+    let items = CacheService.get('navigation', `${slug}-${language}-enabled`);
 
     if (!items) {
       items = [];
-      navigation = await Model('navigation.Navigation').findOne({ slug: slug, language: language, enabled: true });
+      navigation = await NavigationModel.findOne({ slug: slug, language: language, enabled: true });
       if (navigation && navigation.items && navigation.items.length > 1) {
         items = navigation.items;
-        Service('cache.Cache').set('navigation', `${slug}-${language}-enabled`, items);
+        CacheService.set('navigation', `${slug}-${language}-enabled`, items);
       }
     }
 
@@ -18,11 +19,11 @@ class NavigationService {
   }
 
   async getAllEnabled(language = 'en') {
-    return Model('navigation.Navigation').find({ language: language, enabled: true });
+    return NavigationModel.find({ language: language, enabled: true });
   }
 
   deleteNavigationCache() {
-    Service('cache.Cache').clearCacheId('navigation');
+    CacheService.clearCacheId('navigation');
   }
 }
 

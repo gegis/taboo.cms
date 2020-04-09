@@ -22,12 +22,17 @@ module.exports = {
     passwordResetExpiryTime: 1000 * 60 * 60 * 24,
   },
   admin: {
-    title: 'Taboo Solutions Admin',
-    initialUser: {
-      firstName: 'Admin',
-      lastName: 'Taboo',
-      email: 'admin@taboo.solutions',
-      pass: 'admin',
+    cms: {
+      title: 'Taboo Solutions Admin',
+      adminRoleName: 'Administrator',
+      userRoleName: 'User',
+      userAclResources: ['api.uploads.userFiles'],
+      initialUser: {
+        firstName: 'Admin',
+        lastName: 'Taboo',
+        email: 'admin@taboo.solutions',
+        pass: 'admin',
+      },
     },
   },
   users: {

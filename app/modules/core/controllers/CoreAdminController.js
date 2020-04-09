@@ -2,7 +2,8 @@ const { config } = require('@taboo/cms-core');
 
 class CoreAdminController {
   constructor() {
-    this.adminTitle = config.admin.title;
+    const { cms: { title } = {} } = config.admin;
+    this.adminTitle = title;
     // Bind functions to this scope
     this.admin = this.admin.bind(this);
   }
