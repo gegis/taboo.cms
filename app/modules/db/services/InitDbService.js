@@ -53,7 +53,7 @@ class InitDbService {
   }
 
   async setupAdminUser(role) {
-    const { admin: { initialUser } = {} } = config;
+    const { admin: { cms: { initialUser } = {} } = {} } = config;
     const userData = {
       admin: true,
       active: true,

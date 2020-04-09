@@ -14,7 +14,6 @@ const SettingsModel = MongoDbAdapter.setupModel('Settings', {
     },
     category: {
       type: String,
-      required: [true, 'is required'],
       default: 'generic',
     },
     type: {

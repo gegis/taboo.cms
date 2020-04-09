@@ -25,7 +25,7 @@ class UsersAdminController extends AbstractAdminController {
   }
 
   async admin(ctx) {
-    const { title } = config.admin;
+    const { cms: { title } = {} } = config.admin;
     ctx.view = {
       _layout: 'admin',
       metaTitle: title,

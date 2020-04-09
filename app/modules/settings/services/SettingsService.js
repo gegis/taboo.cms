@@ -28,8 +28,8 @@ class SettingsService {
     return itemData;
   }
 
-  async setPublic(key, value) {
-    let item = { key, value, public: true };
+  async setPublic(key, value, type = 'string') {
+    let item = { key, value, type, public: true };
     return await this.set(key, item);
   }
 
@@ -40,6 +40,7 @@ class SettingsService {
     item = await SettingsModel.findOneAndUpdate({ key }, data, {
       new: true,
       runValidators: true,
+      context: 'query',
     });
     if (item === null) {
       if (!Object.prototype.hasOwnProperty.call(data, 'key')) {
