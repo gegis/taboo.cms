@@ -121,6 +121,7 @@ class NavigationList extends React.Component {
               isVirtualized={false}
               treeData={this.getNavigationItems()}
               rowHeight={44}
+              scaffoldBlockPxWidth={36}
               getNodeKey={this.getNodeKey}
               generateNodeProps={this.generateNodeProps}
               onChange={this.onTreeChange}

@@ -14,6 +14,13 @@ class UsersController {
   async resetPassword() {}
   async changePassword() {}
 
+  async keyTest(ctx) {
+    ctx.body = {
+      vienas: 1,
+      du: 2,
+    };
+  }
+
   async myProfile(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user, countryOptions;

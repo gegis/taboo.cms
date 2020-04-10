@@ -47,6 +47,8 @@ module.exports = {
   Value: 'Value',
   Category: 'Category',
   Slug: 'Slug',
+  'User Authentication Settings': 'User Authentication Settings',
+  'API Key': 'API Key',
   'Update Navigation Item': 'Update Navigation Item',
   'Edit Navigation': 'Edit Navigation',
   'Open In New Page': 'Open In New Page',

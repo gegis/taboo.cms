@@ -6,7 +6,7 @@ import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
 const { userVerificationStatuses = [], userDocumentTypes = [] } = window.app.config;
 
 const newItem = {
-  id: null,
+  id: '',
   firstName: '',
   lastName: '',
   email: '',
@@ -28,6 +28,7 @@ const newItem = {
   description: '',
   verificationStatus: 'new',
   verificationNote: '',
+  apiKey: '',
 };
 
 class UsersAdminStore extends AbstractAdminStore {

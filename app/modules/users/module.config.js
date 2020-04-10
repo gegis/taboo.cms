@@ -33,6 +33,15 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/api/key/test',
+      action: UsersController.keyTest,
+      policies: ['apiKey'],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
+      method: 'GET',
       path: '/sign-in',
       action: UsersController.signIn,
       policies: ['i18n', 'loadNavigation'],
