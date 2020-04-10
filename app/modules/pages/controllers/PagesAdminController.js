@@ -13,7 +13,7 @@ class PagesAdminController extends AbstractAdminController {
   constructor() {
     super({
       model: PageModel,
-      searchFields: ['_id', 'title', 'url', 'body'],
+      searchFields: ['_id', 'title', 'url', 'body', 'language'],
       defaultSort,
       populate: {
         findById: ['createdBy', 'updatedBy'],

@@ -1,9 +1,7 @@
 const { config, app } = require('@taboo/cms-core');
 
 module.exports = async (ctx, next) => {
-  const {
-    i18n: { admin: i18nAdmin = {} },
-  } = config;
+  const { i18n: { admin: i18nAdmin = {} } = {} } = config;
   const { adminLocales } = app;
   if (ctx.session && ctx.session.adminLocale) {
     ctx.taboo.adminLocale = ctx.session.adminLocale;

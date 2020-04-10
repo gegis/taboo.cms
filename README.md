@@ -188,7 +188,7 @@ Using Services:
 
 ```
 const SettingsService = require('modules/settings/services/SettingsService');
-const results = await SettingsService.set('key', 'value);
+const results = await SettingsService.set('key', 'value');
 ```
 
 Using Helpers:
@@ -207,14 +207,14 @@ cwd             - current working directory
 config          - merged application config
 app             - app related attributes
 modules         - all the bootsrtapped modules from ./app/modules
-logger          - logger function, logger.info('Info'), logger.warn('Warn'),
-                  logger.error('Error')
+logger          - logger function, logger.info('Info'),
+                  logger.warn('Warn'), logger.error('Error')
 arrayHelper     - helper for array manipulations
 filesHelper     - helper for file system manipulations
 apiHelper       - helper for api related functions
 ejsHelper       - server side templating helper, it uses ejs templates
-cmsHelper       - cms related (mostly koa.js and variation between apiHelper
-                  and filesHelper logic)
+cmsHelper       - cms related (mostly koa.js and variation between 
+                  apiHelper and filesHelper logic)
 mailer          - node mailer to send emails
 sockets         - sockets server io to emit/receive messages
 events          - events receiver/emitter
@@ -263,6 +263,9 @@ npm run taboo-cms-cli db down --file=2020-04-10-load-initial-data.js
 - User JWT auth
 - API routes with params automated documentation like swagger
 - Page construction blocks for easier content management
+- Layouts management module
+- Translations admin module
+- Improve admin search to by able to search by field
 - Client side frontend script to modify pages, navigation and gallery on the go
 - Images (optional) resize during Admin Dashboard Upload 
 - Classic CMS - profile picture upload
@@ -323,7 +326,7 @@ production.js
 Depending on the selected environment (default 'development') it will load one of the above files
 predefined config.
 
-The way configs are overriden (if empty is exported, nothing will be overriden in default config):
+The way configs are overridden (if empty is exported, nothing will be overridden in default config):
 
 ```
 default config < environment config < local.js
