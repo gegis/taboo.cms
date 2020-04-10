@@ -23,13 +23,13 @@ module.exports = {
     CLIHelper.log(`Created Admin Role: ${this.adminRole.name}`, 'info');
 
     this.userRole = await this.createUserRole();
-    CLIHelper.log(`Created User Role: ${this.adminRole.name}`, 'info');
+    CLIHelper.log(`Created User Role: ${this.userRole.name}`, 'info');
 
     this.adminUser = await this.createAdminUser(this.adminRole);
     CLIHelper.log('Successfully created ADMIN USER!', 'info');
     CLIHelper.log(`EMAIL: ${this.adminUser.email}`, 'notice');
     CLIHelper.log(`PASSWORD: ${initialUser.pass}`, 'notice');
-    CLIHelper.log('Make sure to change the password!', 'warn');
+    CLIHelper.log('Make sure to change the password later on!', 'warn');
 
     await this.createPages(pages);
     CLIHelper.log('Created Pages', 'info');

@@ -29,7 +29,7 @@ class DbCommand {
       CLIHelper.log('No new migrations executed', 'warn');
     }
 
-    return 'DB migrations finished';
+    return 'DB migration successfully finished';
   }
 
   async up() {

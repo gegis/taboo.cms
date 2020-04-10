@@ -9,7 +9,9 @@ module.exports = {
     defaultErrorView: 'index',
   },
   session: {
-    store: 'modules/db/adapters/SessionCustomStore', // 'cookie' or can be a relative path 'modules/db/adapters/CustomStore' to custom class that implements destroy, set, get methods
+    // 'cookie' or can be a root dir relative path 'app/modules/db/adapters/SessionCustomStore'
+    // to custom class that implements destroy, set and get methods
+    store: 'app/modules/db/adapters/SessionCustomStore',
     options: {
       key: 'taboo.sid',
       maxAge: 1000 * 60 * 60 * 4, //4h

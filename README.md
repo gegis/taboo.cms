@@ -23,7 +23,10 @@ Main application modules:
 - users - cms users management module
 - acl - users access control management module
 - cache - cms content caching module
+- db - db adapters and migrations module
 - mailer - implements SendGrid api for sending emails (@taboo/cms-core also implements nodemailer)
+- settings - cms settings management module
+- cli - command line interface provider and helper
 - core - all of the core functionality for the cms
 
 ## How To Install
@@ -49,9 +52,9 @@ created CLI command:
 npx taboo-cms-cli install
 ```
 
-Before the installation begins - it will prompt for CMS type: `react`, `classic` or `headless`
-and administrator `email` - this email will be used to create first admin user with
-the password: `admin`, make sure to change your password later on.
+Before the installation begins - it will prompt for CMS type: `react` or `classic`
+and for administrator `email` - this email will be used to create first admin user with
+the password: `admin`, make sure to change the password later on.
 
 After it has finished the installation process, please run:
 
