@@ -47,6 +47,8 @@ module.exports = {
   Value: 'Value',
   Category: 'Category',
   Slug: 'Slug',
+  Logs: 'Logs',
+  'API Logs': 'API Logs',
   'User Authentication Settings': 'User Authentication Settings',
   'API Key': 'API Key',
   'Update Navigation Item': 'Update Navigation Item',

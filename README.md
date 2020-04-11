@@ -280,6 +280,7 @@ npm run taboo-cms-cli db down --file=2020-04-10-load-initial-data.js
 - Kick out from admin dashboard if session has expired
 - Have an option on delete to only set deleted=true, or move to Deleted documents
 - Have each module config to be merged to main config
+- Have each locales translation to be merged to main
 
 ## How to build and deploy on remote server
 

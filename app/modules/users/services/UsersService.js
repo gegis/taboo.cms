@@ -1,4 +1,4 @@
-const { config, logger, mailer, cmsHelper } = require('@taboo/cms-core');
+const { config, logger, mailer, cmsHelper, isAllowed } = require('@taboo/cms-core');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
@@ -19,6 +19,40 @@ class UsersService {
       server: { bcryptSaltRounds = 10 },
     } = config;
     return await bcrypt.hash(password, bcryptSaltRounds);
+  }
+
+  parseAuthorizationToken(type, value) {
+    let token = null;
+    if (value) {
+      const parts = value.split(' ');
+      if (parts[0] === type) {
+        token = parts[1];
+      }
+    }
+    return token;
+  }
+
+  async getUserData(search, loadAcl = false) {
+    let user = null;
+    const userResult = await UserModel.findOne(search);
+    if (userResult) {
+      user = Object.assign({}, userResult._doc);
+      if (loadAcl) {
+        user.acl = await ACLService.getUserACL(user);
+      }
+    }
+    return user;
+  }
+
+  isUserRequestAllowed(ctx, user) {
+    const { taboo: { aclResource } = {} } = ctx;
+    if (aclResource) {
+      // if isAllowed return value is undefined - it means acl is not enabled / implemented
+      if (isAllowed(user, aclResource) === false) {
+        return false;
+      }
+    }
+    return true;
   }
 
   async authenticateUser(ctx, email, password) {

@@ -31,13 +31,16 @@ module.exports = {
       action: UsersController.signUp,
       policies: ['i18n', 'loadNavigation'],
     },
+    // TODO delete this
     {
       method: 'GET',
       path: '/api/key/test',
       action: UsersController.keyTest,
       policies: ['apiKey'],
       options: {
+        aclResource: 'admin.users.view',
         errorResponseAsJson: true,
+        disableGlobalPolicies: true,
       },
     },
     {

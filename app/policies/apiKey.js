@@ -1,40 +1,35 @@
 const { config } = require('@taboo/cms-core');
 const { api: { authorization: { type: { apiKeyName } = {} } = {} } = {} } = config;
-const UserModel = require('modules/users/models/UserModel');
+const LogsApiService = require('modules/logs/services/LogsApiService');
+const UserService = require('modules/users/services/UsersService');
 
-// TODO move this to core module
-const parseAuthorizationToken = (type, value) => {
-  let token = null;
-  if (value) {
-    const parts = value.split(' ');
-    if (parts[0] === type) {
-      token = parts[1];
-    }
-  }
-  return token;
-};
-
+// TODO - There is an issue - because it first hits global policy 'acl'.... which checks for user in ctx session
 module.exports = async (ctx, next) => {
-  const { authorization } = ctx.header;
+  const { header: { authorization } = {}, taboo: { moduleRoute = {} } = {} } = ctx;
+  let token = null;
+  let user, allowed;
   if (!authorization) {
-    return ctx.throw(401, 'Authorization token not found found');
+    return ctx.throw(401, 'Authorization token not found');
   }
-  const token = parseAuthorizationToken(apiKeyName, authorization);
-  if (!token) {
-    return ctx.throw(401, 'ApiKey token not found');
+  try {
+    token = UserService.parseAuthorizationToken(apiKeyName, authorization);
+    if (!token) {
+      return ctx.throw(401, 'ApiKey token not found');
+    }
+    user = await UserService.getUserData({ apiKey: token }, true);
+    if (!user) {
+      return ctx.throw(403, 'Not Authorized');
+    }
+    allowed = UserService.isUserRequestAllowed(ctx, user);
+    if (allowed === false) {
+      return ctx.throw(403, 'Forbidden');
+    }
+  } catch (e) {
+    if (token) {
+      LogsApiService.create({ action: moduleRoute.path, token, user, code: e.status, error: e.message });
+    }
+    return ctx.throw(e.status, e.message);
   }
-  const user = await UserModel.findOne({ apiKey: token });
-  if (!user) {
-    return ctx.throw(403, 'Not Authorized');
-  }
-  console.log(token);
-  console.log(user);
-  // TODO - if route has acl to be checked as well!!!! - get user acl and check
-  // if (ctx.taboo.aclResource) {
-  //   // if return value is undefined - it means acl is not enabled / implemented
-  //   if (isAllowed(ctx, ctx.taboo.aclResource) === false) {
-  //     return ctx.throw(403, 'Forbidden');
-  //   }
-  // }
+  LogsApiService.create({ action: moduleRoute.path, token, user, code: 'SUCCESS' });
   return next();
 };

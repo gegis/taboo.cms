@@ -1,11 +1,11 @@
-const { isAllowed } = require('@taboo/cms-core');
+const UserService = require('modules/users/services/UsersService');
 
 module.exports = async (ctx, next) => {
-  if (ctx.taboo.aclResource) {
-    // if return value is undefined - it means acl is not enabled / implemented
-    if (isAllowed(ctx, ctx.taboo.aclResource) === false) {
-      return ctx.throw(403, 'Forbidden');
-    }
+  const { session: { user } = {} } = ctx;
+  const allowed = UserService.isUserRequestAllowed(ctx, user);
+  // if return value is undefined - it means acl is not enabled / implemented
+  if (allowed === false) {
+    return ctx.throw(403, 'Forbidden');
   }
   return next();
 };
