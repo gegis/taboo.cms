@@ -1,11 +1,13 @@
 import React from 'react';
 import { compose } from 'recompose';
+import { IconButton, Icon } from 'rsuite';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import ActionButtons from 'app/modules/core/client/components/admin/ActionButtons';
 import Translation from 'modules/core/client/components/Translation';
 import BooleanIcon from 'modules/core/client/components/admin/BooleanIcon';
+import UserAuthSettingsModal from 'modules/users/client/components/admin/UserAuthSettingsModal';
 
 class UsersList extends React.Component {
   constructor(props) {
@@ -14,6 +16,7 @@ class UsersList extends React.Component {
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
+    this.authModal = React.createRef();
   }
 
   getUserRoles(user) {
@@ -26,68 +29,96 @@ class UsersList extends React.Component {
     return roles;
   }
 
+  handleAuth(id) {
+    const { current } = this.authModal;
+    if (current) {
+      current.open(id);
+    }
+  }
+
+  getCustomButtons(id) {
+    return [
+      <IconButton
+        className="auth-btn"
+        key="auth"
+        appearance="default"
+        onClick={this.handleAuth.bind(this, id)}
+        title="User Authentication Settings"
+        icon={<Icon icon="unlock-alt" />}
+      />,
+    ];
+  }
+
   render() {
     return (
-      <table>
-        <thead>
-          <tr>
-            <th className="rs-visible-xs">User</th>
-            <th className="rs-hidden-sm rs-hidden-xs">User</th>
-            <th className="rs-hidden-xs">Verified</th>
-            <th className="rs-hidden-xs">Admin</th>
-            <th className="rs-hidden-xs">Active</th>
-            <th className="action-buttons-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.usersStore.items.map(item => (
-            <tr key={item._id}>
-              <td className="rs-visible-xs mobile-view-td">
-                <div>
-                  {item.firstName} {item.lastName}
-                </div>
-                <div>{item.email}</div>
-                <div className="subject">
-                  <div>{this.getUserRoles(item).join(', ')}</div>
-                </div>
-                <div>
-                  <BooleanIcon value={item.verified} />{' '}
-                  <span className="subject">
-                    <Translation message="verified" />
-                  </span>
-                </div>
-                <div>
-                  <BooleanIcon value={item.admin} />{' '}
-                  <span className="subject">
-                    <Translation message="admin" />
-                  </span>
-                </div>
-                <div className="subject sm">{item._id}</div>
-              </td>
-              <td className="rs-hidden-sm rs-hidden-xs max-overflow">
-                <div>
-                  {item.firstName} {item.lastName}
-                </div>
-                <div>{item.email}</div>
-                <div className="subject">{this.getUserRoles(item).join(', ')}</div>
-              </td>
-              <td className="rs-hidden-xs">
-                <BooleanIcon value={item.verified} />
-                <div>{item.verificationStatus}</div>
-              </td>
-              <td className="rs-hidden-xs">
-                <BooleanIcon value={item.admin} />
-              </td>
-              <td className="rs-hidden-xs">
-                <BooleanIcon value={item.active} />
-              </td>
-              <td>
-                <ActionButtons value={item._id} onEdit={this.openEditModal} onDelete={this.handleDelete} />
-              </td>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th className="rs-visible-xs">User</th>
+              <th className="rs-hidden-sm rs-hidden-xs">User</th>
+              <th className="rs-hidden-xs">Verified</th>
+              <th className="rs-hidden-xs">Admin</th>
+              <th className="rs-hidden-xs">Active</th>
+              <th className="action-buttons-2">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {this.usersStore.items.map(item => (
+              <tr key={item._id}>
+                <td className="rs-visible-xs mobile-view-td">
+                  <div>
+                    {item.firstName} {item.lastName}
+                  </div>
+                  <div>{item.email}</div>
+                  <div className="subject">
+                    <div>{this.getUserRoles(item).join(', ')}</div>
+                  </div>
+                  <div>
+                    <BooleanIcon value={item.verified} />{' '}
+                    <span className="subject">
+                      <Translation message="verified" />
+                    </span>
+                  </div>
+                  <div>
+                    <BooleanIcon value={item.admin} />{' '}
+                    <span className="subject">
+                      <Translation message="admin" />
+                    </span>
+                  </div>
+                  <div className="subject sm">{item._id}</div>
+                </td>
+                <td className="rs-hidden-sm rs-hidden-xs max-overflow">
+                  <div>
+                    {item.firstName} {item.lastName}
+                  </div>
+                  <div>{item.email}</div>
+                  <div className="subject">{this.getUserRoles(item).join(', ')}</div>
+                </td>
+                <td className="rs-hidden-xs">
+                  <BooleanIcon value={item.verified} />
+                  <div>{item.verificationStatus}</div>
+                </td>
+                <td className="rs-hidden-xs">
+                  <BooleanIcon value={item.admin} />
+                </td>
+                <td className="rs-hidden-xs">
+                  <BooleanIcon value={item.active} />
+                </td>
+                <td>
+                  <ActionButtons
+                    value={item._id}
+                    onEdit={this.openEditModal}
+                    onDelete={this.handleDelete}
+                    customButtons={this.getCustomButtons(item._id)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <UserAuthSettingsModal ref={this.authModal} />
+      </div>
     );
   }
 }

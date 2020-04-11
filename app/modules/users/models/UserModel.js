@@ -114,6 +114,10 @@ const UserModel = MongoDbAdapter.setupModel('User', {
     lastLogin: {
       type: Date,
     },
+    apiKey: {
+      type: String,
+      unique: true,
+    },
   },
   afterSchemaCreate(schema) {
     schema.plugin(uniqueValidator, { message: 'is already taken' });

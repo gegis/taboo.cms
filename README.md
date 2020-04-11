@@ -268,18 +268,19 @@ npm run taboo-cms-cli db down --file=2020-04-10-load-initial-data.js
 - Page construction blocks for easier content management
 - Layouts management module
 - Translations admin module
-- Improve admin search to by able to search by field
+- Improve admin search to be able to search by field
 - Client side frontend script to modify pages, navigation and gallery on the go
 - Images (optional) resize during Admin Dashboard Upload 
 - Classic CMS - profile picture upload
 - Classic CMS - account verification
-- Atomic CLI commands to create each asset separately
+- Atomic new module CLI commands to create each component separately
 - Make uploads module easily reusable
 - Implement classic tpl files next to the original ones for installation and new module
 - Implement React Server Side templates rendering
-- Kick off from admin dashboard if session has expired
+- Kick out from admin dashboard if session has expired
 - Have an option on delete to only set deleted=true, or move to Deleted documents
-
+- Have each module config to be merged to main config
+- Have each locales translation to be merged to main
 
 ## How to build and deploy on remote server
 

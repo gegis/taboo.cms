@@ -103,7 +103,7 @@ class AbstractAdminStore {
             if (!data.id && data._id) {
               data.id = data._id;
             }
-            this.item = data;
+            this.item = Object.assign(this.item, data);
             resolve(data);
           });
         })
@@ -113,7 +113,13 @@ class AbstractAdminStore {
 
   create(data) {
     return new Promise(resolve => {
+      const deleteProps = ['id', '_id'];
       const { create } = this.options.endpoints;
+      deleteProps.map(prop => {
+        if (Object.keys(data).indexOf(prop) !== -1) {
+          delete data[prop];
+        }
+      });
       axios[create.method](create.path, data)
         .then(response => {
           resolve(response.data);
@@ -122,7 +128,7 @@ class AbstractAdminStore {
     });
   }
 
-  update(data) {
+  update(data, updateItems = true) {
     return new Promise(resolve => {
       const { update } = this.options.endpoints;
       axios[update.method](update.path.replace(':id', data.id), data)
@@ -131,13 +137,17 @@ class AbstractAdminStore {
             let index, items;
             if (response && response.data) {
               this.resetItem();
-              index = this.getItemIndexById(response.data._id);
-              if (index !== null) {
-                items = this.items.slice();
-                items[index] = response.data;
-                this.items = items;
+              if (updateItems === true) {
+                index = this.getItemIndexById(response.data._id);
+                if (index !== null) {
+                  items = this.items.slice();
+                  items[index] = response.data;
+                  this.items = items;
+                }
               }
               resolve(response.data);
+            } else {
+              resolve(data);
             }
           });
         })

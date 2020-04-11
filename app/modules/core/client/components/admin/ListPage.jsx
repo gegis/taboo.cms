@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, FormControl, Panel, IconButton, Icon, Button } from 'rsuite';
+import { Form, FormGroup, Panel, IconButton, Icon, Button, InputGroup, Input } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -24,6 +24,7 @@ class ListPage extends React.Component {
     this.handleCopy = this.handleCopy.bind(this);
     this.onLoadMore = this.onLoadMore.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
+    this.onClearSearch = this.onClearSearch.bind(this);
   }
 
   componentDidMount() {
@@ -43,19 +44,33 @@ class ListPage extends React.Component {
     }, 500);
   }
 
+  onClearSearch() {
+    const value = '';
+    this.entityStore.setSearch(value);
+    this.uiAdminStore.setLoading(true);
+    this.entityStore.loadAll({ value }).then(() => {
+      this.uiAdminStore.setLoading(false);
+    });
+  }
+
   getHeaderNav() {
     const { search } = this.entityStore;
     const { name } = this.props;
     return (
       <Form layout="inline">
         <FormGroup>
-          <FormControl
-            name={name}
-            placeholder={`Search ${name}`}
-            style={{ width: '40vw' }}
-            onChange={this.onSearchChange}
-            value={search}
-          />
+          <InputGroup inside>
+            <Input
+              name={name}
+              placeholder={`Search ${name}`}
+              style={{ width: '40vw' }}
+              onChange={this.onSearchChange}
+              value={search}
+            />
+            <InputGroup.Button onClick={this.onClearSearch}>
+              <Icon icon="times-circle" />
+            </InputGroup.Button>
+          </InputGroup>
         </FormGroup>
       </Form>
     );
@@ -147,8 +162,8 @@ class ListPage extends React.Component {
             </div>
           )}
         </Panel>
-        <CreateModalComponent ref={this.createModal} />
-        <EditModalComponent ref={this.editModal} />
+        {CreateModalComponent && <CreateModalComponent ref={this.createModal} />}
+        {EditModalComponent && <EditModalComponent ref={this.editModal} />}
       </Layout>
     );
   }
@@ -160,8 +175,8 @@ ListPage.propTypes = {
   uiAdminStore: PropTypes.object.isRequired,
   entityStore: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
-  CreateModalComponent: PropTypes.object.isRequired,
-  EditModalComponent: PropTypes.object.isRequired,
+  CreateModalComponent: PropTypes.object,
+  EditModalComponent: PropTypes.object,
   ItemsListComponent: PropTypes.object.isRequired,
 };
 

@@ -1,4 +1,9 @@
 module.exports = {
+  authorization: {
+    type: {
+      apiKeyName: 'ApiKey',
+    },
+  },
   defaultPageSize: 50,
   reservations: {
     defaultSort: { createdAt: 'desc' },
@@ -23,5 +28,8 @@ module.exports = {
   },
   settings: {
     defaultSort: { key: 'asc' },
+  },
+  logsApi: {
+    defaultSort: { createdAt: 'desc' },
   },
 };
