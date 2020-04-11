@@ -9,6 +9,9 @@ const LogApiModel = MongoDbAdapter.setupModel('LogApi', {
     action: {
       type: String,
     },
+    authType: {
+      type: String,
+    },
     token: {
       type: String,
     },
