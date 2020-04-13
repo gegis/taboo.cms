@@ -47,6 +47,100 @@ class UsersController {
     ctx.view.userData = user;
   }
 
+  /**
+   * @api {post} /api/users/register User Register
+   * @apiName RegisterUser
+   * @apiGroup User
+   * @apiParam {string} firstName User firstName, required
+   * @apiParam {string} lastName User lastName, required
+   * @apiParam {string} email User email, required, is email
+   * @apiParam {string} street User street, required
+   * @apiParam {string} city User city, required
+   * @apiParam {string} state User state, required
+   * @apiParam {string} country User country, required
+   * @apiParam {string} postCode User postCode, required
+   * @apiParam {string} password User password, required, min 5 chars
+   * @apiParamExample {json} Request Example:
+   * {
+   *   "firstName": "Foo",
+   *   "lastName": "Bar",
+   *   "email": "foo@bar.foo",
+   *   "street": "Main st.",
+   *   "city": "Manchester",
+   *   "state": "North West",
+   *   "country": "United Kingdom",
+   *   "postCode": "WB14 1RE",
+   *   "password": "pass1"
+   * }
+   * @apiSuccessExample {json} Success Response:
+   * HTTP/1.1 200 OK
+   * {
+   *   "businessAccount": false,
+   *   "verified": false,
+   *   "verificationStatus": "new",
+   *   "admin": false,
+   *   "loginAttempts": 0,
+   *   "active": true,
+   *   "roles": [
+   *       "5dd9c1cb2792536b7f101823"
+   *   ],
+   *   "_id": "5e94eda397858d49e917ad9d",
+   *   "firstName": "Foo",
+   *   "lastName": "Bar",
+   *   "email": "foo@bar.foo",
+   *   "street": "Main st.",
+   *   "city": "Manchester",
+   *   "state": "North West",
+   *   "country": "United Kingdom",
+   *   "postCode": "WB14 1RE",
+   *   "createdAt": "2020-04-13T22:54:27.824Z",
+   *   "updatedAt": "2020-04-13T22:54:27.824Z",
+   *   "__v": 0
+   * }
+   * @apiErrorExample {json} Error Response:
+   *  HTTP/1.1 400 Bad Request
+   *  {
+   *    "error": {
+   *        "message": "Bad Request",
+   *        "validationMessage": "Invalid Data",
+   *        "validationErrors": [
+   *            {
+   *                "field": "password",
+   *                "message": "Password must be at least 5 characters long"
+   *            }
+   *        ]
+   *    },
+   *    "message": "Bad Request"
+   *  }
+   *
+   *  HTTP/1.1 400 Bad Request
+   *  {
+   *     "error": {
+   *         "errors": {
+   *             "email": {
+   *                 "message": "is already taken",
+   *                 "name": "ValidatorError",
+   *                 "properties": {
+   *                     "message": "is already taken",
+   *                     "type": "unique",
+   *                     "path": "email",
+   *                     "value": "foo@bar.foo"
+   *                 },
+   *                 "kind": "unique",
+   *                 "path": "email",
+   *                 "value": "foo@bar.foo"
+   *             }
+   *         },
+   *         "_message": "User validation failed",
+   *         "message": "User validation failed: email: is already taken",
+   *         "name": "ValidationError",
+   *         "expose": true,
+   *         "statusCode": 400,
+   *         "status": 400
+   *     },
+   *     "message": "User validation failed: email: is already taken"
+   *  }
+   */
   async register(ctx) {
     const { users: { signUpEnabled = false } = {} } = config;
     const { body: data = {} } = ctx.request;
@@ -72,21 +166,22 @@ class UsersController {
 
   /**
    * @api {post} /api/login User Login
+   * @apiName LoginUser
    * @apiGroup User
    * @apiParam {string} email User email
    * @apiParam {string} password User password
    * @apiParamExample {json} Request Example:
    * {
-   *   "email": "admin@admin.admin",
-   *   "password": "admin"
+   *   "email": "foo@bar.bar",
+   *   "password": "pass1"
    * }
    * @apiSuccessExample {json} Success Response:
    * HTTP/1.1 200 OK
    * {
-   *   "id": "5dd47dc99deb4f256dfcad54",
-   *   "firstName": "Name",
-   *   "lastName": "Surname",
-   *   "email": "admin@admin.admin",
+   *   "id": "5e94eda397858d49e917ad9d",
+   *   "firstName": "Foo",
+   *   "lastName": "Bar",
+   *   "email": "foo@bar.foo",
    *   "verified": true,
    *   "admin": true,
    *   "active": true,
@@ -95,22 +190,6 @@ class UsersController {
    *     "5dd47db6dcb439238bd29ee5"
    *   ],
    *   "acl": [
-   *     "admin.acl.manage",
-   *     "admin.acl.view",
-   *     "admin.cache.clear",
-   *     "admin.dashboard",
-   *     "admin.galleries.manage",
-   *     "admin.galleries.view",
-   *     "admin.logs.api.manage",
-   *     "admin.logs.api.view",
-   *     "admin.navigation.manage",
-   *     "admin.navigation.view",
-   *     "admin.pages.manage",
-   *     "admin.pages.view",
-   *     "admin.settings.manage",
-   *     "admin.settings.view",
-   *     "admin.uploads.manage",
-   *     "admin.uploads.view",
    *     "admin.users.manage",
    *     "admin.users.view",
    *     "api.uploads.userFiles"
@@ -136,6 +215,7 @@ class UsersController {
 
   /**
    * @api {get} /api/logout User Logout
+   * @apiName LogoutUser
    * @apiGroup User
    * @apiSuccessExample {json} Success Response:
    * HTTP/1.1 200 OK
@@ -150,7 +230,8 @@ class UsersController {
   }
 
   /**
-   * @api {post} /api/reset-password User password init request
+   * @api {post} /api/reset-password User Password Reset
+   * @apiName ResetUserPassword
    * @apiGroup User
    * @apiParam {string} email User email
    * @apiParam {string} linkPrefix Main url prefix for user to be redirected
@@ -171,6 +252,21 @@ class UsersController {
     };
   }
 
+  /**
+   * @api {post} /api/change-password User Password Change
+   * @apiName ChangeUserPassword
+   * @apiGroup User
+   * @apiParam {string} userId User ID
+   * @apiParam {string} newPass User new password
+   * @apiParam {string} newPassRepeat User new password repeated
+   * @apiParam {string} token User password reset token
+   * @apiParam {string} newPass User new password
+   * @apiSuccessExample {json} Success Response:
+   * HTTP/1.1 200 OK
+   * {
+   *    "success": true
+   * }
+   */
   async changePasswordApi(ctx) {
     const { users: { signInEnabled = false } = {} } = config;
     const { body = null } = ctx.request;

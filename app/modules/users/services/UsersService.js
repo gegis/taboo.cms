@@ -254,6 +254,7 @@ class UsersService {
   async registerNewUser(data) {
     const userData = Object.assign({}, data);
     const role = await RoleModel.findOne({ name: 'User' });
+    let userDoc = null;
     let user;
     userData.password = await this.hashPassword(data.password);
     if (!Object.prototype.hasOwnProperty.call(userData, 'active')) {
@@ -267,8 +268,12 @@ class UsersService {
     userData.verificationStatus = 'new';
 
     user = await UserModel.create(userData);
+    if (user) {
+      userDoc = Object.assign({}, user._doc);
+      delete userDoc.password;
+    }
 
-    return user;
+    return userDoc;
   }
 
   validateUserRegisterFields(data) {

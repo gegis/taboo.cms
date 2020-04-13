@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "ef45e404-0eb9-41f0-bda0-4d4408f33b18",
+		"name": "Taboo CMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "foo@bar.foo",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "pass1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiBaseUrl}}/login",
+							"host": [
+								"{{apiBaseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Foo\",\n    \"lastName\": \"Bar\",\n    \"email\": \"foo@bar.foo\",\n    \"street\": \"Main st.\",\n    \"city\": \"Manchester\",\n    \"state\": \"North West\",\n    \"country\": \"United Kingdom\",\n    \"postCode\": \"WB14 1RE\",\n    \"password\": \"pass1\"\n}"
+						},
+						"url": {
+							"raw": "{{apiBaseUrl}}/users/register",
+							"host": [
+								"{{apiBaseUrl}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiBaseUrl}}/logout",
+							"host": [
+								"{{apiBaseUrl}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "74151e7a-0870-4eb5-be50-fb87d4164f56",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "18e1f256-f0ad-45f5-8bdb-6d5844a212d9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "52dce6e8-ade2-4b85-bcb2-43a750944792",
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"id": "30567895-dc81-4439-80d0-c3332330f174",
+			"key": "apiBaseUrl",
+			"value": "{{baseUrl}}/api",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
