@@ -108,35 +108,6 @@ class ACLService {
     }
   }
 
-  // TODO it was moved to users.Users service as it needs to update more session data.
-  async updateUserSessionRolesAndACL(user) {
-    const { session: sessionConfig } = config.server;
-    const acl = await this.getUserACL(user);
-    const roles = [];
-    let SessionModel;
-    let userSession;
-    if (sessionConfig && sessionConfig.options && sessionConfig.options.store && sessionConfig.options.store.model) {
-      SessionModel = sessionConfig.options.store.model;
-      userSession = await SessionModel.findOne({ 'value.user.id': user._id.toString() });
-      if (userSession) {
-        if (user.roles) {
-          user.roles.map(role => {
-            roles.push(role._id);
-          });
-        }
-        await SessionModel.updateOne(
-          { _id: userSession._id },
-          {
-            $set: {
-              'value.user.roles': roles,
-              'value.user.acl': acl,
-            },
-          }
-        );
-      }
-    }
-  }
-
   async deleteUserSession(user) {
     const { session } = config.server;
     let SessionModel;
