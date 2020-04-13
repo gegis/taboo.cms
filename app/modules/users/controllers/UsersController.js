@@ -97,7 +97,7 @@ class UsersController {
    *   "updatedAt": "2020-04-13T22:54:27.824Z",
    *   "__v": 0
    * }
-   * @apiErrorExample {json} Error Response:
+   * @apiErrorExample {json} Password Error Response:
    *  HTTP/1.1 400 Bad Request
    *  {
    *    "error": {
@@ -112,7 +112,7 @@ class UsersController {
    *    },
    *    "message": "Bad Request"
    *  }
-   *
+   * @apiErrorExample {json} Email Error Response:
    *  HTTP/1.1 400 Bad Request
    *  {
    *     "error": {
