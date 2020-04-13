@@ -15,6 +15,8 @@ It provides a CLI for you to quickly bootstrap a new module, which contains all 
 client side files, including controllers, models, helpers, services, views, client side components and stores
 together with the config files for easier module setup.
 
+![CMS Preview](https://taboo.solutions/images/products/taboo-cms/uploads.png "CMS Preview")
+
 Main application modules:
 - navigation - cms navigation (menus) management module
 - pages - cms pages (content) management module
@@ -261,26 +263,24 @@ npm run taboo-cms-cli db down --file=2020-04-10-load-initial-data.js
 
 ## Roadmap
 
-- Control main info and logo via settings page
-- User API keys
-- User JWT auth
-- API routes with params automated documentation like swagger
 - Page construction blocks for easier content management
 - Layouts management module
+- Make uploads module easily reusable
 - Translations admin module
 - Improve admin search to be able to search by field
+- Kick out from admin dashboard if session has expired
+- Manage main information and logo via settings page
+- User JWT auth
 - Client side frontend script to modify pages, navigation and gallery on the go
 - Images (optional) resize during Admin Dashboard Upload 
 - Classic CMS - profile picture upload
 - Classic CMS - account verification
 - Atomic new module CLI commands to create each component separately
-- Make uploads module easily reusable
 - Implement classic tpl files next to the original ones for installation and new module
 - Implement React Server Side templates rendering
-- Kick out from admin dashboard if session has expired
 - Have an option on delete to only set deleted=true, or move to Deleted documents
 - Have each module config to be merged to main config
-- Have each locales translation to be merged to main
+- Have each module locale translations to be merged to main
 
 ## How to build and deploy on remote server
 

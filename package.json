@@ -11,7 +11,8 @@
     "build": "./node_modules/.bin/gulp build",
     "buildAndWatch": "./node_modules/.bin/gulp buildAndWatch",
     "lint": "./node_modules/.bin/gulp lint",
-    "taboo-cms-command": "./bin/taboo-cms-command.js"
+    "taboo-cms-command": "./bin/taboo-cms-command.js",
+    "generate-api-docs": "./node_modules/.bin/apidoc -i app/modules/ -o public/api/documentation"
   },
   "pre-commit": [
     "lint"
@@ -40,6 +41,7 @@
     "@babel/core": "^7.7.2",
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-react": "^7.7.0",
+    "apidoc": "^0.20.1",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "del": "^3.0.0",

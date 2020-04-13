@@ -13,14 +13,6 @@ class UsersController {
   async signIn() {}
   async resetPassword() {}
   async changePassword() {}
-
-  async keyTest(ctx) {
-    ctx.body = {
-      vienas: 1,
-      du: 2,
-    };
-  }
-
   async myProfile(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user, countryOptions;
@@ -78,6 +70,61 @@ class UsersController {
     ctx.body = user;
   }
 
+  /**
+   * @api {post} /api/login User Login
+   * @apiGroup User
+   * @apiParam {string} email User email
+   * @apiParam {string} password User password
+   * @apiParamExample {json} Request Example:
+   * {
+   *   "email": "admin@admin.admin",
+   *   "password": "admin"
+   * }
+   * @apiSuccessExample {json} Success Response:
+   * HTTP/1.1 200 OK
+   * {
+   *   "id": "5dd47dc99deb4f256dfcad54",
+   *   "firstName": "Name",
+   *   "lastName": "Surname",
+   *   "email": "admin@admin.admin",
+   *   "verified": true,
+   *   "admin": true,
+   *   "active": true,
+   *   "profilePictureUrl": "/secure-files/5ddeab9e2054481c8b8a680a",
+   *   "roles": [
+   *     "5dd47db6dcb439238bd29ee5"
+   *   ],
+   *   "acl": [
+   *     "admin.acl.manage",
+   *     "admin.acl.view",
+   *     "admin.cache.clear",
+   *     "admin.dashboard",
+   *     "admin.galleries.manage",
+   *     "admin.galleries.view",
+   *     "admin.logs.api.manage",
+   *     "admin.logs.api.view",
+   *     "admin.navigation.manage",
+   *     "admin.navigation.view",
+   *     "admin.pages.manage",
+   *     "admin.pages.view",
+   *     "admin.settings.manage",
+   *     "admin.settings.view",
+   *     "admin.uploads.manage",
+   *     "admin.uploads.view",
+   *     "admin.users.manage",
+   *     "admin.users.view",
+   *     "api.uploads.userFiles"
+   *   ]
+   * }
+   * @apiErrorExample {json} Error Response:
+   *   HTTP/1.1 404 Not Found
+   *   {
+   *   "error": {
+   *       "message": "User not found"
+   *     },
+   *     "message": "User not found"
+   *   }
+   */
   async login(ctx) {
     const { users: { signInEnabled = false } = {} } = config;
     const { body: { email = null, password = null } = {} } = ctx.request;
@@ -87,12 +134,32 @@ class UsersController {
     ctx.body = await UsersService.authenticateUser(ctx, email, password);
   }
 
+  /**
+   * @api {get} /api/logout User Logout
+   * @apiGroup User
+   * @apiSuccessExample {json} Success Response:
+   * HTTP/1.1 200 OK
+   * {
+   *    "success": true
+   * }
+   */
   async logout(ctx) {
     ctx.body = {
       success: await UsersService.logoutUser(ctx),
     };
   }
 
+  /**
+   * @api {post} /api/reset-password User password init request
+   * @apiGroup User
+   * @apiParam {string} email User email
+   * @apiParam {string} linkPrefix Main url prefix for user to be redirected
+   * @apiSuccessExample {json} Success Response:
+   * HTTP/1.1 200 OK
+   * {
+   *    "success": true
+   * }
+   */
   async resetPasswordApi(ctx) {
     const { users: { signInEnabled = false } = {} } = config;
     const { body: { email = null, linkPrefix = '' } = {} } = ctx.request;

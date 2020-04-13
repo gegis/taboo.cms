@@ -1,0 +1,10 @@
+{
+  "name": "Taboo CMS API",
+  "description": "Taboo CMS API description",
+  "url": "http://localhost:3000",
+  "template": {
+    "withCompare": true,
+    "withGenerator": true,
+    "aloneDisplay": false
+  }
+}
