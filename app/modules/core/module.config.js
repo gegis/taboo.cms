@@ -55,6 +55,15 @@ module.exports = {
       policies: [],
     },
     {
+      method: 'PUT',
+      path: '/api/language/:language',
+      action: CoreController.setLanguage,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
       method: 'GET',
       path: '/admin*', // This path is match any admin path if authorised, so it loads react app
       action: CoreAdminController.admin,

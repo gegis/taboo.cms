@@ -200,7 +200,7 @@ class Template extends React.Component {
         {uiStore.loading && <div className="loader" />}
         {authStore.user.id && !authStore.verified && this.getVerificationMessage()}
         <Content className="main-content">
-          <Grid>
+          <Grid fluid={true}>
             <Row>
               <Col md={24}>{children}</Col>
             </Row>

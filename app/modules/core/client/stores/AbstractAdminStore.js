@@ -26,7 +26,6 @@ class AbstractAdminStore {
   }
 
   setItem(item) {
-    console.log(item);
     this.item = Object.assign(this.item, item);
   }
 

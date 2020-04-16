@@ -1,4 +1,4 @@
-import { action, decorate, observable } from 'mobx';
+import { action, decorate, observable, runInAction } from 'mobx';
 import uuidv1 from 'uuid/v1';
 import { removeNodeAtPath, changeNodeAtPath } from 'react-sortable-tree';
 import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
@@ -6,7 +6,7 @@ import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 const newItem = {
   id: null,
   name: '',
-  slug: '',
+  title: '',
   items: [],
   language: 'en',
   enabled: false,
@@ -48,6 +48,7 @@ class NavigationAdminStore extends AbstractAdminStore {
         },
       },
     });
+    this.navigationOptions = [];
     this.navigationItem = Object.assign({}, newNavigationItem);
     this.navigationItemRow = {};
     this.resetNavigationItem = this.resetNavigationItem.bind(this);
@@ -56,6 +57,26 @@ class NavigationAdminStore extends AbstractAdminStore {
     this.addNewNavigationItem = this.addNewNavigationItem.bind(this);
     this.updateNavigationItem = this.updateNavigationItem.bind(this);
     this.deleteNavigationItem = this.deleteNavigationItem.bind(this);
+  }
+
+  loadNavigationOptions() {
+    return new Promise(resolve => {
+      super.loadAll().then(data => {
+        if (data) {
+          runInAction(() => {
+            this.navigationOptions = [];
+            data.map(item => {
+              this.navigationOptions.push({ label: this.getNavigationOptionLabel(item), value: item.name });
+            });
+          });
+        }
+        resolve(this.navigationOptions);
+      });
+    });
+  }
+
+  getNavigationOptionLabel(item) {
+    return `${item.title} (${item.name}:${item.language})`;
   }
 
   resetNavigationItem() {
@@ -116,6 +137,7 @@ class NavigationAdminStore extends AbstractAdminStore {
 
 decorate(NavigationAdminStore, {
   item: observable,
+  navigationOptions: observable,
   navigationItem: observable,
   navigationItemRow: observable,
   resetNavigationItem: action,
@@ -125,6 +147,7 @@ decorate(NavigationAdminStore, {
   addNewNavigationItem: action,
   updateNavigationItem: action,
   deleteNavigationItem: action,
+  loadNavigationOptions: action,
 });
 
 export default new NavigationAdminStore();

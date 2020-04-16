@@ -69,6 +69,9 @@ module.exports = {
   settings: {
     types: settingsTypes,
   },
+  templates: {
+    tplPath: 'app/modules/templates/client/tpl',
+  },
   server: server,
   i18n: i18n,
   api: api,

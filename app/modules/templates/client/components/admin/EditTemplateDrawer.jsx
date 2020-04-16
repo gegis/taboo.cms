@@ -41,6 +41,8 @@ class EditTemplateDrawer extends React.Component {
         translationVars: { item: data.title },
         translate: true,
       });
+      this.templatesStore.resetItem();
+      this.templatesStore.loadAll();
       this.close();
     });
   }

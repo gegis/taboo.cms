@@ -27,17 +27,17 @@ class NavigationForm extends React.Component {
           </FormGroup>
         )}
         {item.id && <div className="clearfix" />}
+        <FormGroup controlId="title" className="inline">
+          <ControlLabel>
+            <Translation message="Title" />
+          </ControlLabel>
+          <FormControl name="title" />
+        </FormGroup>
         <FormGroup controlId="name" className="inline">
           <ControlLabel>
             <Translation message="Name" />
           </ControlLabel>
           <FormControl name="name" />
-        </FormGroup>
-        <FormGroup controlId="slug" className="inline">
-          <ControlLabel>
-            <Translation message="Slug" />
-          </ControlLabel>
-          <FormControl name="slug" />
         </FormGroup>
         <FormGroup controlId="language" className="inline">
           <ControlLabel>

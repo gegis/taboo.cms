@@ -1,7 +1,7 @@
 module.exports = {
-  name: 'standard',
-  title: 'Standard',
-  description: 'Standard Template',
+  name: 'fluid',
+  title: 'Fluid',
+  description: 'Fluid template (full width)',
   settings: {
     headerColor: '#ffffff',
     backgroundColor: '#ffffff',
@@ -15,5 +15,5 @@ module.exports = {
       footerNavigationAuthenticated: 'website',
     },
   },
-  default: true,
+  default: false,
 };

@@ -10,7 +10,7 @@ class NavigationAdminController extends AbstractAdminController {
   constructor() {
     super({
       model: NavigationModel,
-      searchFields: ['_id', 'name', 'slug'],
+      searchFields: ['_id', 'title', 'name'],
       populate: {},
       defaultSort,
     });

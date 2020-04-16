@@ -25,6 +25,12 @@ class LanguageService {
       ctx.session.locale = ctx.taboo.locale;
       ctx.session.language = ctx.taboo.language;
     }
+
+    return {
+      language: ctx.taboo.language,
+      locale: ctx.taboo.locale,
+      translations: ctx.taboo.translations,
+    };
   }
 }
 module.exports = new LanguageService();

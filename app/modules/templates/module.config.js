@@ -18,6 +18,12 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/admin/templates/image-preview/:template',
+      action: TemplatesController.imagePreview,
+      policies: ['isAdmin'],
+    },
+    {
+      method: 'GET',
       path: '/api/admin/templates',
       action: TemplatesAdminController.findAll,
       policies: ['isAdmin'],

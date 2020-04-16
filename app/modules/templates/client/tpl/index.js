@@ -1,16 +1,14 @@
-import standardTemplate from './standard/Template';
-import standardSettings from './standard/Settings';
-import custom1Template from './custom1/Template';
-import custom1Settings from './custom1/Settings';
+import standard from './standard';
+import fluid from './fluid';
 
 const templates = {
-  standard: standardTemplate,
-  custom1: custom1Template,
+  standard: standard.template,
+  fluid: fluid.template,
 };
 
-const settings = {
-  standard: standardSettings,
-  custom1: custom1Settings,
+const settingsComponents = {
+  standard: standard.settingsComponent,
+  fluid: fluid.settingsComponent,
 };
 
-export { templates, settings };
+export { templates, settingsComponents };

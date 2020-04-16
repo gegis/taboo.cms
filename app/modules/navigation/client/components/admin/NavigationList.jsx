@@ -25,8 +25,8 @@ class NavigationList extends React.Component {
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th className="rs-hidden-xs">Slug</th>
+            <th>Title</th>
+            <th className="rs-hidden-xs">Name</th>
             <th className="rs-hidden-xs">Language</th>
             <th className="rs-hidden-xs">Enabled</th>
             <th className="action-buttons-3">Actions</th>
@@ -36,12 +36,12 @@ class NavigationList extends React.Component {
           {this.navigationStore.items.map(item => (
             <tr key={item._id}>
               <td>
-                <div>{item.name}</div>
+                <div>{item.title}</div>
                 <div className="rs-visible-xs">
                   <span className="subject md">
-                    <Translation message="Slug" />:
+                    <Translation message="Name" />:
                   </span>{' '}
-                  {item.slug}
+                  {item.name}
                 </div>
                 <div className="rs-visible-xs">
                   <span className="subject md">
@@ -56,7 +56,7 @@ class NavigationList extends React.Component {
                   <BooleanIcon value={item.enabled} />
                 </div>
               </td>
-              <td className="rs-hidden-xs">{item.slug}</td>
+              <td className="rs-hidden-xs">{item.name}</td>
               <td className="rs-hidden-xs">{item.language}</td>
               <td className="rs-hidden-xs">
                 <BooleanIcon value={item.enabled} />

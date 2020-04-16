@@ -6,6 +6,9 @@ const TemplateModel = MongoDbAdapter.setupModel('Template', {
     timestamps: true,
   },
   schema: {
+    preview: {
+      type: String,
+    },
     name: {
       type: String,
       required: [true, 'is required'],
@@ -20,6 +23,9 @@ const TemplateModel = MongoDbAdapter.setupModel('Template', {
     settings: {
       type: Object,
     },
+    languageSettings: {
+      type: Object,
+    },
     layout: {
       type: String,
     },
@@ -28,7 +34,7 @@ const TemplateModel = MongoDbAdapter.setupModel('Template', {
     },
     default: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   afterSchemaCreate(schema) {

@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 
 import ListPage from 'modules/core/client/components/admin/ListPage';
 import TemplatesList from './TemplatesList';
-import CreateModal from './CreateTemplateModal';
 import EditDrawer from './EditTemplateDrawer';
 
 class Templates extends React.Component {
@@ -20,7 +19,6 @@ class Templates extends React.Component {
         name="Templates"
         entityStore={this.entityStore}
         ItemsListComponent={TemplatesList}
-        CreateModalComponent={CreateModal}
         EditModalComponent={EditDrawer}
       />
     );

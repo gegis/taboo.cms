@@ -77,11 +77,16 @@ class ListPage extends React.Component {
   }
 
   getPageActions() {
-    return (
-      <IconButton icon={<Icon icon="file" />} appearance="primary" onClick={this.openCreateModal}>
-        <Translation message="Create New" />
-      </IconButton>
-    );
+    const { current: createModal = null } = this.createModal;
+    const { pageActionButtons = [] } = this.props;
+    if (createModal) {
+      pageActionButtons.push(
+        <IconButton key="add-btn" icon={<Icon icon="file" />} appearance="primary" onClick={this.openCreateModal}>
+          <Translation message="Create New" />
+        </IconButton>
+      );
+    }
+    return pageActionButtons;
   }
 
   openCreateModal() {
@@ -177,6 +182,7 @@ ListPage.propTypes = {
   name: PropTypes.string.isRequired,
   CreateModalComponent: PropTypes.object,
   EditModalComponent: PropTypes.object,
+  pageActionButtons: PropTypes.array,
   ItemsListComponent: PropTypes.object.isRequired,
 };
 

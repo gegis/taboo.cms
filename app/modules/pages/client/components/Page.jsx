@@ -73,7 +73,7 @@ class Page extends Component {
   }
 
   render() {
-    const tplName = 'custom1';
+    const tplName = 'standard';
     const { templates } = this.props.templatesStore;
     const Template = templates[tplName];
     return (

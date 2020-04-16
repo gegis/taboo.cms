@@ -19,9 +19,9 @@ class TemplatesList extends React.Component {
       <table>
         <thead>
           <tr>
-            <th className="rs-hidden-xs">ID</th>
             <th>Preview</th>
             <th>Title</th>
+            <th>Name</th>
             <th>Description</th>
             <th>Default</th>
             <th className="action-buttons-1">Actions</th>
@@ -29,10 +29,14 @@ class TemplatesList extends React.Component {
         </thead>
         <tbody>
           {this.templatesStore.items.map(item => (
-            <tr key={item._id}>
-              <td className="id rs-hidden-xs">{item._id}</td>
-              <td>{item.preview}</td>
+            <tr key={item.name}>
+              <td>
+                <a href={item.preview} target="_blank" rel="noopener noreferrer">
+                  <img src={item.preview} style={{ height: '100px' }} alt="preview" />
+                </a>
+              </td>
               <td>{item.title}</td>
+              <td>{item.name}</td>
               <td>{item.description}</td>
               <td>
                 <BooleanIcon value={item.default} />
