@@ -34,7 +34,7 @@ class CreateSettingsModal extends React.Component {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully created {item}',
-        translationVars: { item: data._id },
+        translationVars: { item: data.key },
         translate: true,
       });
       this.settingsStore.resetItem();

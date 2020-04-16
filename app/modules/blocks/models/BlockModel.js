@@ -1,17 +1,13 @@
-const uniqueValidator = require('mongoose-unique-validator');
 const MongoDbAdapter = require('modules/db/adapters/MongoDbAdapter');
 const SchemaTypes = MongoDbAdapter.getSchemaTypes();
+const uniqueValidator = require('mongoose-unique-validator');
 
-const PageModel = MongoDbAdapter.setupModel('Page', {
+const BlockModel = MongoDbAdapter.setupModel('Block', {
   schemaOptions: {
     timestamps: true,
   },
   schema: {
-    title: {
-      type: String,
-      required: [true, 'is required'],
-    },
-    url: {
+    name: {
       type: String,
       required: [true, 'is required'],
       unique: true,
@@ -20,14 +16,11 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
       type: String,
       required: [true, 'is required'],
     },
+    type: {
+      type: String,
+    },
     layout: {
       type: String,
-    },
-    background: {
-      type: String,
-    },
-    meta: {
-      type: Object,
     },
     language: {
       type: String,
@@ -35,13 +28,10 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
     variables: {
       type: Object,
     },
-    published: {
+    enabled: {
       type: Boolean,
       default: false,
     },
-    pages: [{ type: SchemaTypes.ObjectId, ref: 'Page' }],
-    blocks: [{ type: SchemaTypes.ObjectId, ref: 'Block' }],
-    galleries: [{ type: SchemaTypes.ObjectId, ref: 'Gallery' }],
     createdBy: {
       type: SchemaTypes.ObjectId,
       ref: 'User',
@@ -56,4 +46,4 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
   },
 });
 
-module.exports = PageModel;
+module.exports = BlockModel;

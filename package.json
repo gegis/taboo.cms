@@ -12,7 +12,7 @@
     "buildAndWatch": "./node_modules/.bin/gulp buildAndWatch",
     "lint": "./node_modules/.bin/gulp lint",
     "taboo-cms-command": "./bin/taboo-cms-command.js",
-    "generate-api-docs": "./node_modules/.bin/apidoc -i app/modules/ -o public/doc/api"
+    "generate-api-docs": "./node_modules/.bin/apidoc -i app/modules/ -o public/docs/api"
   },
   "pre-commit": [
     "lint"

@@ -15,7 +15,6 @@ class ConfigHelper {
 
   /**
    * Parses app routes from modulesConfigs
-   * @param modulesConfigs
    * @returns {Array}
    */
   getRoutes() {
@@ -35,27 +34,28 @@ class ConfigHelper {
 
   /**
    * Parses stores from modulesConfigs
-   * @param modulesConfigs
    * @returns {object}
    */
   getStores() {
-    const stores = {};
-    [...this.modulesConfigs].map(config => {
-      if (config && config.stores) {
-        Object.assign(stores, config.stores);
-      }
-    });
-    return stores;
+    return this.getOptionsByKey('stores');
   }
 
+  /**
+   * Parses modules config
+   * @returns {object}
+   */
   getModules() {
-    const modules = {};
+    return this.getOptionsByKey('modules');
+  }
+
+  getOptionsByKey(key) {
+    const options = {};
     [...this.modulesConfigs].map(config => {
-      if (config && config.modules) {
-        Object.assign(modules, config.modules);
+      if (config && config[key]) {
+        Object.assign(options, config[key]);
       }
     });
-    return modules;
+    return options;
   }
 }
 

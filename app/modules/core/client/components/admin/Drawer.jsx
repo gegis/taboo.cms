@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Modal as RsModal, Button } from 'rsuite';
+import { Drawer as RsDrawer, Button } from 'rsuite';
 import Translation from 'app/modules/core/client/components/Translation';
 
-class Modal extends Component {
+class Drawer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,6 +12,7 @@ class Modal extends Component {
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
   }
+
   open() {
     const { onOpen } = this.props;
     if (onOpen) {
@@ -34,29 +35,42 @@ class Modal extends Component {
 
   render() {
     const {
+      full = false,
+      keyboard = false,
+      size = 'lg',
+      placement = 'left',
+      backdrop = 'static',
       children,
       title,
       onSubmit,
-      size = 'lg',
       submitName = 'Save',
       cancelName = 'Cancel',
       customButtons,
       ...rest
     } = this.props;
     return (
-      <RsModal size={size} {...rest} show={this.state.show} onHide={this.close}>
+      <RsDrawer
+        full={full}
+        keyboard={keyboard}
+        size={size}
+        placement={placement}
+        backdrop={backdrop}
+        {...rest}
+        show={this.state.show}
+        onHide={this.close}
+      >
         {title && (
-          <RsModal.Header>
+          <RsDrawer.Header>
             {typeof title === 'string' && (
-              <RsModal.Title>
+              <RsDrawer.Title>
                 <Translation message={title} />
-              </RsModal.Title>
+              </RsDrawer.Title>
             )}
-            {typeof title === 'object' && <RsModal.Title>{title}</RsModal.Title>}
-          </RsModal.Header>
+            {typeof title === 'object' && <RsDrawer.Title>{title}</RsDrawer.Title>}
+          </RsDrawer.Header>
         )}
-        <RsModal.Body>{children}</RsModal.Body>
-        <RsModal.Footer>
+        <RsDrawer.Body>{children}</RsDrawer.Body>
+        <RsDrawer.Footer>
           {customButtons && customButtons}
           <Button onClick={this.close} appearance="subtle">
             <Translation message={cancelName} />
@@ -66,15 +80,19 @@ class Modal extends Component {
               <Translation message={submitName} />
             </Button>
           )}
-        </RsModal.Footer>
-      </RsModal>
+        </RsDrawer.Footer>
+      </RsDrawer>
     );
   }
 }
 
-Modal.propTypes = {
+Drawer.propTypes = {
+  full: PropTypes.bool,
+  keyboard: PropTypes.bool,
+  size: PropTypes.oneOf(['lg', 'md', 'sm', 'xs']),
+  placement: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+  backdrop: PropTypes.oneOf(['static', true, false]),
   children: PropTypes.node.isRequired,
-  size: PropTypes.string,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   submitName: PropTypes.string,
   cancelName: PropTypes.string,
@@ -84,4 +102,4 @@ Modal.propTypes = {
   customButtons: PropTypes.node,
 };
 
-export default Modal;
+export default Drawer;

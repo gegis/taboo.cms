@@ -3,37 +3,42 @@ import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 const newItem = {
   id: '',
   name: '',
-  enabled: false,
+  body: '',
+  type: '',
+  layout: '',
+  language: '',
+  variables: '',
+  enabled: true,
 };
 
-class ModuleNameAdminStore extends AbstractAdminStore {
+class BlocksAdminStore extends AbstractAdminStore {
   constructor() {
     super({
       newItem: newItem,
       endpoints: {
         loadAll: {
           method: 'get',
-          path: '/api/admin/moduleName',
+          path: '/api/admin/blocks',
         },
         loadById: {
           method: 'get',
-          path: '/api/admin/moduleName/:id',
+          path: '/api/admin/blocks/:id',
         },
         create: {
           method: 'post',
-          path: '/api/admin/moduleName',
+          path: '/api/admin/blocks',
         },
         update: {
           method: 'put',
-          path: '/api/admin/moduleName/:id',
+          path: '/api/admin/blocks/:id',
         },
         deleteById: {
           method: 'delete',
-          path: '/api/admin/moduleName/:id',
+          path: '/api/admin/blocks/:id',
         },
       },
     });
   }
 }
 
-export default new ModuleNameAdminStore();
+export default new BlocksAdminStore();

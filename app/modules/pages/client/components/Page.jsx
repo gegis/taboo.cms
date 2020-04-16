@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
-import Layout from 'app/modules/core/client/components/Layout';
+// import Layout from 'app/modules/core/client/components/Layout';
 import { withRouter } from 'react-router-dom';
 
 import Translation from 'app/modules/core/client/components/Translation';
@@ -73,23 +73,27 @@ class Page extends Component {
   }
 
   render() {
+    const tplName = 'custom1';
+    const { templates } = this.props.templatesStore;
+    const Template = templates[tplName];
     return (
-      <Layout metaTitle={this.getPageTitle()}>
+      <Template metaTitle={this.getPageTitle()}>
         <div className="page">
           <h1 className="title">{this.getPageTitle()}</h1>
           <div className="body">{this.getPageBody()}</div>
         </div>
         <GalleryModal ref={this.modal} />
-      </Layout>
+      </Template>
     );
   }
 }
 
 Page.propTypes = {
   pagesStore: PropTypes.object.isRequired,
+  templatesStore: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
 };
 
-const enhance = compose(withRouter, inject('pagesStore'), observer);
+const enhance = compose(withRouter, inject('pagesStore', 'templatesStore'), observer);
 
 export default enhance(Page);

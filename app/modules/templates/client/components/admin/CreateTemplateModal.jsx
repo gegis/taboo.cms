@@ -4,39 +4,41 @@ import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import Modal from 'app/modules/core/client/components/admin/Modal';
-import SettingsForm from './SettingsForm';
 
-class EditSettingsModal extends React.Component {
+import TemplateForm from './TemplateForm';
+
+class CreateTemplateModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.settingsStore = props.settingsStore;
+    this.templatesStore = props.templatesStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
   }
 
-  open(id) {
-    this.settingsStore.loadById(id).then(() => {
-      this.modal.current.open();
-    });
+  open() {
+    this.templatesStore.resetItem();
+    this.modal.current.open();
   }
 
   close() {
-    this.settingsStore.resetItem();
+    this.templatesStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.settingsStore;
-    this.settingsStore.update(item).then(data => {
+    const { item } = this.templatesStore;
+    this.templatesStore.create(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
-        html: 'Successfully updated {item}',
-        translationVars: { item: data.key },
+        html: 'Successfully created {item}',
+        translationVars: { item: data._id },
         translate: true,
       });
+      this.templatesStore.resetItem();
+      this.templatesStore.loadAll();
       this.close();
     });
   }
@@ -48,22 +50,22 @@ class EditSettingsModal extends React.Component {
         keyboard={false}
         backdrop="static"
         className="use-max-width"
-        title="Edit Settings"
+        title="Create New Template"
         ref={this.modal}
         onSubmit={this.onSave}
-        submitName="Update"
+        submitName="Create"
       >
-        <SettingsForm />
+        <TemplateForm />
       </Modal>
     );
   }
 }
 
-EditSettingsModal.propTypes = {
-  settingsStore: PropTypes.object.isRequired,
+CreateTemplateModal.propTypes = {
+  templatesStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('settingsStore', 'notificationsStore'), observer);
+const enhance = compose(inject('templatesStore', 'notificationsStore'), observer);
 
-export default enhance(EditSettingsModal);
+export default enhance(CreateTemplateModal);

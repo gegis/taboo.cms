@@ -26,6 +26,7 @@ class AbstractAdminStore {
   }
 
   setItem(item) {
+    console.log(item);
     this.item = Object.assign(this.item, item);
   }
 
@@ -221,7 +222,7 @@ class AbstractAdminStore {
    * It's a workaround for rsuite Forms to update data on change
    * @param storeProperty
    */
-  getFormData(storeProperty) {
+  getFormData(storeProperty = 'item') {
     const data = {};
     if (Object.prototype.hasOwnProperty.call(this, storeProperty) && typeof this[storeProperty] === 'object') {
       // for (let key in this[storeProperty]) {
