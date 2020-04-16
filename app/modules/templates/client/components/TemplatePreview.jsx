@@ -5,8 +5,6 @@ import { inject, observer } from 'mobx-react';
 import { Panel } from 'rsuite';
 import NotFound from 'app/modules/core/client/components/NotFound';
 import { withRouter } from 'react-router-dom';
-import BooleanIcon from 'modules/core/client/components/admin/BooleanIcon';
-import ActionButtons from 'modules/core/client/components/admin/ActionButtons';
 
 class TemplatePreview extends Component {
   constructor(props) {

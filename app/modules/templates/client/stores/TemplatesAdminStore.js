@@ -1,7 +1,6 @@
 import { decorate, action, observable, runInAction } from 'mobx';
 import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 import { settings as settingsComponents } from 'app/modules/templates/client/tpl';
-import ResponseHelper from 'modules/core/client/helpers/ResponseHelper';
 
 const defaultLanguage = 'en';
 const language = window.app.config.language || defaultLanguage;

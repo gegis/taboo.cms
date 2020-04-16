@@ -3,7 +3,6 @@ import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
-import TemplateForm from './TemplateForm';
 import Drawer from 'modules/core/client/components/admin/Drawer';
 import Translation from 'modules/core/client/components/Translation';
 
