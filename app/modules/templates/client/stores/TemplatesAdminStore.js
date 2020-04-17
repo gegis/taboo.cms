@@ -2,9 +2,7 @@ import { decorate, action, observable } from 'mobx';
 import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 import { settingsComponents } from 'app/modules/templates/client/tpl';
 
-const defaultLanguage = 'en';
-const language = window.app.config.language || defaultLanguage;
-const previewRoute = '/:language/templates/preview/:template'; // TODO move to config
+const { language = 'en', templatePreviewRoute = '/' } = window.app.config;
 const newItem = {
   id: '',
   name: '',
@@ -77,7 +75,7 @@ class TemplatesAdminStore extends AbstractAdminStore {
 
   setPreviewPath(templateName) {
     if (templateName) {
-      this.previewPath = previewRoute.replace(':template', templateName).replace(':language', this.language);
+      this.previewPath = templatePreviewRoute.replace(':language?', this.language).replace(':template', templateName);
     } else {
       this.previewPath = null;
     }

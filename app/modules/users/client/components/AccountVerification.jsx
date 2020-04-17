@@ -5,7 +5,6 @@ import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import { Panel, Form, Message, Grid, Row, Col, Schema, Notification, Icon } from 'rsuite';
 import Translation from 'app/modules/core/client/components/Translation';
-import Layout from 'app/modules/core/client/components/Layout';
 import DocumentUpload from 'app/modules/uploads/client/components/DocumentUpload';
 
 const { StringType } = Schema.Types;
@@ -129,9 +128,15 @@ class AccountVerification extends React.Component {
   }
 
   render() {
-    const { usersStore, uploadsStore } = this.props;
+    const {
+      usersStore,
+      uploadsStore,
+      templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {},
+    } = this.props;
+    const Template = templateComponents[defaultTemplateName];
+
     return (
-      <Layout className="account-verification-page">
+      <Template className="account-verification-page">
         <Grid fluid>
           <Row>
             <Col xs={24} md={16} mdOffset={4}>
@@ -204,7 +209,7 @@ class AccountVerification extends React.Component {
             </Col>
           </Row>
         </Grid>
-      </Layout>
+      </Template>
     );
   }
 }
@@ -214,9 +219,14 @@ AccountVerification.propTypes = {
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
   uploadsStore: PropTypes.object.isRequired,
+  templatesStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('usersStore', 'authStore', 'localeStore', 'uploadsStore'), observer);
+const enhance = compose(
+  withRouter,
+  inject('usersStore', 'authStore', 'localeStore', 'uploadsStore', 'templatesStore'),
+  observer
+);
 
 export default enhance(AccountVerification);

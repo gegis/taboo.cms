@@ -8,11 +8,13 @@ import classNames from 'classnames';
 import { Container, Content, Grid, Row, Col, Message } from 'rsuite';
 import { MetaTags } from 'react-meta-tags';
 
+import config from '../config';
 import Header from './Header';
 import Footer from './Footer';
 import NotificationsHelper from 'app/modules/core/client/helpers/NotificationsHelper';
 
-import config from '../config';
+import CopyInput from 'modules/core/client/components/CopyInput';
+import TemplatesHelper from 'modules/templates/client/helpers/TemplatesHelper';
 
 class Template extends React.Component {
   constructor(props) {
@@ -20,16 +22,8 @@ class Template extends React.Component {
   }
 
   componentDidMount() {
-    const { localeStore, notificationsStore, templatesStore, navigationStore, authStore } = this.props;
-    templatesStore.loadTemplate(config.name).then(() => {
-      if (authStore.authenticated && authStore.user) {
-        navigationStore.loadByName(templatesStore.languageSettings.headerNavigationAuthenticated);
-        navigationStore.loadByName(templatesStore.languageSettings.footerNavigationAuthenticated);
-      } else {
-        navigationStore.loadByName(templatesStore.languageSettings.headerNavigation);
-        navigationStore.loadByName(templatesStore.languageSettings.footerNavigation);
-      }
-    });
+    const { localeStore, notificationsStore, templatesStore } = this.props;
+    TemplatesHelper.preloadTemplate(config.name, templatesStore);
     this.dispose = autorun(NotificationsHelper.handleNotifications.bind(this, notificationsStore, localeStore));
   }
 
@@ -62,14 +56,14 @@ class Template extends React.Component {
   }
 
   render() {
-    const { children, uiStore, authStore, className } = this.props;
+    const { children, uiStore, authStore, navigationStore, templatesStore, className } = this.props;
+    TemplatesHelper.preloadNavigation(config.name, { authStore, navigationStore, templatesStore });
     return (
-      <Container className={classNames('default-layout', className)}>
+      <Container className={classNames('standard-template', className)}>
         <MetaTags>
           <title>{this.getMetaTitle()}</title>
         </MetaTags>
         <Header />
-        <h1>Default</h1>
         {uiStore.loading && <div className="loader" />}
         {authStore.user.id && !authStore.verified && this.getVerificationMessage()}
         <Content className="main-content">
@@ -80,13 +74,7 @@ class Template extends React.Component {
           </Grid>
         </Content>
         <Footer />
-        {/*TODO make this as stand alone component*/}
-        <textarea
-          className="helper-copy-value-input"
-          ref={el => {
-            window.copyValueInput = el;
-          }}
-        />
+        <CopyInput />
       </Container>
     );
   }

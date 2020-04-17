@@ -15,8 +15,9 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const { authStore } = this.props;
+    const { authStore, templatesStore } = this.props;
     authStore.loadUserAuth();
+    templatesStore.loadDefaultTemplate();
     SocketsClient.join('users').then(() => {
       // In case user is logged in, but refreshes page
       SocketsClient.on(this.getUserEventName('update'), () => {
@@ -73,10 +74,11 @@ class App extends React.Component {
 App.propTypes = {
   localeStore: PropTypes.object.isRequired,
   authStore: PropTypes.object.isRequired,
+  templatesStore: PropTypes.object.isRequired,
   routes: PropTypes.array.isRequired,
   location: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('localeStore', 'authStore'), observer);
+const enhance = compose(withRouter, inject('localeStore', 'authStore', 'templatesStore'), observer);
 
 export default enhance(App);

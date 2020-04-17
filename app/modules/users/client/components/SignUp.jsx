@@ -22,7 +22,6 @@ import {
   SelectPicker,
 } from 'rsuite';
 import Translation from 'app/modules/core/client/components/Translation';
-import Layout from 'app/modules/core/client/components/Layout';
 
 const { StringType } = Schema.Types;
 
@@ -85,11 +84,10 @@ class SignUp extends React.Component {
   }
 
   loginUser(email, password) {
-    const { usersStore, authStore, history, navigationStore } = this.props;
+    const { usersStore, authStore, history } = this.props;
     authStore.loginUser(email, password).then(data => {
       if (data) {
         usersStore.resetSignupUser();
-        navigationStore.loadNavigationByName('user');
         authStore.loadUserAuth().then(user => {
           if (user) {
             return history.push('/dashboard');
@@ -108,14 +106,16 @@ class SignUp extends React.Component {
   }
 
   render() {
-    const { authStore, usersStore, countriesStore } = this.props;
+    const { authStore, usersStore, countriesStore, templatesStore } = this.props;
+    const { templateComponents } = templatesStore;
+    const Template = templateComponents[templatesStore.defaultTemplateName];
 
     if (authStore && authStore.authenticated) {
       return <Redirect to="/dashboard" />;
     }
 
     return (
-      <Layout className="sign-up-page">
+      <Template className="sign-up-page">
         <Grid fluid>
           <Row>
             <Col xs={24} md={16} mdOffset={4}>
@@ -300,7 +300,7 @@ class SignUp extends React.Component {
             </Col>
           </Row>
         </Grid>
-      </Layout>
+      </Template>
     );
   }
 }
@@ -310,13 +310,13 @@ SignUp.propTypes = {
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
   countriesStore: PropTypes.object.isRequired,
-  navigationStore: PropTypes.object.isRequired,
+  templatesStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
 const enhance = compose(
   withRouter,
-  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'navigationStore'),
+  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'templatesStore'),
   observer
 );
 

@@ -11,35 +11,70 @@ class TemplatesStore {
     this.templateComponents = templates;
     this.templates = [];
     this.templateName = defaultTemplate;
+    this.defaultTemplateName = defaultTemplate;
     this.template = {};
     this.settings = {};
     this.languageSettings = {};
   }
 
   setTemplate(template) {
-    this.template = template;
-    this.templateName = template.name;
-    this.settings = template.settings;
-    if (template.languageSettings && template.languageSettings[this.language]) {
-      this.languageSettings = template.languageSettings[this.language];
+    if (Object.keys(this.template).length === 0 || template.name !== this.template.name) {
+      this.template = template;
+      this.templateName = template.name;
+      this.settings = template.settings;
+      if (template.languageSettings && template.languageSettings[this.language]) {
+        this.languageSettings = template.languageSettings[this.language];
+      }
     }
   }
 
-  loadTemplate(name) {
+  loadDefaultTemplate(reload = false) {
     return new Promise(resolve => {
-      axios
-        .get('/api/templates/:name'.replace(':name', name))
-        .then(response => {
-          runInAction(() => {
-            const { data = {} } = response;
-            if (data) {
-              this.templates[data.name] = data;
-              this.setTemplate(data);
-            }
-            resolve(data);
-          });
-        })
-        .catch(ResponseHelper.handleError);
+      if (this.defaultTemplateName && this.templates[this.defaultTemplateName] && !reload) {
+        runInAction(() => {
+          this.defaultTemplateName = this.templates[this.defaultTemplateName].name;
+          resolve(this.templates[this.defaultTemplateName]);
+        });
+      } else {
+        axios
+          .get('/api/templates/default')
+          .then(response => {
+            runInAction(() => {
+              const { data = {} } = response;
+              if (data) {
+                this.templates[data.name] = data;
+                this.defaultTemplateName = data.name;
+              }
+              resolve(data);
+            });
+          })
+          .catch(ResponseHelper.handleError);
+      }
+    });
+  }
+
+  loadTemplate(name, reload = false) {
+    return new Promise(resolve => {
+      if (this.templates[name] && !reload) {
+        runInAction(() => {
+          this.setTemplate(this.templates[name]);
+          resolve(this.templates[name]);
+        });
+      } else {
+        axios
+          .get('/api/templates/:name'.replace(':name', name))
+          .then(response => {
+            runInAction(() => {
+              const { data = {} } = response;
+              if (data) {
+                this.templates[data.name] = data;
+                this.setTemplate(data);
+              }
+              resolve(data);
+            });
+          })
+          .catch(ResponseHelper.handleError);
+      }
     });
   }
 
@@ -68,10 +103,13 @@ decorate(TemplatesStore, {
   templateComponents: observable,
   templates: observable,
   template: observable,
+  defaultTemplateName: observable,
   templateName: observable,
   settings: observable,
   languageSettings: observable,
   language: observable,
+  loadDefaultTemplate: action,
+  loadTemplate: action,
   setTemplate: action,
   setLanguage: action,
 });

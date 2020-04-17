@@ -19,7 +19,6 @@ import {
   Notification,
 } from 'rsuite';
 import Translation from 'app/modules/core/client/components/Translation';
-import Layout from 'app/modules/core/client/components/Layout';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
 
 const { StringType } = Schema.Types;
@@ -100,9 +99,9 @@ class ResetPassword extends React.Component {
   }
 
   render() {
-    const { authStore } = this.props;
+    const { authStore, templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
     const { formValue, formError } = this.state;
-
+    const Template = templateComponents[defaultTemplateName];
     if (authStore && authStore.authenticated) {
       if (authStore.admin) {
         return <Redirect to="/admin" />;
@@ -112,7 +111,7 @@ class ResetPassword extends React.Component {
     }
 
     return (
-      <Layout className="reset-password-page">
+      <Template className="reset-password-page">
         <Grid fluid>
           <Row>
             <Col xs={24} md={12} mdOffset={6}>
@@ -156,7 +155,7 @@ class ResetPassword extends React.Component {
             </Col>
           </Row>
         </Grid>
-      </Layout>
+      </Template>
     );
   }
 }
@@ -165,9 +164,10 @@ ResetPassword.propTypes = {
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
   uiStore: PropTypes.object.isRequired,
+  templatesStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('authStore', 'localeStore', 'uiStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'localeStore', 'uiStore', 'templatesStore'), observer);
 
 export default enhance(ResetPassword);

@@ -7,27 +7,6 @@ class NavigationStore {
     this.navigation = {};
   }
 
-  // loadNavigationByName(name) {
-  //   return new Promise(resolve => {
-  //     axios
-  //       .get('/api/navigation/:name'.replace(':name', name))
-  //       .then(response => {
-  //         runInAction(() => {
-  //           const { data = {} } = response;
-  //           if (data) {
-  //             if (name === 'user') {
-  //               this.userNavigation = data;
-  //             } else {
-  //               this.navigation = data;
-  //             }
-  //           }
-  //           resolve(data);
-  //         });
-  //       })
-  //       .catch(ResponseHelper.handleError);
-  //   });
-  // }
-
   loadByName(name, reload = false) {
     return new Promise(resolve => {
       if (this.navigation[name] && !reload) {

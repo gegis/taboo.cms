@@ -19,7 +19,6 @@ import {
   Nav,
 } from 'rsuite';
 import Translation from 'app/modules/core/client/components/Translation';
-import Layout from 'app/modules/core/client/components/Layout';
 import NavLink from 'app/modules/core/client/components/NavLink';
 import SocketsClient from 'app/modules/core/client/helpers/SocketsClient';
 
@@ -50,7 +49,7 @@ class SignIn extends React.Component {
   }
 
   handleSubmit() {
-    const { authStore, localeStore, navigationStore, history } = this.props;
+    const { authStore, localeStore, history } = this.props;
     const { email, password } = this.state.formValue;
     if (!this.form.current.check()) {
       Notification.error({
@@ -64,7 +63,6 @@ class SignIn extends React.Component {
       if (data) {
         authStore.loadUserAuth().then(user => {
           if (user) {
-            navigationStore.loadNavigationByName('user');
             // In case if user had to sign in, we register event with his id
             SocketsClient.on(this.getUserEventName('update'), () => {
               authStore.loadUserAuth();
@@ -112,15 +110,16 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { authStore } = this.props;
+    const { authStore, templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
     const { formValue, formError } = this.state;
+    const Template = templateComponents[defaultTemplateName];
 
     if (authStore && authStore.authenticated) {
       return <Redirect to="/dashboard" />;
     }
 
     return (
-      <Layout className="sign-in-page" topRightMenu={this.getTopRightMenu()}>
+      <Template className="sign-in-page" topRightMenu={this.getTopRightMenu()}>
         <Grid fluid>
           <Row>
             <Col xs={24} md={12} mdOffset={6}>
@@ -167,7 +166,7 @@ class SignIn extends React.Component {
             </Col>
           </Row>
         </Grid>
-      </Layout>
+      </Template>
     );
   }
 }
@@ -175,10 +174,10 @@ class SignIn extends React.Component {
 SignIn.propTypes = {
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
-  navigationStore: PropTypes.object.isRequired,
+  templatesStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('authStore', 'localeStore', 'navigationStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'localeStore', 'templatesStore'), observer);
 
 export default enhance(SignIn);

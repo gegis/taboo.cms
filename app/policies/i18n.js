@@ -1,4 +1,5 @@
 const { config, app } = require('@taboo/cms-core');
+const { i18n: { enabledLanguages = [] } = {} } = config;
 
 module.exports = async (ctx, next) => {
   const { i18n } = config;
@@ -10,7 +11,7 @@ module.exports = async (ctx, next) => {
       ctx.taboo.translations = locales[ctx.taboo.locale];
     }
   } else if (ctx.params) {
-    if (ctx.params.language) {
+    if (ctx.params.language && enabledLanguages.indexOf(ctx.params.language) !== -1) {
       ctx.taboo.language = ctx.params.language;
       if (i18n.defaultLocalesMapping[ctx.params.language]) {
         ctx.taboo.locale = i18n.defaultLocalesMapping[ctx.params.language];

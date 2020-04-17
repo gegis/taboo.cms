@@ -20,6 +20,17 @@ class TemplatesService {
     return template;
   }
 
+  async getDefault() {
+    let template = CacheService.get('template', 'default');
+    if (!template) {
+      template = await TemplateModel.findOne({ default: true });
+      if (template) {
+        CacheService.set('template', 'default', template);
+      }
+    }
+    return template;
+  }
+
   async getFsTemplates() {
     const templates = [];
     const tplNames = this.getAllFsTemplatesNames();

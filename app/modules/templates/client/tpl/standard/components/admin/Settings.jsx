@@ -71,6 +71,7 @@ class Settings extends React.Component {
             </Form>
           </Panel>
           <Panel header="Header">
+            <SettingsInput type="Input" label="Header Logo" settingsKey="settings" settingsValueKey="headerLogo" />
             <SettingsInput
               type="InputPicker"
               label="Header Navigation"
@@ -111,6 +112,12 @@ class Settings extends React.Component {
               data={this.navigationStore.navigationOptions}
             />
             <SettingsInput type="Input" label="Footer Color" settingsKey="settings" settingsValueKey="footerColor" />
+            <SettingsInput
+              type="TextArea"
+              label="Footer Copyright"
+              settingsKey="languageSettings"
+              settingsValueKey="footerCopyright"
+            />
           </Panel>
           <Panel header="Theme">
             <SettingsInput

@@ -5,14 +5,15 @@ import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 import { Col, Grid, Row, Panel } from 'rsuite';
 
-import Layout from 'app/modules/core/client/components/Layout';
 import ProfilePicture from 'modules/users/client/components/ProfilePicture';
 
-class IndexPage extends Component {
+class Dashboard extends Component {
   render() {
-    const { authStore } = this.props;
+    const { authStore, templatesStore } = this.props;
+    const { templateComponents } = templatesStore;
+    const Template = templateComponents[templatesStore.defaultTemplateName];
     return (
-      <Layout className="dashboard">
+      <Template className="dashboard">
         <Grid>
           <Row>
             <Col md={16} mdOffset={4}>
@@ -40,15 +41,16 @@ class IndexPage extends Component {
             </Col>
           </Row>
         </Grid>
-      </Layout>
+      </Template>
     );
   }
 }
 
-IndexPage.propTypes = {
+Dashboard.propTypes = {
   authStore: PropTypes.object,
+  templatesStore: PropTypes.object,
 };
 
-const enhance = compose(inject('authStore'), observer);
+const enhance = compose(inject('authStore', 'templatesStore'), observer);
 
-export default enhance(IndexPage);
+export default enhance(Dashboard);

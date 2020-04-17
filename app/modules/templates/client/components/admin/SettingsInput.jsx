@@ -40,6 +40,17 @@ class SettingsInput extends React.Component {
       case 'InputPicker':
         input = <InputPicker value={settingsItem[settingsValueKey]} data={data} onChange={settingsOnChange} />;
         break;
+      case 'TextArea':
+        input = (
+          <Input
+            componentClass="textarea"
+            value={settingsItem[settingsValueKey]}
+            data={data}
+            onChange={settingsOnChange}
+            style={{ width: '100%', minWidth: 'auto' }}
+          />
+        );
+        break;
     }
 
     return input;

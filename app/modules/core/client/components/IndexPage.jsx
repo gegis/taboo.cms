@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import Layout from 'app/modules/core/client/components/Layout';
+import PropTypes from 'prop-types';
+import { compose } from 'recompose';
+import { inject, observer } from 'mobx-react';
 import { Col, Grid, Row, Panel } from 'rsuite';
 
 class IndexPage extends Component {
@@ -8,8 +10,10 @@ class IndexPage extends Component {
   }
 
   render() {
+    const { templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
+    const Template = templateComponents[defaultTemplateName];
     return (
-      <Layout>
+      <Template>
         <Grid>
           <Row>
             <Col>
@@ -38,9 +42,15 @@ class IndexPage extends Component {
             </Col>
           </Row>
         </Grid>
-      </Layout>
+      </Template>
     );
   }
 }
 
-export default IndexPage;
+IndexPage.propTypes = {
+  templatesStore: PropTypes.object,
+};
+
+const enhance = compose(inject('templatesStore'), observer);
+
+export default enhance(IndexPage);

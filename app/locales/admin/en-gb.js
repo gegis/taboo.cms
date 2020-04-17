@@ -52,6 +52,8 @@ module.exports = {
   Default: 'Default',
   Footer: 'Footer',
   Authenticated: 'Authenticated',
+  'Footer Copyright': 'Footer Copyright',
+  'Header Logo': 'Header Logo',
   'Header Color': 'Header Color',
   'Footer Color': 'Footer Color',
   'Background Color': 'Background Color',

@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -7,21 +6,22 @@ import { Drawer, Button } from 'rsuite';
 import { Link, withRouter } from 'react-router-dom';
 import Translation from 'app/modules/core/client/components/Translation';
 import ButtonLink from 'app/modules/core/client/components/ButtonLink';
-import ResponseHelper from 'modules/core/client/helpers/ResponseHelper';
 import ProfilePicture from 'modules/users/client/components/ProfilePicture';
+import Navigation from 'modules/templates/client/components/Navigation';
+import LogoutButton from 'modules/core/client/components/LogoutButton';
 
-class Sidebar extends React.Component {
+class MobileSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.close = this.close.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
   }
 
   handleClick(event) {
-    const { tagName = '' } = event.target;
+    const { tagName = '', className = '' } = event.target;
     const { uiStore } = this.props;
-    if (tagName === 'A' || tagName === 'BUTTON') {
+    const dropdownToggle = className.indexOf('rs-dropdown-toggle') !== -1;
+    if ((tagName === 'A' && !dropdownToggle) || tagName === 'BUTTON') {
       uiStore.closeUserSidebar();
     }
   }
@@ -31,24 +31,16 @@ class Sidebar extends React.Component {
     uiStore.closeUserSidebar();
   }
 
-  handleLogout() {
-    const { authStore, history } = this.props;
-    axios
-      .get('/api/logout')
-      .then(response => {
-        if (response && response.data && response.data.success) {
-          authStore.loadUserAuth().then(() => {
-            return history.push('/');
-          });
-        } else {
-          throw new Error('Error logging out');
-        }
-      })
-      .catch(ResponseHelper.handleError);
-  }
-
   goToAdmin() {
     window.location = '/admin';
+  }
+
+  getNavigationName() {
+    const { authStore, templatesStore } = this.props;
+    if (authStore.authenticated && authStore.user) {
+      return templatesStore.languageSettings.headerNavigationAuthenticated;
+    }
+    return templatesStore.languageSettings.headerNavigation;
   }
 
   render() {
@@ -71,21 +63,19 @@ class Sidebar extends React.Component {
               <div className="v-spacer-5" />
             </div>
           )}
-          <div>TODO NAVIGATION</div>
+          <Navigation navigationName={this.getNavigationName()} vertical={true} />
           {authStore.authenticated && authStore.user && authStore.user.admin && (
             <div>
               <div className="v-spacer-5" />
-              <ButtonLink appearance="link" key="admin" onClick={this.goToAdmin}>
+              <Button appearance="link" key="admin" onClick={this.goToAdmin}>
                 <Translation message="Admin" />
-              </ButtonLink>
+              </Button>
             </div>
           )}
           {authStore.authenticated && authStore.user && (
             <div>
               <div className="v-spacer-5" />
-              <Button key="logout" appearance="primary" onClick={this.handleLogout}>
-                <Translation message="Logout" />
-              </Button>
+              <LogoutButton appearance="primary" />
             </div>
           )}
           {!authStore.authenticated && (
@@ -104,12 +94,13 @@ class Sidebar extends React.Component {
   }
 }
 
-Sidebar.propTypes = {
+MobileSidebar.propTypes = {
   authStore: PropTypes.object,
   uiStore: PropTypes.object,
+  templatesStore: PropTypes.object,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('authStore', 'uiStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'uiStore', 'templatesStore'), observer);
 
-export default enhance(Sidebar);
+export default enhance(MobileSidebar);

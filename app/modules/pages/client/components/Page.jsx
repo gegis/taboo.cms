@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
-// import Layout from 'app/modules/core/client/components/Layout';
 import { withRouter } from 'react-router-dom';
 
 import Translation from 'app/modules/core/client/components/Translation';
@@ -73,9 +72,9 @@ class Page extends Component {
   }
 
   render() {
-    const tplName = 'standard';
-    const { templateComponents } = this.props.templatesStore;
-    const Template = templateComponents[tplName];
+    // TODO read from page settings - the template name
+    const { templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
+    const Template = templateComponents[defaultTemplateName];
     return (
       <Template metaTitle={this.getPageTitle()}>
         <div className="page">

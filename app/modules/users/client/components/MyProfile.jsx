@@ -19,7 +19,6 @@ import {
   SelectPicker,
 } from 'rsuite';
 import Translation from 'app/modules/core/client/components/Translation';
-import Layout from 'app/modules/core/client/components/Layout';
 import DocumentUpload from 'app/modules/uploads/client/components/DocumentUpload';
 
 const { StringType } = Schema.Types;
@@ -99,7 +98,12 @@ class MyProfile extends React.Component {
   }
 
   render() {
-    const { usersStore, countriesStore } = this.props;
+    const {
+      usersStore,
+      countriesStore,
+      templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {},
+    } = this.props;
+    const Template = templateComponents[defaultTemplateName];
     let pageTitle = 'My Personal Profile';
     let descriptionTitle = 'Bio';
     if (usersStore.user.businessAccount) {
@@ -107,7 +111,7 @@ class MyProfile extends React.Component {
       descriptionTitle = 'Description of the Business';
     }
     return (
-      <Layout className="my-profile-page">
+      <Template className="my-profile-page">
         <Grid fluid>
           <Row>
             <Col sm={24} md={12} mdOffset={6}>
@@ -305,7 +309,7 @@ class MyProfile extends React.Component {
             </Col>
           </Row>
         </Grid>
-      </Layout>
+      </Template>
     );
   }
 }
@@ -316,12 +320,13 @@ MyProfile.propTypes = {
   localeStore: PropTypes.object.isRequired,
   countriesStore: PropTypes.object.isRequired,
   uploadsStore: PropTypes.object.isRequired,
+  templatesStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
 const enhance = compose(
   withRouter,
-  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'uploadsStore'),
+  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'uploadsStore', 'templatesStore'),
   observer
 );
 

@@ -4,7 +4,9 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Header as RsHeader, Row, Col, Grid } from 'rsuite';
 import { Link, withRouter } from 'react-router-dom';
-import Sidebar from 'modules/core/client/components/Sidebar';
+import HeaderSubNav from './HeaderSubNav';
+import Navigation from 'modules/templates/client/components/Navigation';
+import MobileSidebar from 'modules/templates/client/components/MobileSidebar';
 
 class Header extends React.Component {
   constructor(props) {
@@ -25,31 +27,43 @@ class Header extends React.Component {
     uiStore.openUserSidebar();
   }
 
+  getNavigationName() {
+    const { authStore, templatesStore } = this.props;
+    if (authStore.authenticated && authStore.user) {
+      return templatesStore.languageSettings.headerNavigationAuthenticated;
+    }
+    return templatesStore.languageSettings.headerNavigation;
+  }
+
+  getLogoSrc() {
+    const { templatesStore } = this.props;
+    return templatesStore.settings.headerLogo || '/images/logo.png';
+  }
+
   render() {
-    const { navigation, userMenu } = this.props;
     return (
       <RsHeader className="header">
         <Grid>
           <Row className="menu">
             <Col xs={6} md={3} className="nav-brand-wrapper">
               <Link to={this.getLogoLinkTo()} className="nav-brand logo">
-                <img src="/images/logo.png" alt="logo" />
+                <img src={this.getLogoSrc()} alt="logo" />
               </Link>
             </Col>
             <Col md={13} xsHidden className="navigation">
-              {navigation}
+              <Navigation navigationName={this.getNavigationName()} />
             </Col>
             <Col md={8} xsHidden className="user-menu">
-              {userMenu}
+              <HeaderSubNav />
             </Col>
             <Col xs={18} className="sidebar-toggle-wrapper rs-visible-xs">
               <button type="button" className="rs-btn rs-btn-subtle sidebar-toggle" onClick={this.openSidebar}>
-                <i className="rs-icon rs-icon-bars"></i>
+                <i className="rs-icon rs-icon-bars" />
               </button>
             </Col>
           </Row>
         </Grid>
-        <Sidebar navigation={navigation} userMenu={userMenu} />
+        <MobileSidebar />
       </RsHeader>
     );
   }
@@ -58,10 +72,12 @@ class Header extends React.Component {
 Header.propTypes = {
   authStore: PropTypes.object,
   uiStore: PropTypes.object,
-  navigation: PropTypes.node,
-  userMenu: PropTypes.node,
+  templatesStore: PropTypes.object,
+  navigationStore: PropTypes.object,
+  location: PropTypes.object,
+  history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('authStore', 'uiStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'uiStore', 'templatesStore', 'navigationStore'), observer);
 
 export default enhance(Header);

@@ -5,15 +5,11 @@ const db = require('./db');
 const mailer = require('./mailer');
 const logger = require('./logger');
 const gulp = require('./gulp');
+const templates = require('./templates');
 const verificationStatuses = ['new', 'pending', 'failed', 'approved'];
 const userDocumentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'];
 const settingsTypes = ['string', 'integer', 'float', 'object', 'boolean'];
-const languages = [
-  { code: 'en', title: 'English' },
-  { code: 'it', title: 'Italian' },
-];
 const socketsPath = '/socket.io';
-const defaultTemplate = 'standard';
 
 module.exports = {
   environment: process.env.NODE_ENV || 'development',
@@ -56,14 +52,15 @@ module.exports = {
     },
     language: 'en',
     locale: 'en-gb',
-    languages: languages,
+    languages: i18n.languages,
     dateFormat: 'DD/MM/YYYY',
     dateTimeFormat: 'DD/MM/YYYY HH:mm:ss',
     userACLRefreshThreshold: 1000 * 60 * 5,
     userInfoUpdateInterval: 1000 * 60,
     userVerificationStatuses: verificationStatuses,
     userDocumentTypes: userDocumentTypes,
-    defaultTemplate: defaultTemplate,
+    defaultTemplate: templates.defaultTemplate,
+    templatePreviewRoute: templates.previewRoute,
     settings: {
       types: settingsTypes,
     },
@@ -71,10 +68,7 @@ module.exports = {
   settings: {
     types: settingsTypes,
   },
-  templates: {
-    defaultTemplate: defaultTemplate,
-    tplPath: 'app/modules/templates/client/tpl',
-  },
+  templates: templates,
   server: server,
   i18n: i18n,
   api: api,
