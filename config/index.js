@@ -13,6 +13,7 @@ const languages = [
   { code: 'it', title: 'Italian' },
 ];
 const socketsPath = '/socket.io';
+const defaultTemplate = 'standard';
 
 module.exports = {
   environment: process.env.NODE_ENV || 'development',
@@ -62,6 +63,7 @@ module.exports = {
     userInfoUpdateInterval: 1000 * 60,
     userVerificationStatuses: verificationStatuses,
     userDocumentTypes: userDocumentTypes,
+    defaultTemplate: defaultTemplate,
     settings: {
       types: settingsTypes,
     },
@@ -70,6 +72,7 @@ module.exports = {
     types: settingsTypes,
   },
   templates: {
+    defaultTemplate: defaultTemplate,
     tplPath: 'app/modules/templates/client/tpl',
   },
   server: server,

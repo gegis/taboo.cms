@@ -17,7 +17,7 @@ class NavigationList extends React.Component {
   }
 
   getCopyValue(item) {
-    return item.slug;
+    return item.name;
   }
 
   render() {

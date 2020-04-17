@@ -2,32 +2,48 @@ import { decorate, observable, action, runInAction } from 'mobx';
 import axios from 'axios';
 import ResponseHelper from 'modules/core/client/helpers/ResponseHelper';
 
-const { navigation = [], userNavigation = [] } = window.app.config;
-
 class NavigationStore {
   constructor() {
-    this.navigation = navigation;
-    this.userNavigation = userNavigation;
+    this.navigation = {};
   }
 
-  loadNavigationBySlug(slug) {
+  // loadNavigationByName(name) {
+  //   return new Promise(resolve => {
+  //     axios
+  //       .get('/api/navigation/:name'.replace(':name', name))
+  //       .then(response => {
+  //         runInAction(() => {
+  //           const { data = {} } = response;
+  //           if (data) {
+  //             if (name === 'user') {
+  //               this.userNavigation = data;
+  //             } else {
+  //               this.navigation = data;
+  //             }
+  //           }
+  //           resolve(data);
+  //         });
+  //       })
+  //       .catch(ResponseHelper.handleError);
+  //   });
+  // }
+
+  loadByName(name, reload = false) {
     return new Promise(resolve => {
-      axios
-        .get('/api/navigation/:slug'.replace(':slug', slug))
-        .then(response => {
-          runInAction(() => {
-            const { data = {} } = response;
-            if (data) {
-              if (slug === 'user') {
-                this.userNavigation = data;
-              } else {
-                this.navigation = data;
-              }
-            }
-            resolve(data);
-          });
-        })
-        .catch(ResponseHelper.handleError);
+      if (this.navigation[name] && !reload) {
+        resolve(this.navigation[name]);
+      } else {
+        axios
+          .get('/api/navigation/:name'.replace(':name', name))
+          .then(response => {
+            runInAction(() => {
+              const { data = {} } = response;
+              this.navigation[name] = data;
+              resolve(data);
+            });
+          })
+          .catch(ResponseHelper.handleError);
+      }
     });
   }
 }
@@ -35,7 +51,7 @@ class NavigationStore {
 decorate(NavigationStore, {
   navigation: observable,
   userNavigation: observable,
-  loadUserNavigation: action,
+  loadByName: action,
 });
 
 export default new NavigationStore();

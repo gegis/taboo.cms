@@ -129,17 +129,17 @@ class Layout extends React.Component {
   }
 
   getNavigation() {
-    const { navigation, navigationStore } = this.props;
+    const { navigation } = this.props;
     if (navigation) {
       return navigation;
     } else {
       return (
         <Nav className="navigation signed-out">
-          {navigationStore.navigation.map((item, i) => (
-            <NavLink key={i} className="rs-nav-item-content" to={item.url}>
-              {item.title}
-            </NavLink>
-          ))}
+          {/*{navigationStore.navigation.map((item, i) => (*/}
+          {/*  <NavLink key={i} className="rs-nav-item-content" to={item.url}>*/}
+          {/*    {item.title}*/}
+          {/*  </NavLink>*/}
+          {/*))}*/}
         </Nav>
       );
     }

@@ -110,7 +110,7 @@ module.exports = {
 
   async deleteNavigation(navigation = []) {
     for (let i = 0; i < navigation.length; i++) {
-      await NavigationModel.findOneAndDelete({ slug: navigation[i].slug });
+      await NavigationModel.findOneAndDelete({ name: navigation[i].name });
     }
   },
 

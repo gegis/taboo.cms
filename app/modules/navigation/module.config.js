@@ -12,8 +12,8 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/api/navigation/:slug',
-      action: NavigationController.findOneBySlug,
+      path: '/api/navigation/:name',
+      action: NavigationController.findOneByName,
       policies: [],
       options: {
         errorResponseAsJson: true,
@@ -53,8 +53,8 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/api/admin/navigation/slug/:slug',
-      action: NavigationAdminController.findOneBySlug,
+      path: '/api/admin/navigation/name/:name',
+      action: NavigationAdminController.findOneByName,
       policies: ['isAdmin'],
       options: {
         errorResponseAsJson: true,

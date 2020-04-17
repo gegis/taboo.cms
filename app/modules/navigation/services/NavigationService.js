@@ -2,16 +2,16 @@ const CacheService = require('modules/cache/services/CacheService');
 const NavigationModel = require('modules/navigation/models/NavigationModel');
 
 class NavigationService {
-  async getEnabledBySlug(slug, language = 'en') {
+  async getEnabledByName(name, language = 'en') {
     let navigation;
-    let items = CacheService.get('navigation', `${slug}-${language}-enabled`);
+    let items = CacheService.get('navigation', `${name}-${language}-enabled`);
 
     if (!items) {
       items = [];
-      navigation = await NavigationModel.findOne({ slug: slug, language: language, enabled: true });
+      navigation = await NavigationModel.findOne({ name: name, language: language, enabled: true });
       if (navigation && navigation.items && navigation.items.length > 1) {
         items = navigation.items;
-        CacheService.set('navigation', `${slug}-${language}-enabled`, items);
+        CacheService.set('navigation', `${name}-${language}-enabled`, items);
       }
     }
 

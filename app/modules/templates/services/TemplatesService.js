@@ -1,11 +1,23 @@
 const path = require('path');
 const { filesHelper, config } = require('@taboo/cms-core');
 const { templates: { tplPath } = {} } = config;
+const CacheService = require('modules/cache/services/CacheService');
 const TemplateModel = require('modules/templates/models/TemplateModel');
 
 class TemplatesService {
   async getAllEnabled() {
     return TemplateModel.find({ enabled: true });
+  }
+
+  async getByName(name) {
+    let template = CacheService.get('template', `${name}`);
+    if (!template) {
+      template = await TemplateModel.findOne({ name: name });
+      if (template) {
+        CacheService.set('template', `${name}`, template);
+      }
+    }
+    return template;
   }
 
   async getFsTemplates() {

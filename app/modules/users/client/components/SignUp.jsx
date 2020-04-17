@@ -89,7 +89,7 @@ class SignUp extends React.Component {
     authStore.loginUser(email, password).then(data => {
       if (data) {
         usersStore.resetSignupUser();
-        navigationStore.loadNavigationBySlug('user');
+        navigationStore.loadNavigationByName('user');
         authStore.loadUserAuth().then(user => {
           if (user) {
             return history.push('/dashboard');

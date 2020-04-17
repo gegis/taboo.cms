@@ -46,7 +46,6 @@ module.exports = {
   Key: 'Key',
   Value: 'Value',
   Category: 'Category',
-  Slug: 'Slug',
   Logs: 'Logs',
   Blocks: 'Blocks',
   Templates: 'Templates',

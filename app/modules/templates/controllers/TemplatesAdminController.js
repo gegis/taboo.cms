@@ -1,8 +1,11 @@
-const { config } = require('@taboo/cms-core');
+const { config, filesHelper } = require('@taboo/cms-core');
+const path = require('path');
+const fs = require('fs');
 const TemplatesService = require('modules/templates/services/TemplatesService');
 const TemplateModel = require('modules/templates/models/TemplateModel');
 const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
-const { api: { templates: { defaultSort = { name: 'asc' } } = {} } = {} } = config;
+
+const { api: { templates: { defaultSort = { name: 'asc' } } = {} } = {}, templates: { tplPath } = {} } = config;
 
 class TemplatesAdminController extends AbstractAdminController {
   constructor() {
@@ -56,6 +59,16 @@ class TemplatesAdminController extends AbstractAdminController {
       }
       return ctx.throw(400, err);
     }
+  }
+
+  async imagePreview(ctx) {
+    const { params: { template = 'standard' } = {} } = ctx;
+    let filePath = path.resolve(tplPath, template, 'preview.png');
+    if (!filesHelper.fileExists(filePath)) {
+      return ctx.throw(404, 'Not Found');
+    }
+    ctx.set('Content-Type', 'image/png');
+    ctx.body = fs.createReadStream(filePath);
   }
 }
 

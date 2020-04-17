@@ -18,8 +18,17 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/api/templates/:name',
+      action: TemplatesController.findByName,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
+      method: 'GET',
       path: '/admin/templates/image-preview/:template',
-      action: TemplatesController.imagePreview,
+      action: TemplatesAdminController.imagePreview,
       policies: ['isAdmin'],
     },
     {

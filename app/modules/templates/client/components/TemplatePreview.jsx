@@ -25,10 +25,10 @@ class TemplatePreview extends Component {
   }
 
   getTemplate() {
-    const { templates } = this.props.templatesStore;
+    const { templateComponents } = this.props.templatesStore;
     const tplName = this.getTemplateName();
-    if (tplName && templates && templates[tplName]) {
-      return templates[tplName];
+    if (tplName && templateComponents && templateComponents[tplName]) {
+      return templateComponents[tplName];
     } else {
       return NotFound;
     }

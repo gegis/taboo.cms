@@ -74,8 +74,8 @@ class Page extends Component {
 
   render() {
     const tplName = 'standard';
-    const { templates } = this.props.templatesStore;
-    const Template = templates[tplName];
+    const { templateComponents } = this.props.templatesStore;
+    const Template = templateComponents[tplName];
     return (
       <Template metaTitle={this.getPageTitle()}>
         <div className="page">
