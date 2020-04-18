@@ -35,9 +35,13 @@ class Header extends React.Component {
     return templatesStore.languageSettings.headerNavigation;
   }
 
-  getLogoSrc() {
+  getLogo() {
     const { templatesStore } = this.props;
-    return templatesStore.settings.headerLogo || '/images/logo.png';
+    let logo = null;
+    if (templatesStore.settings.headerLogo) {
+      logo = <img src={templatesStore.settings.headerLogo} alt="logo" />;
+    }
+    return logo;
   }
 
   render() {
@@ -47,7 +51,7 @@ class Header extends React.Component {
           <Row className="menu">
             <Col xs={6} md={3} className="nav-brand-wrapper">
               <Link to={this.getLogoLinkTo()} className="nav-brand logo">
-                <img src={this.getLogoSrc()} alt="logo" />
+                {this.getLogo()}
               </Link>
             </Col>
             <Col md={13} xsHidden className="navigation">

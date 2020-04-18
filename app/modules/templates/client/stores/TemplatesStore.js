@@ -17,8 +17,17 @@ class TemplatesStore {
     this.languageSettings = {};
   }
 
-  setTemplate(template) {
-    if (Object.keys(this.template).length === 0 || template.name !== this.template.name) {
+  setPreviewTemplate(template) {
+    // TODO (layouts) think of how to set as preview and never override while in edit preview mode
+    // TODO (layouts) one of the ways to replace this.templates[standard]!!!
+    if (template && template.name) {
+      this.templates[template.name] = template;
+      this.setTemplate(template, true);
+    }
+  }
+
+  setTemplate(template, force = false) {
+    if (Object.keys(this.template).length === 0 || this.template.name !== template.name || force) {
       this.template = template;
       this.templateName = template.name;
       this.settings = template.settings;
@@ -26,31 +35,6 @@ class TemplatesStore {
         this.languageSettings = template.languageSettings[this.language];
       }
     }
-  }
-
-  loadDefaultTemplate(reload = false) {
-    return new Promise(resolve => {
-      if (this.defaultTemplateName && this.templates[this.defaultTemplateName] && !reload) {
-        runInAction(() => {
-          this.defaultTemplateName = this.templates[this.defaultTemplateName].name;
-          resolve(this.templates[this.defaultTemplateName]);
-        });
-      } else {
-        axios
-          .get('/api/templates/default')
-          .then(response => {
-            runInAction(() => {
-              const { data = {} } = response;
-              if (data) {
-                this.templates[data.name] = data;
-                this.defaultTemplateName = data.name;
-              }
-              resolve(data);
-            });
-          })
-          .catch(ResponseHelper.handleError);
-      }
-    });
   }
 
   loadTemplate(name, reload = false) {
@@ -78,25 +62,34 @@ class TemplatesStore {
     });
   }
 
-  setLanguage(language) {
-    this.language = language;
-    // this.pointSettingsToItem();
+  loadDefaultTemplate(reload = false) {
+    return new Promise(resolve => {
+      if (this.defaultTemplateName && this.templates[this.defaultTemplateName] && !reload) {
+        runInAction(() => {
+          this.defaultTemplateName = this.templates[this.defaultTemplateName].name;
+          resolve(this.templates[this.defaultTemplateName]);
+        });
+      } else {
+        axios
+          .get('/api/templates/default')
+          .then(response => {
+            runInAction(() => {
+              const { data = {} } = response;
+              if (data) {
+                this.templates[data.name] = data;
+                this.defaultTemplateName = data.name;
+              }
+              resolve(data);
+            });
+          })
+          .catch(ResponseHelper.handleError);
+      }
+    });
   }
 
-  // getSettings(key) {
-  //   const {settings = null} = this.template;
-  //   if (settings && this.template[key]) {
-  //     return this.templates[this.templateName][key];
-  //   }
-  //   return null;
-  // }
-  //
-  // getLanguageSettings(key) {
-  //   if (this.template && this.template[this.language] && this.template[this.language][key]) {
-  //     return this.template[this.language][key];
-  //   }
-  //   return null;
-  // }
+  setLanguage(language) {
+    this.language = language;
+  }
 }
 
 decorate(TemplatesStore, {
@@ -112,6 +105,7 @@ decorate(TemplatesStore, {
   loadTemplate: action,
   setTemplate: action,
   setLanguage: action,
+  setPreviewTemplate: action,
 });
 
 export default new TemplatesStore();

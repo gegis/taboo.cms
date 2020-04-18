@@ -5,11 +5,47 @@ import { InputGroup, Input, InputPicker } from 'rsuite';
 import PropTypes from 'prop-types';
 
 import Translation from 'modules/core/client/components/Translation';
+import SocketsClient from 'modules/core/client/helpers/SocketsClient';
 
 class SettingsInput extends React.Component {
   constructor(props) {
     super(props);
     this.templatesStore = props.templatesStore;
+    this.templatePreviewEvent = 'template-preview'; // TODO (layouts) think of unique event per user id
+    this.changesTimeout = null;
+    this.changesTimeoutDelay = 300;
+    this.onSettingsChange = this.onSettingsChange.bind(this);
+    this.onLanguageSettingsChange = this.onLanguageSettingsChange.bind(this);
+    this.emitTemplateChanges = this.emitTemplateChanges.bind(this);
+  }
+
+  componentDidMount() {
+    SocketsClient.join('users');
+  }
+
+  emitTemplateChanges() {
+    clearTimeout(this.changesTimeout);
+    this.changesTimeout = setTimeout(() => {
+      SocketsClient.emit(this.templatePreviewEvent, this.templatesStore.item);
+    }, this.changesTimeoutDelay);
+  }
+
+  onSettingsChange(key, value) {
+    const { onChange = null } = this.props;
+    this.templatesStore.onSettingsChange(key, value);
+    this.emitTemplateChanges();
+    if (onChange && typeof onChange === 'function') {
+      onChange(key, value, 'settings');
+    }
+  }
+
+  onLanguageSettingsChange(key, value) {
+    const { onChange = null } = this.props;
+    this.templatesStore.onLanguageSettingsChange(key, value);
+    this.emitTemplateChanges();
+    if (onChange && typeof onChange === 'function') {
+      onChange(key, value, 'languageSettings');
+    }
   }
 
   getInputByType() {
@@ -21,11 +57,11 @@ class SettingsInput extends React.Component {
     switch (settingsKey) {
       case 'settings':
         settingsItem = this.templatesStore.settings;
-        settingsOnChange = this.templatesStore.onSettingsChange;
+        settingsOnChange = this.onSettingsChange;
         break;
       case 'languageSettings':
         settingsItem = this.templatesStore.languageSettings;
-        settingsOnChange = this.templatesStore.onLanguageSettingsChange;
+        settingsOnChange = this.onLanguageSettingsChange;
         break;
     }
 
@@ -77,6 +113,7 @@ SettingsInput.propTypes = {
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   type: PropTypes.string.isRequired,
   data: PropTypes.array,
+  onChange: PropTypes.func,
   settingsKey: PropTypes.string.isRequired,
   settingsValueKey: PropTypes.string.isRequired,
   templatesStore: PropTypes.object.isRequired,

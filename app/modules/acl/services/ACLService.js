@@ -1,4 +1,4 @@
-const { logger, config } = require('@taboo/cms-core');
+const { logger, config, sockets, events } = require('@taboo/cms-core');
 const SettingsService = require('modules/settings/services/SettingsService');
 const RoleModel = require('modules/acl/models/RoleModel');
 
@@ -12,6 +12,14 @@ class ACLService {
 
   async afterModulesSetup(modules, aclResources) {
     this.aclResounces = aclResources;
+    // TODO (layouts) move this into separate module!!! and make sure only user who is editing emits
+    events.on('socket-client-join', data => {
+      if (data.room === 'users') {
+        data.socket.on('template-preview', data => {
+          sockets.emit('users', 'template-preview', data);
+        });
+      }
+    });
   }
 
   getAllResources() {

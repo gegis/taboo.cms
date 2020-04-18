@@ -72,9 +72,11 @@ class Page extends Component {
   }
 
   render() {
-    // TODO read from page settings - the template name
-    const { templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
-    const Template = templateComponents[defaultTemplateName];
+    // TODO (layouts) read from page settings - the template name
+    const { templatesStore: { templateComponents = {} } = {} } = this.props;
+    // const { templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
+    // const Template = templateComponents[defaultTemplateName];
+    const Template = templateComponents['fluid'];
     return (
       <Template metaTitle={this.getPageTitle()}>
         <div className="page">
