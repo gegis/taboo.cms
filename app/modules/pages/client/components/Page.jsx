@@ -71,12 +71,23 @@ class Page extends Component {
     currentModal.open(url, name);
   }
 
-  render() {
-    // TODO (layouts) read from page settings - the template name
+  getTemplateName() {
+    const { pagesStore, templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
+    let template = defaultTemplateName;
+    if (pagesStore.page && !pagesStore.pageNotFound && templateComponents[pagesStore.page.template]) {
+      template = pagesStore.page.template;
+    }
+    return template;
+  }
+
+  getTemplateComponent() {
     const { templatesStore: { templateComponents = {} } = {} } = this.props;
-    // const { templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
-    // const Template = templateComponents[defaultTemplateName];
-    const Template = templateComponents['fluid'];
+    const templateName = this.getTemplateName();
+    return templateComponents[templateName];
+  }
+
+  render() {
+    const Template = this.getTemplateComponent();
     return (
       <Template metaTitle={this.getPageTitle()}>
         <div className="page">

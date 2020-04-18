@@ -20,7 +20,7 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
       type: String,
       required: [true, 'is required'],
     },
-    layout: {
+    template: {
       type: String,
     },
     background: {

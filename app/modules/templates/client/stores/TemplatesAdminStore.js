@@ -2,7 +2,15 @@ import { decorate, action, observable } from 'mobx';
 import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 import { settingsComponents } from 'app/modules/templates/client/tpl';
 
-const { language = 'en', templatePreviewRoute = '/' } = window.app.config;
+const {
+  language = 'en',
+  templates: {
+    previewRoute = '/',
+    defaultTemplate = 'standard',
+    socketsEvents: { templatePreviewEmit = '' } = {},
+  } = {},
+} = window.app.config;
+
 const newItem = {
   id: '',
   name: '',
@@ -49,6 +57,8 @@ class TemplatesAdminStore extends AbstractAdminStore {
     this.previewPath = null;
     this.previewTemplate = null;
     this.language = language;
+    this.templatePreviewEmit = templatePreviewEmit;
+    this.templateOptions = [{ label: defaultTemplate, value: defaultTemplate }];
     this.setLanguage = this.setLanguage.bind(this);
     this.setPreviewPath = this.setPreviewPath.bind(this);
     this.unsetPreviewPath = this.unsetPreviewPath.bind(this);
@@ -73,9 +83,27 @@ class TemplatesAdminStore extends AbstractAdminStore {
     }
   }
 
+  loadAll(options = {}) {
+    return new Promise(resolve => {
+      super.loadAll(options).then(templates => {
+        this.setTemplateOptions(templates);
+        resolve(templates);
+      });
+    });
+  }
+
+  setTemplateOptions(templates = []) {
+    if (templates.length > 0) {
+      this.templateOptions = [];
+      templates.map(template => {
+        this.templateOptions.push({ label: template.title, value: template.name });
+      });
+    }
+  }
+
   setPreviewPath(templateName) {
     if (templateName) {
-      this.previewPath = templatePreviewRoute.replace(':language?', this.language).replace(':template', templateName);
+      this.previewPath = previewRoute.replace(':language?', this.language).replace(':template', templateName);
     } else {
       this.previewPath = null;
     }

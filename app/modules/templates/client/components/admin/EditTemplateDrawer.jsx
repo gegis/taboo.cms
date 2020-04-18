@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import Drawer from 'modules/core/client/components/admin/Drawer';
 import Translation from 'modules/core/client/components/Translation';
+import TemplatesHelper from 'modules/templates/client/helpers/TemplatesHelper';
 
 class EditTemplateDrawer extends React.Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class EditTemplateDrawer extends React.Component {
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.onIframeLoad = this.onIframeLoad.bind(this);
   }
 
   open(id) {
@@ -60,6 +62,11 @@ class EditTemplateDrawer extends React.Component {
     return null;
   }
 
+  onIframeLoad() {
+    const { authStore, templatesStore } = this.props;
+    TemplatesHelper.emitTemplateChanges({ authStore, templatesStore });
+  }
+
   render() {
     const { previewPath } = this.templatesStore;
     const Settings = this.getSettingsComponent();
@@ -78,7 +85,7 @@ class EditTemplateDrawer extends React.Component {
           <div className="template-settings-wrapper">{Settings && <Settings />}</div>
           <div className="template-preview-wrapper">
             <div className="template-preview-body">
-              <iframe className="template-preview-iframe" src={previewPath} />
+              <iframe className="template-preview-iframe" src={previewPath} onLoad={this.onIframeLoad} />
             </div>
           </div>
         </div>
@@ -90,8 +97,9 @@ class EditTemplateDrawer extends React.Component {
 EditTemplateDrawer.propTypes = {
   templatesStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
+  authStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('templatesStore', 'notificationsStore'), observer);
+const enhance = compose(inject('templatesStore', 'notificationsStore', 'authStore'), observer);
 
 export default enhance(EditTemplateDrawer);

@@ -1,6 +1,7 @@
 const { config } = require('@taboo/cms-core');
 const TemplatesAdminController = require('./controllers/TemplatesAdminController');
 const TemplatesController = require('./controllers/TemplatesController');
+const TemplatesService = require('./services/TemplatesService');
 const { templates: { previewRoute = '/:language?/templates/preview/:template' } = {} } = config;
 
 module.exports = {
@@ -11,12 +12,13 @@ module.exports = {
   acl: {
     resources: ['admin.templates.view', 'admin.templates.manage'],
   },
+  afterModulesSetup: TemplatesService.afterModulesSetup,
   routes: [
     {
       method: 'GET',
       path: previewRoute,
       action: TemplatesController.preview,
-      policies: ['loadNavigation', 'isAdmin'],
+      policies: ['i18n', 'loadNavigation', 'isAdmin'],
     },
     {
       method: 'GET',

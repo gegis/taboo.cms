@@ -6,32 +6,17 @@ import { Panel } from 'rsuite';
 import NotFound from 'app/modules/core/client/components/NotFound';
 import { withRouter } from 'react-router-dom';
 import Translation from 'modules/core/client/components/Translation';
-import SocketsClient from 'modules/core/client/helpers/SocketsClient';
 
 class TemplatePreview extends Component {
   constructor(props) {
     super(props);
-    this.templatePreviewEvent = 'template-preview'; // TODO (layouts) make unique event per user id
   }
 
   componentDidMount() {
-    const { localeStore, templatesStore, match: { params: { language = null } = {} } = {} } = this.props;
+    const { localeStore, match: { params: { language = null } = {} } = {} } = this.props;
     if (language) {
       localeStore.setLanguage(language);
     }
-    // TODO (layouts) make unique event per user id
-    // TODO (layouts) listen on this from template itself (maybe have abstract template!!!) to listen on any tpl page
-    // TODO (layouts) have this listener if admin somewhere at top level, so no matter what it always registers
-    // TODO (layouts) also register only if admin!!!
-    SocketsClient.join('users').then(() => {
-      SocketsClient.on(this.templatePreviewEvent, data => {
-        templatesStore.setPreviewTemplate(data);
-      });
-    });
-  }
-
-  componentWillUnmount() {
-    SocketsClient.off(this.templatePreviewEvent);
   }
 
   getTemplateName() {
@@ -40,7 +25,7 @@ class TemplatePreview extends Component {
   }
 
   getTemplate() {
-    const { templateComponents } = this.props.templatesStore;
+    const { templatesStore: { templateComponents = {} } = {} } = this.props;
     const tplName = this.getTemplateName();
     if (tplName && templateComponents && templateComponents[tplName]) {
       return templateComponents[tplName];

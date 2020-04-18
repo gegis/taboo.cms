@@ -23,7 +23,7 @@ class Template extends React.Component {
 
   componentDidMount() {
     const { localeStore, notificationsStore, templatesStore } = this.props;
-    TemplatesHelper.preloadTemplate(config.name, templatesStore);
+    TemplatesHelper.preloadTemplate(config.name, { templatesStore });
     this.dispose = autorun(NotificationsHelper.handleNotifications.bind(this, notificationsStore, localeStore));
   }
 

@@ -5,51 +5,43 @@ import { InputGroup, Input, InputPicker } from 'rsuite';
 import PropTypes from 'prop-types';
 
 import Translation from 'modules/core/client/components/Translation';
-import SocketsClient from 'modules/core/client/helpers/SocketsClient';
+import TemplatesHelper from 'modules/templates/client/helpers/TemplatesHelper';
 
 class SettingsInput extends React.Component {
   constructor(props) {
     super(props);
     this.templatesStore = props.templatesStore;
-    this.templatePreviewEvent = 'template-preview'; // TODO (layouts) think of unique event per user id
-    this.changesTimeout = null;
-    this.changesTimeoutDelay = 300;
+    this.localeStore = props.localeStore;
     this.onSettingsChange = this.onSettingsChange.bind(this);
     this.onLanguageSettingsChange = this.onLanguageSettingsChange.bind(this);
-    this.emitTemplateChanges = this.emitTemplateChanges.bind(this);
-  }
-
-  componentDidMount() {
-    SocketsClient.join('users');
-  }
-
-  emitTemplateChanges() {
-    clearTimeout(this.changesTimeout);
-    this.changesTimeout = setTimeout(() => {
-      SocketsClient.emit(this.templatePreviewEvent, this.templatesStore.item);
-    }, this.changesTimeoutDelay);
+    this.onLanguageChange = this.onLanguageChange.bind(this);
   }
 
   onSettingsChange(key, value) {
-    const { onChange = null } = this.props;
+    const { onChange = null, authStore, templatesStore } = this.props;
     this.templatesStore.onSettingsChange(key, value);
-    this.emitTemplateChanges();
+    TemplatesHelper.emitTemplateChanges({ authStore, templatesStore });
     if (onChange && typeof onChange === 'function') {
       onChange(key, value, 'settings');
     }
   }
 
   onLanguageSettingsChange(key, value) {
-    const { onChange = null } = this.props;
+    const { onChange = null, authStore, templatesStore } = this.props;
     this.templatesStore.onLanguageSettingsChange(key, value);
-    this.emitTemplateChanges();
+    TemplatesHelper.emitTemplateChanges({ authStore, templatesStore });
     if (onChange && typeof onChange === 'function') {
       onChange(key, value, 'languageSettings');
     }
   }
 
+  onLanguageChange(value) {
+    this.templatesStore.setLanguage(value, true);
+  }
+
   getInputByType() {
     const { type, settingsKey, settingsValueKey, data } = this.props;
+    const { languageOptions } = this.localeStore;
     let input = null;
     let settingsItem = null;
     let settingsOnChange = null;
@@ -87,16 +79,27 @@ class SettingsInput extends React.Component {
           />
         );
         break;
+      case 'TemplateLanguage':
+        input = (
+          <InputPicker
+            className="template-language-input"
+            value={this.templatesStore.language}
+            onChange={this.onLanguageChange}
+            data={languageOptions}
+            cleanable={false}
+          />
+        );
+        break;
     }
 
     return input;
   }
 
   render() {
-    const { label } = this.props;
+    const { label, className } = this.props;
 
     return (
-      <InputGroup classPrefix="input-group-wrapper">
+      <InputGroup classPrefix="input-group-wrapper" className={className}>
         {label && (
           <label>
             {typeof label === 'string' && <Translation message={label} />}
@@ -110,15 +113,18 @@ class SettingsInput extends React.Component {
 }
 
 SettingsInput.propTypes = {
+  className: PropTypes.string,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   type: PropTypes.string.isRequired,
   data: PropTypes.array,
   onChange: PropTypes.func,
-  settingsKey: PropTypes.string.isRequired,
-  settingsValueKey: PropTypes.string.isRequired,
+  settingsKey: PropTypes.string,
+  settingsValueKey: PropTypes.string,
   templatesStore: PropTypes.object.isRequired,
+  authStore: PropTypes.object.isRequired,
+  localeStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('templatesStore'), observer);
+const enhance = compose(inject('templatesStore', 'authStore', 'localeStore'), observer);
 
 export default enhance(SettingsInput);

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import NotFound from 'app/modules/core/client/components/NotFound';
 import UserRoute from 'app/modules/core/client/components/UserRoute';
 import SocketsClient from 'app/modules/core/client/helpers/SocketsClient';
+import TemplatesHelper from 'modules/templates/client/helpers/TemplatesHelper';
 
 class App extends React.Component {
   constructor(props) {
@@ -16,10 +17,18 @@ class App extends React.Component {
 
   componentDidMount() {
     const { authStore, templatesStore } = this.props;
-    authStore.loadUserAuth();
     templatesStore.loadDefaultTemplate();
+    authStore.loadUserAuth().then(() => {
+      if (authStore.user && authStore.user.admin) {
+        SocketsClient.join('admin').then(() => {
+          const eventName = TemplatesHelper.getTemplatePreviewReceiveEventName({ authStore, templatesStore });
+          SocketsClient.on(eventName, template => {
+            templatesStore.setPreviewTemplate(template);
+          });
+        });
+      }
+    });
     SocketsClient.join('users').then(() => {
-      // In case user is logged in, but refreshes page
       SocketsClient.on(this.getUserEventName('update'), () => {
         authStore.loadUserAuth();
       });
@@ -27,7 +36,9 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
+    const { authStore, templatesStore } = this.props;
     SocketsClient.off(this.getUserEventName('update'));
+    SocketsClient.off(TemplatesHelper.getTemplatePreviewReceiveEventName({ authStore, templatesStore }));
   }
 
   componentDidUpdate(prevProps) {

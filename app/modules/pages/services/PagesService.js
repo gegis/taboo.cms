@@ -8,14 +8,14 @@ const GalleryModel = require('modules/galleries/models/GalleryModel');
 class PagesService {
   async getPageResponse(ctx, route) {
     const { client: { metaTitle } = {} } = config;
-    let layout, pageTpl, pageVariables, pageResponse;
+    let template, pageTpl, pageVariables, pageResponse;
     const page = await this.getPage(ctx, route);
 
     if (page) {
-      if (page.layout === 'no-layout') {
-        layout = '<%-_body%>';
+      if (!page.template || page.template === 'empty') {
+        template = '<%-_body%>';
       } else {
-        layout = await cmsHelper.getLayout(page.layout);
+        template = await cmsHelper.getLayout(page.template); // TODO (templates) think of redo core and classic layouts/templates
       }
       pageTpl = await cmsHelper.getView(ctx.taboo.moduleRoute);
       pageVariables = page.variables || {};
@@ -26,7 +26,7 @@ class PagesService {
       if (page.language) {
         LanguageService.setLanguage(ctx, page.language);
       }
-      pageResponse = cmsHelper.composeResponse(ctx, layout, pageTpl, pageVariables);
+      pageResponse = cmsHelper.composeResponse(ctx, template, pageTpl, pageVariables);
     }
 
     return pageResponse;

@@ -18,21 +18,11 @@ class UploadsList extends React.Component {
   }
 
   getUploadCopyValue(item) {
-    let value = item.url;
-    if (item.type && item.type.indexOf('image') === 0) {
-      value = `<img alt="${item.name}" src="${item.url}" />`;
-    } else {
-      value = `<a href="${item.url}">${item.name}</a>`;
-    }
-    return value;
+    return item.url;
   }
 
-  getUploadCopyTitle(item) {
-    let title = 'Copy url';
-    if (item.type && item.type.indexOf('image') === 0) {
-      title = 'Copy image as tag';
-    }
-    return title;
+  getUploadCopyTitle() {
+    return 'Copy path';
   }
 
   getUploadPreview(item, styles = {}) {

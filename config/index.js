@@ -6,10 +6,10 @@ const mailer = require('./mailer');
 const logger = require('./logger');
 const gulp = require('./gulp');
 const templates = require('./templates');
+const sockets = require('./sockets');
 const verificationStatuses = ['new', 'pending', 'failed', 'approved'];
 const userDocumentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'];
 const settingsTypes = ['string', 'integer', 'float', 'object', 'boolean'];
-const socketsPath = '/socket.io';
 
 module.exports = {
   environment: process.env.NODE_ENV || 'development',
@@ -38,12 +38,7 @@ module.exports = {
     verificationStatuses: verificationStatuses,
     documentTypes: userDocumentTypes,
   },
-  sockets: {
-    enabled: true,
-    port: null, // set value only if port is different from server port
-    path: socketsPath,
-    rooms: ['users'],
-  },
+  sockets: sockets,
   client: {
     metaTitle: 'Taboo CMS',
     admin: {
@@ -59,8 +54,14 @@ module.exports = {
     userInfoUpdateInterval: 1000 * 60,
     userVerificationStatuses: verificationStatuses,
     userDocumentTypes: userDocumentTypes,
-    defaultTemplate: templates.defaultTemplate,
-    templatePreviewRoute: templates.previewRoute,
+    templates: {
+      defaultTemplate: templates.defaultTemplate,
+      previewRoute: templates.previewRoute,
+      socketsEvents: {
+        templatePreviewEmit: templates.socketsEvents.templatePreviewEmit,
+        templatePreviewReceive: templates.socketsEvents.templatePreviewReceive,
+      },
+    },
     settings: {
       types: settingsTypes,
     },

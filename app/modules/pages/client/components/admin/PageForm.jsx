@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, FormControl, ControlLabel, Checkbox, SelectPicker } from 'rsuite';
+import { Form, FormGroup, FormControl, ControlLabel, Checkbox, InputPicker } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -13,6 +13,7 @@ class PageForm extends React.Component {
     super(props);
     this.pagesStore = props.pagesStore;
     this.localeStore = props.localeStore;
+    this.templatesStore = props.templatesStore;
     this.onCodeEditorChange = this.onCodeEditorChange.bind(this);
     this.openInRichTextEditor = this.openInRichTextEditor.bind(this);
   }
@@ -50,17 +51,17 @@ class PageForm extends React.Component {
           </ControlLabel>
           <FormControl name="url" />
         </FormGroup>
-        <FormGroup controlId="layout" className="inline">
+        <FormGroup controlId="template" className="inline">
           <ControlLabel>
-            <Translation message="Layout" />
+            <Translation message="Template" />
           </ControlLabel>
-          <FormControl name="layout" accepter={SelectPicker} data={this.pagesStore.layoutOptions} />
+          <FormControl name="template" accepter={InputPicker} data={this.templatesStore.templateOptions} />
         </FormGroup>
         <FormGroup controlId="language" className="inline">
           <ControlLabel>
             <Translation message="Language" />
           </ControlLabel>
-          <FormControl name="language" accepter={SelectPicker} data={this.localeStore.languageOptions} />
+          <FormControl name="language" accepter={InputPicker} data={this.localeStore.languageOptions} />
         </FormGroup>
         <FormGroup controlId="published" className="inline">
           <ControlLabel>
@@ -96,8 +97,9 @@ class PageForm extends React.Component {
 PageForm.propTypes = {
   pagesStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
+  templatesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('pagesStore', 'localeStore'), observer);
+const enhance = compose(inject('pagesStore', 'localeStore', 'templatesStore'), observer);
 
 export default enhance(PageForm);

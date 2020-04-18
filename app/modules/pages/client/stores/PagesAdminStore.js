@@ -3,13 +3,15 @@ import axios from 'axios';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
 import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
 
+const { language = 'en', templates: { defaultTemplate = 'standard' } = {} } = window.app.config;
+
 const newItem = {
   id: null,
   title: '',
   url: '',
   body: '',
-  layout: 'default',
-  language: 'en',
+  template: defaultTemplate,
+  language: language,
   background: '',
   meta: {},
   published: false,
@@ -42,10 +44,6 @@ class PagesAdminStore extends AbstractAdminStore {
         },
       },
     });
-    this.layoutOptions = [
-      { label: 'Default', value: 'default' },
-      { label: 'No Layout', value: 'no-layout' },
-    ];
     this.richTextEditorVisible = false;
   }
 
@@ -83,8 +81,6 @@ class PagesAdminStore extends AbstractAdminStore {
 }
 
 decorate(PagesAdminStore, {
-  layoutOptions: observable,
-  languageOptions: observable,
   richTextEditorVisible: observable,
   showRichTextEditor: action,
   hideRichTextEditor: action,

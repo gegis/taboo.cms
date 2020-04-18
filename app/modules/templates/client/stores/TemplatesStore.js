@@ -3,7 +3,10 @@ import axios from 'axios';
 import { templates } from 'app/modules/templates/client/tpl';
 import ResponseHelper from 'modules/core/client/helpers/ResponseHelper';
 
-const { language = 'en', defaultTemplate = 'standard' } = window.app.config;
+const {
+  language = 'en',
+  templates: { defaultTemplate = 'standard', socketsEvents: { templatePreviewReceive = '' } = {} } = {},
+} = window.app.config;
 
 class TemplatesStore {
   constructor() {
@@ -15,15 +18,21 @@ class TemplatesStore {
     this.template = {};
     this.settings = {};
     this.languageSettings = {};
+    this.templatePreviewReceivePattern = templatePreviewReceive;
   }
 
   setPreviewTemplate(template) {
-    // TODO (layouts) think of how to set as preview and never override while in edit preview mode
-    // TODO (layouts) one of the ways to replace this.templates[standard]!!!
     if (template && template.name) {
       this.templates[template.name] = template;
-      this.setTemplate(template, true);
+      if (this.templateName === template.name) {
+        this.setTemplate(template, true);
+      }
     }
+  }
+
+  setLanguage(language) {
+    this.language = language;
+    this.updateLanguageSettings();
   }
 
   setTemplate(template, force = false) {
@@ -31,9 +40,13 @@ class TemplatesStore {
       this.template = template;
       this.templateName = template.name;
       this.settings = template.settings;
-      if (template.languageSettings && template.languageSettings[this.language]) {
-        this.languageSettings = template.languageSettings[this.language];
-      }
+      this.updateLanguageSettings();
+    }
+  }
+
+  updateLanguageSettings() {
+    if (this.template.languageSettings && this.template.languageSettings[this.language]) {
+      this.languageSettings = this.template.languageSettings[this.language];
     }
   }
 
@@ -86,10 +99,6 @@ class TemplatesStore {
       }
     });
   }
-
-  setLanguage(language) {
-    this.language = language;
-  }
 }
 
 decorate(TemplatesStore, {
@@ -101,6 +110,7 @@ decorate(TemplatesStore, {
   settings: observable,
   languageSettings: observable,
   language: observable,
+  templateOptions: observable,
   loadDefaultTemplate: action,
   loadTemplate: action,
   setTemplate: action,

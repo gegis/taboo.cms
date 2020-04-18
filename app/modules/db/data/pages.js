@@ -2,7 +2,7 @@ module.exports = [
   {
     title: 'Welcome to Taboo CMS',
     url: '/',
-    layout: 'default',
+    template: 'standard',
     published: true,
     language: 'en',
     body: `<section>
@@ -42,7 +42,7 @@ module.exports = [
   {
     title: 'About',
     url: '/about',
-    layout: 'default',
+    template: 'standard',
     published: true,
     language: 'en',
     body: `<section>
@@ -80,7 +80,7 @@ module.exports = [
   {
     title: 'Contact',
     url: '/contact',
-    layout: 'default',
+    template: 'standard',
     published: true,
     language: 'en',
     body: `<section>
@@ -118,7 +118,7 @@ module.exports = [
   {
     title: 'User Agreement',
     url: '/user-agreement',
-    layout: 'default',
+    template: 'standard',
     published: true,
     language: 'en',
     body: `<section>
@@ -157,7 +157,7 @@ module.exports = [
   {
     title: 'Privacy Policy',
     url: '/privacy-policy',
-    layout: 'default',
+    template: 'standard',
     published: true,
     language: 'en',
     body: `<section>

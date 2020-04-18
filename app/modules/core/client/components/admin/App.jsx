@@ -6,13 +6,18 @@ import { IntlProvider } from 'react-intl';
 import PropTypes from 'prop-types';
 import NotFound from './NotFound';
 import AdminRoute from 'app/modules/core/client/components/admin/AdminRoute';
+import SocketsClient from 'modules/core/client/helpers/SocketsClient';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    const { authStore } = props;
-    authStore.loadUserAuth();
     this.getRoutes = this.getRoutes.bind(this);
+  }
+
+  componentDidMount() {
+    const { authStore } = this.props;
+    authStore.loadUserAuth();
+    SocketsClient.join('admin');
   }
 
   getRoutes() {
