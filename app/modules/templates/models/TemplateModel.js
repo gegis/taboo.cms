@@ -26,12 +26,6 @@ const TemplateModel = MongoDbAdapter.setupModel('Template', {
     languageSettings: {
       type: Object,
     },
-    layout: {
-      type: String,
-    },
-    variables: {
-      type: Object,
-    },
     default: {
       type: Boolean,
       default: false,

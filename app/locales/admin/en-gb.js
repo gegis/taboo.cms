@@ -52,6 +52,8 @@ module.exports = {
   Footer: 'Footer',
   Authenticated: 'Authenticated',
   Template: 'Template',
+  'Header Text Color': 'Header Text Color',
+  'Template Language': 'Template Language',
   'Create New Navigation': 'Create New Navigation',
   'Footer Copyright': 'Footer Copyright',
   'Header Logo': 'Header Logo',

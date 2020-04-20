@@ -1,4 +1,14 @@
 const path = require('path');
+const splitBundles = [
+  '@material-ui',
+  'rsuite',
+  'moment',
+  'ace-builds',
+  'js-beautify',
+  'react-dom',
+  'react-color',
+  'lodash',
+];
 
 module.exports = {
   entry: {
@@ -31,7 +41,7 @@ module.exports = {
               name = 'common.vendor';
             }
             // splits specific modules into separate bundles
-            if (['@material-ui', 'rsuite', 'moment'].indexOf(packageName) !== -1) {
+            if (splitBundles.indexOf(packageName) !== -1) {
               name = packageName.replace('@', '');
             }
             return name;
@@ -42,7 +52,7 @@ module.exports = {
   },
   performance: {
     hints: false,
-    maxEntrypointSize: 2048000,
+    maxEntrypointSize: 2500000,
     maxAssetSize: 512000,
   },
   module: {

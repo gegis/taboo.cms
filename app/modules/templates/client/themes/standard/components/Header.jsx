@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Header as RsHeader, Row, Col, Grid } from 'rsuite';
 import { Link, withRouter } from 'react-router-dom';
-import HeaderSubNav from 'modules/templates/client/tpl/standard/components/HeaderSubNav';
+import HeaderSubNav from './HeaderSubNav';
 import MobileSidebar from 'modules/templates/client/components/MobileSidebar';
 import Navigation from 'modules/templates/client/components/Navigation';
 
@@ -44,9 +44,19 @@ class Header extends React.Component {
     return logo;
   }
 
+  getHeaderStyles() {
+    const {
+      templatesStore: { settings: { headerColor = '#ffffff', headerTextColor = '#666666' } = {} } = {},
+    } = this.props;
+    return {
+      color: headerTextColor,
+      backgroundColor: headerColor,
+    };
+  }
+
   render() {
     return (
-      <RsHeader className="header">
+      <RsHeader className="header" style={this.getHeaderStyles()}>
         <Grid>
           <Row className="menu">
             <Col xs={6} md={3} className="nav-brand-wrapper">
@@ -55,7 +65,7 @@ class Header extends React.Component {
               </Link>
             </Col>
             <Col md={13} xsHidden className="navigation">
-              <Navigation navigationName={this.getNavigationName()} />
+              <Navigation navigationName={this.getNavigationName()} style={this.getHeaderStyles()} />
             </Col>
             <Col md={8} xsHidden className="user-menu">
               <HeaderSubNav />

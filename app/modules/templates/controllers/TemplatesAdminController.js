@@ -5,7 +5,7 @@ const TemplatesService = require('modules/templates/services/TemplatesService');
 const TemplateModel = require('modules/templates/models/TemplateModel');
 const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
 
-const { api: { templates: { defaultSort = { name: 'asc' } } = {} } = {}, templates: { tplPath } = {} } = config;
+const { api: { templates: { defaultSort = { name: 'asc' } } = {} } = {}, templates: { themesPath } = {} } = config;
 
 class TemplatesAdminController extends AbstractAdminController {
   constructor() {
@@ -63,7 +63,7 @@ class TemplatesAdminController extends AbstractAdminController {
 
   async imagePreview(ctx) {
     const { params: { template = 'standard' } = {} } = ctx;
-    let filePath = path.resolve(tplPath, template, 'preview.png');
+    let filePath = path.resolve(themesPath, template, 'preview.png');
     if (!filesHelper.fileExists(filePath)) {
       return ctx.throw(404, 'Not Found');
     }

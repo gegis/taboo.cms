@@ -19,12 +19,31 @@ const stylesTask = (options, production = false, watchEnabled = false) => {
     watchTask(options, production, watchEnabled);
   }
 
+  // gulp-concat does not work with gulp-if......
+  if (dest.file) {
+    return streamWithConcat(src, production, usePreProcessor, preProcessor, dest);
+  } else {
+    return streamWithoutConcat(src, production, usePreProcessor, preProcessor, dest);
+  }
+};
+
+const streamWithConcat = (src, production, usePreProcessor, preProcessor, dest) => {
   return gulp
     .src(src)
     .pipe(gulpif(!production, sourcemaps.init()))
     .pipe(gulpif(usePreProcessor, preProcessor()))
     .pipe(gulpif(production, cleanCSS({ compatibility: 'ie8' })))
     .pipe(concat(dest.file))
+    .pipe(gulpif(!production, sourcemaps.write()))
+    .pipe(gulp.dest(dest.path));
+};
+
+const streamWithoutConcat = (src, production, usePreProcessor, preProcessor, dest) => {
+  return gulp
+    .src(src)
+    .pipe(gulpif(!production, sourcemaps.init()))
+    .pipe(gulpif(usePreProcessor, preProcessor()))
+    .pipe(gulpif(production, cleanCSS({ compatibility: 'ie8' })))
     .pipe(gulpif(!production, sourcemaps.write()))
     .pipe(gulp.dest(dest.path));
 };

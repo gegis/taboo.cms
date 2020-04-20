@@ -1,6 +1,6 @@
 import { decorate, action, observable } from 'mobx';
 import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
-import { settingsComponents } from 'app/modules/templates/client/tpl';
+import templatesSettings from 'app/modules/templates/client/themes/templatesSettings';
 
 const {
   language = 'en',
@@ -18,8 +18,6 @@ const newItem = {
   description: '',
   settings: {},
   languageSettings: {},
-  layout: '',
-  variables: '',
   default: false,
 };
 
@@ -53,7 +51,7 @@ class TemplatesAdminStore extends AbstractAdminStore {
     this.item = Object.assign({}, newItem);
     this.settings = this.item.settings;
     this.languageSettings = this.item.languageSettings;
-    this.settingsComponents = settingsComponents;
+    this.templatesSettings = templatesSettings;
     this.previewPath = null;
     this.previewTemplate = null;
     this.language = language;
@@ -143,7 +141,7 @@ decorate(TemplatesAdminStore, {
   item: observable,
   settings: observable,
   languageSettings: observable,
-  settingsComponents: observable,
+  templatesSettings: observable,
   previewPath: observable,
   previewTemplate: observable,
   loadById: action,

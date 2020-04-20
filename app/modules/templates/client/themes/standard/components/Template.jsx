@@ -24,6 +24,7 @@ class Template extends React.Component {
   componentDidMount() {
     const { localeStore, notificationsStore, templatesStore } = this.props;
     TemplatesHelper.preloadTemplate(config.name, { templatesStore });
+    TemplatesHelper.loadStylesheet(config.name);
     this.dispose = autorun(NotificationsHelper.handleNotifications.bind(this, notificationsStore, localeStore));
   }
 
@@ -59,7 +60,7 @@ class Template extends React.Component {
     const { children, uiStore, authStore, navigationStore, templatesStore, className } = this.props;
     TemplatesHelper.preloadNavigation(config.name, { authStore, navigationStore, templatesStore });
     return (
-      <Container className={classNames('fluid-template', className)} style={{ backgroundColor: 'pink' }}>
+      <Container className={classNames('standard-template', className)}>
         <MetaTags>
           <title>{this.getMetaTitle()}</title>
         </MetaTags>
@@ -67,7 +68,7 @@ class Template extends React.Component {
         {uiStore.loading && <div className="loader" />}
         {authStore.user.id && !authStore.verified && this.getVerificationMessage()}
         <Content className="main-content">
-          <Grid fluid={true}>
+          <Grid>
             <Row>
               <Col md={24}>{children}</Col>
             </Row>

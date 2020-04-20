@@ -1,6 +1,6 @@
 const path = require('path');
 const { filesHelper, config, sockets, events } = require('@taboo/cms-core');
-const { templates: { tplPath } = {} } = config;
+const { templates: { themesPath } = {} } = config;
 const CacheService = require('modules/cache/services/CacheService');
 const TemplateModel = require('modules/templates/models/TemplateModel');
 
@@ -73,11 +73,11 @@ class TemplatesService {
   }
 
   getTemplateConfig(name) {
-    return require(path.resolve(tplPath, name, 'config.js'));
+    return require(path.resolve(themesPath, name, 'config.js'));
   }
 
   getAllFsTemplatesNames() {
-    const tplsPath = path.resolve(tplPath);
+    const tplsPath = path.resolve(themesPath);
     return filesHelper.getAllDirNames(tplsPath);
   }
 }

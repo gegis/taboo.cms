@@ -4,7 +4,7 @@ module.exports = {
   globalPolicies: ['acl'],
   views: {
     extension: 'html',
-    defaultLayout: 'default',
+    defaultLayout: 'standard',
     defaultErrorLayout: 'error',
     defaultErrorView: 'index',
   },

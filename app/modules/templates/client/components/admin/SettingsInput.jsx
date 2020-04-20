@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 import Translation from 'modules/core/client/components/Translation';
 import TemplatesHelper from 'modules/templates/client/helpers/TemplatesHelper';
+import ColorPicker from 'modules/core/client/components/ColorPicker';
 
 class SettingsInput extends React.Component {
   constructor(props) {
@@ -37,6 +38,19 @@ class SettingsInput extends React.Component {
 
   onLanguageChange(value) {
     this.templatesStore.setLanguage(value, true);
+  }
+
+  getColorPicker({ settingsItem, settingsValueKey, settingsOnChange }) {
+    return (
+      <ColorPicker
+        input={
+          <Input className="color-picker-input" value={settingsItem[settingsValueKey]} onChange={settingsOnChange} />
+        }
+        value={settingsItem[settingsValueKey]}
+        returnValueKey="hex"
+        onChange={settingsOnChange}
+      />
+    );
   }
 
   getInputByType() {
@@ -89,6 +103,9 @@ class SettingsInput extends React.Component {
             cleanable={false}
           />
         );
+        break;
+      case 'ColorPicker':
+        input = this.getColorPicker({ settingsItem, settingsValueKey, settingsOnChange });
         break;
     }
 

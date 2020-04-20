@@ -38,6 +38,10 @@ const appStyles = () => {
   return stylesTask(config.appStyles, production, watch);
 };
 
+const themeStyles = () => {
+  return stylesTask(config.themeStyles, production, watch);
+};
+
 const adminStyles = () => {
   return stylesTask(config.adminStyles, production, watch);
 };
@@ -73,14 +77,14 @@ const buildAndWatch = gulp.series(
   enableWatch,
   clean,
   lint,
-  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, webpack, libScripts, copy),
+  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, themeStyles, webpack, libScripts, copy),
   startServer
 );
 
 const build = gulp.series(
   clean,
   lint,
-  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, webpack, libScripts, copy)
+  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, themeStyles, webpack, libScripts, copy)
 );
 
 module.exports = {

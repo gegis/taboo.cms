@@ -61,7 +61,7 @@ module.exports = {
     preProcessor: less.bind(this, { javascriptEnabled: true }),
   },
   appLibStyles: {
-    src: ['node_modules/font-awesome/css/font-awesome.css', 'app/assets/styles/lib/lib.less'],
+    src: ['app/assets/styles/lib/lib.less'],
     dest: {
       file: 'lib.css',
       path: 'public/css',
@@ -83,6 +83,15 @@ module.exports = {
       '!app/modules/**/client/styles/admin/**/*.less',
     ],
     preProcessor: less.bind(this, { javascriptEnabled: true }),
+  },
+  themeStyles: {
+    src: ['app/modules/templates/client/themes/**/styles/index.less'],
+    dest: {
+      file: null, // do not concat
+      path: 'public/css',
+    },
+    watch: ['app/modules/templates/client/themes/**/styles/index.less'],
+    preProcessor: less.bind(this, { javascriptEnabled: false }),
   },
   copy: {
     paths: [

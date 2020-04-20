@@ -53,11 +53,11 @@ class Navigation extends React.Component {
   }
 
   render() {
-    const { navigationName, navigationStore, vertical = false } = this.props;
+    const { navigationName, navigationStore, vertical = false, style = {} } = this.props;
     const { navigation } = navigationStore;
     if (navigationName && navigation && navigation[navigationName]) {
       return (
-        <Nav vertical={vertical} className="navigation">
+        <Nav vertical={vertical} className="navigation" style={style}>
           {this.getNavigationItems(navigation[navigationName])}
         </Nav>
       );
@@ -68,6 +68,7 @@ class Navigation extends React.Component {
 
 Navigation.propTypes = {
   navigationName: PropTypes.string,
+  style: PropTypes.object,
   vertical: PropTypes.bool,
   authStore: PropTypes.object,
   uiStore: PropTypes.object,

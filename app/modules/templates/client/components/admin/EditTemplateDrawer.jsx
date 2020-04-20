@@ -55,9 +55,9 @@ class EditTemplateDrawer extends React.Component {
   }
 
   getSettingsComponent() {
-    const { item, settingsComponents } = this.templatesStore;
-    if (item && item.name) {
-      return settingsComponents[item.name];
+    const { item, templatesSettings } = this.templatesStore;
+    if (item && item.name && templatesSettings[item.name]) {
+      return templatesSettings[item.name];
     }
     return null;
   }

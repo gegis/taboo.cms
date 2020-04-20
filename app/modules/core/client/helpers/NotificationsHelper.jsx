@@ -9,6 +9,7 @@ class NotificationsHelper {
       title: '',
       description: '',
       duration: 5000,
+      placement: 'bottomRight',
     };
     if (notificationsStore.notifications.length > 0) {
       notification = notificationsStore.shift();

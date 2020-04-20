@@ -35,6 +35,13 @@ class TemplatesHelper {
       SocketsClient.emit(templatesStore.templatePreviewEmit, { user: authStore.user, template: templatesStore.item });
     }, this.changesTimeoutDelay);
   }
+
+  loadStylesheet(name) {
+    const stylesheet = document.getElementById('theme-stylesheet');
+    if (stylesheet) {
+      stylesheet.href = `/css/${name}/styles/index.css`;
+    }
+  }
 }
 
 export default new TemplatesHelper();

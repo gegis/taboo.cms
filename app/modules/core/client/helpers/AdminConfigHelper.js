@@ -57,6 +57,16 @@ class AdminConfigHelper {
     });
     return ArrayHelper.sortByProperty(items, 'order');
   }
+
+  getTemplates() {
+    let items = [];
+    [...this.modulesConfigs].map(config => {
+      if (config && config.enabled && config.primaryMenu) {
+        items = items.concat(config.primaryMenu);
+      }
+    });
+    return ArrayHelper.sortByProperty(items, 'order');
+  }
 }
 
 export default new AdminConfigHelper();
