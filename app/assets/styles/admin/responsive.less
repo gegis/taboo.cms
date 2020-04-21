@@ -4,8 +4,17 @@
 .rs-visible-lg {
   display: none;
 }
-@media (max-width: @screen-phone-max) {
-  .rs-visible-xs {
+@media (max-width: @screen-phone-min) {
+  .rs-hidden-xs,
+  .rs-hidden-sm,
+  .rs-hidden-md,
+  .rs-hidden-lg {
+    display: none;
+  }
+  .rs-visible-xs,
+  .rs-visible-sm,
+  .rs-visible-md,
+  .rs-visible-lg {
     display: block;
   }
   table {
@@ -25,18 +34,33 @@
 }
 
 @media (min-width: @screen-phone) and (max-width: @screen-phone-max) {
-  .rs-visible-sm {
+  .rs-hidden-sm,
+  .rs-hidden-md,
+  .rs-hidden-lg {
+    display: none;
+  }
+  .rs-visible-sm,
+  .rs-visible-md,
+  .rs-visible-lg {
     display: block;
   }
 }
 
 @media (min-width: @screen-desktop) and (max-width: @screen-desktop-max) {
-  .rs-visible-md {
+  .rs-hidden-md,
+  .rs-hidden-lg {
+    display: none;
+  }
+  .rs-visible-md,
+  .rs-visible-lg {
     display: block;
   }
 }
 
 @media (min-width: @screen-lg-desktop) {
+  .rs-hidden-lg {
+    display: none;
+  }
   .rs-visible-lg {
     display: block;
   }

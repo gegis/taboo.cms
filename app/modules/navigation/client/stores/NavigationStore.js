@@ -47,7 +47,6 @@ class NavigationStore {
 
 decorate(NavigationStore, {
   navigation: observable,
-  userNavigation: observable,
   loadByName: action,
 });
 

@@ -44,7 +44,7 @@ class HeaderSubNav extends React.Component {
       <Nav className="user-menu signed-in" pullRight>
         <Dropdown
           icon={<ProfilePicture url={authStore.user.profilePictureUrl} size="xs" />}
-          title={<span className="rs-hidden-xs">{authStore.user.email}</span>}
+          title={<span className="rs-hidden-sm">{authStore.user.email}</span>}
           placement="bottomEnd"
         >
           <DropdownLink key="my-profile" to="/my-profile">

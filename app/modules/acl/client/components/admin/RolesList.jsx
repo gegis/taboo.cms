@@ -19,18 +19,18 @@ class RolesList extends React.Component {
       <table>
         <thead>
           <tr>
-            <th className="rs-hidden-xs">ID</th>
+            <th className="rs-hidden-sm">ID</th>
             <th>Name</th>
-            <th>Resources</th>
+            <th className="rs-hidden-sm">Resources</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
         </thead>
         <tbody>
           {this.rolesStore.items.map(item => (
             <tr key={item._id}>
-              <td className="id rs-hidden-xs">{item._id}</td>
+              <td className="id rs-hidden-sm">{item._id}</td>
               <td>{item.name}</td>
-              <td>{item.resources.length}</td>
+              <td className="rs-hidden-sm">{item.resources.length}</td>
               <td>
                 <ActionButtons
                   value={item._id}

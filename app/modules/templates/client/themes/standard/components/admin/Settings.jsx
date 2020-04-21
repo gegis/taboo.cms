@@ -112,6 +112,12 @@ class Settings extends React.Component {
               settingsValueKey="footerColor"
             />
             <SettingsInput
+              type="ColorPicker"
+              label="Footer Text Color"
+              settingsKey="settings"
+              settingsValueKey="footerTextColor"
+            />
+            <SettingsInput
               type="TextArea"
               label="Footer Copyright"
               settingsKey="languageSettings"
@@ -125,6 +131,7 @@ class Settings extends React.Component {
               settingsKey="settings"
               settingsValueKey="backgroundColor"
             />
+            <SettingsInput type="ColorPicker" label="Text Color" settingsKey="settings" settingsValueKey="textColor" />
           </Panel>
         </PanelGroup>
       </div>

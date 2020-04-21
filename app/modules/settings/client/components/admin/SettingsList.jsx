@@ -26,9 +26,9 @@ class SettingsList extends React.Component {
         <thead>
           <tr>
             <th>Key</th>
-            <th className="rs-hidden-xs">Type</th>
-            <th className="rs-hidden-xs">Value</th>
-            <th className="rs-hidden-xs">Public</th>
+            <th className="rs-hidden-sm">Type</th>
+            <th className="rs-hidden-sm">Value</th>
+            <th className="rs-hidden-sm">Public</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
         </thead>
@@ -37,22 +37,22 @@ class SettingsList extends React.Component {
             <tr key={item._id}>
               <td>
                 <div>{item.key}</div>
-                <div className="rs-visible-xs">
+                <div className="rs-visible-sm">
                   <span className="subject md">
                     <Translation message="Type" />:
                   </span>{' '}
                   {item.type}
                 </div>
-                <div className="rs-visible-xs">
+                <div className="rs-visible-sm">
                   <span className="subject md">
                     <Translation message="Public" />:
                   </span>{' '}
                   <BooleanIcon value={item.public} />
                 </div>
               </td>
-              <td className="rs-hidden-xs">{item.type}</td>
-              <td className="rs-hidden-xs">{item.value}</td>
-              <td className="rs-hidden-xs">
+              <td className="rs-hidden-sm">{item.type}</td>
+              <td className="rs-hidden-sm">{item.value}</td>
+              <td className="rs-hidden-sm">
                 <BooleanIcon value={item.public} />
               </td>
               <td>

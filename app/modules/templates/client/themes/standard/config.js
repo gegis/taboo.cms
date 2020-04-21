@@ -18,4 +18,16 @@ module.exports = {
     },
   },
   default: true,
+  style: '',
+  styleTemplate: `
+    body {
+      font-size: 16px;
+    }
+    .rs-btn-primary {
+      background-color: {{headerColor}};
+    }
+    .rs-btn-primary:not(.rs-btn-disabled):hover {
+      background-color: {{footerColor}};
+    }
+   `,
 };

@@ -26,9 +26,9 @@ class NavigationList extends React.Component {
         <thead>
           <tr>
             <th>Title</th>
-            <th className="rs-hidden-xs">Name</th>
-            <th className="rs-hidden-xs">Language</th>
-            <th className="rs-hidden-xs">Enabled</th>
+            <th className="rs-hidden-sm">Name</th>
+            <th className="rs-hidden-sm">Language</th>
+            <th className="rs-hidden-sm">Enabled</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
         </thead>
@@ -37,28 +37,28 @@ class NavigationList extends React.Component {
             <tr key={item._id}>
               <td>
                 <div>{item.title}</div>
-                <div className="rs-visible-xs">
+                <div className="rs-visible-sm">
                   <span className="subject md">
                     <Translation message="Name" />:
                   </span>{' '}
                   {item.name}
                 </div>
-                <div className="rs-visible-xs">
+                <div className="rs-visible-sm">
                   <span className="subject md">
                     <Translation message="Language" />:
                   </span>{' '}
                   {item.language}
                 </div>
-                <div className="rs-visible-xs">
+                <div className="rs-visible-sm">
                   <span className="subject md">
                     <Translation message="Enabled" />:
                   </span>{' '}
                   <BooleanIcon value={item.enabled} />
                 </div>
               </td>
-              <td className="rs-hidden-xs">{item.name}</td>
-              <td className="rs-hidden-xs">{item.language}</td>
-              <td className="rs-hidden-xs">
+              <td className="rs-hidden-sm">{item.name}</td>
+              <td className="rs-hidden-sm">{item.language}</td>
+              <td className="rs-hidden-sm">
                 <BooleanIcon value={item.enabled} />
               </td>
               <td>

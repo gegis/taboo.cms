@@ -55,18 +55,18 @@ class UsersList extends React.Component {
         <table>
           <thead>
             <tr>
-              <th className="rs-visible-xs">User</th>
-              <th className="rs-hidden-sm rs-hidden-xs">User</th>
-              <th className="rs-hidden-xs">Verified</th>
-              <th className="rs-hidden-xs">Admin</th>
-              <th className="rs-hidden-xs">Active</th>
+              <th className="rs-visible-sm">User</th>
+              <th className="rs-hidden-sm">User</th>
+              <th className="rs-hidden-sm">Verified</th>
+              <th className="rs-hidden-sm">Admin</th>
+              <th className="rs-hidden-sm">Active</th>
               <th className="action-buttons-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             {this.usersStore.items.map(item => (
               <tr key={item._id}>
-                <td className="rs-visible-xs mobile-view-td">
+                <td className="rs-visible-sm mobile-view-td">
                   <div>
                     {item.firstName} {item.lastName}
                   </div>
@@ -88,21 +88,21 @@ class UsersList extends React.Component {
                   </div>
                   <div className="subject sm">{item._id}</div>
                 </td>
-                <td className="rs-hidden-sm rs-hidden-xs max-overflow">
+                <td className="rs-hidden-sm max-overflow">
                   <div>
                     {item.firstName} {item.lastName}
                   </div>
                   <div>{item.email}</div>
                   <div className="subject">{this.getUserRoles(item).join(', ')}</div>
                 </td>
-                <td className="rs-hidden-xs">
+                <td className="rs-hidden-sm">
                   <BooleanIcon value={item.verified} />
                   <div>{item.verificationStatus}</div>
                 </td>
-                <td className="rs-hidden-xs">
+                <td className="rs-hidden-sm">
                   <BooleanIcon value={item.admin} />
                 </td>
-                <td className="rs-hidden-xs">
+                <td className="rs-hidden-sm">
                   <BooleanIcon value={item.active} />
                 </td>
                 <td>

@@ -58,6 +58,7 @@ class Template extends React.Component {
 
   render() {
     const { children, uiStore, authStore, navigationStore, templatesStore, className } = this.props;
+    TemplatesHelper.loadStyle({ templatesStore });
     TemplatesHelper.preloadNavigation(config.name, { authStore, navigationStore, templatesStore });
     return (
       <Container className={classNames('fluid-template', className)} style={{ backgroundColor: 'pink' }}>

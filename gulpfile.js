@@ -77,14 +77,14 @@ const buildAndWatch = gulp.series(
   enableWatch,
   clean,
   lint,
-  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, themeStyles, webpack, libScripts, copy),
+  gulp.parallel(adminLibStyles, adminStyles, themeStyles, appLibStyles, appStyles, webpack, libScripts, copy),
   startServer
 );
 
 const build = gulp.series(
   clean,
   lint,
-  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, themeStyles, webpack, libScripts, copy)
+  gulp.parallel(adminLibStyles, adminStyles, themeStyles, appLibStyles, appStyles, webpack, libScripts, copy)
 );
 
 module.exports = {

@@ -65,38 +65,38 @@ class UploadsList extends React.Component {
       <table>
         <thead>
           <tr>
-            <th className="rs-hidden-xs" style={{ width: '200px' }}>
+            <th className="rs-hidden-sm" style={{ width: '200px' }}>
               <Translation message="Preview" />
             </th>
             <th>File</th>
-            <th className="rs-hidden-xs">User Doc</th>
-            <th className="rs-hidden-xs">Verified</th>
-            <th className="rs-hidden-xs">User</th>
+            <th className="rs-hidden-sm">User Doc</th>
+            <th className="rs-hidden-sm">Verified</th>
+            <th className="rs-hidden-sm">User</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
         </thead>
         <tbody>
           {this.uploadsStore.items.map(item => (
             <tr key={item._id}>
-              <td className="upload-preview-wrapper rs-hidden-xs max-overflow">{this.getUploadPreview(item)}</td>
+              <td className="upload-preview-wrapper rs-hidden-sm max-overflow">{this.getUploadPreview(item)}</td>
               <td className="mobile-view-td">
-                <div className="rs-hidden-xs">
+                <div className="rs-hidden-sm">
                   <div>{item.name}</div>
                   <div>{item.type}</div>
                   <div>{UnitsHelper.parseSizeAuto(item.size)}</div>
                 </div>
-                <div className="rs-visible-xs" style={{ textAlign: 'center' }}>
+                <div className="rs-visible-sm" style={{ textAlign: 'center' }}>
                   <div>{item.name}</div>
                   {this.getUploadPreview(item, { height: '100px' })}
                 </div>
               </td>
-              <td className="rs-hidden-xs">
+              <td className="rs-hidden-sm">
                 <BooleanIcon value={item.isUserDocument} />
               </td>
-              <td className="rs-hidden-xs">
+              <td className="rs-hidden-sm">
                 <BooleanIcon value={item.verified} />
               </td>
-              <td className="rs-hidden-xs">{this.getUserInfo(item)}</td>
+              <td className="rs-hidden-sm">{this.getUserInfo(item)}</td>
               <td>
                 <ActionButtons
                   value={item._id}

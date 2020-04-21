@@ -3,7 +3,7 @@ import { Footer as RsFooter, Grid, Row, Col } from 'rsuite';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
-import Navigation from 'modules/templates/client/components/Navigation';
+import Navigation from 'modules/templates/client/themesAssets/components/Navigation';
 
 class Footer extends React.Component {
   getNavigationName() {

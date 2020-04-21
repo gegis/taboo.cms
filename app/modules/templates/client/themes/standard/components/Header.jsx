@@ -4,9 +4,9 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Header as RsHeader, Row, Col, Grid } from 'rsuite';
 import { Link, withRouter } from 'react-router-dom';
-import HeaderSubNav from './HeaderSubNav';
-import MobileSidebar from 'modules/templates/client/components/MobileSidebar';
-import Navigation from 'modules/templates/client/components/Navigation';
+import HeaderSubNav from 'modules/templates/client/themesAssets/components/HeaderSubNav';
+import MobileSidebar from 'modules/templates/client/themesAssets/components/MobileSidebar';
+import Navigation from 'modules/templates/client/themesAssets/components/Navigation';
 
 class Header extends React.Component {
   constructor(props) {
@@ -46,7 +46,7 @@ class Header extends React.Component {
 
   getHeaderStyles() {
     const {
-      templatesStore: { settings: { headerColor = '#ffffff', headerTextColor = '#666666' } = {} } = {},
+      templatesStore: { settings: { headerColor = '#ffffff', headerTextColor = '#7a7a7a' } = {} } = {},
     } = this.props;
     return {
       color: headerTextColor,
@@ -64,13 +64,13 @@ class Header extends React.Component {
                 {this.getLogo()}
               </Link>
             </Col>
-            <Col md={13} xsHidden className="navigation">
+            <Col md={13} smHidden className="navigation">
               <Navigation navigationName={this.getNavigationName()} style={this.getHeaderStyles()} />
             </Col>
-            <Col md={8} xsHidden className="user-menu">
+            <Col md={8} smHidden className="user-menu">
               <HeaderSubNav />
             </Col>
-            <Col xs={18} className="sidebar-toggle-wrapper rs-visible-xs">
+            <Col xs={18} className="sidebar-toggle-wrapper rs-visible-sm">
               <button type="button" className="rs-btn rs-btn-subtle sidebar-toggle" onClick={this.openSidebar}>
                 <i className="rs-icon rs-icon-bars" />
               </button>

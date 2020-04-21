@@ -18,6 +18,7 @@ class TemplatesStore {
     this.template = {};
     this.settings = {};
     this.languageSettings = {};
+    this.style = '';
     this.templatePreviewReceivePattern = templatePreviewReceive;
   }
 
@@ -40,6 +41,7 @@ class TemplatesStore {
       this.template = template;
       this.templateName = template.name;
       this.settings = template.settings;
+      this.style = template.style;
       this.updateLanguageSettings();
     }
   }
@@ -109,6 +111,7 @@ decorate(TemplatesStore, {
   templateName: observable,
   settings: observable,
   languageSettings: observable,
+  style: observable,
   language: observable,
   templateOptions: observable,
   loadDefaultTemplate: action,

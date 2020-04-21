@@ -37,38 +37,38 @@ class PagesList extends React.Component {
       <table>
         <thead>
           <tr>
-            <th className="rs-hidden-xs">ID</th>
+            <th className="rs-hidden-sm">ID</th>
             <th>Title</th>
-            <th className="rs-hidden-sm rs-hidden-xs">URL</th>
-            <th className="rs-hidden-xs">Language</th>
-            <th className="rs-hidden-xs">Published</th>
+            <th className="rs-hidden-sm">URL</th>
+            <th className="rs-hidden-sm">Language</th>
+            <th className="rs-hidden-sm">Published</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
         </thead>
         <tbody>
           {this.pagesStore.items.map(item => (
             <tr key={item._id}>
-              <td className="id rs-hidden-xs">{item._id}</td>
+              <td className="id rs-hidden-sm">{item._id}</td>
               <td className="mobile-view-td">
                 <div>{item.title}</div>
-                <div className="rs-visible-xs">
+                <div className="rs-visible-sm">
                   <a href={item.url}>{item.url}</a>
                 </div>
-                <div className="rs-visible-xs">
+                <div className="rs-visible-sm">
                   <span className="subject md">
                     <Translation message="Language" />:
                   </span>{' '}
                   {item.language}
                 </div>
-                <div className="rs-visible-xs subject sm">{item._id}</div>
+                <div className="rs-visible-sm subject sm">{item._id}</div>
               </td>
-              <td className="rs-hidden-sm rs-hidden-xs">
+              <td className="rs-hidden-sm">
                 <a href={item.url} target="_blank" rel="noopener noreferrer">
                   {item.url}
                 </a>
               </td>
-              <td className="rs-hidden-xs">{item.language}</td>
-              <td className="rs-hidden-xs">
+              <td className="rs-hidden-sm">{item.language}</td>
+              <td className="rs-hidden-sm">
                 <BooleanIcon value={item.published} />
               </td>
               <td>

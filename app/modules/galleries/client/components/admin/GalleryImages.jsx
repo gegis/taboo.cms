@@ -123,12 +123,12 @@ class GalleryImages extends React.Component {
           <table className="table">
             <thead>
               <tr>
-                <th className="rs-hidden-xs" style={{ width: '150px' }}>
+                <th className="rs-hidden-sm" style={{ width: '150px' }}>
                   Preview
                 </th>
                 <th>File</th>
-                <th className="rs-hidden-xs">Type</th>
-                <th className="rs-hidden-xs">Size</th>
+                <th className="rs-hidden-sm">Type</th>
+                <th className="rs-hidden-sm">Size</th>
                 <th className="action-buttons-1">Actions</th>
               </tr>
             </thead>
@@ -146,18 +146,18 @@ class GalleryImages extends React.Component {
                           className="draggable-tr"
                           style={this.getDraggableStyle(provided.draggableProps.style, snapshot)}
                         >
-                          <td className="rs-hidden-xs upload-preview-wrapper">{this.getUploadPreview(image)}</td>
+                          <td className="rs-hidden-sm upload-preview-wrapper">{this.getUploadPreview(image)}</td>
                           <td className="mobile-view-td">
-                            <div className="rs-hidden-xs">{image.name}</div>
-                            <div className="rs-visible-xs" style={{ textAlign: 'center' }}>
+                            <div className="rs-hidden-sm">{image.name}</div>
+                            <div className="rs-visible-sm" style={{ textAlign: 'center' }}>
                               <div>{image.name}</div>
                               <a href={image.url} target="_blank" rel="noopener noreferrer">
                                 {this.getUploadPreview(image, { height: '100px' })}
                               </a>
                             </div>
                           </td>
-                          <td className="rs-hidden-xs">{image.type}</td>
-                          <td className="rs-hidden-xs">{UnitsHelper.parseSizeAuto(image.size)}</td>
+                          <td className="rs-hidden-sm">{image.type}</td>
+                          <td className="rs-hidden-sm">{UnitsHelper.parseSizeAuto(image.size)}</td>
                           <td>
                             <ActionButtons value={{ image, index: i }} onDelete={this.onImageRemove} />
                           </td>

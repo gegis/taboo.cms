@@ -99,22 +99,22 @@ class IndexPage extends Component {
       <Nav>
         {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.pages.view') && (
           <NavLink to="/admin/pages" icon={<Icon icon="file" />}>
-            <span className="rs-hidden-xs">Pages</span>
+            <span className="rs-hidden-sm">Pages</span>
           </NavLink>
         )}
         {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view') && (
           <NavLink to="/admin/galleries" icon={<Icon icon="file-image-o" />}>
-            <span className="rs-hidden-xs">Galleries</span>
+            <span className="rs-hidden-sm">Galleries</span>
           </NavLink>
         )}
         {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.uploads.view') && (
           <NavLink to="/admin/uploads" icon={<Icon icon="file-upload" />}>
-            <span className="rs-hidden-xs">Uploads</span>
+            <span className="rs-hidden-sm">Uploads</span>
           </NavLink>
         )}
         {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.users.view') && (
           <NavLink to="/admin/users" icon={<Icon icon="group" />}>
-            <span className="rs-hidden-xs">Users</span>
+            <span className="rs-hidden-sm">Users</span>
           </NavLink>
         )}
       </Nav>

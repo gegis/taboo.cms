@@ -25,29 +25,29 @@ class RolesList extends React.Component {
       <table>
         <thead>
           <tr>
-            <th className="rs-hidden-xs">ID</th>
+            <th className="rs-hidden-sm">ID</th>
             <th>Title</th>
-            <th className="rs-hidden-xs">Images</th>
-            <th className="rs-hidden-xs">Published</th>
+            <th className="rs-hidden-sm">Images</th>
+            <th className="rs-hidden-sm">Published</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
         </thead>
         <tbody>
           {this.galleriesStore.items.map(item => (
             <tr key={item._id}>
-              <td className="id rs-hidden-xs">{item._id}</td>
+              <td className="id rs-hidden-sm">{item._id}</td>
               <td className="mobile-view-td">
                 <div>{item.title}</div>
-                <div className="rs-visible-xs">
+                <div className="rs-visible-sm">
                   <span className="subject sm">
                     <Translation message="Images" />:
                   </span>{' '}
                   {item.images.length}
                 </div>
-                <div className="rs-visible-xs subject sm">{item._id}</div>
+                <div className="rs-visible-sm subject sm">{item._id}</div>
               </td>
-              <td className="rs-hidden-xs">{item.images.length}</td>
-              <td className="rs-hidden-xs">
+              <td className="rs-hidden-sm">{item.images.length}</td>
+              <td className="rs-hidden-sm">
                 <BooleanIcon value={item.published} />
               </td>
               <td>

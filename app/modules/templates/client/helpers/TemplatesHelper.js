@@ -1,4 +1,5 @@
 import SocketsClient from 'modules/core/client/helpers/SocketsClient';
+const { version } = window.app.config;
 
 class TemplatesHelper {
   constructor() {
@@ -38,8 +39,21 @@ class TemplatesHelper {
 
   loadStylesheet(name) {
     const stylesheet = document.getElementById('theme-stylesheet');
-    if (stylesheet) {
-      stylesheet.href = `/css/${name}/styles/index.css`;
+    const stylesheetHref = `/css/${name}/styles/index.css?v=${version}`;
+    if (stylesheet && stylesheet.href.indexOf(stylesheetHref) === -1) {
+      stylesheet.href = stylesheetHref;
+    }
+  }
+
+  loadStyle({ templatesStore }) {
+    const styleTag = document.getElementById('theme-style');
+    if (styleTag) {
+      const { style } = templatesStore;
+      if (style && styleTag.innerHTML !== style) {
+        styleTag.innerHTML = style;
+      } else if (!style) {
+        styleTag.innerHTML = '';
+      }
     }
   }
 }

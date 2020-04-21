@@ -53,8 +53,16 @@ class TemplatesService {
     const templates = [];
     const tplNames = this.getAllFsTemplatesNames();
     tplNames.map(name => {
+      templates.push(this.getFsTemplate(name));
+    });
+    return templates;
+  }
+
+  getFsTemplate(name) {
+    let template = null;
+    if (name) {
       const config = this.getTemplateConfig(name);
-      templates.push({
+      template = {
         preview: this.getTemplatePeviewPath(name),
         name,
         title: config.title,
@@ -62,10 +70,11 @@ class TemplatesService {
         settings: config.settings,
         languageSettings: config.languageSettings,
         default: config.default,
-      });
-    });
-
-    return templates;
+        style: config.style,
+        styleTemplate: config.styleTemplate,
+      };
+    }
+    return template;
   }
 
   getTemplatePeviewPath(name) {

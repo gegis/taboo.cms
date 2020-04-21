@@ -19,6 +19,8 @@ const newItem = {
   settings: {},
   languageSettings: {},
   default: false,
+  style: '',
+  styleTemplate: '',
 };
 
 class TemplatesAdminStore extends AbstractAdminStore {
@@ -67,6 +69,7 @@ class TemplatesAdminStore extends AbstractAdminStore {
     return new Promise(resolve => {
       super.loadById(id).then(data => {
         this.pointSettingsToItem();
+        this.updateThemeStyle();
         resolve(data);
       });
     });
@@ -129,10 +132,23 @@ class TemplatesAdminStore extends AbstractAdminStore {
 
   onSettingsChange(key, value) {
     this.settings[key] = value;
+    this.updateThemeStyle();
   }
 
   onLanguageSettingsChange(key, value) {
     this.languageSettings[key] = value;
+  }
+
+  updateThemeStyle() {
+    let style, sRegExInput;
+    if (this.item && this.item.styleTemplate) {
+      style = this.item.styleTemplate.toString();
+      for (let key in this.item.settings) {
+        sRegExInput = new RegExp(`{{${key}}}`, 'g');
+        style = style.replace(sRegExInput, this.item.settings[key]);
+      }
+      this.item.style = style;
+    }
   }
 }
 
@@ -151,6 +167,7 @@ decorate(TemplatesAdminStore, {
   pointSettingsToItem: action,
   onSettingsChange: action,
   onLanguageSettingsChange: action,
+  updateThemeStyle: action,
 });
 
 export default new TemplatesAdminStore();

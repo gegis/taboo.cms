@@ -40,7 +40,7 @@ class Header extends React.Component {
       return (
         <Dropdown
           icon={<Icon icon="user" size="lg" />}
-          title={<span className="rs-hidden-xs">{authStore.user.email}</span>}
+          title={<span className="rs-hidden-sm">{authStore.user.email}</span>}
           placement="bottomEnd"
           className="user-menu"
         >

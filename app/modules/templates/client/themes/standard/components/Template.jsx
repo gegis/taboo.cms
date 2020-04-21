@@ -23,8 +23,8 @@ class Template extends React.Component {
 
   componentDidMount() {
     const { localeStore, notificationsStore, templatesStore } = this.props;
-    TemplatesHelper.preloadTemplate(config.name, { templatesStore });
     TemplatesHelper.loadStylesheet(config.name);
+    TemplatesHelper.preloadTemplate(config.name, { templatesStore });
     this.dispose = autorun(NotificationsHelper.handleNotifications.bind(this, notificationsStore, localeStore));
   }
 
@@ -56,11 +56,22 @@ class Template extends React.Component {
     }
   }
 
+  getStyles() {
+    const {
+      templatesStore: { settings: { backgroundColor = '#ffffff', textColor = '#575757' } = {} } = {},
+    } = this.props;
+    return {
+      color: textColor,
+      backgroundColor: backgroundColor,
+    };
+  }
+
   render() {
     const { children, uiStore, authStore, navigationStore, templatesStore, className } = this.props;
+    TemplatesHelper.loadStyle({ templatesStore });
     TemplatesHelper.preloadNavigation(config.name, { authStore, navigationStore, templatesStore });
     return (
-      <Container className={classNames('standard-template', className)}>
+      <Container className={classNames('template', 'standard-template', className)} style={this.getStyles()}>
         <MetaTags>
           <title>{this.getMetaTitle()}</title>
         </MetaTags>

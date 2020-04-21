@@ -4,9 +4,10 @@
       <div class="nav-brand-wrapper rs-col rs-col-xs-6 rs-col-md-3">
         <a class="nav-brand logo" href="/"><img src="/images/logo.png" alt="logo"/></a>
       </div>
-      <div class="navigation rs-col rs-hidden-xs rs-col-md-13">
+      <div class="navigation rs-col rs-hidden-sm rs-col-md-13">
         <div class="rs-nav rs-nav-default navigation rs-nav-horizontal">
           <ul>
+<!-- TODO (templates) this one is no longer needed, unless load it from db for classic!!! but it should be template specific -->
             <%
               let navigation = _clientConfig.navigation;
               if (_clientConfig.userNavigation.length > 0) {

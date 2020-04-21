@@ -4,9 +4,9 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Header as RsHeader, Row, Col, Grid } from 'rsuite';
 import { Link, withRouter } from 'react-router-dom';
-import HeaderSubNav from './HeaderSubNav';
-import Navigation from 'modules/templates/client/components/Navigation';
-import MobileSidebar from 'modules/templates/client/components/MobileSidebar';
+import HeaderSubNav from 'modules/templates/client/themesAssets/components/HeaderSubNav';
+import Navigation from 'modules/templates/client/themesAssets/components/Navigation';
+import MobileSidebar from 'modules/templates/client/themesAssets/components/MobileSidebar';
 
 class Header extends React.Component {
   constructor(props) {
@@ -60,7 +60,7 @@ class Header extends React.Component {
             <Col md={8} xsHidden className="user-menu">
               <HeaderSubNav />
             </Col>
-            <Col xs={18} className="sidebar-toggle-wrapper rs-visible-xs">
+            <Col xs={18} className="sidebar-toggle-wrapper rs-visible-sm">
               <button type="button" className="rs-btn rs-btn-subtle sidebar-toggle" onClick={this.openSidebar}>
                 <i className="rs-icon rs-icon-bars" />
               </button>

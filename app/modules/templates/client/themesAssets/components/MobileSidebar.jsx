@@ -7,8 +7,8 @@ import { Link, withRouter } from 'react-router-dom';
 import Translation from 'app/modules/core/client/components/Translation';
 import ButtonLink from 'app/modules/core/client/components/ButtonLink';
 import ProfilePicture from 'modules/users/client/components/ProfilePicture';
-import Navigation from 'modules/templates/client/components/Navigation';
 import LogoutButton from 'modules/core/client/components/LogoutButton';
+import Navigation from 'modules/templates/client/themesAssets/components/Navigation';
 
 class MobileSidebar extends React.Component {
   constructor(props) {

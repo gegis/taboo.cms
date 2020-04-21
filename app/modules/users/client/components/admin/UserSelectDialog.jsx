@@ -64,8 +64,8 @@ class UserSelectDialog extends React.Component {
             <thead>
               <tr>
                 <th className="">User</th>
-                <th className="rs-hidden-xs">Admin</th>
-                <th className="rs-hidden-xs">Active</th>
+                <th className="rs-hidden-sm">Admin</th>
+                <th className="rs-hidden-sm">Active</th>
                 <th className="action-buttons-1">Actions</th>
               </tr>
             </thead>
@@ -81,10 +81,10 @@ class UserSelectDialog extends React.Component {
                       <div>{item.email}</div>
                     </div>
                   </td>
-                  <td className="rs-hidden-xs">
+                  <td className="rs-hidden-sm">
                     <BooleanIcon value={item.admin} />
                   </td>
-                  <td className="rs-hidden-xs">
+                  <td className="rs-hidden-sm">
                     <BooleanIcon value={item.active} />
                   </td>
                   <td>

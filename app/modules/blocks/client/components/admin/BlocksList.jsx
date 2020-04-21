@@ -24,7 +24,7 @@ class BlocksList extends React.Component {
       <table>
         <thead>
           <tr>
-            <th className="rs-hidden-xs">ID</th>
+            <th className="rs-hidden-sm">ID</th>
             <th>Name</th>
             <th>Language</th>
             <th>Enabled</th>
@@ -34,7 +34,7 @@ class BlocksList extends React.Component {
         <tbody>
           {this.blocksStore.items.map(item => (
             <tr key={item._id}>
-              <td className="id rs-hidden-xs">{item._id}</td>
+              <td className="id rs-hidden-sm">{item._id}</td>
               <td>{item.name}</td>
               <td>{item.language}</td>
               <td>

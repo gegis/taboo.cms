@@ -39,7 +39,7 @@ module.exports = {
     babel: true,
   },
   adminLibStyles: {
-    src: ['app/assets/styles/admin/lib.less', 'node_modules/react-quill/dist/quill.snow.css'],
+    src: ['app/assets/styles/admin/lib/lib.less'],
     dest: {
       file: 'admin.lib.css',
       path: 'public/css',
@@ -66,7 +66,7 @@ module.exports = {
       file: 'lib.css',
       path: 'public/css',
     },
-    watch: ['app/assets/styles/lib/**/*.less', 'app/assets/styles/vars.less'],
+    watch: ['app/assets/styles/lib/**/*.less', 'app/modules/templates/client/themesAssets/styles/vars.less'],
     preProcessor: less.bind(this, { javascriptEnabled: true }),
   },
   appStyles: {
@@ -90,8 +90,12 @@ module.exports = {
       file: null, // do not concat
       path: 'public/css',
     },
-    watch: ['app/modules/templates/client/themes/**/styles/index.less'],
-    preProcessor: less.bind(this, { javascriptEnabled: false }),
+    watch: [
+      'app/modules/templates/client/themes/**/styles/*.less',
+      'app/modules/templates/client/themesAssets/styles/**/*.less',
+      '!app/modules/templates/client/themesAssets/styles/lib/*.less',
+    ],
+    preProcessor: less.bind(this, { javascriptEnabled: true }),
   },
   copy: {
     paths: [

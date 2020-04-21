@@ -114,7 +114,7 @@ class MyProfile extends React.Component {
       <Template className="my-profile-page">
         <Grid fluid>
           <Row>
-            <Col sm={24} md={12} mdOffset={6}>
+            <Col sm={24} md={16} mdOffset={4}>
               <h1>
                 <Translation message={pageTitle} />
               </h1>

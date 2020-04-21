@@ -17,6 +17,13 @@ class TemplatesAdminController extends AbstractAdminController {
     });
   }
 
+  async afterFindById(ctx, itemResult) {
+    let item = itemResult._doc;
+    let fsItem = TemplatesService.getFsTemplate(item.name);
+    item.styleTemplate = fsItem.styleTemplate;
+    return item;
+  }
+
   async afterFindAll(ctx, itemsResult = []) {
     const items = [];
     const fsItems = await TemplatesService.getFsTemplates();
