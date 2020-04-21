@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="<%=language%>">
+  <head>
+    <title><%=metaTitle%></title>
+    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+    <link rel="shortcut icon" href="/images/admin/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="/images/admin/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="/css/admin/lib.css?v=<%=_version%>" />
+    <link rel="stylesheet" type="text/css" href="/css/admin.modules.css?v=<%=_version%>" />
+    <link rel="stylesheet" type="text/css" href="/css/admin/index.css?v=<%=_version%>" />
+  </head>
+  <body>
+    <div id="root"><%-_body%></div>
+    <div>
+      <script type="text/javascript">
+        window.app = {
+          admin: true,
+          config: {},
+          routes: {},
+        };
+      </script>
+      <% if(_clientConfigJson) { %>
+      <script type="text/javascript">
+        window.app.config = <%-_clientConfigJson%>;
+      </script>
+      <% } %>
+      <!--      <script src="/js/moment.bundle.js?v=<%=_version%>"></script>-->
+      <script src="/js/lodash.bundle.js?v=<%=_version%>"></script>
+      <script src="/js/react-dom.bundle.js?v=<%=_version%>"></script>
+      <script src="/js/react-color.bundle.js?v=<%=_version%>"></script>
+      <script src="/js/js-beautify.bundle.js?v=<%=_version%>"></script>
+      <script src="/js/ace-builds.bundle.js?v=<%=_version%>"></script>
+      <script src="/js/rsuite.bundle.js?v=<%=_version%>"></script>
+      <script src="/js/common.vendor.bundle.js?v=<%=_version%>"></script>
+      <script src="/js/admin.vendor.bundle.js?v=<%=_version%>"></script>
+      <script src="/js/admin~app.bundle.js?v=<%=_version%>"></script>
+      <script src="/js/admin.bundle.js?v=<%=_version%>"></script>
+    </div>
+  </body>
+</html>

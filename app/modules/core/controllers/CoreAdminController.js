@@ -10,7 +10,7 @@ class CoreAdminController {
 
   async admin(ctx) {
     ctx.view = {
-      _layout: 'admin',
+      _theme: 'admin',
       metaTitle: this.adminTitle,
     };
   }

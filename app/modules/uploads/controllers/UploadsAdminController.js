@@ -29,7 +29,7 @@ class UploadsAdminController extends AbstractAdminController {
 
   async beforeCreate(ctx) {
     const {
-      uploads: { uploadsDir, allowedTypes, urlPath, appendTimestamp },
+      uploads: { uploadsPath, allowedTypes, urlPath, appendTimestamp },
     } = config.server;
     const { files: { file = null } = {} } = ctx.request;
     const { session: { user: { id: userId } = {} } = {} } = ctx;
@@ -39,7 +39,7 @@ class UploadsAdminController extends AbstractAdminController {
       if (!file) {
         throw new Error('File was no uploaded');
       }
-      if (!uploadsDir) {
+      if (!uploadsPath) {
         throw new Error('Uploads dir not specified');
       }
       if (allowedTypes.indexOf(file.type) === -1) {
@@ -50,7 +50,7 @@ class UploadsAdminController extends AbstractAdminController {
       prettyFileName = file.name;
       fileName = UploadsService.getUploadFileName(file.name, appendTimestamp);
       url = path.join(urlPath, file.type, fileName);
-      filePath = path.resolve(uploadsDir, file.type, fileName);
+      filePath = path.resolve(uploadsPath, file.type, fileName);
       await filesHelper.moveFile(tmpPath, filePath);
 
       data.size = parseInt(file.size);

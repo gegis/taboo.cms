@@ -53,7 +53,10 @@ class TemplatesService {
     const templates = [];
     const tplNames = this.getAllFsTemplatesNames();
     tplNames.map(name => {
-      templates.push(this.getFsTemplate(name));
+      const template = this.getFsTemplate(name);
+      if (template) {
+        templates.push(template);
+      }
     });
     return templates;
   }
@@ -61,28 +64,31 @@ class TemplatesService {
   getFsTemplate(name) {
     let template = null;
     if (name) {
-      const config = this.getTemplateConfig(name);
-      template = {
-        preview: this.getTemplatePeviewPath(name),
-        name,
-        title: config.title,
-        description: config.description,
-        settings: config.settings,
-        languageSettings: config.languageSettings,
-        default: config.default,
-        style: config.style,
-        styleTemplate: config.styleTemplate,
-      };
+      let configPath = this.getTemplateConfigPath(name);
+      if (filesHelper.fileExists(configPath)) {
+        const config = require(configPath);
+        template = {
+          preview: this.getTemplatePreviewPath(name),
+          name,
+          title: config.title,
+          description: config.description,
+          settings: config.settings,
+          languageSettings: config.languageSettings,
+          default: config.default,
+          style: config.style,
+          styleTemplate: config.styleTemplate,
+        };
+      }
     }
     return template;
   }
 
-  getTemplatePeviewPath(name) {
+  getTemplatePreviewPath(name) {
     return `/admin/templates/image-preview/${name}`;
   }
 
-  getTemplateConfig(name) {
-    return require(path.resolve(themesPath, name, 'config.js'));
+  getTemplateConfigPath(name) {
+    return path.resolve(themesPath, name, 'config.js');
   }
 
   getAllFsTemplatesNames() {

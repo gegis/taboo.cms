@@ -8,12 +8,18 @@ module.exports = {
     '!app/assets/scripts/lib/**/*.js',
     '!app/modules/**/client/scripts/lib/**/*.js',
   ],
-  clean: ['public/js', 'public/css', 'public/fonts'],
+  clean: ['public/js', 'public/css', 'public/fonts', 'public/images'],
   server: {
     startScript: 'index.js',
     watch: ['app', 'config'],
-    ext: 'js html',
-    ignore: ['app/modules/**/client', 'app/assets/scripts'],
+    ext: 'js ejs',
+    ignore: [
+      'app/modules/**/client',
+      'app/themes/**/client',
+      'app/themes/',
+      'app/themes/uiTemplates.js',
+      'app/themes/uiTemplatesSettings.js',
+    ],
     environment: 'production',
   },
   webpack: {
@@ -27,88 +33,92 @@ module.exports = {
       publicPath: '/js/',
       filename: '[name].bundle.js',
     },
-    watch: ['app/modules/**/client/**/*.js', 'app/modules/**/client/**/*.jsx', 'app/locales'],
-  },
-  libScripts: {
-    src: ['app/assets/scripts/lib/**/*.js', 'app/modules/**/client/scripts/lib/**/*.js'],
-    dest: {
-      file: 'lib.js',
-      path: 'public/js',
-    },
-    watch: ['app/assets/scripts/lib/**/*.js', 'app/modules/**/client/scripts/lib/**/*.js'],
-    babel: true,
-  },
-  adminLibStyles: {
-    src: ['app/assets/styles/admin/lib/lib.less'],
-    dest: {
-      file: 'admin.lib.css',
-      path: 'public/css',
-    },
-    watch: ['app/assets/styles/admin/lib.less', 'app/assets/styles/admin/vars.less'],
-    preProcessor: less.bind(this, { javascriptEnabled: true }),
-  },
-  adminStyles: {
-    src: ['app/assets/styles/admin/index.less', 'app/modules/**/client/styles/admin/index.less'],
-    dest: {
-      file: 'admin.css',
-      path: 'public/css',
-    },
     watch: [
-      'app/assets/styles/admin/**/*.less',
-      'app/modules/**/client/styles/admin/index.less',
-      '!app/assets/styles/admin/lib.less',
+      'app/modules/**/client/**/*.js',
+      'app/modules/**/client/**/*.jsx',
+      'app/locales',
+      'app/themes/**/client/**/*.js',
+      'app/themes/**/client/**/*.jsx',
+      'app/themes/uiTemplates.js',
+      'app/themes/uiTemplatesSettings.js',
     ],
-    preProcessor: less.bind(this, { javascriptEnabled: true }),
   },
-  appLibStyles: {
-    src: ['app/assets/styles/lib/lib.less'],
+  // libScripts: {
+  //   src: ['app/assets/scripts/lib/**/*.js', 'app/modules/**/client/scripts/lib/**/*.js'],
+  //   dest: {
+  //     file: 'lib.js',
+  //     path: 'public/js',
+  //   },
+  //   watch: ['app/assets/scripts/lib/**/*.js', 'app/modules/**/client/scripts/lib/**/*.js'],
+  //   babel: true,
+  // },
+  // adminLibStyles: {
+  //   src: ['app/assets/styles/admin/lib/lib.less'],
+  //   dest: {
+  //     file: 'admin.lib.css',
+  //     path: 'public/css',
+  //   },
+  //   watch: ['app/assets/styles/admin/lib.less', 'app/assets/styles/admin/vars.less'],
+  //   preProcessor: less.bind(this, { javascriptEnabled: true }),
+  // },
+  adminModulesStyles: {
+    src: ['app/modules/**/client/styles/admin/index.less'],
     dest: {
-      file: 'lib.css',
+      file: 'admin.modules.css',
       path: 'public/css',
     },
-    watch: ['app/assets/styles/lib/**/*.less', 'app/modules/templates/client/themesAssets/styles/vars.less'],
+    watch: ['app/modules/**/client/styles/admin/**.less'],
     preProcessor: less.bind(this, { javascriptEnabled: true }),
   },
-  appStyles: {
-    src: ['app/assets/styles/index.less', 'app/modules/**/client/styles/index.less'],
+  // appLibStyles: {
+  //   src: ['app/assets/styles/lib/lib.less'],
+  //   dest: {
+  //     file: 'lib.css',
+  //     path: 'public/css',
+  //   },
+  //   watch: ['app/assets/styles/lib/**/*.less', 'app/modules/templates/client/themesAssets/styles/vars.less'],
+  //   preProcessor: less.bind(this, { javascriptEnabled: true }),
+  // },
+  modulesStyles: {
+    src: ['app/modules/**/client/styles/index.less'],
     dest: {
-      file: 'app.css',
+      file: 'modules.css',
       path: 'public/css',
     },
-    watch: [
-      'app/assets/styles/**/*.less',
-      '!app/assets/styles/admin/**/*',
-      '!app/assets/styles/lib/**/*',
-      'app/modules/**/client/styles/**/*.less',
-      '!app/modules/**/client/styles/admin/**/*.less',
-    ],
+    watch: ['app/modules/**/client/styles/**/*.less', '!app/modules/**/client/styles/admin/**/*.less'],
     preProcessor: less.bind(this, { javascriptEnabled: true }),
   },
-  themeStyles: {
-    src: ['app/modules/templates/client/themes/**/styles/index.less'],
+  themesLibStyles: {
+    src: ['app/themes/**/assets/styles/lib/lib.less'],
     dest: {
       file: null, // do not concat
       path: 'public/css',
     },
-    watch: [
-      'app/modules/templates/client/themes/**/styles/*.less',
-      'app/modules/templates/client/themesAssets/styles/**/*.less',
-      '!app/modules/templates/client/themesAssets/styles/lib/*.less',
-    ],
+    watch: ['app/themes/**/assets/styles/lib/lib.less', 'app/themes/**/assets/styles/vars.less'],
+    preProcessor: less.bind(this, { javascriptEnabled: true }),
+  },
+  themesStyles: {
+    src: ['app/themes/**/assets/styles/index.less'],
+    dest: {
+      file: null, // do not concat
+      path: 'public/css',
+    },
+    watch: ['app/themes/**/assets/styles/*.less'],
     preProcessor: less.bind(this, { javascriptEnabled: true }),
   },
   copy: {
     paths: [
       {
-        src: 'app/assets/images/favicon.ico',
+        src: 'app/themes/standard/assets/images/favicon.ico',
         dest: 'public',
       },
       {
-        src: 'app/assets/fonts/**/*',
+        src: 'app/themes/**/assets/fonts/**/*',
         dest: 'public/fonts',
+        flattenLevel: 0,
       },
       {
-        src: 'app/assets/images/**/*',
+        src: 'app/themes/**/assets/images/**/*',
         dest: 'public/images',
       },
       {
@@ -116,6 +126,27 @@ module.exports = {
         dest: 'public/fonts',
       },
     ],
-    watch: ['app/assets/images/**/*', 'app/assets/fonts/**/*'],
+    watch: ['app/themes/**/assets/images/**/*', 'app/themes/**/assets/fonts/**/*'],
   },
+  // copy: {
+  //   paths: [
+  //     {
+  //       src: 'app/assets/images/favicon.ico',
+  //       dest: 'public',
+  //     },
+  //     {
+  //       src: 'app/assets/fonts/**/*',
+  //       dest: 'public/fonts',
+  //     },
+  //     {
+  //       src: 'app/assets/images/**/*',
+  //       dest: 'public/images',
+  //     },
+  //     {
+  //       src: 'node_modules/rsuite/dist/styles/fonts/**/*',
+  //       dest: 'public/fonts',
+  //     },
+  //   ],
+  //   watch: ['app/assets/images/**/*', 'app/assets/fonts/**/*'],
+  // },
 };

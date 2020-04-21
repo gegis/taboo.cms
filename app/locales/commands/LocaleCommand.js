@@ -53,34 +53,34 @@ class LocaleCommand {
   }
 
   async importClient() {
-    const csvSource = path.resolve(config.server.localesDir, this.translationsCsvFileName);
+    const csvSource = path.resolve(config.server.localesPath, this.translationsCsvFileName);
     const csv = await fs.promises.readFile(csvSource, 'UTF8');
     const translations = this.parseCsv(csv);
     await this.createTranslationsFile(translations, this.translationsFileNamePrefix);
   }
 
   async importAdmin() {
-    const adminCsvSource = path.resolve(config.server.localesDir, this.adminTranslationsCsvFileName);
+    const adminCsvSource = path.resolve(config.server.localesPath, this.adminTranslationsCsvFileName);
     const adminCsv = await fs.promises.readFile(adminCsvSource, 'UTF8');
     const translations = this.parseCsv(adminCsv);
     await this.createTranslationsFile(translations, this.adminTranslationsFileNamePrefix);
   }
 
   async createTranslationsFile(translations, fileNamePrefix) {
-    const { server: { localesDir = null } = {} } = config;
-    if (!localesDir) {
-      throw new Error('localesDir not found');
+    const { server: { localesPath = null } = {} } = config;
+    if (!localesPath) {
+      throw new Error('localesPath not found');
     }
     const localesTranslations = this.parseTranslations(translations);
     for (let locale in localesTranslations) {
-      let destination = path.resolve(localesDir, `${fileNamePrefix}${locale}.js`);
+      let destination = path.resolve(localesPath, `${fileNamePrefix}${locale}.js`);
       await fs.promises.writeFile(destination, `module.exports = ${JSON.stringify(localesTranslations[locale], null, 2)};`, 'UTF8');
       CLIHelper.log(`Translations saved to file ${destination}`, 'info');
     }
   }
 
   async createCsv(fields, data, fileName) {
-    const destination = path.resolve(config.server.localesDir, fileName);
+    const destination = path.resolve(config.server.localesPath, fileName);
     const json2csvParser = new Json2csvParser({ fields });
     let csv = json2csvParser.parse(data);
     await fs.promises.writeFile(destination, csv);

@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
-import Layout from 'modules/core/client/components/admin/Layout';
+import Layout from 'app/themes/admin/client/components/Layout';
 import Translation from 'app/modules/core/client/components/Translation';
 
 class ListPage extends React.Component {

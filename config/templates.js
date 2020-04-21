@@ -5,5 +5,5 @@ module.exports = {
   },
   defaultTemplate: 'standard',
   previewRoute: '/:language?/templates/preview/:template',
-  themesPath: 'app/modules/templates/client/themes',
+  themesPath: 'app/themes',
 };

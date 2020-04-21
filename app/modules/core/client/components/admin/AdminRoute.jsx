@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 
-import NoAccess from './NoAccess';
+import NoAccess from 'app/themes/admin/client/components/NoAccess';
 
 class AdminRoute extends Component {
   constructor(props) {

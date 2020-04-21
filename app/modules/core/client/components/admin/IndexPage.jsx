@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 
-import Layout from './Layout';
+import Layout from 'app/themes/admin/client/components/Layout';
 import Translation from 'app/modules/core/client/components/Translation';
 import NavLink from 'app/modules/core/client/components/admin/NavLink';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';

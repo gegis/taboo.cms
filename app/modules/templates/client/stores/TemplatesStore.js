@@ -1,6 +1,6 @@
 import { decorate, runInAction, observable, action } from 'mobx';
 import axios from 'axios';
-import templates from 'app/modules/templates/client/themes/templates';
+import templates from 'app/themes/uiTemplates';
 import ResponseHelper from 'modules/core/client/helpers/ResponseHelper';
 
 const {

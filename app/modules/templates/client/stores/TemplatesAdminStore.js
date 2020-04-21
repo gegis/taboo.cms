@@ -1,6 +1,6 @@
 import { decorate, action, observable } from 'mobx';
 import AbstractAdminStore from 'modules/core/client/stores/AbstractAdminStore';
-import templatesSettings from 'app/modules/templates/client/themes/templatesSettings';
+import templatesSettings from 'app/themes/uiTemplatesSettings';
 
 const {
   language = 'en',

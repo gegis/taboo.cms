@@ -39,7 +39,7 @@ class TemplatesHelper {
 
   loadStylesheet(name) {
     const stylesheet = document.getElementById('theme-stylesheet');
-    const stylesheetHref = `/css/${name}/styles/index.css?v=${version}`;
+    const stylesheetHref = `/css/${name}/index.css?v=${version}`;
     if (stylesheet && stylesheet.href.indexOf(stylesheetHref) === -1) {
       stylesheet.href = stylesheetHref;
     }

@@ -2,10 +2,15 @@ module.exports = {
   port: process.env.PORT || 3000,
   secretKeys: ['REPLACE-ME-123456', '654321-REPLACE-ME'],
   globalPolicies: ['acl'],
-  views: {
-    extension: 'html',
-    defaultLayout: 'standard',
-    defaultErrorLayout: 'error',
+  templates: {
+    themesPath: 'app/themes',
+    extension: 'ejs',
+    templatesDir: 'templates',
+    emailsDir: 'emails',
+    adminTheme: 'admin',
+    defaultTheme: 'standard',
+    layoutFile: 'layout',
+    errorsDir: 'error',
     defaultErrorView: 'index',
   },
   session: {
@@ -27,8 +32,8 @@ module.exports = {
   },
   silentErrors: ['UnauthorizedError', 'BadRequestError', 'ForbiddenError', 'ValidationError', 'NotFoundError'],
   uploads: {
-    serveStaticDir: '../user-uploads',
-    uploadsDir: '../user-uploads/user-files',
+    serveStaticPath: '../user-uploads',
+    uploadsPath: '../user-uploads/user-files',
     urlPath: '/user-files',
     allowedTypes: [
       'image/png',
@@ -40,7 +45,7 @@ module.exports = {
       'video/x-matroska',
       'application/pdf',
     ],
-    secureUploadsDir: '../user-uploads-secure',
+    secureUploadsPath: '../user-uploads-secure',
     secureUrlPath: '/secure-files',
     secureAllowedTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'application/pdf'],
     secureAllowedImageTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'],

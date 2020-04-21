@@ -8,7 +8,7 @@ const UploadModel = require('modules/uploads/models/UploadModel');
 class UploadsController {
   async uploadUserFile(ctx) {
     const {
-      uploads: { appendTimestamp, secureAllowedTypes, secureAllowedImageTypes, secureUploadsDir, secureUrlPath },
+      uploads: { appendTimestamp, secureAllowedTypes, secureAllowedImageTypes, secureUploadsPath, secureUrlPath },
     } = config.server;
     const {
       users: { documentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'] },
@@ -27,7 +27,7 @@ class UploadsController {
       if (!file) {
         throw new Error('File was no uploaded');
       }
-      if (!secureUploadsDir) {
+      if (!secureUploadsPath) {
         throw new Error('Uploads dir not specified');
       }
       if (isUserDocument) {
@@ -44,7 +44,7 @@ class UploadsController {
       prettyFileName = file.name;
       fileName = UploadsHelper.getFileName(file.name, appendTimestamp);
       url = path.join(secureUrlPath, file.type, fileName);
-      filePath = path.resolve(secureUploadsDir, file.type, fileName);
+      filePath = path.resolve(secureUploadsPath, file.type, fileName);
       await filesHelper.moveFile(tmpPath, filePath);
 
       if (!isUserDocument) {

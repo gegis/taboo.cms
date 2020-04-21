@@ -1,0 +1,354 @@
+@import './vars';
+@import './fonts';
+@import './helpers';
+@import './gallery';
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+  line-height: 1.5;
+  &.cke_editable {
+    padding: 20px;
+  }
+}
+
+#root {
+  display: flex;
+  height: 100%;
+  .loading {
+    color: #fafafa;
+    background-color: #142a3e;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: 1000;
+  }
+}
+.helper-copy-value-input {
+  position: absolute;
+  left: -10000px;
+  width: 0px;
+  height: 0px;
+  z-index: -100;
+}
+.error-layout {
+  text-align: center;
+  main {
+    padding: 150px 0 100px;
+    min-height: 500px;
+  }
+  h1 {
+    font-size: 32px;
+  }
+}
+.loader {
+  border: 6px solid @base-color;
+  border-top: 6px solid transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  position: fixed;
+  top: 120px;
+  left: ~'calc(50vw - 20px)';
+  z-index: 10000;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+//This one is to set styling for autocomplete inputs
+@-webkit-keyframes autofill {
+  to {
+    border: 0 none;
+    border-bottom: 1px solid #ccc;
+    background-color: #fafafa;
+    color: @base-color;
+    font-size: 20px;
+  }
+}
+
+.rs-notification {
+  top: 14px !important;
+  right: 20px !important;
+  &.rs-notification-notify {
+    .rs-notification-notice-content {
+      background-color: @B025;
+    }
+  }
+}
+.rs-nav-horizontal .rs-nav-item,
+.rs-nav-horizontal .rs-dropdown {
+  padding: 15px 5px;
+}
+.rs-form-group {
+  margin-bottom: 15px;
+}
+.rs-message {
+  .rs-message-container {
+    padding: 10px 15px;
+    text-align: center;
+  }
+}
+.rs-picker-select {
+  width: 100%;
+}
+
+textarea.rs-input {
+  min-width: 270px;
+}
+
+.main-content {
+  padding: 15px 15px 50px;
+}
+.header {
+  border-bottom: 1px solid @B200;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  //.rs-dropdown {
+  //  padding: 10px 0 0;
+  //}
+  //.rs-dropdown-toggle-caret {
+  //  top: 14px;
+  //}
+  //.rs-nav .rs-dropdown > .rs-dropdown-toggle {
+  //  height: 48px;
+  //}
+  .user-menu {
+    text-align: right;
+  }
+  .nav-brand {
+    &.logo {
+      display: inline-block;
+      margin: 15px 0;
+      img {
+        height: 36px;
+      }
+    }
+  }
+  .sidebar-toggle-wrapper {
+    text-align: right;
+    .sidebar-toggle {
+      margin-top: 15px;
+      .rs-icon {
+        font-size: 22px;
+      }
+    }
+  }
+}
+
+.header-notification {
+  border-radius: 0;
+  border-bottom: 1px solid #ead4da;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+}
+.footer {
+  background-color: #142a3e;
+  color: @B025;
+  text-align: center;
+  padding: 20px 0 30px;
+  .rs-nav-item-content {
+    color: @B025;
+  }
+}
+
+.document-upload-wrapper {
+  color: @B600;
+  border: 1px solid @B400;
+  border-radius: @border-radius-base;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background-color: @B025;
+  margin: 20px 0;
+  .loader {
+    position: absolute;
+    top: 70%;
+    left: ~'calc(50% - 20px)';
+    display: none;
+    z-index: 100;
+  }
+  .drag-file-here {
+    position: relative;
+    overflow: hidden;
+    height: 280px;
+    padding: 20px;
+    .upload-instructions {
+      cursor: pointer;
+      background-color: @B025;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      margin: 20px;
+      z-index: 1;
+      .rs-icon {
+        font-size: 30px;
+        margin: 10px;
+      }
+    }
+    .current-document {
+      cursor: pointer;
+      background-color: @B025;
+      color: @B900;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      margin: 20px;
+      z-index: 2;
+      .rs-icon {
+        font-size: 30px;
+        margin: 10px;
+      }
+    }
+    .current-document-image-preview {
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto auto;
+      display: inline-block;
+    }
+    &:hover {
+      .upload-instructions {
+        z-index: 3;
+        opacity: 0.85;
+      }
+    }
+  }
+  .document-upload-footer {
+    border-top: 1px solid @B400;
+    padding: 10px;
+  }
+  &.uploading {
+    .loader {
+      display: block;
+    }
+  }
+  &.drag-is-active {
+    .upload-instructions {
+      z-index: 3;
+    }
+  }
+  //&.uploaded {
+  //  .drag-file-here {
+  //    &:hover {
+  //      .upload-instructions {
+  //        opacity: 0.4;
+  //      }
+  //    }
+  //  }
+  //}
+}
+.profile-picture-upload {
+  border-radius: 50%;
+  margin: 0;
+  width: 100px;
+  height: 100px;
+  border: 2px solid @B100;
+  padding: 0;
+  font-size: 13px;
+  .drag-file-here {
+    padding: 0;
+    width: 100px;
+    height: 100px;
+    .upload-instructions {
+      margin: 0;
+      padding: 12px 0 0;
+      line-height: 1.2;
+      .rs-icon {
+        margin: 4px 0 0;
+        font-size: 20px;
+      }
+    }
+    .current-document {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  .loader {
+    top: ~'calc(50% - 20px)';
+    left: ~'calc(50% - 20px)';
+  }
+}
+
+.profile-picture {
+  width: @profile-picture-size;
+  height: @profile-picture-size;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: 50%;
+  img {
+    width: @profile-picture-size;
+    height: @profile-picture-size;
+  }
+  &.sm {
+    width: @profile-picture-size-sm;
+    height: @profile-picture-size-sm;
+    display: inline-block;
+    img {
+      width: @profile-picture-size-sm;
+      height: @profile-picture-size-sm;
+    }
+  }
+  &.xs {
+    width: @profile-picture-size-xs;
+    height: @profile-picture-size-xs;
+    display: inline-block;
+    img {
+      width: @profile-picture-size-xs;
+      height: @profile-picture-size-xs;
+    }
+  }
+}
+
+.header {
+  .user-menu {
+    .rs-dropdown {
+      padding: 12px 5px 0;
+    }
+    .rs-dropdown-toggle {
+      height: 42px;
+      padding: 5px 32px 0 0;
+    }
+    .profile-picture {
+      margin: 0 10px 0 0;
+    }
+  }
+}
+.user-sidebar {
+  .profile-picture {
+    margin: 0 10px 0 0;
+  }
+}
+
+@import './modal';
+@import './responsive';
+@import './print';

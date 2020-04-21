@@ -19,7 +19,7 @@ import {
   Notification,
 } from 'rsuite';
 import Translation from 'app/modules/core/client/components/Translation';
-import Layout from 'app/modules/core/client/components/admin/Layout';
+import Layout from 'app/themes/admin/client/components/Layout';
 import ResponseHelper from 'app/modules/core/client/helpers/ResponseHelper';
 
 const { StringType } = Schema.Types;

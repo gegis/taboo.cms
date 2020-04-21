@@ -55,7 +55,7 @@ class PagesService {
       ]);
       if (page) {
         // TODO allow page select gallery template.
-        galleryTpl = await cmsHelper.getTemplate('helpers/gallery');
+        galleryTpl = await cmsHelper.getTemplate('gallery/standard');
         await this.replacePageBodyRefs(ctx, page, galleryTpl);
         // Cache only published pages
         if (page.published) {

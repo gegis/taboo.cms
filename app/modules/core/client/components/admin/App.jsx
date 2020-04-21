@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import PropTypes from 'prop-types';
-import NotFound from './NotFound';
+import NotFound from 'app/themes/admin/client/components/NotFound';
 import AdminRoute from 'app/modules/core/client/components/admin/AdminRoute';
 import SocketsClient from 'modules/core/client/helpers/SocketsClient';
 
