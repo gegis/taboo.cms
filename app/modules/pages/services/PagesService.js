@@ -24,7 +24,7 @@ class PagesService {
       pageVariables.pageTitle = page.title;
       pageVariables.pageBody = page.body;
       if (page.language) {
-        LanguageService.setLanguage(ctx, page.language);
+        LanguageService.setLanguage(ctx, 'client', { language: page.language });
       }
       pageResponse = cmsHelper.composeResponse(ctx, template, pageTpl, pageVariables);
     }
@@ -98,13 +98,13 @@ class PagesService {
         page.body = this.replacePageBodyPages(page.body, page.pages);
       }
       if (page.galleries) {
-        page.body = this.replacePageBodyGalleries(ctx, page.body, page.galleries, galleryTpl);
+        page.body = await this.replacePageBodyGalleries(ctx, page.body, page.galleries, galleryTpl);
       }
       if (childPages) {
         page.body = this.replacePageBodyPages(page.body, childPages);
       }
       if (childGalleries) {
-        page.body = this.replacePageBodyGalleries(ctx, page.body, childGalleries, galleryTpl);
+        page.body = await this.replacePageBodyGalleries(ctx, page.body, childGalleries, galleryTpl);
       }
       if (page.body && page.body.indexOf('{{') !== -1 && page.body.indexOf('}}') !== -1) {
         data = {
@@ -164,11 +164,12 @@ class PagesService {
     return newBody;
   }
 
-  replacePageBodyGalleries(ctx, body, galleries, galleryTpl) {
+  async replacePageBodyGalleries(ctx, body, galleries, galleryTpl) {
     let newBody = body;
-    galleries.map(item => {
-      newBody = newBody.replace(`{{Gallery:${item._id}}}`, GalleryHelper.getTemplate(ctx, item, galleryTpl));
-    });
+    for (let i = 0; i < galleries.length; i++) {
+      const galleryTemplate = await GalleryHelper.getTemplate(ctx, galleries[i], galleryTpl);
+      newBody = newBody.replace(`{{Gallery:${galleries[i]._id}}}`, galleryTemplate);
+    }
 
     return newBody;
   }

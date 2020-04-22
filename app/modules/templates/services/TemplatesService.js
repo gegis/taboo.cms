@@ -23,6 +23,22 @@ class TemplatesService {
     });
   }
 
+  async beforeTemplateRender(ctx, tpl, params) {
+    const { session: { user: { id: userId } = {} } = {}, viewParams: { _template } = {} } = ctx;
+    // TODO implement navigation!!!! for tpls
+    console.log('~~~~~~~~~~get for template~~~~~~~~~~~~~');
+    console.log(_template);
+    if (userId) {
+      // TODO get authenticated
+      params.headerNavigation = [];
+      params.footerNavigation = [];
+    } else {
+      // TODO get not auth
+      params.headerNavigation = [];
+      params.footerNavigation = [];
+    }
+  }
+
   async getAllEnabled() {
     return TemplateModel.find({ enabled: true });
   }

@@ -6,9 +6,9 @@
       routes: {},
     };
   </script>
-  <% if(_clientConfigJson) { %>
+  <% if(_clientConfig) { %>
   <script type="text/javascript">
-    window.app.config = <%-_clientConfigJson%>;
+    window.app.config = <%- JSON.stringify(_clientConfig) %>;
   </script>
   <% } %>
   <script src="/js/lodash.bundle.js?v=<%=_version%>"></script>

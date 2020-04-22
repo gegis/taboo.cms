@@ -1,29 +1,19 @@
-const { config, app } = require('@taboo/cms-core');
-const { locales } = app;
-const { defaultLanguage, defaultLocalesMapping } = config.i18n;
+const { setLanguage } = require('@taboo/cms-core');
 
 class LanguageService {
-  setLanguage(ctx, language = defaultLanguage, locale = null, saveInSession = false) {
-    if (language) {
-      ctx.routeParams.language = language;
-      if (defaultLocalesMapping[language]) {
-        ctx.routeParams.locale = defaultLocalesMapping[language];
-      }
-    }
-    if (locale) {
-      ctx.routeParams.locale = locale;
-      for (let lang in defaultLocalesMapping) {
-        if (defaultLocalesMapping[lang] === locale) {
-          ctx.routeParams.language = lang;
-        }
-      }
-    }
-    if (locales[ctx.routeParams.locale]) {
-      ctx.routeParams.translations = locales[ctx.routeParams.locale];
-    }
+  setLanguage(ctx, namespace, { language = null, locale = null, saveInSession = false }) {
+    // TODO load custom translations from db
+    // setLanguage(ctx, namespace, { locale, language, customTranslations: {} });
+    setLanguage(ctx, namespace, { locale, language });
+
     if (saveInSession && ctx.session) {
-      ctx.session.locale = ctx.routeParams.locale;
-      ctx.session.language = ctx.routeParams.language;
+      if (namespace === 'client') {
+        ctx.session.locale = ctx.routeParams.locale;
+        ctx.session.language = ctx.routeParams.language;
+      } else if (namespace === 'admin') {
+        ctx.session.adminLocale = ctx.routeParams.locale;
+        ctx.session.adminLanguage = ctx.routeParams.language;
+      }
     }
 
     return {

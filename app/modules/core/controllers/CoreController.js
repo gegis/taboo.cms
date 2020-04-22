@@ -1,5 +1,5 @@
 const { config, app } = require('@taboo/cms-core');
-const LanuageService = require('../services/LanguageService');
+const LanguageService = require('../services/LanguageService');
 
 class CoreController {
   async dashboard() {}
@@ -8,7 +8,7 @@ class CoreController {
     const { params: { language = null } = {} } = ctx;
     let data = {};
     if (language) {
-      data = LanuageService.setLanguage(ctx, language);
+      data = LanguageService.setLanguage(ctx, 'client', { language });
     }
 
     ctx.body = data;

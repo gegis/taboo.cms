@@ -1,4 +1,4 @@
-const { config, loadLocales, cmsHelper } = require('@taboo/cms-core');
+const { config, loadFileTranslations, getFileTranslationsAsArray } = require('@taboo/cms-core');
 const path = require('path');
 const fs = require('fs');
 const Json2csvParser = require('json2csv').Parser;
@@ -31,9 +31,9 @@ class LocaleCommand {
   }
 
   async export() {
-    loadLocales();
-    await this.createCsv(this.fields, cmsHelper.getLocalesArray(), this.translationsCsvFileName);
-    await this.createCsv(this.fields, cmsHelper.getLocalesArray(true), this.adminTranslationsCsvFileName);
+    loadFileTranslations();
+    await this.createCsv(this.fields, getFileTranslationsAsArray('client'), this.translationsCsvFileName);
+    await this.createCsv(this.fields, getFileTranslationsAsArray('admin'), this.adminTranslationsCsvFileName);
     return 'Successfully Exported.';
   }
 

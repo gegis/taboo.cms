@@ -149,19 +149,19 @@ module.exports = {
       method: 'GET',
       path: '/admin/login',
       action: UsersAdminController.admin,
-      policies: ['i18nAdmin'],
+      policies: ['i18n'],
     },
     {
       method: 'GET',
       path: '/admin/reset-password',
       action: UsersAdminController.admin,
-      policies: ['i18nAdmin'],
+      policies: ['i18n'],
     },
     {
       method: 'GET',
       path: '/admin/change-password/:userId/:token',
       action: UsersAdminController.admin,
-      policies: ['i18nAdmin'],
+      policies: ['i18n'],
     },
     {
       method: 'GET',

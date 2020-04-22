@@ -67,7 +67,7 @@ module.exports = {
       method: 'GET',
       path: '/admin*', // This path is match any admin path if authorised, so it loads react app
       action: CoreAdminController.admin,
-      policies: ['isAdmin', 'i18nAdmin'],
+      policies: ['isAdmin', 'i18n'],
       order: 10000,
     },
   ],
