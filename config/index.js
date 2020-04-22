@@ -9,7 +9,7 @@ const templates = require('./templates');
 const sockets = require('./sockets');
 const verificationStatuses = ['new', 'pending', 'failed', 'approved'];
 const userDocumentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'];
-const settingsTypes = ['string', 'integer', 'float', 'object', 'boolean'];
+const settingsTypes = ['string', 'integer', 'float', 'json', 'boolean'];
 
 module.exports = {
   environment: process.env.NODE_ENV || 'development',

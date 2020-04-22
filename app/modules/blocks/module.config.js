@@ -14,7 +14,7 @@ module.exports = {
       method: 'GET',
       path: '/blocks',
       action: BlocksController.index,
-      policies: ['loadNavigation', 'isUser'],
+      policies: ['isUser'],
     },
     {
       method: 'GET',

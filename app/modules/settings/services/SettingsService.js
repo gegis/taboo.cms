@@ -1,17 +1,36 @@
-const { apiHelper, isAllowed, logger } = require('@taboo/cms-core');
+const { apiHelper, isAllowed, logger, _ } = require('@taboo/cms-core');
+const CacheService = require('modules/cache/services/CacheService');
 const SettingsModel = require('modules/settings/models/SettingsModel');
 
 class SettingsService {
   constructor() {
+    this.cacheId = 'settings';
     this.getValue = this.getValue.bind(this);
     this.setValue = this.setValue.bind(this);
   }
 
+  async beforeTemplateRender(ctx) {
+    const { routeParams: { clientConfig = {} } = {} } = ctx;
+    const settingsClientConfig = await this.getPublic('clientConfig');
+    if (settingsClientConfig && typeof settingsClientConfig === 'object') {
+      _.merge(clientConfig, settingsClientConfig);
+    }
+  }
+
   async getPublic(key) {
-    let itemData = null;
-    let item = await SettingsModel.findOne({ key, public: true }, ['value', 'type']);
-    if (item && item.value) {
-      itemData = item._doc;
+    const cacheKey = key;
+    let dbItem = null;
+    let itemData = CacheService.get(this.cacheId, cacheKey);
+
+    if (!itemData) {
+      dbItem = await SettingsModel.findOne({ key, public: true }, ['value', 'type']);
+      if (dbItem) {
+        itemData = dbItem._doc;
+        CacheService.set(this.cacheId, cacheKey, itemData);
+      }
+    }
+
+    if (itemData && itemData.value) {
       itemData = this.parseValue(itemData);
       return itemData.value;
     }
@@ -66,10 +85,10 @@ class SettingsService {
 
   parseValue(item) {
     item.originalValue = '';
-    if (item && item.type) {
+    if (item && item.type && typeof item.value !== 'object') {
       item.originalValue = item.value;
       switch (item.type) {
-        case 'object':
+        case 'json':
           try {
             item.value = JSON.parse(item.originalValue);
           } catch (err) {
@@ -87,6 +106,7 @@ class SettingsService {
           break;
       }
     }
+
     return item;
   }
 
@@ -95,9 +115,9 @@ class SettingsService {
     if (data && data.type) {
       data.originalValue = data.value;
       switch (data.type) {
-        case 'object':
+        case 'json':
           try {
-            data.value = JSON.stringify(data.originalValue);
+            data.value = JSON.stringify(data.originalValue, null, 2);
           } catch (err) {
             logger.error(err);
           }
@@ -117,6 +137,10 @@ class SettingsService {
       }
     }
     return data;
+  }
+
+  deleteSettingsCache() {
+    CacheService.clearCacheId(this.cacheId);
   }
 
   getACLEnabled() {

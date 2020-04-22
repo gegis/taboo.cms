@@ -13,13 +13,13 @@ module.exports = {
     resources: ['admin.templates.view', 'admin.templates.manage'],
   },
   afterModulesSetup: TemplatesService.afterModulesSetup,
-  beforeTemplateRender: TemplatesService.beforeTemplateRender,
+  beforeTemplateRender: TemplatesService.beforeTemplateRender.bind(TemplatesService),
   routes: [
     {
       method: 'GET',
       path: previewRoute,
       action: TemplatesController.preview,
-      policies: ['i18n', 'loadNavigation', 'isAdmin'],
+      policies: ['i18n', 'isAdmin'],
     },
     {
       method: 'GET',

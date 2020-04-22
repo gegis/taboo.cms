@@ -51,7 +51,7 @@ class SettingsList extends React.Component {
                 </div>
               </td>
               <td className="rs-hidden-sm">{item.type}</td>
-              <td className="rs-hidden-sm">{item.value}</td>
+              <td className="rs-hidden-sm max-overflow">{item.value}</td>
               <td className="rs-hidden-sm">
                 <BooleanIcon value={item.public} />
               </td>

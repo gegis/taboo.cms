@@ -70,27 +70,33 @@ class SettingsAdminStore extends AbstractAdminStore {
 
   create(data) {
     return new Promise(resolve => {
-      super.create(this.setItemValues(data)).then(newData => {
-        resolve(newData);
-      });
+      try {
+        const itemValue = this.setItemValue(data);
+        super.create(itemValue).then(newData => {
+          resolve(newData);
+        });
+      } catch (e) {
+        ResponseHelper.handleError(e);
+      }
     });
   }
 
   update(data) {
     return new Promise(resolve => {
-      super.update(this.setItemValues(data)).then(newData => {
-        resolve(newData);
-      });
-    });
-  }
-
-  setItemValues(data) {
-    if (data.type === 'object') {
       try {
-        data.value = JSON.parse(data.originalValue);
+        const itemValue = this.setItemValue(data);
+        super.update(itemValue).then(newData => {
+          resolve(newData);
+        });
       } catch (e) {
         ResponseHelper.handleError(e);
       }
+    });
+  }
+
+  setItemValue(data) {
+    if (data.type === 'json') {
+      data.value = JSON.parse(data.originalValue);
     } else if (data.type === 'boolean') {
       data.value = data.booleanValue;
     }

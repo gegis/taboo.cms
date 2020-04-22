@@ -5,10 +5,12 @@ const RoleModel = require('modules/acl/models/RoleModel');
 const UserModel = require('modules/users/models/UserModel');
 const PageModel = require('modules/pages/models/PageModel');
 const NavigationModel = require('modules/navigation/models/NavigationModel');
+const SettingsModel = require('modules/settings/models/SettingsModel');
 
 const { admin: { cms: { initialUser, adminRoleName, userRoleName, userAclResources } = {} } = {} } = config;
 const pages = require('../data/pages');
 const navigation = require('../data/navigation');
+const settings = require('../data/settings');
 
 module.exports = {
   adminRoleName: adminRoleName,
@@ -37,6 +39,9 @@ module.exports = {
     await this.createNavigation(navigation);
     CLIHelper.log('Created Navigation', 'info');
 
+    await this.createSettings(settings);
+    CLIHelper.log('Created Settings', 'info');
+
     return 'Initial data load UP has successfully finished.';
   },
 
@@ -55,6 +60,9 @@ module.exports = {
 
     await this.deleteNavigation(navigation);
     CLIHelper.log('Deleted Navigation', 'info');
+
+    await this.deleteSettings(settings);
+    CLIHelper.log('Deleted Settings', 'info');
 
     return 'Initial data load DOWN has successfully finished.';
   },
@@ -111,6 +119,18 @@ module.exports = {
   async deleteNavigation(navigation = []) {
     for (let i = 0; i < navigation.length; i++) {
       await NavigationModel.findOneAndDelete({ name: navigation[i].name });
+    }
+  },
+
+  async createSettings(settings = []) {
+    for (let i = 0; i < settings.length; i++) {
+      await SettingsModel.create(settings[i]);
+    }
+  },
+
+  async deleteSettings(settings = []) {
+    for (let i = 0; i < settings.length; i++) {
+      await SettingsModel.findOneAndDelete({ key: settings[i].key });
     }
   },
 

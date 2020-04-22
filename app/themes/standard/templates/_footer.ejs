@@ -4,20 +4,20 @@
       <div class="rs-col">
         <div class="rs-nav rs-nav-default navigation signed-out rs-nav-horizontal">
           <ul>
-            <% /* %>
-            <% let navigation = _clientConfig.navigation; %>
-            <% for(let i = 0; i < navigation.length; i++) { %>
-            <li role="presentation" class="rs-nav-item rs-nav-item-content">
-              <a
-                aria-current="page"
-                class="rs-nav-item-content active"
-                role="button"
-                tabindex="0"
-                href="<%-navigation[i].url%>"
-              ><%-navigation[i].title%><span class="rs-ripple-pond"><span class="rs-ripple"></span></span
-              ></a>
-            </li>
-            <% } */ %>
+            <% if(typeof footerNavigation === 'object') { %>
+              <% for(let i = 0; i < footerNavigation.length; i++) { %>
+              <li role="presentation" class="rs-nav-item rs-nav-item-content">
+                <a
+                  aria-current="page"
+                  class="rs-nav-item-content active"
+                  role="button"
+                  tabindex="0"
+                  href="<%-footerNavigation[i].url%>"
+                ><%-footerNavigation[i].title%><span class="rs-ripple-pond"><span class="rs-ripple"></span></span
+                ></a>
+              </li>
+              <% }%>
+            <% }%>
           </ul>
         </div>
       </div>

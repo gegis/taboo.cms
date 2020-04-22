@@ -56,8 +56,10 @@ module.exports = {
     enabled: true,
     cachePath: './data/app-cache',
     cacheIds: {
+      settings: 'settings.json',
       pages: 'pages.json',
       navigation: 'navigation.json',
+      templates: 'templates.json',
     },
   },
 };

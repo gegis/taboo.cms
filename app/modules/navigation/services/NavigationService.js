@@ -2,28 +2,32 @@ const CacheService = require('modules/cache/services/CacheService');
 const NavigationModel = require('modules/navigation/models/NavigationModel');
 
 class NavigationService {
-  async getEnabledByName(name, language = 'en') {
+  constructor() {
+    this.cacheId = 'navigation';
+  }
+  async getEnabledByName(name) {
+    const cacheKey = `${name}-enabled`;
     let navigation;
-    let items = CacheService.get('navigation', `${name}-${language}-enabled`);
+    let items = CacheService.get(this.cacheId, cacheKey);
 
     if (!items) {
       items = [];
-      navigation = await NavigationModel.findOne({ name: name, language: language, enabled: true });
+      navigation = await NavigationModel.findOne({ name: name, enabled: true });
       if (navigation && navigation.items && navigation.items.length > 1) {
         items = navigation.items;
-        CacheService.set('navigation', `${name}-${language}-enabled`, items);
+        CacheService.set(this.cacheId, cacheKey, items);
       }
     }
 
     return items;
   }
 
-  async getAllEnabled(language = 'en') {
-    return NavigationModel.find({ language: language, enabled: true });
+  async getAllEnabled() {
+    return NavigationModel.find({ enabled: true });
   }
 
   deleteNavigationCache() {
-    CacheService.clearCacheId('navigation');
+    CacheService.clearCacheId(this.cacheId);
   }
 }
 

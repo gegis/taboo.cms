@@ -1,6 +1,7 @@
 const path = require('path');
 const { filesHelper, config, sockets, events } = require('@taboo/cms-core');
 const { templates: { themesPath } = {} } = config;
+const NavigationService = require('modules/navigation/services/NavigationService');
 const CacheService = require('modules/cache/services/CacheService');
 const TemplateModel = require('modules/templates/models/TemplateModel');
 
@@ -8,6 +9,7 @@ const { templates: { socketsEvents: { templatePreviewEmit = '', templatePreviewR
 
 class TemplatesService {
   constructor() {
+    this.cacheId = 'templates';
     this.afterModulesSetup = this.afterModulesSetup.bind(this);
   }
 
@@ -23,43 +25,77 @@ class TemplatesService {
     });
   }
 
-  async beforeTemplateRender(ctx, tpl, params) {
-    const { session: { user: { id: userId } = {} } = {}, viewParams: { _template } = {} } = ctx;
-    // TODO implement navigation!!!! for tpls
-    console.log('~~~~~~~~~~get for template~~~~~~~~~~~~~');
-    console.log(_template);
-    if (userId) {
-      // TODO get authenticated
-      params.headerNavigation = [];
-      params.footerNavigation = [];
-    } else {
-      // TODO get not auth
-      params.headerNavigation = [];
-      params.footerNavigation = [];
+  async beforeTemplateRender(ctx) {
+    const {
+      session: { user: { id: userId } = {} } = {},
+      viewParams: { _template } = {},
+      routeParams: { language } = {},
+    } = ctx;
+    let templateLanguageSettings = null;
+    let newParams = {
+      headerNavigation: [],
+      footerNavigation: [],
+      themeStyle: '',
+    };
+    let template = null;
+
+    if (_template && language) {
+      template = await this.getByName(_template);
+      templateLanguageSettings = await this.getTemplateLanguageSettings(template, language);
     }
+
+    if (template && templateLanguageSettings) {
+      const {
+        headerNavigation,
+        headerNavigationAuthenticated,
+        footerNavigation,
+        footerNavigationAuthenticated,
+      } = templateLanguageSettings;
+      if (userId) {
+        newParams.headerNavigation = await NavigationService.getEnabledByName(headerNavigationAuthenticated);
+        newParams.footerNavigation = await NavigationService.getEnabledByName(footerNavigationAuthenticated);
+      } else {
+        newParams.headerNavigation = await NavigationService.getEnabledByName(headerNavigation);
+        newParams.footerNavigation = await NavigationService.getEnabledByName(footerNavigation);
+      }
+      if (template.style) {
+        newParams.themeStyle = template.style;
+      }
+    }
+
+    return newParams;
+  }
+
+  async getTemplateLanguageSettings(template, language) {
+    if (template && language && template.languageSettings[language]) {
+      return template.languageSettings[language];
+    }
+    return {};
   }
 
   async getAllEnabled() {
-    return TemplateModel.find({ enabled: true });
+    return await TemplateModel.find({ enabled: true });
   }
 
   async getByName(name) {
-    let template = CacheService.get('template', `${name}`);
+    const cacheKey = name;
+    let template = CacheService.get(this.cacheId, cacheKey);
     if (!template) {
       template = await TemplateModel.findOne({ name: name });
       if (template) {
-        CacheService.set('template', `${name}`, template);
+        CacheService.set(this.cacheId, cacheKey, template);
       }
     }
     return template;
   }
 
   async getDefault() {
-    let template = CacheService.get('template', 'default');
+    const cacheKey = 'default';
+    let template = CacheService.get(this.cacheId, cacheKey);
     if (!template) {
       template = await TemplateModel.findOne({ default: true });
       if (template) {
-        CacheService.set('template', 'default', template);
+        CacheService.set(this.cacheId, cacheKey, template);
       }
     }
     return template;
@@ -110,6 +146,10 @@ class TemplatesService {
   getAllFsTemplatesNames() {
     const tplsPath = path.resolve(themesPath);
     return filesHelper.getAllDirNames(tplsPath);
+  }
+
+  deleteTemplatesCache() {
+    CacheService.clearCacheId(this.cacheId);
   }
 }
 

@@ -71,6 +71,18 @@ class TemplatesAdminController extends AbstractAdminController {
     }
   }
 
+  async afterUpdate(ctx, itemResult) {
+    // Clear settings cache on update
+    TemplatesService.deleteTemplatesCache();
+    return itemResult;
+  }
+
+  async afterDelete(ctx, itemResult) {
+    // Clear settings cache on delete
+    TemplatesService.deleteTemplatesCache();
+    return itemResult;
+  }
+
   async imagePreview(ctx) {
     const { params: { template = 'standard' } = {} } = ctx;
     let filePath = path.resolve(themesPath, template, 'preview.png');

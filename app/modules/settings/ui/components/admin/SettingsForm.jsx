@@ -26,7 +26,7 @@ class SettingsForm extends React.Component {
     } = this.settingsStore;
     let element = <FormControl name="value" />;
 
-    if (type === 'object') {
+    if (type === 'json') {
       element = (
         <CodeEditor
           mode="json"
