@@ -19,6 +19,7 @@ class Uploads extends React.Component {
       <ListPage
         name="Uploads"
         entityStore={this.entityStore}
+        pageActionCreateTitle="Upload"
         ItemsListComponent={UploadsList}
         CreateModalComponent={CreateModal}
         EditModalComponent={EditModal}

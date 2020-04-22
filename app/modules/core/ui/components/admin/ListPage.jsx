@@ -78,11 +78,16 @@ class ListPage extends React.Component {
 
   getPageActions() {
     const { current: createModal = null } = this.createModal;
-    const { pageActionButtons = [] } = this.props;
+    const { pageActionButtons = [], pageActionCreateTitle = 'Create New', pageActionCreateIcon = 'file' } = this.props;
     if (createModal) {
       pageActionButtons.push(
-        <IconButton key="add-btn" icon={<Icon icon="file" />} appearance="primary" onClick={this.openCreateModal}>
-          <Translation message="Create New" />
+        <IconButton
+          key="add-btn"
+          icon={<Icon icon={pageActionCreateIcon} />}
+          appearance="primary"
+          onClick={this.openCreateModal}
+        >
+          <Translation message={pageActionCreateTitle} />
         </IconButton>
       );
     }
@@ -180,6 +185,8 @@ ListPage.propTypes = {
   uiAdminStore: PropTypes.object.isRequired,
   entityStore: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
+  pageActionCreateTitle: PropTypes.string,
+  pageActionCreateIcon: PropTypes.string,
   CreateModalComponent: PropTypes.object,
   EditModalComponent: PropTypes.object,
   pageActionButtons: PropTypes.array,

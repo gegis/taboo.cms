@@ -2,11 +2,11 @@ const BlocksService = require('modules/blocks/services/BlocksService');
 
 class BlocksController {
   async index(ctx) {
-    if (!ctx.view) {
-      ctx.view = {};
+    if (!ctx.viewParams) {
+      ctx.viewParams = {};
     }
-    ctx.view.module = 'Blocks';
-    ctx.view.items = await BlocksService.getAllEnabled();
+    ctx.viewParams.module = 'Blocks';
+    ctx.viewParams.items = await BlocksService.getAllEnabled();
   }
 
   async getAll(ctx) {

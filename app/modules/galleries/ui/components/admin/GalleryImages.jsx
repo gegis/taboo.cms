@@ -28,7 +28,7 @@ class GalleryImages extends React.Component {
     this.galleriesStore = props.galleriesStore;
     this.notificationsStore = props.notificationsStore;
     this.addImages = this.addImages.bind(this);
-    this.onAdd = this.onAdd.bind(this);
+    this.onFileSelect = this.onFileSelect.bind(this);
     this.onImageRemove = this.onImageRemove.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
   }
@@ -40,7 +40,7 @@ class GalleryImages extends React.Component {
     }
   }
 
-  onAdd(item) {
+  onFileSelect(item) {
     if (item && item.type && item.type.indexOf('image') === 0) {
       this.galleriesStore.addImage(item);
       this.notificationsStore.push({
@@ -173,7 +173,7 @@ class GalleryImages extends React.Component {
         </DragDropContext>
         <UploadSelect
           ref={this.uploadSelect}
-          onAdd={this.onAdd}
+          onFileSelect={this.onFileSelect}
           filter={{ type: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'] }}
         />
       </div>

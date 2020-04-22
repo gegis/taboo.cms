@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Translation from 'modules/core/ui/components/Translation';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 import ColorPicker from 'modules/core/ui/components/ColorPicker';
+import ImagePicker from 'modules/core/ui/components/ImagePicker';
 
 class SettingsInput extends React.Component {
   constructor(props) {
@@ -43,11 +44,20 @@ class SettingsInput extends React.Component {
   getColorPicker({ settingsItem, settingsValueKey, settingsOnChange }) {
     return (
       <ColorPicker
-        input={
-          <Input className="color-picker-input" value={settingsItem[settingsValueKey]} onChange={settingsOnChange} />
-        }
+        input={<Input value={settingsItem[settingsValueKey]} onChange={settingsOnChange} />}
         value={settingsItem[settingsValueKey]}
         returnValueKey="hex"
+        onChange={settingsOnChange}
+      />
+    );
+  }
+
+  getImagePicker({ settingsItem, settingsValueKey, settingsOnChange }) {
+    return (
+      <ImagePicker
+        input={<Input value={settingsItem[settingsValueKey]} onChange={settingsOnChange} />}
+        value={settingsItem[settingsValueKey]}
+        returnValueKey="url"
         onChange={settingsOnChange}
       />
     );
@@ -103,6 +113,9 @@ class SettingsInput extends React.Component {
             cleanable={false}
           />
         );
+        break;
+      case 'ImagePicker':
+        input = this.getImagePicker({ settingsItem, settingsValueKey, settingsOnChange });
         break;
       case 'ColorPicker':
         input = this.getColorPicker({ settingsItem, settingsValueKey, settingsOnChange });

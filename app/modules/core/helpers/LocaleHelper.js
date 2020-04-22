@@ -2,7 +2,7 @@ const { logger, config } = require('@taboo/cms-core');
 
 class LocaleHelper {
   translate(ctx, message, variables) {
-    const translations = ctx.taboo && ctx.taboo.translations ? ctx.taboo.translations : {};
+    const translations = ctx.routeParams && ctx.routeParams.translations ? ctx.routeParams.translations : {};
     return this.translateMessage(message, translations, variables);
   }
 

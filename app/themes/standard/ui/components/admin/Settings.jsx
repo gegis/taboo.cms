@@ -81,7 +81,12 @@ class Settings extends React.Component {
             />
           </Panel>
           <Panel header="Header">
-            <SettingsInput type="Input" label="Header Logo" settingsKey="settings" settingsValueKey="headerLogo" />
+            <SettingsInput
+              type="ImagePicker"
+              label="Header Logo"
+              settingsKey="settings"
+              settingsValueKey="headerLogo"
+            />
             <SettingsInput
               type="InputPicker"
               label="Header Navigation"

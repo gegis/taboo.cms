@@ -17,9 +17,9 @@ class PagesService {
       } else {
         template = await cmsHelper.getLayout(page.template); // TODO (templates) think of redo core and classic layouts/templates
       }
-      pageTpl = await cmsHelper.getView(ctx.taboo.moduleRoute);
+      pageTpl = await cmsHelper.getView(ctx.routeParams.moduleRoute);
       pageVariables = page.variables || {};
-      pageVariables = Object.assign({}, ctx.view, pageVariables);
+      pageVariables = Object.assign({}, ctx.viewParams, pageVariables);
       pageVariables.metaTitle = `${page.title} | ${metaTitle}`;
       pageVariables.pageTitle = page.title;
       pageVariables.pageBody = page.body;

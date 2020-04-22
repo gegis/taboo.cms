@@ -13,6 +13,7 @@ module.exports = {
     resources: ['admin.templates.view', 'admin.templates.manage'],
   },
   afterModulesSetup: TemplatesService.afterModulesSetup,
+  beforeModulesSetup: TemplatesService.afterModulesSetup,
   routes: [
     {
       method: 'GET',

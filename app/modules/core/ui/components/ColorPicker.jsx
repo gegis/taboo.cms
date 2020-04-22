@@ -43,6 +43,10 @@ class ColorPicker extends React.Component {
   }
 
   getButton() {
+    const { button } = this.props;
+    if (button) {
+      return button;
+    }
     return (
       <Button onClick={this.onButtonClick}>
         <Icon icon="eyedropper" />
@@ -68,10 +72,15 @@ class ColorPicker extends React.Component {
     );
   }
 
+  getPreview() {
+    const { value } = this.props;
+    return <div className="color-picker-preview" style={{ backgroundColor: value }} onClick={this.onButtonClick} />;
+  }
+
   getInput() {
     const { input } = this.props;
     if (input) {
-      return input;
+      return <div className="input-wrapper">{input}</div>;
     }
     return null;
   }
@@ -82,6 +91,7 @@ class ColorPicker extends React.Component {
     return (
       <div className={classNames('color-picker', className)}>
         {this.getInput()}
+        {this.getPreview()}
         {this.getButton()}
         {this.state.displayColorPicker ? (
           <div className={classNames('color-picker-wrapper', wrapperClassName)}>
