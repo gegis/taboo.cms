@@ -12,8 +12,8 @@ const splitBundles = [
 
 module.exports = {
   entry: {
-    app: './app/modules/core/client/index.jsx',
-    admin: './app/modules/core/client/admin.jsx',
+    app: './app/modules/core/ui/index.jsx',
+    admin: './app/modules/core/ui/admin.jsx',
   },
   output: {
     path: __dirname + '/public/js/',

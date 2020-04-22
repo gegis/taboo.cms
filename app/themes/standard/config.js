@@ -10,6 +10,7 @@ module.exports = {
     footerTextColor: '#ffffff',
     primaryColor: '#25a4dd',
     primaryColorActive: '#1288c7',
+    buttonTextColor: '#ffffff',
     textColor: '#575757',
     backgroundColor: '#ffffff',
   },
@@ -34,6 +35,7 @@ module.exports = {
       color: {{primaryColor}};
     }
     .rs-btn-primary {
+      color: {{buttonTextColor}};
       background-color: {{primaryColor}};
     }
     a:hover {

@@ -3,7 +3,7 @@ import * as themeTemplates from './**/Settings.jsx';
 const uiTemplatesSettings = {};
 
 Object.keys(themeTemplates).map(theme => {
-  uiTemplatesSettings[theme] = require(`./${theme}/client/components/admin/Settings`).default;
+  uiTemplatesSettings[theme] = require(`./${theme}/ui/components/admin/Settings`).default;
 });
 
 export default uiTemplatesSettings;

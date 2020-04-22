@@ -49,12 +49,15 @@ class TemplatesAdminController extends AbstractAdminController {
 
   async update(ctx) {
     const { params: { id = null } = {}, request: { body = {} } = {} } = ctx;
-    let defaultTemplate = null;
+    let defaultTemplate = await TemplateModel.findOne({ default: true });
     if (body && body.default === true) {
-      defaultTemplate = await TemplateModel.findOne({ default: true });
-      if (defaultTemplate._id.toString() !== id) {
+      if (defaultTemplate && defaultTemplate._id.toString() !== id) {
         defaultTemplate.default = false;
         await defaultTemplate.save();
+      }
+    } else {
+      if (defaultTemplate && defaultTemplate._id.toString() === id) {
+        return ctx.throw(400, new Error('One template must always be default'));
       }
     }
     try {
