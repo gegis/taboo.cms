@@ -4,8 +4,7 @@ module.exports = [
     type: 'json',
     public: true,
     key: 'clientConfig',
-    value: `
-{
+    value: `{
   "metaTitle": "Taboo CMS",
   "templates": {
     "defaultTemplate": "standard"

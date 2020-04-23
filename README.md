@@ -124,49 +124,51 @@ are served from `./public` folder.
 Application files can be found in `./app`.
 
 ```
-assets    - images, fonts, js and css.
-db        - db adapters.
 locales   - application internationalization translations.
-modules   - application uses modular system, so each module can contain
-            server side and client side needed files.
+modules   - application uses modular system, so each module may contain
+            server side and client side files.
 policies  - policies are called before the route action, you can specify
             policies at module route level, inside module.config.js,
             or you can set policies at global level within
             ./config/server.js: globalPolicies.
-templates - are used for web layouts, error and email templates.
+themes    - are used for for web page templates, client side and server
+            side rendered, also other templates, like email, or gallery.
 ```
 
 #### Module structure
 
-Modules files can be found in `./app/modules`. Each module is bootstrapped automatically,
+Modules files can be found in `./app/modules/yourModule`. Each module is bootstrapped automatically,
 as long as it follows the structure below:
 
 ```
-client           - it contains client related JS assets, by default
-                   they bootsrap React application.
+
 commands         - it contains custom cli commands
 controllers      - server side controllers, keep them small only to
                    bind to route actions, and implement all the logic
                    inside services.
 helpers          - helpers can be used for generic helper functions
                    that can be accessed from anywhere.
-models           - model file in this case is model schema description
-                   with other options, it creates actual model when it
-                   bootstraps and starts the server.
+models           - model files with the model schema description
+                   and other options
 services         - this is where all your server side application logic
                    should be implemented.
+ui               - it contains UI related scripts and styles assets,
+                   by default it bootsraps React application.
+views            - server side ejs views
 module.config.js - server side application configuration.
 ```
 
-#### Module Client structure
+#### Module UI structure
 
-Module client files can be found in `./app/modules/cient`.
+Module UI files can be found in `./app/modules/yourModule/ui`.
 
 ```
 components      - All of your React components, admin related components
-                  are in 'admin' folder,
+                  are in 'admin' folder
+helpers         - Shared helper scripts
 stores          - React application stores, it uses Mobx for
                   state management.
+styles          - module styles, it may include client and admin side
 admin.config.js - Client side admin configuration for stores, routes
                   and components
 app.config.js   - Client side configuration for stores, routes and
@@ -206,32 +208,38 @@ const newFileName = UploadsHelper.getFileName('fileName.js', true);
 Available imports from `@taboo/cms-core` module:
 
 ```
-_               - lodash
-start           - to start and bootstrap the server and other utils
-cwd             - current working directory
-config          - merged application config
-app             - app related attributes
-modules         - all the bootsrtapped modules from ./app/modules
-logger          - logger function, logger.info('Info'),
-                  logger.warn('Warn'), logger.error('Error')
-arrayHelper     - helper for array manipulations
-filesHelper     - helper for file system manipulations
-apiHelper       - helper for api related functions
-ejsHelper       - server side templating helper, it uses ejs templates
-cmsHelper       - cms related (mostly koa.js and variation between 
-                  apiHelper and filesHelper logic)
-mailer          - node mailer to send emails
-sockets         - sockets server io to emit/receive messages
-events          - events receiver/emitter
-koaApp          - bootsrapped koa app
-router          - koa router
-passport        - authentication passport
-loadLocales     - preloads all locales
-getAclResources - returns (preloads if needed) acl resources
-getLocales      - returns all locales
-isAllowed       - implementation of ACL based logic to get if resource
-                  is allowed.
+_                    - lodash
+start                - to start and bootstrap the server and other utils
+cwd                  - current working directory
+config               - merged application config
+app                  - app related attributes
+modules              - all the bootsrtapped modules from ./app/modules
+logger               - logger function, logger.info('Info'),
+                       logger.warn('Warn'), logger.error('Error')
+arrayHelper          - helper for array manipulations
+filesHelper          - helper for file system manipulations
+apiHelper            - helper for api related functions
+ejsHelper            - server side templating helper, it uses ejs 
+                       templates
+cmsHelper            - cms related (mostly koa.js and variation between 
+                       apiHelper and filesHelper logic)
+mailer               - node mailer to send emails
+sockets              - sockets server io to emit/receive messages
+events               - events receiver/emitter
+koaApp               - bootsrapped koa app
+router               - koa router
+passport             - authentication passport
+loadFileTranslations - loads all app translations from locales files
+getFileTranslations  - returns loaded translations from locales files
+setLanguage          - sets application language and loads correct 
+                       translations
+getAclResources      - returns (preloads if needed) acl resources
+isAllowed            - implementation of ACL based logic to get if
+                       resource is allowed.
+getFileTranslationsAsArray - returns all translations as single array
+                              of objects
 ```
+You can find more information in [@taboo/cms-core](https://www.npmjs.com/package/@taboo/cms-core) module
 
 #### CMS CLI Commands
  Create New User:
@@ -244,7 +252,7 @@ npm run taboo-cms-cli locale export
 ```
 Import all locales from csv files:
 ```
-npm run taboo-cms-cli locale export --type=both
+npm run taboo-cms-cli locale import both
 ```
 Run DB migrations:
 ```
@@ -252,14 +260,12 @@ npm run taboo-cms-cli db migrate
 ```
 Run DB migration UP:
 ```
-npm run taboo-cms-cli db up --file=2020-04-10-load-initial-data.js
+npm run taboo-cms-cli db up 2020-04-10-load-initial-data.js
 ```
 Run DB migration DOWN:
 ```
-npm run taboo-cms-cli db down --file=2020-04-10-load-initial-data.js
+npm run taboo-cms-cli db down 2020-04-10-load-initial-data.js
 ```
-
-\* - You can find more information here: [@taboo/cms-core](https://www.npmjs.com/package/@taboo/cms-core)
 
 ## Roadmap
 
@@ -290,11 +296,12 @@ Once the code is cloned, make sure it's on `master` branch, as `develop` is the 
 ```
 git checkout master
 ```
+Consider checking out specific tag for release.
 
 Install all npm dependencies:
 
 ```
-npm install
+npm i
 ```
 
 Create `./config/local.js` or copy from `./config/SAMPLE.local.js` to `./config/local.js`:
@@ -327,7 +334,7 @@ production.js
 ```
 
 Depending on the selected environment (default 'development') it will load one of the above files
-predefined config.
+with the predefined config.
 
 The way configs are overridden (if empty is exported, nothing will be overridden in default config):
 

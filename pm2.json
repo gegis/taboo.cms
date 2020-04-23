@@ -5,7 +5,12 @@
       "script": "index.js",
       "max_memory_restart": "500M",
       "env": {
-        "NODE_ENV": "develop"
+        "NODE_ENV": "production",
+        "max_memory_restart": "500M"
+      },
+      "env_develop": {
+        "NODE_ENV": "staging",
+        "max_memory_restart": "500M"
       },
       "env_staging": {
         "NODE_ENV": "staging",

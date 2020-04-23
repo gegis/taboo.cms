@@ -89,6 +89,7 @@ nbproject
 lib-cov
 lcov.info
 pids
+logs
 results
 node_modules
 .node_history
@@ -113,3 +114,4 @@ logs/*
 data/*
 !data/.gitkeep
 app/locales/_*.js
+app/locales/admin/_*.js

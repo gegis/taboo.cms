@@ -2,6 +2,12 @@ const argv = require('yargs').argv;
 const CLIHelper = require('./CLIHelper');
 
 class CLIParser {
+  /**
+   * @param position
+   * @param exitOnEmpty
+   * @param exitMessage
+   * @returns {string|null}
+   */
   getCmdArg(position, exitOnEmpty = false, exitMessage = 'Please specify command to run') {
     if (argv._ && argv._[position]) {
       return argv._[position];

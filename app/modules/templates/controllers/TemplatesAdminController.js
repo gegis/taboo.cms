@@ -39,7 +39,7 @@ class TemplatesAdminController extends AbstractAdminController {
         }
       }
       if (!item._id) {
-        dbItem = await TemplateModel.create(item);
+        dbItem = await TemplatesService.createDbTemplate(item);
         item = Object.assign(item, dbItem._doc);
       }
       items.push(item);

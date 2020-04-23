@@ -42,7 +42,7 @@ class LocaleCommand {
    * @returns {string}
    */
   async import() {
-    let importType = CLIParser.getCmdOption('type', true, 'Please specify import --type=client|admin|both');
+    let importType = CLIParser.getCmdArg(2, true, "Please specify import type 'client|admin|both'");
     if (importType === 'client' || importType === 'both') {
       await this.importClient();
     }

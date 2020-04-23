@@ -101,6 +101,38 @@ class TemplatesService {
     return template;
   }
 
+  async initDbTemplates() {
+    const fsItems = await this.getFsTemplates();
+    for (let i = 0; i < fsItems.length; i++) {
+      await this.createDbTemplate(fsItems[i]);
+    }
+  }
+
+  async removeDbTemplates() {
+    const fsItems = await this.getFsTemplates();
+    for (let i = 0; i < fsItems.length; i++) {
+      await TemplateModel.deleteOne({ name: fsItems[i].name });
+    }
+  }
+
+  async createDbTemplate(fsItem) {
+    let item = Object.assign({}, fsItem);
+    item.style = this.generateTemplateStyle(item, item.styleTemplate);
+    return TemplateModel.create(item);
+  }
+
+  generateTemplateStyle(item, styleTemplate) {
+    let style, sRegExInput;
+    if (item && styleTemplate) {
+      style = item.styleTemplate.toString();
+      for (let key in item.settings) {
+        sRegExInput = new RegExp(`{{${key}}}`, 'g');
+        style = style.replace(sRegExInput, item.settings[key]);
+      }
+    }
+    return style;
+  }
+
   async getFsTemplates() {
     const templates = [];
     const tplNames = this.getAllFsTemplatesNames();

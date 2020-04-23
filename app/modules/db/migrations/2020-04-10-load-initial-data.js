@@ -11,6 +11,7 @@ const { admin: { cms: { initialUser, adminRoleName, userRoleName, userAclResourc
 const pages = require('../data/pages');
 const navigation = require('../data/navigation');
 const settings = require('../data/settings');
+const TemplatesService = require('modules/templates/services/TemplatesService');
 
 module.exports = {
   adminRoleName: adminRoleName,
@@ -33,6 +34,9 @@ module.exports = {
     CLIHelper.log(`PASSWORD: ${initialUser.pass}`, 'notice');
     CLIHelper.log('Make sure to change the password later on!', 'warn');
 
+    await TemplatesService.initDbTemplates();
+    CLIHelper.log('Initialized Templates', 'info');
+
     await this.createPages(pages);
     CLIHelper.log('Created Pages', 'info');
 
@@ -54,6 +58,9 @@ module.exports = {
 
     this.adminUser = await this.deleteAdminUser();
     CLIHelper.log(`Deleted Admin User: ${this.adminUser.email}`, 'info');
+
+    await TemplatesService.removeDbTemplates();
+    CLIHelper.log('Removed Templates', 'info');
 
     await this.deletePages(pages);
     CLIHelper.log('Deleted Pages', 'info');

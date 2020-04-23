@@ -11,6 +11,9 @@ class CLIService {
     if (!this.commands[command]) {
       throw new Error(`Command '${command}' not found.`);
     }
+    if (this.commands[command].actions.indexOf(action) === -1) {
+      throw new Error(`Action '${action}' not found.`);
+    }
     const commandLib = await this.getLib(command);
     try {
       result = await commandLib[action]();

@@ -33,7 +33,7 @@ class DbCommand {
   }
 
   async up() {
-    let fileName = CLIParser.getCmdOption('file', true, 'Please specify db down --file=file-name.js');
+    let fileName = CLIParser.getCmdArg(2, true, "Please specify 'db up file-name.js'");
     let newMigration = null;
     let migrationEntry;
     if (fileName) {
@@ -53,7 +53,7 @@ class DbCommand {
   }
 
   async down() {
-    let fileName = CLIParser.getCmdOption('file', true, 'Please specify db down --file=file-name.js');
+    let fileName = CLIParser.getCmdArg(2, true, "Please specify 'db down file-name.js'");
     let migrationEntry;
     if (fileName) {
       migrationEntry = await this.getMigrationEntry(fileName);
