@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
-import Layout from 'app/modules/core/ui/components/Layout';
 import { withRouter } from 'react-router-dom';
 
 class ModuleName extends Component {
@@ -15,9 +14,13 @@ class ModuleName extends Component {
   }
 
   render() {
-    const { items } = this.props.moduleNameStore;
+    const {
+      moduleNameStore: { items },
+      templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {},
+    } = this.props;
+    const Template = templateComponents[defaultTemplateName];
     return (
-      <Layout className="moduleName">
+      <Template className="moduleName">
         <div className="items-list">
           {items.map(item => (
             <div key={item._id}>
@@ -27,15 +30,16 @@ class ModuleName extends Component {
             </div>
           ))}
         </div>
-      </Layout>
+      </Template>
     );
   }
 }
 
 ModuleName.propTypes = {
   moduleNameStore: PropTypes.object.isRequired,
+  templatesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(withRouter, inject('moduleNameStore'), observer);
+const enhance = compose(withRouter, inject('moduleNameStore', 'templatesStore'), observer);
 
 export default enhance(ModuleName);

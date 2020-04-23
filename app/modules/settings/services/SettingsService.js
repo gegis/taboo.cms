@@ -84,6 +84,7 @@ class SettingsService {
   }
 
   parseValue(item) {
+    //TODO rethink this originalValue and value replace as it might lead to some issues!!!
     item.originalValue = '';
     if (item && item.type && typeof item.value !== 'object') {
       item.originalValue = item.value;

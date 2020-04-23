@@ -19,7 +19,7 @@ module.exports = {
       method: 'GET',
       path: previewRoute,
       action: TemplatesController.preview,
-      policies: ['i18n', 'isAdmin'],
+      policies: ['isAdmin'],
     },
     {
       method: 'GET',

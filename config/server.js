@@ -1,7 +1,7 @@
 module.exports = {
   port: process.env.PORT || 3000,
   secretKeys: ['REPLACE-ME-123456', '654321-REPLACE-ME'],
-  globalPolicies: ['acl'],
+  globalPolicies: ['acl', 'i18n'],
   templates: {
     themesPath: 'app/themes',
     extension: 'ejs',
