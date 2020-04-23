@@ -20,6 +20,7 @@ import {
 } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import DocumentUpload from 'app/modules/uploads/ui/components/DocumentUpload';
+import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 
 const { StringType } = Schema.Types;
 
@@ -98,12 +99,8 @@ class MyProfile extends React.Component {
   }
 
   render() {
-    const {
-      usersStore,
-      countriesStore,
-      templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {},
-    } = this.props;
-    const Template = templateComponents[defaultTemplateName];
+    const { usersStore, countriesStore, templatesStore } = this.props;
+    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     let pageTitle = 'My Personal Profile';
     let descriptionTitle = 'Bio';
     if (usersStore.user.businessAccount) {

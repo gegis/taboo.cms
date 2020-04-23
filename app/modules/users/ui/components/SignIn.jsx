@@ -21,6 +21,7 @@ import {
 import Translation from 'app/modules/core/ui/components/Translation';
 import NavLink from 'app/modules/core/ui/components/NavLink';
 import SocketsClient from 'app/modules/core/ui/helpers/SocketsClient';
+import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 
 const { StringType } = Schema.Types;
 
@@ -110,9 +111,9 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { authStore, templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
+    const { authStore, templatesStore } = this.props;
+    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     const { formValue, formError } = this.state;
-    const Template = templateComponents[defaultTemplateName];
 
     if (authStore && authStore.authenticated) {
       return <Redirect to="/dashboard" />;

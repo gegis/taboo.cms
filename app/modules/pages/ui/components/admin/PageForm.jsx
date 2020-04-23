@@ -88,7 +88,7 @@ class PageForm extends React.Component {
             </button>
           </div>
         </FormGroup>
-        <RichTextModal />
+        <RichTextModal value={item.body} />
       </Form>
     );
   }

@@ -20,6 +20,7 @@ import {
 } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
+import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 
 const { StringType } = Schema.Types;
 
@@ -99,9 +100,9 @@ class ResetPassword extends React.Component {
   }
 
   render() {
-    const { authStore, templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
+    const { authStore, templatesStore } = this.props;
     const { formValue, formError } = this.state;
-    const Template = templateComponents[defaultTemplateName];
+    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     if (authStore && authStore.authenticated) {
       if (authStore.admin) {
         return <Redirect to="/admin" />;

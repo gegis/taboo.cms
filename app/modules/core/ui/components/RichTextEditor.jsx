@@ -5,16 +5,14 @@ import CKEditor from 'ckeditor4-react';
 class RichTextEditor extends React.Component {
   constructor(props) {
     super(props);
+    const { template = 'standard' } = props;
     this.editor = null;
-    this.state = {
-      data: '',
-    };
     this.defultConfig = {
       allowedContent: true,
       removeFormatAttributes: '',
-      contentsCss: ['/css/lib.css', '/css/app.css'],
+      contentsCss: [`/css/${template}/lib.css`, `/css/${template}/index.css`],
       enterMode: 2, // P-1, BR-2, DIV-3
-      height: '50vh',
+      height: '60vh',
     };
     // this.defultConfig.protectedSource.push(/<i[^>]*><\/i>/g);
     // this.defultConfig.protectedSource.push(/<span[^>]*><\/span>/g);
@@ -39,7 +37,6 @@ class RichTextEditor extends React.Component {
   }
 
   onLoad() {
-    const { value } = this.props;
     if (window.CKEDITOR) {
       // This is the only one way to prevent removing empty tags like i or span...
       window.CKEDITOR.dtd.$removeEmpty = {
@@ -49,10 +46,6 @@ class RichTextEditor extends React.Component {
       // window.CKEDITOR.dtd.$blockLimit.div = 0;
       window.CKEDITOR.dtd.a.div = 1;
     }
-    // Load content only after dtd manipulation
-    this.setState({
-      data: value,
-    });
   }
 
   onChange(event) {
@@ -61,12 +54,12 @@ class RichTextEditor extends React.Component {
   }
 
   render() {
-    const { data } = this.state;
+    const { value = '' } = this.props;
     const { config = this.defultConfig } = this.props;
     return (
       <CKEditor
         ref={ref => (this.editor = ref)}
-        data={data}
+        data={value}
         onChange={this.onChange}
         config={config}
         type="classic"
@@ -81,6 +74,7 @@ RichTextEditor.propTypes = {
   config: PropTypes.object,
   value: PropTypes.string,
   id: PropTypes.string,
+  template: PropTypes.string,
 };
 
 export default RichTextEditor;

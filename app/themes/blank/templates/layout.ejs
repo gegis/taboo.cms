@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="<%=language%>">
+  <%- include('/themes/standard/templates/_head', {helpers: helpers}) %>
+  <body>
+    <div id="root">
+      <div class="loading">
+        <div class="loader"></div>
+      </div>
+      <div class="rs-container standard-template">
+        <div class="rs-content main-content">
+          <%-_body %>
+        </div>
+      </div>
+    </div>
+    <%- include('/themes/standard/templates/_scripts', {helpers: helpers}) %>
+  </body>
+</html>

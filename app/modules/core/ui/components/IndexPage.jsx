@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 import { Col, Grid, Row, Panel } from 'rsuite';
+import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 
 class IndexPage extends Component {
   constructor(props) {
@@ -10,8 +11,7 @@ class IndexPage extends Component {
   }
 
   render() {
-    const { templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
-    const Template = templateComponents[defaultTemplateName];
+    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore: this.props.templatesStore });
     return (
       <Template>
         <Grid>

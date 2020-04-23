@@ -6,6 +6,7 @@ import { observer, inject } from 'mobx-react';
 import { Panel, Form, Message, Grid, Row, Col, Schema, Notification, Icon } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import DocumentUpload from 'app/modules/uploads/ui/components/DocumentUpload';
+import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 
 const { StringType } = Schema.Types;
 
@@ -128,13 +129,8 @@ class AccountVerification extends React.Component {
   }
 
   render() {
-    const {
-      usersStore,
-      uploadsStore,
-      templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {},
-    } = this.props;
-    const Template = templateComponents[defaultTemplateName];
-
+    const { usersStore, uploadsStore, templatesStore } = this.props;
+    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     return (
       <Template className="account-verification-page">
         <Grid fluid>

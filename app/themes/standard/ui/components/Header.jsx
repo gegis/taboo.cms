@@ -36,10 +36,10 @@ class Header extends React.Component {
   }
 
   getLogo() {
-    const { templatesStore } = this.props;
+    const { templatesStore: { settings: { headerLogo = null } = {} } = {} } = this.props;
     let logo = null;
-    if (templatesStore.settings.headerLogo) {
-      logo = <img src={templatesStore.settings.headerLogo} alt="logo" />;
+    if (headerLogo) {
+      logo = <img src={headerLogo} alt="logo" />;
     }
     return logo;
   }

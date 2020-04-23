@@ -14,9 +14,7 @@ class RichTextModal extends React.Component {
     this.modal = React.createRef();
     this.pagesStore = props.pagesStore;
     this.localeStore = props.localeStore;
-    this.state = {
-      value: this.pagesStore.page.body,
-    };
+    this.state = { value: props.value };
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onOpen = this.onOpen.bind(this);
@@ -87,6 +85,7 @@ class RichTextModal extends React.Component {
 }
 
 RichTextModal.propTypes = {
+  value: PropTypes.string,
   pagesStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
 };

@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
-import { Container, Content, Grid, Row, Col, Message } from 'rsuite';
+import { Container, Content, Grid, Row, Col } from 'rsuite';
 import { MetaTags } from 'react-meta-tags';
 
 import config from '../../config';
-import Header from './Header';
-import Footer from './Footer';
 import NotificationsHelper from 'app/modules/core/ui/helpers/NotificationsHelper';
 
 import CopyInput from 'modules/core/ui/components/CopyInput';
@@ -23,28 +21,14 @@ class Template extends React.Component {
 
   componentDidMount() {
     const { localeStore, notificationsStore, templatesStore } = this.props;
-    TemplatesHelper.loadLibStylesheet(config.name);
-    TemplatesHelper.loadStylesheet(config.name);
+    TemplatesHelper.loadLibStylesheet('standard');
+    TemplatesHelper.loadStylesheet('standard');
     TemplatesHelper.preloadTemplate(config.name, { templatesStore });
     this.dispose = autorun(NotificationsHelper.handleNotifications.bind(this, notificationsStore, localeStore));
   }
 
   componentWillUnmount() {
     this.dispose();
-  }
-
-  getVerificationMessage() {
-    return (
-      <Message
-        className="header-notification"
-        type="error"
-        description={
-          <div>
-            Please <Link to="/account-verify">verify</Link> your account.
-          </div>
-        }
-      />
-    );
   }
 
   getMetaTitle() {
@@ -66,9 +50,7 @@ class Template extends React.Component {
         <MetaTags>
           <title>{this.getMetaTitle()}</title>
         </MetaTags>
-        <Header />
         {uiStore.loading && <div className="loader" />}
-        {authStore.user.id && !authStore.verified && this.getVerificationMessage()}
         <Content className="main-content">
           <Grid>
             <Row>
@@ -76,7 +58,6 @@ class Template extends React.Component {
             </Row>
           </Grid>
         </Content>
-        <Footer />
         <CopyInput />
       </Container>
     );

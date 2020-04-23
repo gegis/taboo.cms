@@ -8,6 +8,19 @@ class TemplatesHelper {
     this.emitTemplateChanges = this.emitTemplateChanges.bind(this);
   }
 
+  getTemplate(name, { templatesStore }) {
+    const { templateComponents = {}, defaultTemplateName = 'standard' } = templatesStore;
+    if (!templateComponents[name]) {
+      name = defaultTemplateName;
+    }
+    return templateComponents[name];
+  }
+
+  getDefaultTemplate({ templatesStore }) {
+    const { templateComponents = {}, defaultTemplateName = 'standard' } = templatesStore;
+    return templateComponents[defaultTemplateName];
+  }
+
   preloadTemplate(name, { templatesStore }) {
     templatesStore.loadTemplate(name);
   }
@@ -35,6 +48,14 @@ class TemplatesHelper {
     this.changesTimeout = setTimeout(() => {
       SocketsClient.emit(templatesStore.templatePreviewEmit, { user: authStore.user, template: templatesStore.item });
     }, this.changesTimeoutDelay);
+  }
+
+  loadLibStylesheet(name) {
+    const stylesheet = document.getElementById('theme-lib-stylesheet');
+    const stylesheetHref = `/css/${name}/lib.css?v=${version}`;
+    if (stylesheet && stylesheet.href.indexOf(stylesheetHref) === -1) {
+      stylesheet.href = stylesheetHref;
+    }
   }
 
   loadStylesheet(name) {

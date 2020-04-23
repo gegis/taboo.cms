@@ -6,11 +6,15 @@ import { withRouter } from 'react-router-dom';
 
 import Translation from 'app/modules/core/ui/components/Translation';
 import GalleryModal from 'modules/galleries/ui/components/GalleryModal';
+import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
+
+const locationOrigin = window.location.origin;
 
 class Page extends Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
+    this.registerLinks = this.registerLinks.bind(this);
     this.registerGalleryImageLinks = this.registerGalleryImageLinks.bind(this);
     this.showGalleryImage = this.showGalleryImage.bind(this);
   }
@@ -33,6 +37,7 @@ class Page extends Component {
     const { pagesStore } = this.props;
     pagesStore.load(url).then(() => {
       window.scrollTo(0, 0);
+      this.registerLinks();
       this.registerGalleryImageLinks();
     });
   }
@@ -53,6 +58,24 @@ class Page extends Component {
       body = <div dangerouslySetInnerHTML={{ __html: pagesStore.page.body }} />;
     }
     return body;
+  }
+
+  parseHref(href = '') {
+    return href.replace(locationOrigin, '');
+  }
+
+  navigateToPage(href, event) {
+    const { history } = this.props;
+    event.preventDefault();
+    event.stopPropagation();
+    return history.push(this.parseHref(href));
+  }
+
+  registerLinks() {
+    const links = document.querySelectorAll('.page a.nav');
+    Array.from(links).forEach(link => {
+      link.addEventListener('click', this.navigateToPage.bind(this, link.href));
+    });
   }
 
   registerGalleryImageLinks() {
@@ -80,14 +103,8 @@ class Page extends Component {
     return template;
   }
 
-  getTemplateComponent() {
-    const { templatesStore: { templateComponents = {} } = {} } = this.props;
-    const templateName = this.getTemplateName();
-    return templateComponents[templateName];
-  }
-
   render() {
-    const Template = this.getTemplateComponent();
+    const Template = TemplatesHelper.getTemplate(this.getTemplateName(), { templatesStore: this.props.templatesStore });
     return (
       <Template metaTitle={this.getPageTitle()}>
         <div className="page">
@@ -104,6 +121,7 @@ Page.propTypes = {
   pagesStore: PropTypes.object.isRequired,
   templatesStore: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 const enhance = compose(withRouter, inject('pagesStore', 'templatesStore'), observer);
