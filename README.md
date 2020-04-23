@@ -264,7 +264,6 @@ npm run taboo-cms-cli db down --file=2020-04-10-load-initial-data.js
 ## Roadmap
 
 - Page construction blocks for easier content management
-- Layouts management module
 - Make uploads module easily reusable
 - Translations admin module
 - Improve admin search to be able to search by field
