@@ -3,14 +3,18 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
+import Translation from 'modules/core/ui/components/Translation';
 
 class NoAccess extends React.Component {
   render() {
-    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore: this.props.templatesStore });
+    const { localeStore, templatesStore } = this.props;
+    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     return (
-      <Template metaTitle="403" className="not-access">
+      <Template metaTitle={localeStore.getTranslation('No Access')} className="no-access">
         <h1>403</h1>
-        <p>No Access</p>
+        <p>
+          <Translation message="No Access" />
+        </p>
       </Template>
     );
   }
@@ -18,8 +22,9 @@ class NoAccess extends React.Component {
 
 NoAccess.propTypes = {
   templatesStore: PropTypes.object,
+  localeStore: PropTypes.object,
 };
 
-const enhance = compose(inject('templatesStore'), observer);
+const enhance = compose(inject('templatesStore', 'localeStore'), observer);
 
 export default enhance(NoAccess);

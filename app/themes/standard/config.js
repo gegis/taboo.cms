@@ -3,7 +3,7 @@ module.exports = {
   title: 'Standard',
   description: 'Standard Template',
   settings: {
-    headerLogo: '/images/standard/logo.png',
+    headerLogo: '/images/_shared/logo.png',
     headerColor: '#ffffff',
     headerTextColor: '#575757',
     footerColor: '#142a3e',

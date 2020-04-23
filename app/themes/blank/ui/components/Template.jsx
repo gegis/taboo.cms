@@ -21,10 +21,13 @@ class Template extends React.Component {
 
   componentDidMount() {
     const { localeStore, notificationsStore, templatesStore } = this.props;
-    TemplatesHelper.loadLibStylesheet('standard');
-    TemplatesHelper.loadStylesheet('standard');
+    TemplatesHelper.loadLibStylesheet('_shared');
+    TemplatesHelper.loadStylesheet('_shared');
     TemplatesHelper.preloadTemplate(config.name, { templatesStore });
-    this.dispose = autorun(NotificationsHelper.handleNotifications.bind(this, notificationsStore, localeStore));
+    this.dispose = autorun(() => {
+      TemplatesHelper.loadStyle({ templatesStore });
+      NotificationsHelper.handleNotifications(notificationsStore, localeStore);
+    });
   }
 
   componentWillUnmount() {
@@ -42,9 +45,7 @@ class Template extends React.Component {
   }
 
   render() {
-    const { children, uiStore, authStore, navigationStore, templatesStore, className } = this.props;
-    TemplatesHelper.loadStyle({ templatesStore });
-    TemplatesHelper.preloadNavigation(config.name, { authStore, navigationStore, templatesStore });
+    const { children, uiStore, className } = this.props;
     return (
       <Container className={classNames('template', 'standard-template', className)}>
         <MetaTags>
@@ -71,15 +72,9 @@ Template.propTypes = {
   uiStore: PropTypes.object,
   notificationsStore: PropTypes.object,
   localeStore: PropTypes.object,
-  authStore: PropTypes.object,
-  navigationStore: PropTypes.object,
   templatesStore: PropTypes.object,
 };
 
-const enhance = compose(
-  withRouter,
-  inject('uiStore', 'authStore', 'notificationsStore', 'localeStore', 'navigationStore', 'templatesStore'),
-  observer
-);
+const enhance = compose(withRouter, inject('uiStore', 'notificationsStore', 'localeStore', 'templatesStore'), observer);
 
 export default enhance(Template);

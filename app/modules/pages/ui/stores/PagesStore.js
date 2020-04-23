@@ -1,14 +1,14 @@
 import { decorate, observable, action, runInAction } from 'mobx';
 import axios from 'axios';
 
-const { language = 'en', templates: { defaultTemplate = 'standard' } = {} } = window.app.config;
+const { language = 'en' } = window.app.config;
 
 const newPage = {
   id: null,
   title: '',
   url: '',
   body: '',
-  template: defaultTemplate,
+  template: '',
   language: language,
   background: '',
   meta: {},

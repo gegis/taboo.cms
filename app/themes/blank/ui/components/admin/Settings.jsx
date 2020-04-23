@@ -53,6 +53,33 @@ class Settings extends React.Component {
               </FormGroup>
             </Form>
           </Panel>
+          <Panel header="Theme">
+            <SettingsInput
+              type="ColorPicker"
+              label="Background Color"
+              settingsKey="settings"
+              settingsValueKey="backgroundColor"
+            />
+            <SettingsInput type="ColorPicker" label="Text Color" settingsKey="settings" settingsValueKey="textColor" />
+            <SettingsInput
+              type="ColorPicker"
+              label="Primary Color"
+              settingsKey="settings"
+              settingsValueKey="primaryColor"
+            />
+            <SettingsInput
+              type="ColorPicker"
+              label="Primary Color Active"
+              settingsKey="settings"
+              settingsValueKey="primaryColorActive"
+            />
+            <SettingsInput
+              type="ColorPicker"
+              label="Button Text Color"
+              settingsKey="settings"
+              settingsValueKey="buttonTextColor"
+            />
+          </Panel>
         </PanelGroup>
       </div>
     );

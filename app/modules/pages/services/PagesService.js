@@ -7,7 +7,8 @@ const GalleryModel = require('modules/galleries/models/GalleryModel');
 
 class PagesService {
   async getPageResponse(ctx, route) {
-    const { client: { metaTitle } = {} } = config;
+    const { client: { metaTitle: defaultMetatitle } = {} } = config;
+    const { viewParams: { metaTitle = defaultMetatitle } = {} } = ctx;
     let template, pageTpl, pageVariables, pageResponse;
     const page = await this.getPage(ctx, route);
 
@@ -16,6 +17,7 @@ class PagesService {
         template = '<%-_body%>';
       } else {
         template = await cmsHelper.getLayout(page.template); // TODO (templates) think of redo core and classic layouts/templates
+        ctx.viewParams._template = page.template;
       }
       pageTpl = await cmsHelper.getView(ctx.routeParams.moduleRoute);
       pageVariables = page.variables || {};

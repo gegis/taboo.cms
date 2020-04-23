@@ -67,7 +67,7 @@ class TemplatesService {
   }
 
   async getTemplateLanguageSettings(template, language) {
-    if (template && language && template.languageSettings[language]) {
+    if (template && language && template.languageSettings && template.languageSettings[language]) {
       return template.languageSettings[language];
     }
     return {};

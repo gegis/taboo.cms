@@ -55,4 +55,5 @@ module.exports = {
   'Legal Representative': 'Legal Representative',
   'Enter your email and we will send you a link to reset your password': 'Enter your email and we will send you a link to reset your password',
   Header: 'Header',
+  'No Access': 'No Access',
 };

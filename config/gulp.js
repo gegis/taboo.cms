@@ -83,7 +83,7 @@ module.exports = {
   copy: {
     paths: [
       {
-        src: 'app/themes/standard/assets/images/favicon.ico',
+        src: 'app/themes/_shared/assets/images/favicon.ico',
         dest: 'public',
       },
       {

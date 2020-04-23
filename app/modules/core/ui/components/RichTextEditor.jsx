@@ -5,7 +5,7 @@ import CKEditor from 'ckeditor4-react';
 class RichTextEditor extends React.Component {
   constructor(props) {
     super(props);
-    const { template = 'standard' } = props;
+    const { template = '_shared' } = props;
     this.editor = null;
     this.defultConfig = {
       allowedContent: true,

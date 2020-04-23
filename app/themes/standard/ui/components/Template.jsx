@@ -22,11 +22,15 @@ class Template extends React.Component {
   }
 
   componentDidMount() {
-    const { localeStore, notificationsStore, templatesStore } = this.props;
-    TemplatesHelper.loadLibStylesheet(config.name);
-    TemplatesHelper.loadStylesheet(config.name);
+    const { localeStore, notificationsStore, templatesStore, navigationStore, authStore } = this.props;
+    TemplatesHelper.loadLibStylesheet('_shared');
+    TemplatesHelper.loadStylesheet('_shared');
     TemplatesHelper.preloadTemplate(config.name, { templatesStore });
-    this.dispose = autorun(NotificationsHelper.handleNotifications.bind(this, notificationsStore, localeStore));
+    this.dispose = autorun(() => {
+      TemplatesHelper.loadStyle({ templatesStore });
+      TemplatesHelper.preloadNavigation(config.name, { authStore, navigationStore, templatesStore });
+      NotificationsHelper.handleNotifications(notificationsStore, localeStore);
+    });
   }
 
   componentWillUnmount() {
@@ -58,9 +62,7 @@ class Template extends React.Component {
   }
 
   render() {
-    const { children, uiStore, authStore, navigationStore, templatesStore, className } = this.props;
-    TemplatesHelper.loadStyle({ templatesStore });
-    TemplatesHelper.preloadNavigation(config.name, { authStore, navigationStore, templatesStore });
+    const { children, uiStore, authStore, className } = this.props;
     return (
       <Container className={classNames('template', 'standard-template', className)}>
         <MetaTags>

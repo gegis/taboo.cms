@@ -1,0 +1,34 @@
+#root {
+  display: flex;
+  height: 100%;
+  .loading {
+    color: #fafafa;
+    background-color: #142a3e;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: 1000;
+  }
+}
+.loader {
+  border: 6px solid @B025;
+  border-top: 6px solid transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  position: fixed;
+  top: ~'calc(50vh - 20px)';
+  left: ~'calc(50vw - 20px)';
+  z-index: 10000;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

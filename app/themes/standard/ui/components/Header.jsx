@@ -4,9 +4,9 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Header as RsHeader, Row, Col, Grid } from 'rsuite';
 import { Link, withRouter } from 'react-router-dom';
-import HeaderSubNav from './HeaderSubNav';
-import MobileSidebar from './MobileSidebar';
-import Navigation from './Navigation';
+import HeaderSubNav from 'app/themes/_shared/ui/components/HeaderSubNav';
+import MobileSidebar from 'app/themes/_shared/ui/components/MobileSidebar';
+import Navigation from 'app/themes/_shared/ui/components/Navigation';
 
 class Header extends React.Component {
   constructor(props) {

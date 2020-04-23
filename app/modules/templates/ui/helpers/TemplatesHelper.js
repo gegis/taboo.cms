@@ -10,10 +10,11 @@ class TemplatesHelper {
 
   getTemplate(name, { templatesStore }) {
     const { templateComponents = {}, defaultTemplateName = 'standard' } = templatesStore;
-    if (!templateComponents[name]) {
-      name = defaultTemplateName;
+    if (templateComponents[name]) {
+      return templateComponents[name];
     }
-    return templateComponents[name];
+    // TODO show loading rather than loading standard template
+    return templateComponents[defaultTemplateName];
   }
 
   getDefaultTemplate({ templatesStore }) {

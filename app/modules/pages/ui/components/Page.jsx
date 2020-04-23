@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import Translation from 'app/modules/core/ui/components/Translation';
 import GalleryModal from 'modules/galleries/ui/components/GalleryModal';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
+import NotFound from 'modules/core/ui/components/NotFound';
 
 const locationOrigin = window.location.origin;
 
@@ -94,26 +95,23 @@ class Page extends Component {
     currentModal.open(url, name);
   }
 
-  getTemplateName() {
-    const { pagesStore, templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {} } = this.props;
-    let template = defaultTemplateName;
-    if (pagesStore.page && !pagesStore.pageNotFound && templateComponents[pagesStore.page.template]) {
-      template = pagesStore.page.template;
-    }
-    return template;
-  }
-
   render() {
-    const Template = TemplatesHelper.getTemplate(this.getTemplateName(), { templatesStore: this.props.templatesStore });
-    return (
-      <Template metaTitle={this.getPageTitle()}>
-        <div className="page">
-          <h1 className="title">{this.getPageTitle()}</h1>
-          <div className="body">{this.getPageBody()}</div>
-        </div>
-        <GalleryModal ref={this.modal} />
-      </Template>
-    );
+    const { pagesStore: { page = {}, pageNotFound } = {} } = this.props;
+
+    if (pageNotFound) {
+      return <NotFound />;
+    } else {
+      const Template = TemplatesHelper.getTemplate(page.template, { templatesStore: this.props.templatesStore });
+      return (
+        <Template metaTitle={this.getPageTitle()}>
+          <div className="page">
+            <h1 className="title">{this.getPageTitle()}</h1>
+            <div className="body">{this.getPageBody()}</div>
+          </div>
+          <GalleryModal ref={this.modal} />
+        </Template>
+      );
+    }
   }
 }
 
