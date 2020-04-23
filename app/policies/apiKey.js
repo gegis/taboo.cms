@@ -5,7 +5,7 @@ const UserService = require('modules/users/services/UsersService');
 
 // TODO - Rethink global policies - because it first hits global policy 'acl'.... which checks for user in ctx session
 module.exports = async (ctx, next) => {
-  const { header: { authorization } = {}, taboo: { moduleRoute = {} } = {} } = ctx;
+  const { header: { authorization } = {}, routeParams: { moduleRoute = {} } = {} } = ctx;
   let token = null;
   let user, allowed;
   if (!authorization) {

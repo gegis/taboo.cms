@@ -34,6 +34,18 @@ class SettingsAdminController extends AbstractAdminController {
     return SettingsService.stringifyValue(data);
   }
 
+  async afterUpdate(ctx, itemResult) {
+    // Clear settings cache on update
+    SettingsService.deleteSettingsCache();
+    return itemResult;
+  }
+
+  async afterDelete(ctx, itemResult) {
+    // Clear settings cache on delete
+    SettingsService.deleteSettingsCache();
+    return itemResult;
+  }
+
   async getByKey(ctx) {
     const allowed = isAllowed(ctx, `admin.settings.${ctx.params.key}.view`);
     if (allowed === false) {

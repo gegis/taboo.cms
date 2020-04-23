@@ -8,25 +8,25 @@ const GalleryModel = require('modules/galleries/models/GalleryModel');
 class PagesService {
   async getPageResponse(ctx, route) {
     const { client: { metaTitle } = {} } = config;
-    let layout, pageTpl, pageVariables, pageResponse;
+    let template, pageTpl, pageVariables, pageResponse;
     const page = await this.getPage(ctx, route);
 
     if (page) {
-      if (page.layout === 'no-layout') {
-        layout = '<%-_body%>';
+      if (!page.template || page.template === 'empty') {
+        template = '<%-_body%>';
       } else {
-        layout = await cmsHelper.getLayout(page.layout);
+        template = await cmsHelper.getLayout(page.template); // TODO (templates) think of redo core and classic layouts/templates
       }
-      pageTpl = await cmsHelper.getView(ctx.taboo.moduleRoute);
+      pageTpl = await cmsHelper.getView(ctx.routeParams.moduleRoute);
       pageVariables = page.variables || {};
-      pageVariables = Object.assign({}, ctx.view, pageVariables);
+      pageVariables = Object.assign({}, ctx.viewParams, pageVariables);
       pageVariables.metaTitle = `${page.title} | ${metaTitle}`;
       pageVariables.pageTitle = page.title;
       pageVariables.pageBody = page.body;
       if (page.language) {
-        LanguageService.setLanguage(ctx, page.language);
+        LanguageService.setLanguage(ctx, 'client', { language: page.language });
       }
-      pageResponse = cmsHelper.composeResponse(ctx, layout, pageTpl, pageVariables);
+      pageResponse = cmsHelper.composeResponse(ctx, template, pageTpl, pageVariables);
     }
 
     return pageResponse;
@@ -55,7 +55,7 @@ class PagesService {
       ]);
       if (page) {
         // TODO allow page select gallery template.
-        galleryTpl = await cmsHelper.getTemplate('helpers/gallery');
+        galleryTpl = await cmsHelper.getTemplate('gallery/standard');
         await this.replacePageBodyRefs(ctx, page, galleryTpl);
         // Cache only published pages
         if (page.published) {
@@ -98,13 +98,13 @@ class PagesService {
         page.body = this.replacePageBodyPages(page.body, page.pages);
       }
       if (page.galleries) {
-        page.body = this.replacePageBodyGalleries(ctx, page.body, page.galleries, galleryTpl);
+        page.body = await this.replacePageBodyGalleries(ctx, page.body, page.galleries, galleryTpl);
       }
       if (childPages) {
         page.body = this.replacePageBodyPages(page.body, childPages);
       }
       if (childGalleries) {
-        page.body = this.replacePageBodyGalleries(ctx, page.body, childGalleries, galleryTpl);
+        page.body = await this.replacePageBodyGalleries(ctx, page.body, childGalleries, galleryTpl);
       }
       if (page.body && page.body.indexOf('{{') !== -1 && page.body.indexOf('}}') !== -1) {
         data = {
@@ -164,11 +164,12 @@ class PagesService {
     return newBody;
   }
 
-  replacePageBodyGalleries(ctx, body, galleries, galleryTpl) {
+  async replacePageBodyGalleries(ctx, body, galleries, galleryTpl) {
     let newBody = body;
-    galleries.map(item => {
-      newBody = newBody.replace(`{{Gallery:${item._id}}}`, GalleryHelper.getTemplate(ctx, item, galleryTpl));
-    });
+    for (let i = 0; i < galleries.length; i++) {
+      const galleryTemplate = await GalleryHelper.getTemplate(ctx, galleries[i], galleryTpl);
+      newBody = newBody.replace(`{{Gallery:${galleries[i]._id}}}`, galleryTemplate);
+    }
 
     return newBody;
   }

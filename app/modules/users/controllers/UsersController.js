@@ -27,8 +27,8 @@ class UsersController {
     } catch (e) {
       ctx.throw(404, e);
     }
-    ctx.view.userData = user;
-    ctx.view.countryOptions = countryOptions;
+    ctx.viewParams.userData = user;
+    ctx.viewParams.countryOptions = countryOptions;
   }
 
   async accountVerify(ctx) {
@@ -44,7 +44,7 @@ class UsersController {
     } catch (e) {
       ctx.throw(404, e);
     }
-    ctx.view.userData = user;
+    ctx.viewParams.userData = user;
   }
 
   /**

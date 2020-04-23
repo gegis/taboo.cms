@@ -31,19 +31,19 @@ module.exports = {
     //   method: 'GET',
     //   path: '/',
     //   action: CoreController.index,
-    //   policies: ['i18n', 'loadNavigation'],
+    //   policies: [],
     // },
     {
       method: 'GET',
       path: '/dashboard',
       action: CoreController.dashboard,
-      policies: ['i18n', 'loadNavigation', 'isUser'],
+      policies: ['isUser'],
     },
     {
       method: 'GET',
       path: '/:language?/example',
       action: CoreController.example,
-      policies: ['i18n', 'loadNavigation'],
+      policies: [],
       options: {
         disableGlobalPolicies: true,
       },
@@ -55,10 +55,19 @@ module.exports = {
       policies: [],
     },
     {
+      method: 'PUT',
+      path: '/api/language/:language',
+      action: CoreController.setLanguage,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
       method: 'GET',
       path: '/admin*', // This path is match any admin path if authorised, so it loads react app
       action: CoreAdminController.admin,
-      policies: ['isAdmin', 'i18nAdmin'],
+      policies: ['isAdmin'],
       order: 10000,
     },
   ],

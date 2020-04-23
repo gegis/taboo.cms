@@ -1,5 +1,6 @@
 const SettingsAdminController = require('./controllers/SettingsAdminController');
 const SettingsController = require('./controllers/SettingsController');
+const SettingsService = require('./services/SettingsService');
 
 module.exports = {
   enabled: true,
@@ -9,6 +10,7 @@ module.exports = {
   acl: {
     resources: ['admin.settings.view', 'admin.settings.manage'],
   },
+  beforeTemplateRender: SettingsService.beforeTemplateRender.bind(SettingsService),
   routes: [
     {
       method: 'GET',

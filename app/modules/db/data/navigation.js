@@ -1,7 +1,7 @@
 module.exports = [
   {
-    name: 'Website',
-    slug: 'website',
+    title: 'Website',
+    name: 'website',
     items: [
       {
         id: '664183d0-785e-11ea-9a75-3b77685984ea',
@@ -10,6 +10,7 @@ module.exports = [
         pageLink: '',
         openInNewPage: false,
         enabled: true,
+        children: [],
       },
       {
         id: '0f567ed0-78d7-11ea-8f1c-0fda4800833e',
@@ -18,6 +19,7 @@ module.exports = [
         pageLink: '',
         openInNewPage: false,
         enabled: true,
+        children: [],
       },
       {
         id: '1859edf0-78d7-11ea-8f1c-0fda4800833e',
@@ -26,14 +28,15 @@ module.exports = [
         pageLink: '',
         openInNewPage: false,
         enabled: true,
+        children: [],
       },
     ],
     language: 'en',
     enabled: true,
   },
   {
-    name: 'User',
-    slug: 'user',
+    title: 'User',
+    name: 'user',
     items: [
       {
         id: 'c5b840f0-78d7-11ea-8f1c-0fda4800833e',
@@ -42,6 +45,7 @@ module.exports = [
         pageLink: '',
         openInNewPage: false,
         enabled: true,
+        children: [],
       },
       {
         id: '42c797e0-78d7-11ea-8f1c-0fda4800833e',
@@ -50,6 +54,7 @@ module.exports = [
         pageLink: '',
         openInNewPage: false,
         enabled: true,
+        children: [],
       },
     ],
     language: 'en',

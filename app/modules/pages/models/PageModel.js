@@ -20,7 +20,7 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
       type: String,
       required: [true, 'is required'],
     },
-    layout: {
+    template: {
       type: String,
     },
     background: {
@@ -40,6 +40,7 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
       default: false,
     },
     pages: [{ type: SchemaTypes.ObjectId, ref: 'Page' }],
+    blocks: [{ type: SchemaTypes.ObjectId, ref: 'Block' }],
     galleries: [{ type: SchemaTypes.ObjectId, ref: 'Gallery' }],
     createdBy: {
       type: SchemaTypes.ObjectId,

@@ -10,18 +10,18 @@ class NavigationAdminController extends AbstractAdminController {
   constructor() {
     super({
       model: NavigationModel,
-      searchFields: ['_id', 'name', 'slug'],
+      searchFields: ['_id', 'title', 'name'],
       populate: {},
       defaultSort,
     });
-    this.findOneBySlug = this.findOneBySlug.bind(this);
+    this.findOneByName = this.findOneByName.bind(this);
   }
 
-  async findOneBySlug(ctx) {
+  async findOneByName(ctx) {
     let { fields } = apiHelper.parseRequestParams(ctx.request.query, ['fields']);
     let item = null;
     try {
-      item = await NavigationModel.findOne({ slug: ctx.params.slug }, fields);
+      item = await NavigationModel.findOne({ name: ctx.params.name }, fields);
     } catch (err) {
       logger.error(err);
       return ctx.throw(400, err);

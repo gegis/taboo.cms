@@ -1,27 +1,37 @@
-const { config, app } = require('@taboo/cms-core');
+const { config } = require('@taboo/cms-core');
+const LanguageService = require('modules/core/services/LanguageService');
+const {
+  api: { routePrefix = '/api' } = {},
+  uploads: { urlPath = '/user-files', secureUrlPath = '/secure-files' } = {},
+} = config;
 
 module.exports = async (ctx, next) => {
-  const { i18n } = config;
-  const { locales } = app;
-  if (ctx.session && ctx.session.locale) {
-    ctx.taboo.locale = ctx.session.locale;
-    ctx.taboo.language = ctx.session.language;
-    if (locales[ctx.taboo.locale]) {
-      ctx.taboo.translations = locales[ctx.taboo.locale];
+  const { routeParams: { moduleRoute: { path: routePath = '' } = {} } = {} } = ctx;
+  let language = null;
+  let locale = null;
+  let namespace = 'client';
+  // Set Language and Translations only for non api routes
+  if (
+    routePath &&
+    routePath.indexOf(routePrefix) !== 0 &&
+    routePath.indexOf(urlPath) !== 0 &&
+    routePath.indexOf(secureUrlPath) !== 0
+  ) {
+    if (routePath.indexOf('/admin') !== -1) {
+      namespace = 'admin';
     }
-  } else if (ctx.params) {
-    if (ctx.params.language) {
-      ctx.taboo.language = ctx.params.language;
-      if (i18n.defaultLocalesMapping[ctx.params.language]) {
-        ctx.taboo.locale = i18n.defaultLocalesMapping[ctx.params.language];
+    if (ctx.params && (ctx.params.language || ctx.params.locale)) {
+      language = ctx.params.language;
+      locale = ctx.params.locale;
+    } else {
+      if (namespace === 'client' && ctx.session && ctx.session.locale) {
+        locale = ctx.session.locale;
+      } else if (namespace === 'admin' && ctx.session && ctx.session.adminLocale) {
+        locale = ctx.session.adminLocale;
       }
     }
-    if (ctx.params.locale) {
-      ctx.taboo.locale = ctx.params.locale;
-    }
-    if (locales[ctx.taboo.locale]) {
-      ctx.taboo.translations = locales[ctx.taboo.locale];
-    }
+    LanguageService.setLanguage(ctx, namespace, { locale, language });
   }
+
   return next();
 };

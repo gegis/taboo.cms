@@ -1,4 +1,4 @@
-const { config, apiHelper } = require('@taboo/cms-core');
+const { config } = require('@taboo/cms-core');
 const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
 const PagesService = require('modules/pages/services/PagesService');
 const RevisionService = require('modules/core/services/RevisionService');
@@ -32,7 +32,6 @@ class PagesAdminController extends AbstractAdminController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     // Save current version as previous revision
     await RevisionService.saveById(PageModel, ctx.params.id);
-    apiHelper.cleanTimestamps(data);
     PagesService.populatePagesAndGalleries(data);
     data.updatedBy = userId;
     return data;

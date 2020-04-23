@@ -9,17 +9,18 @@ const NavigationModel = MongoDbAdapter.setupModel('Navigation', {
     name: {
       type: String,
       required: [true, 'is required'],
+      unique: true,
     },
-    slug: {
+    title: {
       type: String,
       required: [true, 'is required'],
-      unique: true,
     },
     items: {
       type: Array,
     },
     language: {
       type: String,
+      required: [true, 'is required'],
     },
     enabled: {
       type: Boolean,

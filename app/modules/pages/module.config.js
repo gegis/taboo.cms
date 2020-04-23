@@ -99,7 +99,7 @@ module.exports = {
       method: 'GET',
       path: '/:language?/*', // This one is for all unmatched dynamic routes
       action: PagesController.page,
-      policies: ['i18n', 'loadNavigation'],
+      policies: [],
       order: 20000,
     },
     {

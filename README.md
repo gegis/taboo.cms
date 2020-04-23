@@ -116,8 +116,8 @@ are served from `./public` folder.
 
 #### Entry Points
 - server entry point - `./index.js`
-- react cms type client entry point - `./app/modules/core/client/index.jsx`
-- classic cms type client entry point - `./app/modules/core/client/index.js`
+- react cms type client entry point - `./app/modules/core/ui/index.jsx`
+- classic cms type client entry point - `./app/modules/core/ui/index.js`
 
 #### Application Structure
 

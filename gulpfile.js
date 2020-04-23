@@ -3,7 +3,6 @@ const cleanTask = require('./tasks/clean');
 const lintTask = require('./tasks/lint');
 const stylesTask = require('./tasks/styles');
 const webpackTask = require('./tasks/webpack');
-const scriptsTask = require('./tasks/scripts');
 const copyTask = require('./tasks/copy');
 const startServerTask = require('./tasks/startServer');
 const { config: appConfig } = require('@taboo/cms-core');
@@ -30,28 +29,24 @@ const lint = () => {
   return lintTask(config.lint);
 };
 
-const appLibStyles = () => {
-  return stylesTask(config.appLibStyles, production, watch);
+const adminModulesStyles = () => {
+  return stylesTask(config.adminModulesStyles, production, watch);
 };
 
-const appStyles = () => {
-  return stylesTask(config.appStyles, production, watch);
+const modulesStyles = () => {
+  return stylesTask(config.modulesStyles, production, watch);
 };
 
-const adminStyles = () => {
-  return stylesTask(config.adminStyles, production, watch);
+const themesLibStyles = () => {
+  return stylesTask(config.themesLibStyles, production, watch);
 };
 
-const adminLibStyles = () => {
-  return stylesTask(config.adminLibStyles, production, watch);
+const themesStyles = () => {
+  return stylesTask(config.themesStyles, production, watch);
 };
 
 const webpack = () => {
   return webpackTask(config.webpack, production, watch);
-};
-
-const libScripts = () => {
-  return scriptsTask(config.libScripts, production, watch);
 };
 
 const copy = () => {
@@ -62,6 +57,10 @@ const startServer = next => {
   return startServerTask(config.server, watch, next);
 };
 
+const getParallelTasks = () => {
+  return gulp.parallel(adminModulesStyles, modulesStyles, themesLibStyles, themesStyles, webpack, copy);
+};
+
 /**************************************************************************************
  Main Gulp Tasks
  **************************************************************************************/
@@ -69,23 +68,15 @@ const startServer = next => {
 /*
  * Specify if tasks run in series or parallel using `gulp.series` and `gulp.parallel`
  */
-const buildAndWatch = gulp.series(
-  enableWatch,
-  clean,
-  lint,
-  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, webpack, libScripts, copy),
-  startServer
-);
+const buildAndWatch = gulp.series(enableWatch, clean, lint, getParallelTasks(), startServer);
 
-const build = gulp.series(
-  clean,
-  lint,
-  gulp.parallel(adminLibStyles, adminStyles, appLibStyles, appStyles, webpack, libScripts, copy)
-);
+const build = gulp.series(clean, lint, getParallelTasks());
 
 module.exports = {
   default: buildAndWatch,
   buildAndWatch: buildAndWatch,
   build: build,
+  copy: copy,
+  webpack: webpack,
   lint: lint,
 };
