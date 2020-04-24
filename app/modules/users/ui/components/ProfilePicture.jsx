@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 class ProfilePicture extends React.Component {
   constructor(props) {
     super(props);
-    this.notFoundImageUrl = '/images/standard/profile-picture.png';
+    this.notFoundImageUrl = '/images/_shared/profile-picture.png';
     this.errorCount = 0;
     this.onImageError = this.onImageError.bind(this);
   }
