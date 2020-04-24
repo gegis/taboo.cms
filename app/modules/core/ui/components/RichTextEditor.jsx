@@ -53,7 +53,7 @@ class RichTextEditor extends React.Component {
   onUploadSelect(file) {
     let instance = this.getEditorInstance();
     if (instance && file && file.url) {
-      instance.insertHtml(`<img src="${file.url}" />`);
+      instance.insertHtml(`<img src="${file.url}" style="width: 100%;" />`);
     }
   }
 
