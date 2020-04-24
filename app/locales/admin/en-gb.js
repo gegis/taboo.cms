@@ -103,6 +103,7 @@ module.exports = {
   'Add New': 'Add New',
   'Create New Page': 'Create New Page',
   'Edit Page': 'Edit Page',
+  'Edit Page - {title}': 'Edit Page - {title}',
   'Successfully created': 'Successfully created',
   'Successfully deleted': 'Successfully deleted',
   'Successfully created {item}': 'Successfully created <b>{item}</b>',

@@ -7,6 +7,7 @@ import { html as htmlBeautify } from 'js-beautify';
 
 import RichTextEditor from 'app/modules/core/ui/components/RichTextEditor';
 import Modal from 'app/modules/core/ui/components/admin/Modal';
+import Translation from 'modules/core/ui/components/Translation';
 
 class RichTextModal extends React.Component {
   constructor(props) {
@@ -62,13 +63,14 @@ class RichTextModal extends React.Component {
   }
 
   render() {
+    const { item: { title = '' } = {} } = this.pagesStore;
     const { value } = this.state;
     return (
       <Modal
         full
         backdrop="static"
         className="use-max-width"
-        title="Edit Page"
+        title={<Translation message="Edit Page - {title}" values={{ title }} />}
         ref={this.modal}
         onOpen={this.onOpen}
         onClose={this.onClose}

@@ -20,6 +20,7 @@ class UploadSelect extends React.Component {
     this.notificationsStore = props.notificationsStore;
     this.uiAdminStore = props.uiAdminStore;
     this.searchTimeout = null;
+    this.onOpenSelectCB = null;
     this.state = {
       search: '',
     };
@@ -31,11 +32,14 @@ class UploadSelect extends React.Component {
     this.openNewUpload = this.openNewUpload.bind(this);
   }
 
-  open() {
+  open(onSelect = null) {
     const opts = {};
     const { filter = null } = this.props;
     if (filter) {
       opts.filter = filter;
+    }
+    if (onSelect) {
+      this.onOpenSelectCB = onSelect;
     }
     this.uploadsStore.loadAll(opts);
     this.modal.current.open();
@@ -91,7 +95,11 @@ class UploadSelect extends React.Component {
 
   onItemSelect(item) {
     const { onFileSelect, closeOnSelect = false } = this.props;
-    onFileSelect(item);
+    if (this.onOpenSelectCB) {
+      this.onOpenSelectCB(item);
+    } else if (onFileSelect) {
+      onFileSelect(item);
+    }
     if (closeOnSelect) {
       this.close();
     }
