@@ -207,11 +207,11 @@ class UsersService {
     return success;
   }
 
-  async validateApiKey(ctx, data) {
+  async validateUniqueApiKey(ctx, data, userId = null) {
     let user;
     if (data && data.apiKey) {
       user = await UserModel.findOne({ apiKey: data.apiKey });
-      if (user && user.apiKey === data.apiKey) {
+      if (user && user._id.toString() !== userId && user.apiKey === data.apiKey) {
         ctx.throw(400, 'API Key already exists');
       }
     }

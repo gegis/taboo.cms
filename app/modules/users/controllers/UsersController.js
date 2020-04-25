@@ -156,6 +156,7 @@ class UsersController {
     }
 
     try {
+      await UsersService.validateUniqueApiKey(ctx, data);
       user = await UsersService.registerNewUser(data);
     } catch (err) {
       return ctx.throw(400, err);
@@ -292,6 +293,7 @@ class UsersController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user;
     try {
+      await UsersService.validateUniqueApiKey(ctx, body, userId);
       if (Object.prototype.hasOwnProperty.call(body, 'id')) {
         delete body._id;
       }
@@ -313,7 +315,7 @@ class UsersController {
         ctx.session.user.profilePictureUrl = user.profilePicture.url;
       }
     } catch (e) {
-      ctx.throw(404, e);
+      ctx.throw(400, e);
     }
     ctx.body = user;
   }
