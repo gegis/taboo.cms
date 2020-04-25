@@ -20,7 +20,7 @@ module.exports = {
   },
   admin: {
     cms: {
-      title: 'Taboo Solutions Admin',
+      title: 'Taboo CMS Admin',
       adminRoleName: 'Administrator',
       userRoleName: 'User',
       userAclResources: ['api.uploads.userFiles'],

@@ -47,11 +47,13 @@ class UsersAdminController extends AbstractAdminController {
   }
 
   async beforeCreate(ctx, data) {
+    await UsersService.validateApiKey(ctx, data);
     data.password = await UsersService.hashPassword(data.password);
     return data;
   }
 
   async beforeUpdate(ctx, id, data) {
+    await UsersService.validateApiKey(ctx, data);
     if (data.password) {
       data.password = await UsersService.hashPassword(data.password);
     } else if (Object.prototype.hasOwnProperty.call(data, 'password')) {

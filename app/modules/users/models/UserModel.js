@@ -116,8 +116,7 @@ const UserModel = MongoDbAdapter.setupModel('User', {
     },
     apiKey: {
       type: String,
-      unique: true,
-      sparse: true,
+      default: '',
     },
   },
   afterSchemaCreate(schema) {

@@ -49,7 +49,7 @@ class Login extends React.Component {
   }
 
   handleSubmit() {
-    const { authStore, localeStore, history } = this.props;
+    const { authStore, localeStore } = this.props;
     if (!this.form.current.check()) {
       Notification.error({
         title: 'Form Validation',
@@ -67,9 +67,10 @@ class Login extends React.Component {
         if (response && response.data) {
           authStore.loadUserAuth().then(user => {
             if (user && user.admin) {
-              return history.push('/admin');
+              return <Redirect to="/admin" />;
+            } else {
+              window.location = '/';
             }
-            window.location = '/';
           });
         }
       })
@@ -160,7 +161,6 @@ class Login extends React.Component {
 Login.propTypes = {
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
-  history: PropTypes.object,
 };
 
 const enhance = compose(withRouter, inject('authStore', 'localeStore'), observer);

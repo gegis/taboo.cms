@@ -205,11 +205,7 @@ class UsersController {
    *   }
    */
   async login(ctx) {
-    const { users: { signInEnabled = false } = {} } = config;
     const { body: { email = null, password = null } = {} } = ctx.request;
-    if (!signInEnabled) {
-      return ctx.throw(403, 'Forbidden');
-    }
     ctx.body = await UsersService.authenticateUser(ctx, email, password);
   }
 
@@ -242,11 +238,7 @@ class UsersController {
    * }
    */
   async resetPasswordApi(ctx) {
-    const { users: { signInEnabled = false } = {} } = config;
     const { body: { email = null, linkPrefix = '' } = {} } = ctx.request;
-    if (!signInEnabled) {
-      return ctx.throw(403, 'Forbidden');
-    }
     ctx.body = {
       success: await UsersService.resetPassword(ctx, email, linkPrefix),
     };
@@ -268,12 +260,8 @@ class UsersController {
    * }
    */
   async changePasswordApi(ctx) {
-    const { users: { signInEnabled = false } = {} } = config;
     const { body = null } = ctx.request;
     let success;
-    if (!signInEnabled) {
-      return ctx.throw(403, 'Forbidden');
-    }
     success = await UsersService.changePassword(ctx, body);
     ctx.body = { success };
   }

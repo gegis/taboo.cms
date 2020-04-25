@@ -1,22 +1,14 @@
 const { config } = require('@taboo/cms-core');
 const LanguageService = require('modules/core/services/LanguageService');
-const {
-  api: { routePrefix = '/api' } = {},
-  uploads: { urlPath = '/user-files', secureUrlPath = '/secure-files' } = {},
-} = config;
+const { uploads: { urlPath = '/user-files', secureUrlPath = '/secure-files' } = {} } = config;
 
 module.exports = async (ctx, next) => {
   const { routeParams: { moduleRoute: { path: routePath = '' } = {} } = {} } = ctx;
   let language = null;
   let locale = null;
   let namespace = 'client';
-  // Set Language and Translations only for non api routes
-  if (
-    routePath &&
-    routePath.indexOf(routePrefix) !== 0 &&
-    routePath.indexOf(urlPath) !== 0 &&
-    routePath.indexOf(secureUrlPath) !== 0
-  ) {
+
+  if (routePath && routePath.indexOf(urlPath) !== 0 && routePath.indexOf(secureUrlPath) !== 0) {
     if (routePath.indexOf('/admin') !== -1) {
       namespace = 'admin';
     }

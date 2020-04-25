@@ -1,9 +1,9 @@
-const { config, logger, mailer, cmsHelper, isAllowed } = require('@taboo/cms-core');
+const { config, logger, isAllowed } = require('@taboo/cms-core');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
 const ACLService = require('modules/acl/services/ACLService');
-const SendGridService = require('modules/mailer/services/SendGridService');
+const MailerService = require('modules/mailer/services/MailerService');
 const LocaleHelper = require('modules/core/helpers/LocaleHelper');
 const ValidationHelper = require('modules/core/helpers/ValidationHelper');
 const UserModel = require('modules/users/models/UserModel');
@@ -15,9 +15,7 @@ class UsersService {
   }
 
   async hashPassword(password) {
-    const {
-      server: { bcryptSaltRounds = 10 },
-    } = config;
+    const { server: { bcryptSaltRounds = 10 } = {} } = config;
     return await bcrypt.hash(password, bcryptSaltRounds);
   }
 
@@ -56,13 +54,8 @@ class UsersService {
   }
 
   async authenticateUser(ctx, email, password) {
-    const {
-      auth: { maxLoginAttempts = 3 },
-    } = config;
+    const { users: { signInEnabled = false } = {} } = config;
     let passMatch;
-    let userUpdateData = {};
-    let profilePictureUrl = null;
-    let acl;
     if (!email) {
       return ctx.throw(404, 'Email is required');
     }
@@ -78,26 +71,44 @@ class UsersService {
     }
     passMatch = await this.passwordsMatch(password, user.password);
     if (!passMatch) {
-      if (user && user._id) {
-        userUpdateData.loginAttempts = user.loginAttempts + 1;
-        await UserModel.findByIdAndUpdate(user._id, userUpdateData);
-      }
-      if (user.loginAttempts >= maxLoginAttempts) {
-        return ctx.throw(404, 'Too many bad attempts');
-      } else {
-        return ctx.throw(404, 'User not found');
-      }
+      return await this.onPasswordMismatch(ctx, user);
     } else {
-      userUpdateData = {
+      await UserModel.findByIdAndUpdate(user._id, {
         lastLogin: new Date(),
         loginAttempts: 0, // Successful login, reset loginAttempts
-      };
-      await UserModel.findByIdAndUpdate(user._id, userUpdateData);
+      });
     }
-    acl = await ACLService.getUserACL(user);
+
+    if (!signInEnabled && !user.admin) {
+      return ctx.throw(403, 'Forbidden');
+    }
+
+    await this.setUserSession(ctx, user);
+
+    return ctx.session.user;
+  }
+
+  async onPasswordMismatch(ctx, user) {
+    const { auth: { maxLoginAttempts = 3 } = {} } = config;
+    if (user && user._id) {
+      await UserModel.findByIdAndUpdate(user._id, {
+        loginAttempts: user.loginAttempts + 1,
+      });
+    }
+    if (user && user.loginAttempts >= maxLoginAttempts) {
+      return ctx.throw(404, 'Too many attempts');
+    } else {
+      return ctx.throw(404, 'User not found');
+    }
+  }
+
+  async setUserSession(ctx, user) {
+    let acl;
+    let profilePictureUrl;
     if (user.profilePicture && user.profilePicture.url) {
       profilePictureUrl = user.profilePicture.url;
     }
+    acl = await ACLService.getUserACL(user);
     ctx.session.user = {
       id: user.id,
       firstName: user.firstName,
@@ -110,7 +121,6 @@ class UsersService {
       roles: user.roles,
       acl: acl,
     };
-    return ctx.session.user;
   }
 
   async updateUserSession(user) {
@@ -155,8 +165,8 @@ class UsersService {
   }
 
   async resetPassword(ctx, email, linkPrefix = '') {
-    const { mailer: { sendGrid: { apiKey: sendGridApiKey } = {} } = {} } = config;
-    const options = {};
+    const { users: { signInEnabled = false } = {} } = config;
+    const emailToSend = {};
     let success = false;
     let user;
     let emailResponse;
@@ -168,24 +178,24 @@ class UsersService {
     if (email) {
       user = await UserModel.findOne({ email });
       if (user) {
+        if (!signInEnabled && !user.admin) {
+          return ctx.throw(403, 'Forbidden');
+        }
         user.passwordReset = uuidv1();
         user.passwordResetRequested = new Date();
 
         try {
           await user.save();
-          options.to = email;
-          options.subject = LocaleHelper.translate(ctx, 'email_subject_users_password_reset');
-          options.html = await cmsHelper.composeEmailTemplate(ctx, 'users/passwordReset', {
-            user,
-            link: `${ctx.origin}${linkPrefix}/change-password/${user._id}/${user.passwordReset}`,
+          emailToSend.to = email;
+          emailToSend.subject = LocaleHelper.translate(ctx, 'email_subject_users_password_reset');
+          emailResponse = await MailerService.send(emailToSend, {
+            ctx,
+            tplPath: 'users/passwordReset',
+            tplValues: {
+              user,
+              link: `${ctx.origin}${linkPrefix}/change-password/${user._id}/${user.passwordReset}`,
+            },
           });
-
-          if (sendGridApiKey) {
-            emailResponse = await SendGridService.send(options);
-          } else {
-            emailResponse = await mailer.send(options);
-          }
-
           if (emailResponse && (emailResponse.success || emailResponse.accepted)) {
             success = true;
           }
@@ -197,9 +207,20 @@ class UsersService {
     return success;
   }
 
+  async validateApiKey(ctx, data) {
+    let user;
+    if (data && data.apiKey) {
+      user = await UserModel.findOne({ apiKey: data.apiKey });
+      if (user && user.apiKey === data.apiKey) {
+        ctx.throw(400, 'API Key already exists');
+      }
+    }
+  }
+
   async changePassword(ctx, data) {
     const {
-      auth: { passwordResetExpiryTime, maxLoginAttempts = 3 },
+      users: { signInEnabled = false } = {},
+      auth: { passwordResetExpiryTime, maxLoginAttempts = 3 } = {},
     } = config;
     let success = false;
     let user;
@@ -223,6 +244,9 @@ class UsersService {
     }
     if (!user) {
       return ctx.throw(400, 'User not found');
+    }
+    if (!signInEnabled && !user.admin) {
+      return ctx.throw(403, 'Forbidden');
     }
     if (user.passwordReset !== data.token) {
       return ctx.throw(400, 'Password reset token is invalid');
