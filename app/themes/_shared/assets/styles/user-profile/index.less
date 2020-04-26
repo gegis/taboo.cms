@@ -1,0 +1,69 @@
+@import './document-upload';
+.profile-picture-upload {
+  border-radius: 50%;
+  margin: 0;
+  width: 100px;
+  height: 100px;
+  border: 2px solid @B100;
+  padding: 0;
+  font-size: 13px;
+  .drag-file-here {
+    padding: 0;
+    width: 100px;
+    height: 100px;
+    .upload-instructions {
+      margin: 0;
+      padding: 12px 0 0;
+      line-height: 1.2;
+      .rs-icon {
+        margin: 4px 0 0;
+        font-size: 20px;
+      }
+    }
+    .current-document {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  .loader {
+    top: ~'calc(50% - 20px)';
+    left: ~'calc(50% - 20px)';
+  }
+}
+
+.profile-picture {
+  width: @profile-picture-size;
+  height: @profile-picture-size;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: 50%;
+  img {
+    width: @profile-picture-size;
+    height: @profile-picture-size;
+  }
+  &.sm {
+    width: @profile-picture-size-sm;
+    height: @profile-picture-size-sm;
+    display: inline-block;
+    img {
+      width: @profile-picture-size-sm;
+      height: @profile-picture-size-sm;
+    }
+  }
+  &.xs {
+    width: @profile-picture-size-xs;
+    height: @profile-picture-size-xs;
+    display: inline-block;
+    img {
+      width: @profile-picture-size-xs;
+      height: @profile-picture-size-xs;
+    }
+  }
+}
+
+.user-sidebar {
+  .profile-picture {
+    margin: 0 10px 0 0;
+  }
+}

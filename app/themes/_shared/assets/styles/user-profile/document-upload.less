@@ -1,0 +1,98 @@
+.document-upload-wrapper {
+  color: @B600;
+  border: 1px solid @B400;
+  border-radius: @border-radius-base;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background-color: @B025;
+  margin: 20px 0;
+  .loader {
+    position: absolute;
+    top: 70%;
+    left: ~'calc(50% - 20px)';
+    display: none;
+    z-index: 100;
+  }
+  .drag-file-here {
+    position: relative;
+    overflow: hidden;
+    height: 280px;
+    padding: 20px;
+    .upload-instructions {
+      cursor: pointer;
+      background-color: @B025;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      margin: 20px;
+      z-index: 1;
+      .rs-icon {
+        font-size: 30px;
+        margin: 10px;
+      }
+    }
+    .current-document {
+      cursor: pointer;
+      background-color: @B025;
+      color: @B900;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      margin: 20px;
+      z-index: 2;
+      .rs-icon {
+        font-size: 30px;
+        margin: 10px;
+      }
+    }
+    .current-document-image-preview {
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto auto;
+      display: inline-block;
+    }
+    &:hover {
+      .upload-instructions {
+        z-index: 3;
+        opacity: 0.85;
+      }
+    }
+  }
+  .document-upload-footer {
+    border-top: 1px solid @B400;
+    padding: 10px;
+  }
+  &.uploading {
+    .loader {
+      display: block;
+    }
+  }
+  &.drag-is-active {
+    .upload-instructions {
+      z-index: 3;
+    }
+  }
+  //&.uploaded {
+  //  .drag-file-here {
+  //    &:hover {
+  //      .upload-instructions {
+  //        opacity: 0.4;
+  //      }
+  //    }
+  //  }
+  //}
+}

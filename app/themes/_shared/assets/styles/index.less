@@ -3,6 +3,7 @@
 @import './helpers';
 @import './loading';
 @import './gallery';
+@import './user-profile/index';
 
 html,
 body {
@@ -92,15 +93,6 @@ textarea.rs-input {
 .header {
   border-bottom: 1px solid @B200;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  //.rs-dropdown {
-  //  padding: 10px 0 0;
-  //}
-  //.rs-dropdown-toggle-caret {
-  //  top: 14px;
-  //}
-  //.rs-nav .rs-dropdown > .rs-dropdown-toggle {
-  //  height: 48px;
-  //}
   .user-menu {
     text-align: right;
   }
@@ -122,6 +114,18 @@ textarea.rs-input {
       }
     }
   }
+  .user-menu {
+    .rs-dropdown {
+      padding: 12px 5px 0;
+    }
+    .rs-dropdown-toggle {
+      height: 42px;
+      padding: 5px 32px 0 0;
+    }
+    .profile-picture {
+      margin: 0 10px 0 0;
+    }
+  }
 }
 
 .header-notification {
@@ -136,187 +140,6 @@ textarea.rs-input {
   padding: 20px 0 30px;
   .rs-nav-item-content {
     color: @B025;
-  }
-}
-
-.document-upload-wrapper {
-  color: @B600;
-  border: 1px solid @B400;
-  border-radius: @border-radius-base;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  background-color: @B025;
-  margin: 20px 0;
-  .loader {
-    position: absolute;
-    top: 70%;
-    left: ~'calc(50% - 20px)';
-    display: none;
-    z-index: 100;
-  }
-  .drag-file-here {
-    position: relative;
-    overflow: hidden;
-    height: 280px;
-    padding: 20px;
-    .upload-instructions {
-      cursor: pointer;
-      background-color: @B025;
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      margin: 20px;
-      z-index: 1;
-      .rs-icon {
-        font-size: 30px;
-        margin: 10px;
-      }
-    }
-    .current-document {
-      cursor: pointer;
-      background-color: @B025;
-      color: @B900;
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      margin: 20px;
-      z-index: 2;
-      .rs-icon {
-        font-size: 30px;
-        margin: 10px;
-      }
-    }
-    .current-document-image-preview {
-      max-width: 100%;
-      max-height: 100%;
-      margin: auto auto;
-      display: inline-block;
-    }
-    &:hover {
-      .upload-instructions {
-        z-index: 3;
-        opacity: 0.85;
-      }
-    }
-  }
-  .document-upload-footer {
-    border-top: 1px solid @B400;
-    padding: 10px;
-  }
-  &.uploading {
-    .loader {
-      display: block;
-    }
-  }
-  &.drag-is-active {
-    .upload-instructions {
-      z-index: 3;
-    }
-  }
-  //&.uploaded {
-  //  .drag-file-here {
-  //    &:hover {
-  //      .upload-instructions {
-  //        opacity: 0.4;
-  //      }
-  //    }
-  //  }
-  //}
-}
-.profile-picture-upload {
-  border-radius: 50%;
-  margin: 0;
-  width: 100px;
-  height: 100px;
-  border: 2px solid @B100;
-  padding: 0;
-  font-size: 13px;
-  .drag-file-here {
-    padding: 0;
-    width: 100px;
-    height: 100px;
-    .upload-instructions {
-      margin: 0;
-      padding: 12px 0 0;
-      line-height: 1.2;
-      .rs-icon {
-        margin: 4px 0 0;
-        font-size: 20px;
-      }
-    }
-    .current-document {
-      margin: 0;
-      padding: 0;
-    }
-  }
-  .loader {
-    top: ~'calc(50% - 20px)';
-    left: ~'calc(50% - 20px)';
-  }
-}
-
-.profile-picture {
-  width: @profile-picture-size;
-  height: @profile-picture-size;
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: middle;
-  border-radius: 50%;
-  img {
-    width: @profile-picture-size;
-    height: @profile-picture-size;
-  }
-  &.sm {
-    width: @profile-picture-size-sm;
-    height: @profile-picture-size-sm;
-    display: inline-block;
-    img {
-      width: @profile-picture-size-sm;
-      height: @profile-picture-size-sm;
-    }
-  }
-  &.xs {
-    width: @profile-picture-size-xs;
-    height: @profile-picture-size-xs;
-    display: inline-block;
-    img {
-      width: @profile-picture-size-xs;
-      height: @profile-picture-size-xs;
-    }
-  }
-}
-
-.header {
-  .user-menu {
-    .rs-dropdown {
-      padding: 12px 5px 0;
-    }
-    .rs-dropdown-toggle {
-      height: 42px;
-      padding: 5px 32px 0 0;
-    }
-    .profile-picture {
-      margin: 0 10px 0 0;
-    }
-  }
-}
-.user-sidebar {
-  .profile-picture {
-    margin: 0 10px 0 0;
   }
 }
 
