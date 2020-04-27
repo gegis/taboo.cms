@@ -34,6 +34,14 @@ const TemplateModel = MongoDbAdapter.setupModel('Template', {
       type: Boolean,
       default: false,
     },
+    navigationPreload: {
+      type: Array,
+      default: [],
+    },
+    userNavigationPreload: {
+      type: Array,
+      default: [],
+    },
   },
   afterSchemaCreate(schema) {
     schema.plugin(uniqueValidator, { message: 'has to be unique.' });

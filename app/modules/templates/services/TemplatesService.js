@@ -33,30 +33,18 @@ class TemplatesService {
     } = ctx;
     let templateLanguageSettings = null;
     let newParams = {
-      headerNavigation: [],
-      footerNavigation: [],
       themeStyle: '',
     };
     let template = null;
-
     if (_template && language) {
       template = await this.getByName(_template);
       templateLanguageSettings = await this.getTemplateLanguageSettings(template, language);
     }
-
     if (template && templateLanguageSettings) {
-      const {
-        headerNavigation,
-        headerNavigationAuthenticated,
-        footerNavigation,
-        footerNavigationAuthenticated,
-      } = templateLanguageSettings;
+      const { navigationPreload = [], userNavigationPreload = [] } = template;
+      Object.assign(newParams, await this.getNavigationByKeys(navigationPreload, templateLanguageSettings));
       if (userId) {
-        newParams.headerNavigation = await NavigationService.getEnabledByName(headerNavigationAuthenticated);
-        newParams.footerNavigation = await NavigationService.getEnabledByName(footerNavigationAuthenticated);
-      } else {
-        newParams.headerNavigation = await NavigationService.getEnabledByName(headerNavigation);
-        newParams.footerNavigation = await NavigationService.getEnabledByName(footerNavigation);
+        Object.assign(newParams, await this.getNavigationByKeys(userNavigationPreload, templateLanguageSettings));
       }
       if (template.style) {
         newParams.themeStyle = template.style;
@@ -64,6 +52,14 @@ class TemplatesService {
     }
 
     return newParams;
+  }
+
+  async getNavigationByKeys(navigationKeys = [], navigationNames) {
+    const navigation = {};
+    for (let i = 0; i < [...navigationKeys].length; i++) {
+      navigation[navigationKeys[i]] = await NavigationService.getEnabledByName(navigationNames[navigationKeys[i]]);
+    }
+    return navigation;
   }
 
   async getTemplateLanguageSettings(template, language) {
@@ -145,6 +141,15 @@ class TemplatesService {
     return templates;
   }
 
+  getFsTemplateConfig(name) {
+    let config = {};
+    let configPath = this.getTemplateConfigPath(name);
+    if (filesHelper.fileExists(configPath)) {
+      config = require(configPath);
+    }
+    return config;
+  }
+
   getFsTemplate(name) {
     let template = null;
     if (name) {
@@ -161,6 +166,8 @@ class TemplatesService {
           default: config.default,
           style: config.style,
           styleTemplate: config.styleTemplate,
+          navigationPreload: config.navigationPreload,
+          userNavigationPreload: config.userNavigationPreload,
         };
       }
     }

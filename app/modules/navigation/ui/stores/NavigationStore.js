@@ -17,7 +17,11 @@ class NavigationStore {
           this.removeFromLoading(name);
           runInAction(() => {
             const { data = {} } = response;
-            this.navigation[name] = data;
+            this.navigation[name] = {
+              name: data.name,
+              title: data.title,
+              items: data.items,
+            };
           });
         })
         .catch(err => {

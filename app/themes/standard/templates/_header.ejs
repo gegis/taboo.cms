@@ -1,46 +1,47 @@
 <header class="rs-header header">
-  <div class="rs-grid-container">
-    <div class="rs-row menu">
-      <div class="nav-brand-wrapper rs-col rs-col-xs-6 rs-col-md-3">
-        <a class="nav-brand logo" href="/"><img src="/images/_shared/logo.png" alt="logo"/></a>
-      </div>
-      <div class="navigation rs-col rs-hidden-sm rs-col-md-13">
-        <!-- TODO (templates) this one is no longer needed, unless load it from db for classic!!! but it should be template specific -->
-        <div class="rs-nav rs-nav-default navigation rs-nav-horizontal">
-          <ul>
-            <% if(typeof headerNavigation === 'object') { %>
-                <% for(let i = 0; i < headerNavigation.length; i++) { %>
-                <li role="presentation" class="rs-nav-item rs-nav-item-content">
-                  <a
-                    aria-current="page"
-                    class="rs-nav-item-content active"
-                    role="button"
-                    tabindex="0"
-                    href="<%-headerNavigation[i].url%>"
-                    ><%-headerNavigation[i].title%><span class="rs-ripple-pond"><span class="rs-ripple"></span></span
-                  ></a>
-                </li>
-                <% } %>
-            <% } %>
-          </ul>
+    <div class="rs-grid-container">
+        <div class="rs-row menu">
+            <div class="nav-brand-wrapper rs-col rs-col-xs-6 rs-col-md-3">
+                <a class="nav-brand logo" href="/"><img src="/images/_shared/logo.png" alt="logo"/></a>
+            </div>
+            <div class="navigation rs-col rs-hidden-sm rs-col-md-13">
+                <!-- TODO (templates) this one is no longer needed, unless load it from db for classic!!! but it should be template specific -->
+                <div class="rs-nav rs-nav-default navigation rs-nav-horizontal">
+                    <ul>
+                        <% if(headerNavigation !== null && typeof headerNavigation !== 'undefined' && typeof headerNavigation === 'object') { %>
+                            <% for(let i = 0; i < headerNavigation.items.length; i++) { %>
+                                <li role="presentation" class="rs-nav-item rs-nav-item-content">
+                                    <a aria-current="page"
+                                       class="rs-nav-item-content active"
+                                       role="button"
+                                       tabindex="0"
+                                       href="<%- headerNavigation.items[i].url %>"
+                                    >
+                                        <%- headerNavigation.items[i].title %>
+                                        <span class="rs-ripple-pond"><span class="rs-ripple"></span></span>
+                                    </a>
+                                </li>
+                            <% } %>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+            <div class="user-menu rs-col rs-col-xs-18 rs-col-md-8">
+                <div class="rs-nav rs-nav-default user-menu signed-out rs-navbar-right rs-nav-horizontal">
+                    <ul>
+                        <li role="presentation" class="rs-nav-item rs-nav-item-content">
+                            <a class="rs-nav-item-content" role="button" tabindex="0" href="/sign-in">
+                                Sign In<span class="rs-ripple-pond"><span class="rs-ripple"></span></span>
+                            </a>
+                        </li>
+                        <li role="presentation" class="rs-nav-item rs-nav-item-content">
+                            <a class="rs-nav-item-content" role="button" tabindex="0" href="/sign-up">
+                                Sign Up<span class="rs-ripple-pond"><span class="rs-ripple"></span></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="user-menu rs-col rs-col-xs-18 rs-col-md-8">
-        <div class="rs-nav rs-nav-default user-menu signed-out rs-navbar-right rs-nav-horizontal">
-          <ul>
-            <li role="presentation" class="rs-nav-item rs-nav-item-content">
-              <a class="rs-nav-item-content" role="button" tabindex="0" href="/sign-in"
-                >Sign In<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
-              ></a>
-            </li>
-            <li role="presentation" class="rs-nav-item rs-nav-item-content">
-              <a class="rs-nav-item-content" role="button" tabindex="0" href="/sign-up"
-                >Sign Up<span class="rs-ripple-pond"><span class="rs-ripple"></span></span
-              ></a>
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
-  </div>
 </header>

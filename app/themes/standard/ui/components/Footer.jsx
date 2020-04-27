@@ -6,12 +6,16 @@ import { inject, observer } from 'mobx-react';
 import Navigation from 'app/themes/_shared/ui/components/Navigation';
 
 class Footer extends React.Component {
-  getNavigationName() {
+  getNavigationByKey(navigationName) {
+    const authSuffix = 'Authenticated';
+    const navigationNameAuth = `${navigationName}${authSuffix}`;
     const { authStore, templatesStore } = this.props;
-    if (authStore.authenticated && authStore.user) {
-      return templatesStore.languageSettings.footerNavigationAuthenticated;
+    if (authStore.authenticated && authStore.user && templatesStore.languageSettings[navigationNameAuth]) {
+      return templatesStore.languageSettings[navigationNameAuth];
+    } else if (templatesStore.languageSettings[navigationName]) {
+      return templatesStore.languageSettings[navigationName];
     }
-    return templatesStore.languageSettings.footerNavigation;
+    return null;
   }
 
   getFooterCopyright() {
@@ -25,7 +29,7 @@ class Footer extends React.Component {
         <Grid fluid className="footer-copyright">
           <Row>
             <Col>
-              <Navigation navigationName={this.getNavigationName()} />
+              <Navigation navigationName={this.getNavigationByKey('footerNavigation')} />
             </Col>
           </Row>
           <Row>

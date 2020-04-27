@@ -22,13 +22,12 @@ class Template extends React.Component {
   }
 
   componentDidMount() {
-    const { localeStore, notificationsStore, templatesStore, navigationStore, authStore } = this.props;
+    const { localeStore, notificationsStore, templatesStore } = this.props;
     TemplatesHelper.loadLibStylesheet('_shared');
     TemplatesHelper.loadStylesheet('_shared');
     TemplatesHelper.preloadTemplate(config.name, { templatesStore });
     this.dispose = autorun(() => {
       TemplatesHelper.loadStyle({ templatesStore });
-      TemplatesHelper.preloadNavigation(config.name, { authStore, navigationStore, templatesStore });
       NotificationsHelper.handleNotifications(notificationsStore, localeStore);
     });
   }
@@ -93,13 +92,12 @@ Template.propTypes = {
   notificationsStore: PropTypes.object,
   localeStore: PropTypes.object,
   authStore: PropTypes.object,
-  navigationStore: PropTypes.object,
   templatesStore: PropTypes.object,
 };
 
 const enhance = compose(
   withRouter,
-  inject('uiStore', 'authStore', 'notificationsStore', 'localeStore', 'navigationStore', 'templatesStore'),
+  inject('uiStore', 'authStore', 'notificationsStore', 'localeStore', 'templatesStore'),
   observer
 );
 

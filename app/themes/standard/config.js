@@ -61,4 +61,6 @@ module.exports = {
       color: {{footerTextColor}};
     }
    `,
+  navigationPreload: ['headerNavigation', 'footerNavigation'],
+  userNavigationPreload: ['headerNavigationAuthenticated', 'footerNavigationAuthenticated'],
 };

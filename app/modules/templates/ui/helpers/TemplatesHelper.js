@@ -26,16 +26,6 @@ class TemplatesHelper {
     templatesStore.loadTemplate(name);
   }
 
-  preloadNavigation(name, { authStore, templatesStore, navigationStore }) {
-    if (authStore.authenticated && authStore.user) {
-      navigationStore.loadByName(templatesStore.languageSettings.headerNavigationAuthenticated);
-      navigationStore.loadByName(templatesStore.languageSettings.footerNavigationAuthenticated);
-    } else {
-      navigationStore.loadByName(templatesStore.languageSettings.headerNavigation);
-      navigationStore.loadByName(templatesStore.languageSettings.footerNavigation);
-    }
-  }
-
   getTemplatePreviewReceiveEventName({ authStore, templatesStore }) {
     let eventName = null;
     if (authStore.user && authStore.user.id) {

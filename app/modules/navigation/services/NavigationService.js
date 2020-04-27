@@ -7,19 +7,18 @@ class NavigationService {
   }
   async getEnabledByName(name) {
     const cacheKey = `${name}-enabled`;
-    let navigation;
-    let items = CacheService.get(this.cacheId, cacheKey);
+    let navigationDb;
+    let navigation = CacheService.get(this.cacheId, cacheKey);
 
-    if (!items) {
-      items = [];
-      navigation = await NavigationModel.findOne({ name: name, enabled: true });
-      if (navigation && navigation.items && navigation.items.length > 1) {
-        items = navigation.items;
-        CacheService.set(this.cacheId, cacheKey, items);
+    if (!navigation) {
+      navigationDb = await NavigationModel.findOne({ name: name, enabled: true });
+      if (navigationDb) {
+        navigation = navigationDb._doc;
+        CacheService.set(this.cacheId, cacheKey, navigation);
       }
     }
 
-    return items;
+    return navigation;
   }
 
   async getAllEnabled() {
