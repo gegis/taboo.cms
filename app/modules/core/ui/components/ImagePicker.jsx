@@ -32,7 +32,7 @@ class ImagePicker extends React.Component {
       return button;
     }
     return (
-      <Button onClick={this.onButtonClick}>
+      <Button onClick={this.onButtonClick} title="Select Image">
         <Icon icon="file-image-o" />
       </Button>
     );
@@ -42,8 +42,10 @@ class ImagePicker extends React.Component {
     const { value, showPreview = false } = this.props;
     if (showPreview) {
       return (
-        <div className="color-picker-preview" onClick={this.onButtonClick}>
-          <img src={value} />
+        <div className="color-picker-preview">
+          <a href={value} target="_blank" rel="noopener noreferrer" title="Click to open image in new tab">
+            <img src={value} />
+          </a>
         </div>
       );
     }

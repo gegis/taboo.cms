@@ -112,5 +112,12 @@ class CoreHelper {
     }
     return string;
   }
+
+  parseSlug(text = '') {
+    return text
+      .toLowerCase()
+      .replace(/[^\w ]+/g, '')
+      .replace(/ +/g, '-');
+  }
 }
 module.exports = new CoreHelper();

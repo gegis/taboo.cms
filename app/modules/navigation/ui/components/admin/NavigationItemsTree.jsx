@@ -96,7 +96,7 @@ class NavigationList extends React.Component {
 
   render() {
     return (
-      <div className="navigation-items-tree">
+      <div className="navigation-items-tree panel-wrapper">
         <div className="header">
           <div className="pull-left">
             <h5>
@@ -104,12 +104,7 @@ class NavigationList extends React.Component {
             </h5>
           </div>
           <div className="pull-right">
-            <IconButton
-              icon={<Icon icon="plus-square" />}
-              className="rs-btn-sm"
-              appearance="primary"
-              onClick={this.onNavigationItemCreate}
-            >
+            <IconButton icon={<Icon icon="plus-square" />} appearance="primary" onClick={this.onNavigationItemCreate}>
               <Translation message="Add New Item" />
             </IconButton>
           </div>

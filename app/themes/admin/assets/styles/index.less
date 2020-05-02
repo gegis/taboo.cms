@@ -392,6 +392,14 @@ table {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.rs-form {
+  .panel-wrapper {
+    margin: 20px 20px 10px;
+    .header {
+      margin-bottom: 10px;
+    }
+  }
+}
 .rs-form-horizontal {
   .rs-form-group {
     display: inline-block;
@@ -415,6 +423,27 @@ table {
       }
       .rs-picker-input {
         width: 100%;
+      }
+      .image-picker {
+        .input-wrapper {
+          display: inline-block;
+          width: ~'calc(100% - 120px)';
+          margin-right: 5px;
+        }
+        .rs-btn {
+          margin-right: 5px;
+        }
+        .color-picker-preview {
+          vertical-align: top;
+          display: inline-block;
+          width: 70px;
+          height: 37px;
+          text-align: center;
+          overflow: hidden;
+          img {
+            height: 37px;
+          }
+        }
       }
     }
     .code-editor {
@@ -472,6 +501,9 @@ table {
 .rs-modal-body {
   touch-action: auto;
   -webkit-overflow-scrolling: touch;
+}
+.rs-modal-footer {
+  padding-top: 15px;
 }
 .rs-picker-menu {
   .rs-picker-cascader-menu-items {
@@ -535,13 +567,6 @@ table {
       display: inline-block;
       padding: 0 3% 0 0;
     }
-  }
-}
-
-.navigation-items-tree {
-  margin: 20px;
-  .header {
-    margin: 0 0 10px;
   }
 }
 

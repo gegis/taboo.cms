@@ -1,25 +1,14 @@
 import React from 'react';
-import { Icon, IconButton } from 'rsuite';
+import { Icon, IconButton, Panel } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import Translation from 'app/modules/core/ui/components/Translation';
 import UnitsHelper from 'app/modules/core/ui/helpers/UnitsHelper';
 import UploadSelect from 'app/modules/uploads/ui/components/admin/UploadSelect';
 import ActionButtons from 'app/modules/core/ui/components/admin/ActionButtons';
-
-const CustomDroppable = props => {
-  const { children, ...rest } = props;
-  return <Droppable {...rest}>{children}</Droppable>;
-};
-
-CustomDroppable.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-};
-
-observer(CustomDroppable);
+import TableSortDnD from 'modules/core/ui/components/admin/TableSortDnD';
 
 class GalleryImages extends React.Component {
   constructor(props) {
@@ -30,6 +19,7 @@ class GalleryImages extends React.Component {
     this.addImages = this.addImages.bind(this);
     this.onFileSelect = this.onFileSelect.bind(this);
     this.onImageRemove = this.onImageRemove.bind(this);
+    this.getRowCells = this.getRowCells.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
   }
 
@@ -82,23 +72,53 @@ class GalleryImages extends React.Component {
     this.galleriesStore.reorderImages(result.source.index, result.destination.index);
   }
 
-  getDraggableStyle(style, snapshot) {
-    if (snapshot.isDropAnimating) {
-      // Make dropping animation very short
-      return {
-        ...style,
-        left: '26%',
-        top: `${parseInt(style.top) - 30}px`,
-        transitionDuration: '0.1s',
-      };
-    } else if (snapshot.isDragging) {
-      return {
-        ...style,
-        left: '26%',
-        top: `${parseInt(style.top) - 30}px`,
-      };
-    }
-    return style;
+  applyDraggableStyle(style) {
+    return {
+      left: '8%',
+      top: `${parseInt(style.top) - 30}px`,
+    };
+  }
+
+  getTableHeader() {
+    return (
+      <thead>
+        <tr>
+          <th className="rs-hidden-sm" style={{ width: '150px' }}>
+            Preview
+          </th>
+          <th>File</th>
+          <th className="rs-hidden-sm">Type</th>
+          <th className="rs-hidden-sm">Size</th>
+          <th className="action-buttons-1">Actions</th>
+        </tr>
+      </thead>
+    );
+  }
+
+  getRowCells(item, i) {
+    return [
+      <td key="preview" className="rs-hidden-sm upload-preview-wrapper">
+        {this.getUploadPreview(item)}
+      </td>,
+      <td key="name" className="mobile-view-td">
+        <div className="rs-hidden-sm">{item.name}</div>
+        <div className="rs-visible-sm" style={{ textAlign: 'center' }}>
+          <div>{item.name}</div>
+          <a href={item.url} target="_blank" rel="noopener noreferrer">
+            {this.getUploadPreview(item, { height: '100px' })}
+          </a>
+        </div>
+      </td>,
+      <td key="type" className="rs-hidden-sm">
+        {item.type}
+      </td>,
+      <td key="size" className="rs-hidden-sm">
+        {UnitsHelper.parseSizeAuto(item.size)}
+      </td>,
+      <td key="actions">
+        <ActionButtons value={{ image: item, index: i }} onDelete={this.onImageRemove} />
+      </td>,
+    ];
   }
 
   getImages() {
@@ -111,66 +131,32 @@ class GalleryImages extends React.Component {
   }
 
   render() {
-    const images = this.getImages();
     return (
-      <div className="gallery-images">
-        <div className="pull-right">
-          <IconButton icon={<Icon icon="image" />} appearance="primary" onClick={this.addImages}>
-            <Translation message="Add Images" />
-          </IconButton>
+      <div className="gallery-images panel-wrapper">
+        <div className="header">
+          <div className="pull-left">
+            <h5>
+              <Translation message="Images" />
+            </h5>
+          </div>
+          <div className="pull-right">
+            <IconButton icon={<Icon icon="plus-square" />} appearance="primary" onClick={this.addImages}>
+              <Translation message="Add Images" />
+            </IconButton>
+          </div>
+          <div className="clearfix" />
         </div>
-        <DragDropContext onDragEnd={this.onDragEnd}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th className="rs-hidden-sm" style={{ width: '150px' }}>
-                  Preview
-                </th>
-                <th>File</th>
-                <th className="rs-hidden-sm">Type</th>
-                <th className="rs-hidden-sm">Size</th>
-                <th className="action-buttons-1">Actions</th>
-              </tr>
-            </thead>
-            <CustomDroppable droppableId="droppable-gallery-images">
-              {provided => (
-                <tbody ref={provided.innerRef} {...provided.droppableProps}>
-                  {images.map((image, i) => (
-                    <Draggable key={image._id + i} draggableId={image._id + i} index={i}>
-                      {(provided, snapshot) => (
-                        <tr
-                          key={image._id + i}
-                          ref={provided.innerRef}
-                          {...provided.dragHandleProps}
-                          {...provided.draggableProps}
-                          className="draggable-tr"
-                          style={this.getDraggableStyle(provided.draggableProps.style, snapshot)}
-                        >
-                          <td className="rs-hidden-sm upload-preview-wrapper">{this.getUploadPreview(image)}</td>
-                          <td className="mobile-view-td">
-                            <div className="rs-hidden-sm">{image.name}</div>
-                            <div className="rs-visible-sm" style={{ textAlign: 'center' }}>
-                              <div>{image.name}</div>
-                              <a href={image.url} target="_blank" rel="noopener noreferrer">
-                                {this.getUploadPreview(image, { height: '100px' })}
-                              </a>
-                            </div>
-                          </td>
-                          <td className="rs-hidden-sm">{image.type}</td>
-                          <td className="rs-hidden-sm">{UnitsHelper.parseSizeAuto(image.size)}</td>
-                          <td>
-                            <ActionButtons value={{ image, index: i }} onDelete={this.onImageRemove} />
-                          </td>
-                        </tr>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </tbody>
-              )}
-            </CustomDroppable>
-          </table>
-        </DragDropContext>
+        <Panel bordered={true}>
+          <TableSortDnD
+            items={this.getImages()}
+            idKey="_id"
+            onDragEnd={this.onDragEnd}
+            renderTableHead={this.getTableHeader}
+            renderRowCells={this.getRowCells}
+            applyDefaultDraggableStyle={true}
+            applyDraggableStyle={this.applyDraggableStyle}
+          />
+        </Panel>
         <UploadSelect
           ref={this.uploadSelect}
           onFileSelect={this.onFileSelect}

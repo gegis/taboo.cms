@@ -40,14 +40,7 @@ class GalleryForm extends React.Component {
             <Checkbox checked={item.published} onChange={setCheckboxItemValue.bind(null, 'published')} />
           </div>
         </FormGroup>
-        <FormGroup controlId="images">
-          <ControlLabel>
-            <Translation message="Images" />
-          </ControlLabel>
-          <div className="rs-form-control-wrapper">
-            <GalleryImages />
-          </div>
-        </FormGroup>
+        <GalleryImages />
       </Form>
     );
   }
