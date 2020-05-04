@@ -1,7 +1,11 @@
 #!/bin/bash
 
+set -e
+
+SCRIPTS_PATH='/home/ubuntu/scripts'
 ORG_NAME=$1
 APP_NAME=$2
+GIT_REPO=$3
 
 if test -z "$ORG_NAME"
 then
@@ -13,15 +17,22 @@ then
   read -p 'Enter APP_NAME:' APP_NAME
 fi
 
+if test -z "$GIT_REPO"
+then
+  read -p 'Enter GIT_REPO:' GIT_REPO
+fi
+
+### INSTALL packages
 sudo apt update
 sudo apt install -y git htop curl build-essential
 #curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 #curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt install -y nodejs nginx
+# Install pm2
+sudo npm install -g pm2
 
-
-### Consider creating SWAP for micro instance
+### SETUP SWAP FILE
 sudo fallocate -l 1G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
@@ -85,17 +96,14 @@ sudo nginx -t
 sudo service nginx restart
 
 # Create ssh key, update in git repo
-ssh-keygen -t rsa
-
-# Install pm2
-sudo npm install -g pm2
+#ssh-keygen -t rsa
 
 # Clone repo for the first time, to retrieve the scripts, then delete it.
-cd ~
-mkdir scripts
-cd scripts
-git clone YOUR-REPO first-time-deploy
-cp -r first-time-deploy/scripts/build-and-deploy/* ./
+#cd ~
+#mkdir scripts
+cd ${SCRIPTS_PATH}
+#git clone ${GIT_REPO} first-time-deploy
+cp -r first-time-deploy/scripts/buildAndDeploy/* ./
 ls -la
 
 
@@ -111,11 +119,13 @@ ls -la
 #sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
 
 # Update local config file if needed
-cd ~/scripts
-cat ~/scripts/config/local.js
+cd ${SCRIPTS_PATH}
+cat ./config/local.js
 
 # Build
 #./build.sh
 
 # Deploy
 #./deploy.sh
+
+echo 'Done.'

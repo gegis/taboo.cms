@@ -1,8 +1,20 @@
 #!/bin/bash
 
 set -e
-ORG_NAME='YOUR-ORG'
-APP_NAME='YOUR-APP'
+
+ORG_NAME=$1
+APP_NAME=$2
+
+if test -z "$ORG_NAME"
+then
+  read -p 'Enter ORG_NAME:' ORG_NAME
+fi
+
+if test -z "$APP_NAME"
+then
+  read -p 'Enter APP_NAME:' APP_NAME
+fi
+
 PM2_APP_NAME=${APP-NAME}
 
 ENVIRONMENT='production'
