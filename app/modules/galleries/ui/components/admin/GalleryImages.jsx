@@ -100,7 +100,7 @@ class GalleryImages extends React.Component {
       <td key="preview" className="rs-hidden-sm upload-preview-wrapper">
         {this.getUploadPreview(item)}
       </td>,
-      <td key="name" className="mobile-view-td">
+      <td key="name" className="mobile-view-td" width="80%">
         <div className="rs-hidden-sm">{item.name}</div>
         <div className="rs-visible-sm" style={{ textAlign: 'center' }}>
           <div>{item.name}</div>

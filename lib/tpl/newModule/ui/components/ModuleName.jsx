@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
+import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 
 class ModuleName extends Component {
   constructor(props) {
@@ -14,15 +15,12 @@ class ModuleName extends Component {
   }
 
   render() {
-    const {
-      moduleNameStore: { items },
-      templatesStore: { templateComponents = {}, defaultTemplateName = '' } = {},
-    } = this.props;
-    const Template = templateComponents[defaultTemplateName];
+    const { templatesStore, moduleNameStore } = this.props;
+    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     return (
       <Template className="moduleName">
         <div className="items-list">
-          {items.map(item => (
+          {[...moduleNameStore.items].map(item => (
             <div key={item._id}>
               <span>{item._id}</span>
               {' - '}

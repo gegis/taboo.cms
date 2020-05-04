@@ -47,18 +47,16 @@ class NavigationAdminController extends AbstractAdminController {
   async reorder(ctx) {
     const { request: { body: items = {} } = {} } = ctx;
     let sort = -1;
-    let promises;
+    let promises = [];
 
     try {
       if (items && items.length > 0) {
-        promises = items.map(async item => {
+        for (let i = 0; i < items.length; i++) {
           sort++;
-          return await NavigationModel.updateOne({ _id: item._id }, { sort });
-        });
+          promises.push(NavigationModel.updateOne({ _id: items[i]._id }, { sort }));
+        }
       }
       await Promise.all(promises);
-      // Clear navigation cache on delete
-      NavigationService.deleteNavigationCache();
     } catch (e) {
       logger.error(e);
       return ctx.throw(e);

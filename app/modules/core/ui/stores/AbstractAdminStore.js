@@ -204,12 +204,18 @@ class AbstractAdminStore {
   reorderItems(startIndex, endIndex) {
     return new Promise(resolve => {
       const [removed] = this.items.splice(startIndex, 1);
-      const { loadAll } = this.options.endpoints;
+      const { update, reorder } = this.options.endpoints;
+      let endpoint = {
+        method: update.method,
+        path: update.path.replace(':id', 'reorder'),
+      };
+      if (reorder) {
+        endpoint = reorder;
+      }
       runInAction(() => {
         this.items.splice(endIndex, 0, removed);
       });
-      axios
-        .put(`${loadAll.path}/reorder`, this.items)
+      axios[endpoint.method](endpoint.path, this.items)
         .then(response => {
           resolve(response.data);
         })
