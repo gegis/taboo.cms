@@ -43,29 +43,6 @@ class NavigationAdminController extends AbstractAdminController {
     NavigationService.deleteNavigationCache();
     return itemResult;
   }
-
-  async reorder(ctx) {
-    const { request: { body: items = {} } = {} } = ctx;
-    let sort = -1;
-    let promises = [];
-
-    try {
-      if (items && items.length > 0) {
-        for (let i = 0; i < items.length; i++) {
-          sort++;
-          promises.push(NavigationModel.updateOne({ _id: items[i]._id }, { sort }));
-        }
-      }
-      await Promise.all(promises);
-    } catch (e) {
-      logger.error(e);
-      return ctx.throw(e);
-    }
-
-    ctx.body = {
-      success: true,
-    };
-  }
 }
 
 module.exports = new NavigationAdminController();

@@ -102,9 +102,15 @@ class ListPage extends React.Component {
   }
 
   openEditModal(id) {
-    const { current } = this.editModal;
-    if (current) {
-      current.open(id);
+    const { useCreateModalForEdit } = this.props;
+    let modal;
+    if (useCreateModalForEdit) {
+      modal = this.createModal.current;
+    } else {
+      modal = this.editModal.current;
+    }
+    if (modal) {
+      modal.open(id);
     }
   }
 
@@ -191,6 +197,7 @@ ListPage.propTypes = {
   EditModalComponent: PropTypes.object,
   pageActionButtons: PropTypes.array,
   ItemsListComponent: PropTypes.object.isRequired,
+  useCreateModalForEdit: PropTypes.bool,
 };
 
 const enhance = compose(inject('localeStore', 'notificationsStore', 'uiAdminStore'), observer);

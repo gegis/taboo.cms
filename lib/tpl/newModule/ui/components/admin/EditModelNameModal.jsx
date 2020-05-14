@@ -18,6 +18,7 @@ class EditModelNameModal extends React.Component {
   }
 
   open(id) {
+    this.moduleNameStore.resetItem();
     this.moduleNameStore.loadById(id).then(() => {
       this.modal.current.open();
     });
@@ -37,6 +38,7 @@ class EditModelNameModal extends React.Component {
         translationVars: { item: data._id },
         translate: true,
       });
+      this.moduleNameStore.resetItem();
       this.close();
     });
   }

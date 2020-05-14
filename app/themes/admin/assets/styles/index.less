@@ -1,5 +1,6 @@
 @import 'vars';
 @import 'fonts';
+@import 'helpers';
 @import 'react-sortable-tree';
 
 html,
@@ -16,7 +17,7 @@ body {
 }
 .helper-copy-value-input {
   position: absolute;
-  left: -20000px;
+  left: -10000px;
   width: 0px;
   height: 0px;
 }
@@ -199,6 +200,11 @@ table {
     }
     .rs-sidenav {
       flex: 1 1 auto;
+      .rs-dropdown-collapse {
+        .rs-dropdown-menu {
+          height: 0px;
+        }
+      }
     }
     .nav-toggle-divider {
       margin: 0;
@@ -399,7 +405,54 @@ table {
       margin-bottom: 10px;
     }
   }
+  .rs-control-label {
+    .rs-help-block-tooltip {
+      margin: 0;
+      padding: 0 5px;
+    }
+  }
+  .rs-form-group {
+    &.disabled {
+      .rs-control-label {
+        color: @B500;
+      }
+    }
+  }
+  .accordion-wrapper {
+    border: 1px solid @B300;
+    border-radius: @border-radius-base;
+    .rs-panel {
+      border-radius: 0;
+      .rs-panel-heading {
+        background-color: @B050;
+        padding: 10px 20px;
+        border-bottom: 1px solid @B300;
+        &::before {
+          top: 10px;
+        }
+      }
+      .rs-panel-body {
+        padding: 20px;
+
+        border-bottom: 1px solid @B300;
+      }
+      &:last-child {
+        .rs-panel-body {
+          border-bottom: 0 none;
+        }
+      }
+      &:last-child:not(.rs-panel-in) {
+        .rs-panel-heading {
+          border-bottom: 0 none;
+        }
+      }
+      &:not(.rs-panel-in) {
+        border-radius: 0;
+      }
+    }
+  }
 }
+
 .rs-form-horizontal {
   .rs-form-group {
     display: inline-block;
@@ -422,6 +475,9 @@ table {
         width: 100%;
       }
       .rs-picker-input {
+        width: 100%;
+      }
+      .rs-picker-check {
         width: 100%;
       }
       .image-picker {
@@ -566,6 +622,46 @@ table {
     .rs-btn-toolbar {
       display: inline-block;
       padding: 0 3% 0 0;
+    }
+  }
+}
+
+.ratings-panel {
+  h5 {
+    padding: 5px 0 15px;
+  }
+  .rs-form-group {
+    .rs-control-label {
+      width: 40%;
+    }
+    .rs-form-control-wrapper {
+      width: 54%;
+    }
+  }
+}
+
+.bonuses-panel {
+  .bonus {
+    margin: 10px 0 0;
+    border: 1px solid @B300;
+    border-radius: @border-radius-base;
+    padding: 40px 20px 20px;
+    position: relative;
+    .btn-delete-bonus {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    .rs-form-group {
+      .rs-control-label {
+        width: 40%;
+      }
+      .rs-form-control-wrapper {
+        width: 54%;
+      }
+      .rs-picker-check {
+        width: 100%;
+      }
     }
   }
 }

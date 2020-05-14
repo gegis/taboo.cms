@@ -8,7 +8,7 @@ class AbstractAdminController {
    *  model - Model object
    *  searchFields - array
    *  defaultSort - object
-   *  populate - string|array
+   *  populate - object {method: [property]}
    */
   constructor(props) {
     this.props = props;
@@ -28,6 +28,7 @@ class AbstractAdminController {
     this.delete = this.delete.bind(this);
     this.count = this.count.bind(this);
     this.applyPopulateToQuery = this.applyPopulateToQuery.bind(this);
+    this.reorder = this.reorder.bind(this);
   }
 
   async beforeFindAll(ctx, data) {
@@ -192,6 +193,30 @@ class AbstractAdminController {
     if (method && query && this.props.populate && this.props.populate[method]) {
       query.populate(this.props.populate[method]);
     }
+  }
+
+  async reorder(ctx) {
+    const { model } = this.props;
+    const { request: { body: items = {} } = {} } = ctx;
+    let sort = -1;
+    let promises = [];
+
+    try {
+      if (items && items.length > 0) {
+        for (let i = 0; i < items.length; i++) {
+          sort++;
+          promises.push(model.updateOne({ _id: items[i]._id }, { sort }));
+        }
+      }
+      await Promise.all(promises);
+    } catch (e) {
+      logger.error(e);
+      return ctx.throw(e);
+    }
+
+    ctx.body = {
+      success: true,
+    };
   }
 }
 

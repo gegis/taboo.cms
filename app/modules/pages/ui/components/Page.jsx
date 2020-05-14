@@ -4,7 +4,6 @@ import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 
-import Translation from 'app/modules/core/ui/components/Translation';
 import GalleryModal from 'modules/galleries/ui/components/GalleryModal';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 import NotFound from 'modules/core/ui/components/NotFound';
@@ -37,7 +36,7 @@ class Page extends Component {
   loadPage(url) {
     const { pagesStore } = this.props;
     pagesStore.load(url).then(() => {
-      window.scrollTo(0, 0);
+      window.scrollTo(0, 0); // TODO - find a way for smoother scroll
       this.registerLinks();
       this.registerGalleryImageLinks();
     });
@@ -45,8 +44,8 @@ class Page extends Component {
 
   getPageTitle() {
     const { pagesStore } = this.props;
-    let title = '404';
-    if (pagesStore.page && !pagesStore.pageNotFound) {
+    let title = null;
+    if (!pagesStore.pageNotFound && pagesStore.page && pagesStore.page.title) {
       title = pagesStore.page.title;
     }
     return title;
@@ -54,8 +53,8 @@ class Page extends Component {
 
   getPageBody() {
     const { pagesStore } = this.props;
-    let body = <Translation message="Not Found" />;
-    if (pagesStore.page && !pagesStore.pageNotFound) {
+    let body = null;
+    if (!pagesStore.pageNotFound && pagesStore.page && pagesStore.page.body) {
       body = <div dangerouslySetInnerHTML={{ __html: pagesStore.page.body }} />;
     }
     return body;
@@ -97,15 +96,14 @@ class Page extends Component {
 
   render() {
     const { pagesStore: { page = {}, pageNotFound } = {} } = this.props;
-
+    const title = this.getPageTitle();
     if (pageNotFound) {
       return <NotFound />;
     } else {
       const Template = TemplatesHelper.getTemplate(page.template, { templatesStore: this.props.templatesStore });
       return (
-        <Template metaTitle={this.getPageTitle()}>
+        <Template metaTitle={title} title={title}>
           <div className="page">
-            <h1 className="title">{this.getPageTitle()}</h1>
             <div className="body">{this.getPageBody()}</div>
           </div>
           <GalleryModal ref={this.modal} />

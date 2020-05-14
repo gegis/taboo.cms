@@ -3,6 +3,8 @@ import ArrayHelper from './ArrayHelper';
 class AdminConfigHelper {
   constructor() {
     this.modulesConfigs = this.importAllModulesConfigs();
+    this.primaryMenu = [];
+    this.primaryMenuNames = [];
   }
 
   /**
@@ -49,13 +51,27 @@ class AdminConfigHelper {
   }
 
   getPrimaryMenuItems() {
-    let items = [];
-    [...this.modulesConfigs].map(config => {
-      if (config && config.enabled && config.primaryMenu) {
-        items = items.concat(config.primaryMenu);
-      }
-    });
-    return ArrayHelper.sortByProperty(items, 'order');
+    if (this.primaryMenu.length === 0) {
+      this.modulesConfigs.map(config => {
+        if (config && config.enabled && config.primaryMenu) {
+          config.primaryMenu.map(menuItem => {
+            const index = this.primaryMenuNames.indexOf(menuItem.text);
+            if (index === -1) {
+              this.primaryMenu.push(menuItem);
+              this.primaryMenuNames.push(menuItem.text);
+            } else {
+              if (!this.primaryMenu[index].dropdown) {
+                this.primaryMenu[index].dropdown = [];
+              }
+              this.primaryMenu[index].dropdown = this.primaryMenu[index].dropdown.concat(menuItem.dropdown);
+              return ArrayHelper.sortByProperty(this.primaryMenu[index].dropdown, 'order');
+            }
+          });
+        }
+      });
+      return ArrayHelper.sortByProperty(this.primaryMenu, 'order');
+    }
+    return this.primaryMenu;
   }
 
   getTemplates() {

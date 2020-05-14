@@ -29,7 +29,7 @@ class Sidebar extends React.Component {
     this.uiAdminStore.setExpandedSidebarItems([key]);
   }
 
-  getPrimaryMenuItems() {
+  getMenuItems() {
     const items = AdminConfigHelper.getPrimaryMenuItems();
     const menuItems = [];
     let menuItemChildren = [];
@@ -85,13 +85,13 @@ class Sidebar extends React.Component {
         </Sidenav.Header>
         <Sidenav
           expanded={this.uiAdminStore.sidebarOpen}
+          defaultOpenKeys={[]}
           openKeys={this.uiAdminStore.expandedSidebarItems}
-          defaultactivekey={0}
           onOpenChange={this.onDropdownOpen}
           appearance="subtle"
         >
           <Sidenav.Body>
-            <Nav>{this.getPrimaryMenuItems()}</Nav>
+            <Nav>{this.getMenuItems()}</Nav>
           </Sidenav.Body>
         </Sidenav>
         <Divider className="nav-toggle-divider" />

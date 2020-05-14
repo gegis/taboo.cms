@@ -16,6 +16,7 @@ class AbstractAdminStore {
     this.sortDirection = this.options.sortDirection || 'asc';
     this.item = Object.assign({}, this.options.newItem);
     this.setItem = this.setItem.bind(this);
+    this.setItems = this.setItems.bind(this);
     this.resetItem = this.resetItem.bind(this);
     this.getFormData = this.getFormData.bind(this);
     this.setCheckboxItemValue = this.setCheckboxItemValue.bind(this);
@@ -27,6 +28,10 @@ class AbstractAdminStore {
 
   setItem(item) {
     this.item = Object.assign(this.item, item);
+  }
+
+  setItems(items) {
+    this.items = items;
   }
 
   setCheckboxItemValue(field, event, value) {
@@ -55,7 +60,7 @@ class AbstractAdminStore {
         .then(response => {
           runInAction(() => {
             const { data = [] } = response;
-            this.items = data;
+            this.setItems(data);
             this.hasMoreResults = data.length === this.limit;
             resolve(data);
           });
@@ -85,7 +90,7 @@ class AbstractAdminStore {
           runInAction(() => {
             const { data = [] } = response;
             this.hasMoreResults = data.length === this.limit;
-            this.items = this.items.concat(data);
+            this.setItems(this.items.concat(data));
             resolve(data);
           });
         })
@@ -103,7 +108,8 @@ class AbstractAdminStore {
             if (!data.id && data._id) {
               data.id = data._id;
             }
-            this.item = Object.assign(this.item, data);
+            // this.item = Object.assign(this.item, data);
+            this.setItem(data);
             resolve(data);
           });
         })
@@ -142,7 +148,7 @@ class AbstractAdminStore {
                 if (index !== null) {
                   items = this.items.slice();
                   items[index] = response.data;
-                  this.items = items;
+                  this.setItems(items);
                 }
               }
               resolve(response.data);
@@ -167,7 +173,7 @@ class AbstractAdminStore {
               if (index !== null) {
                 items = this.items.slice();
                 items.splice(index, 1);
-                this.items = items;
+                this.setItems(items);
               }
               resolve(response.data);
             }
@@ -198,7 +204,7 @@ class AbstractAdminStore {
   sort(field, direction) {
     this.sortBy = field;
     this.sortDirection = direction;
-    this.items = ArrayHelper.sortByProperty([...this.items], this.sortBy, this.sortDirection);
+    this.setItems(ArrayHelper.sortByProperty([...this.items], this.sortBy, this.sortDirection));
   }
 
   reorderItems(startIndex, endIndex) {
@@ -250,6 +256,7 @@ decorate(AbstractAdminStore, {
   items: observable,
   item: observable,
   setItem: action,
+  setItems: action,
   resetItem: action,
   loadAll: action,
   loadNextPage: action,

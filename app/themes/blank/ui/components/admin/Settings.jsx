@@ -22,8 +22,8 @@ class Settings extends React.Component {
     return (
       <div>
         <SettingsInput className="template-language-input-wrapper" type="TemplateLanguage" label="Template Language" />
-        <PanelGroup accordion>
-          <Panel header="Template Info">
+        <PanelGroup accordion defaultActiveKey={1}>
+          <Panel header="Template Info" eventKey={1}>
             <Form layout="vertical" fluid onChange={setItem} formValue={getFormData()}>
               <FormGroup controlId="name">
                 <ControlLabel>
@@ -53,7 +53,7 @@ class Settings extends React.Component {
               </FormGroup>
             </Form>
           </Panel>
-          <Panel header="Theme">
+          <Panel header="Theme" eventKey={2}>
             <SettingsInput
               type="ColorPicker"
               label="Background Color"
