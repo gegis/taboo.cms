@@ -10,6 +10,7 @@ const newItem = {
   title: '',
   url: '',
   body: '',
+  blocks: [],
   template: defaultTemplate,
   language: language,
   background: '',
@@ -46,6 +47,30 @@ class PagesAdminStore extends AbstractAdminStore {
     });
     this.richTextEditorVisible = false;
   }
+
+  addBlock(block) {
+    if (!this.item.blocks) {
+      this.item.blocks = [];
+    }
+    this.item.blocks.push({
+      name: block.name,
+      props: block.props,
+    });
+  }
+
+  setBlockProps(index, props) {
+    if (this.item.blocks[index]) {
+      this.item.blocks[index].props = Object.assign(this.item.blocks[index].props, props);
+    }
+  }
+
+  deleteBlock(index) {
+    if (this.item.blocks[index]) {
+      this.item.blocks.splice(index, 1);
+    }
+  }
+
+  reorderBlocks() {}
 
   showRichTextEditor() {
     this.richTextEditorVisible = true;
@@ -85,6 +110,10 @@ decorate(PagesAdminStore, {
   showRichTextEditor: action,
   hideRichTextEditor: action,
   loadPreviousVersion: action,
+  addBlock: action,
+  deleteBlock: action,
+  reorderBlocks: action,
+  setBlockProps: action,
 });
 
 export default new PagesAdminStore();

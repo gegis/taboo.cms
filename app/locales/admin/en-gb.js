@@ -51,6 +51,7 @@ module.exports = {
   Footer: 'Footer',
   Authenticated: 'Authenticated',
   Template: 'Template',
+  'Add Block': 'Add Block',
   'Primary Color': 'Primary Color',
   'Primary Color Active': 'Primary Color Active',
   'Button Text Color': 'Button Text Color',

@@ -9,7 +9,7 @@ const newItem = {
   published: false,
 };
 
-class GalleriesStore extends AbstractAdminStore {
+class GalleriesAdminStore extends AbstractAdminStore {
   constructor() {
     super({
       newItem: newItem,
@@ -63,11 +63,11 @@ class GalleriesStore extends AbstractAdminStore {
   }
 }
 
-decorate(GalleriesStore, {
+decorate(GalleriesAdminStore, {
   addImage: action,
   removeImageById: action,
   removeImageByPosition: action,
   reorderImages: action,
 });
 
-export default new GalleriesStore();
+export default new GalleriesAdminStore();

@@ -2,7 +2,9 @@ import React from 'react';
 import { Icon } from 'rsuite';
 
 import Galleries from './components/admin/Galleries';
-import GalleriesStore from './stores/GalleriesStore';
+import GalleriesAdminStore from './stores/GalleriesAdminStore';
+import GalleryPageBlockConfig from './components/admin/GalleryPageBlockConfig';
+import GalleryPageBlock from './components/GalleryPageBlock';
 
 const enabled = true;
 
@@ -16,7 +18,7 @@ const routes = [
 ];
 
 const stores = {
-  galleriesStore: GalleriesStore,
+  galleriesStore: GalleriesAdminStore,
 };
 
 const primaryMenu = [
@@ -31,4 +33,17 @@ const primaryMenu = [
   },
 ];
 
-export { enabled, routes, stores, primaryMenu };
+const pageBlocks = [
+  {
+    name: 'Gallery',
+    props: {
+      id: '',
+    },
+    order: 100,
+    icon: React.createElement(Icon, { icon: 'file-image-o' }),
+    configComponent: GalleryPageBlockConfig,
+    displayComponent: GalleryPageBlock,
+  },
+];
+
+export { enabled, routes, stores, primaryMenu, pageBlocks };

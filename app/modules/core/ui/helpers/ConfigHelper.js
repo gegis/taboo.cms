@@ -3,6 +3,8 @@ import ArrayHelper from './ArrayHelper';
 class ConfigHelper {
   constructor() {
     this.modulesConfigs = this.importAllModulesConfigs();
+    this.pageBlocks = [];
+    this.pageBlocksMap = {};
   }
 
   /**
@@ -46,6 +48,31 @@ class ConfigHelper {
    */
   getModules() {
     return this.getOptionsByKey('modules');
+  }
+
+  getPageBlocks() {
+    if (this.pageBlocks.length === 0) {
+      this.parsePageBlocks();
+    }
+    return this.pageBlocks;
+  }
+
+  getPageBlocksMap() {
+    if (this.pageBlocks.length === 0) {
+      this.parsePageBlocks();
+    }
+    return this.pageBlocksMap;
+  }
+
+  parsePageBlocks() {
+    [...this.modulesConfigs].map(config => {
+      if (config && config.enabled && config.pageBlocks) {
+        config.pageBlocks.map(pageBlock => {
+          this.pageBlocksMap[pageBlock.name] = pageBlock;
+          this.pageBlocks.push(pageBlock);
+        });
+      }
+    });
   }
 
   getOptionsByKey(key) {

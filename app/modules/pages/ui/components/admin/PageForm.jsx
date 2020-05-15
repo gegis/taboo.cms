@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Translation from 'app/modules/core/ui/components/Translation';
 import CodeEditor from 'app/modules/core/ui/components/CodeEditor';
 import RichTextModal from 'modules/pages/ui/components/admin/RichTextModal';
+import PageBlocks from 'modules/pages/ui/components/admin/PageBlocks';
 
 class PageForm extends React.Component {
   constructor(props) {
@@ -69,6 +70,14 @@ class PageForm extends React.Component {
           </ControlLabel>
           <div className="rs-form-control-wrapper">
             <Checkbox checked={item.published} onChange={setCheckboxItemValue.bind(null, 'published')} />
+          </div>
+        </FormGroup>
+        <FormGroup controlId="blocks">
+          <ControlLabel>
+            <Translation message="Body" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <PageBlocks />
           </div>
         </FormGroup>
         <FormGroup controlId="body">

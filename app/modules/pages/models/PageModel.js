@@ -20,6 +20,15 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
       type: String,
       required: [true, 'is required'],
     },
+    blocks: [
+      {
+        name: {
+          type: String,
+          required: [true, 'is required'],
+        },
+        props: Object,
+      },
+    ],
     template: {
       type: String,
     },
@@ -40,7 +49,7 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
       default: false,
     },
     pages: [{ type: SchemaTypes.ObjectId, ref: 'Page' }],
-    blocks: [{ type: SchemaTypes.ObjectId, ref: 'Block' }],
+    // blocks: [{ type: SchemaTypes.ObjectId, ref: 'Block' }],
     galleries: [{ type: SchemaTypes.ObjectId, ref: 'Gallery' }],
     createdBy: {
       type: SchemaTypes.ObjectId,
