@@ -6,6 +6,7 @@ import UploadSelect from 'modules/uploads/ui/components/admin/UploadSelect';
 class RichTextEditor extends React.Component {
   constructor(props) {
     super(props);
+    const { enterMode = 2, height = '60vh' } = props;
     const { contentsCss = ['/css/_shared/lib.css', '/css/_shared/index.css'] } = props;
     const plugins = this.getPlugins();
     this.uploadSelectModal = React.createRef();
@@ -13,8 +14,8 @@ class RichTextEditor extends React.Component {
       allowedContent: true,
       removeFormatAttributes: '',
       contentsCss: contentsCss,
-      enterMode: 2, // P-1, BR-2, DIV-3
-      height: '60vh',
+      enterMode: enterMode, // P-1, BR-2, DIV-3
+      height: height,
       removePlugins: ['about'],
     };
     if (plugins) {
@@ -140,6 +141,8 @@ RichTextEditor.propTypes = {
   id: PropTypes.string,
   type: PropTypes.string,
   contentsCss: PropTypes.array,
+  enterMode: PropTypes.number,
+  height: PropTypes.string,
 };
 
 export default RichTextEditor;

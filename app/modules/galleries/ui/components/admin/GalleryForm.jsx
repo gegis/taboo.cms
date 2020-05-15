@@ -10,11 +10,11 @@ import GalleryImages from './GalleryImages';
 class GalleryForm extends React.Component {
   constructor(props) {
     super(props);
-    this.galleriesStore = props.galleriesStore;
+    this.galleriesAdminStore = props.galleriesAdminStore;
   }
 
   render() {
-    const { setItem, item, setCheckboxItemValue } = this.galleriesStore;
+    const { setItem, item, setCheckboxItemValue } = this.galleriesAdminStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
@@ -47,9 +47,9 @@ class GalleryForm extends React.Component {
 }
 
 GalleryForm.propTypes = {
-  galleriesStore: PropTypes.object.isRequired,
+  galleriesAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('galleriesStore'), observer);
+const enhance = compose(inject('galleriesAdminStore'), observer);
 
 export default enhance(GalleryForm);

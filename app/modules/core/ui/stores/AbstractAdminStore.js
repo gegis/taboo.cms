@@ -53,6 +53,9 @@ class AbstractAdminStore {
         this.search = options.search;
         opts.params.search = options.search;
       }
+      if (options.populate) {
+        opts.params.populate = options.populate;
+      }
       if (this.filter) {
         opts.params.filter = this.filter;
       }

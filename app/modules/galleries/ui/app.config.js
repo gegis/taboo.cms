@@ -1,6 +1,11 @@
+import GalleriesStore from './stores/GalleriesStore';
 import GalleryPageBlock from './components/GalleryPageBlock';
 
 const enabled = true;
+
+const stores = {
+  galleriesStore: GalleriesStore,
+};
 
 const pageBlocks = [
   {
@@ -9,4 +14,4 @@ const pageBlocks = [
   },
 ];
 
-export { enabled, pageBlocks };
+export { enabled, stores, pageBlocks };

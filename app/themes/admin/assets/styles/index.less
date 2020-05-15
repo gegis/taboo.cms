@@ -665,6 +665,14 @@ table {
     }
   }
 }
+.sortable-helper {
+  z-index: 5000;
+}
+.html-code-modal {
+  .code-editor {
+    border: 1px solid @B200;
+  }
+}
 
 .loader {
   border: 6px solid #249dd4;
@@ -687,5 +695,7 @@ table {
   }
 }
 
+@import 'page-blocks';
+@import '../../../_shared/assets/styles/gallery.less';
 @import 'ckeditor';
 @import 'responsive';

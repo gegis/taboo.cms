@@ -1,4 +1,4 @@
-import { decorate, action } from 'mobx';
+import { decorate, action, observable } from 'mobx';
 import AbstractAdminStore from 'modules/core/ui/stores/AbstractAdminStore';
 
 const newItem = {
@@ -36,6 +36,26 @@ class GalleriesAdminStore extends AbstractAdminStore {
         },
       },
     });
+    this.galleryOptions = [];
+    this.galleryImages = {};
+  }
+
+  setItems(items = []) {
+    this.galleryOptions = [];
+    items.map(item => {
+      this.galleryOptions.push({
+        label: `${item.title} (${item.images.length})`,
+        value: item._id,
+      });
+    });
+    super.setItems(items);
+  }
+
+  setItem(item) {
+    if (item && item.images) {
+      this.galleryImages[item._id] = item.images;
+    }
+    super.setItem(item);
   }
 
   addImage(image) {
@@ -64,6 +84,10 @@ class GalleriesAdminStore extends AbstractAdminStore {
 }
 
 decorate(GalleriesAdminStore, {
+  galleryOptions: observable,
+  galleryImages: observable,
+  setItems: action,
+  setItem: action,
   addImage: action,
   removeImageById: action,
   removeImageByPosition: action,

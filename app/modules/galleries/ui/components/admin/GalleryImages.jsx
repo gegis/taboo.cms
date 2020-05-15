@@ -14,7 +14,7 @@ class GalleryImages extends React.Component {
   constructor(props) {
     super(props);
     this.uploadSelect = React.createRef();
-    this.galleriesStore = props.galleriesStore;
+    this.galleriesAdminStore = props.galleriesAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.addImages = this.addImages.bind(this);
     this.onFileSelect = this.onFileSelect.bind(this);
@@ -32,7 +32,7 @@ class GalleryImages extends React.Component {
 
   onFileSelect(item) {
     if (item && item.type && item.type.indexOf('image') === 0) {
-      this.galleriesStore.addImage(item);
+      this.galleriesAdminStore.addImage(item);
       this.notificationsStore.push({
         html: 'Successfully added {item}',
         translationVars: { item: item.name },
@@ -57,7 +57,7 @@ class GalleryImages extends React.Component {
 
   onImageRemove(data) {
     const { image, index } = data;
-    this.galleriesStore.removeImageByPosition(index);
+    this.galleriesAdminStore.removeImageByPosition(index);
     this.notificationsStore.push({
       html: 'Successfully removed {image}',
       translationVars: { image: image.name },
@@ -69,7 +69,7 @@ class GalleryImages extends React.Component {
     if (!result.destination) {
       return;
     }
-    this.galleriesStore.reorderImages(result.source.index, result.destination.index);
+    this.galleriesAdminStore.reorderImages(result.source.index, result.destination.index);
   }
 
   applyDraggableStyle(style) {
@@ -122,7 +122,7 @@ class GalleryImages extends React.Component {
   }
 
   getImages() {
-    const { images } = this.galleriesStore.item;
+    const { images } = this.galleriesAdminStore.item;
     // Workaround to get images observed on add and remove for Droppable component
     images.map(() => {
       return true;
@@ -169,9 +169,9 @@ class GalleryImages extends React.Component {
 
 GalleryImages.propTypes = {
   notificationsStore: PropTypes.object.isRequired,
-  galleriesStore: PropTypes.object.isRequired,
+  galleriesAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('notificationsStore', 'galleriesStore'), observer);
+const enhance = compose(inject('notificationsStore', 'galleriesAdminStore'), observer);
 
 export default enhance(GalleryImages);

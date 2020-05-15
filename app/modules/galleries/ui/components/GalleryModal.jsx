@@ -6,8 +6,7 @@ class GalleryModal extends Component {
     super(props);
     this.modal = React.createRef();
     this.state = {
-      name: '',
-      url: '',
+      item: {},
     };
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -15,24 +14,24 @@ class GalleryModal extends Component {
 
   componentDidMount() {}
 
-  open(url, name) {
-    this.setState({ url, name });
+  open(item) {
+    this.setState({ item });
     this.modal.current.open();
   }
 
   close() {
-    this.setState({ url: '', name: '' });
+    this.setState({ item: {} });
     this.modal.current.close();
   }
 
   render() {
-    const { name, url } = this.state;
+    const { item } = this.state;
     return (
       <Modal full ref={this.modal} cancelName="" title=" " className="gallery-image-modal use-max-width">
         <div className="gallery-image-wrapper">
-          <img src={url} alt={name} />
+          <img src={item.url} alt={item.name} />
         </div>
-        <div className="gallery-image-name">{name}</div>
+        <div className="gallery-image-name">{item.name}</div>
       </Modal>
     );
   }

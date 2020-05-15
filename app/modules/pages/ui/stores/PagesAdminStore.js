@@ -70,7 +70,10 @@ class PagesAdminStore extends AbstractAdminStore {
     }
   }
 
-  reorderBlocks() {}
+  reorderBlocks(startIndex, endIndex) {
+    const [removed] = this.item.blocks.splice(startIndex, 1);
+    this.item.blocks.splice(endIndex, 0, removed);
+  }
 
   showRichTextEditor() {
     this.richTextEditorVisible = true;

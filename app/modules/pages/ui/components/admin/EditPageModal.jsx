@@ -65,7 +65,6 @@ class EditPageModal extends React.Component {
         full
         keyboard={false}
         backdrop="static"
-        className="use-max-width"
         title="Edit Page"
         ref={this.modal}
         onSubmit={this.onSave}

@@ -52,7 +52,6 @@ class CreatePageModal extends React.Component {
         full
         keyboard={false}
         backdrop="static"
-        className="use-max-width"
         title="Create New Page"
         ref={this.modal}
         onSubmit={this.onSave}
