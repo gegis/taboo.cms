@@ -10,7 +10,7 @@ class GalleriesStore {
   loadById(id) {
     return new Promise(resolve => {
       axios
-        .get(`/api/admin/galleries/${id}`)
+        .get(`/api/galleries/${id}`)
         .then(response => {
           runInAction(() => {
             const { data = {} } = response;

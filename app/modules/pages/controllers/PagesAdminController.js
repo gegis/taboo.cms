@@ -21,6 +21,7 @@ class PagesAdminController extends AbstractAdminController {
     });
   }
 
+  // TODO remove all populate - it is not needed anymore
   async beforeCreate(ctx, data) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     PagesService.populatePagesAndGalleries(data);

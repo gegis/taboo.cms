@@ -34,6 +34,7 @@ class PagesService {
     return pageResponse;
   }
 
+  // TODO remove all page and gallery replace - it is not needed anymore
   async getPage(ctx, route) {
     const { session: { user: { admin = false } = {} } = {} } = ctx;
     let galleryTpl;
