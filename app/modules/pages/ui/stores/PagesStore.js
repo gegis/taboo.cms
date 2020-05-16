@@ -7,7 +7,6 @@ const newPage = {
   id: null,
   title: '',
   url: '',
-  body: '',
   template: '',
   language: language,
   background: '',

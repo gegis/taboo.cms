@@ -5,8 +5,6 @@ import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import Translation from 'app/modules/core/ui/components/Translation';
-import CodeEditor from 'app/modules/core/ui/components/CodeEditor';
-import RichTextModal from 'modules/pages/ui/components/admin/RichTextModal';
 import PageBlocks from 'modules/pages/ui/components/admin/PageBlocks';
 
 class PageForm extends React.Component {
@@ -15,16 +13,6 @@ class PageForm extends React.Component {
     this.pagesStore = props.pagesStore;
     this.localeStore = props.localeStore;
     this.templatesStore = props.templatesStore;
-    this.onCodeEditorChange = this.onCodeEditorChange.bind(this);
-    this.openInRichTextEditor = this.openInRichTextEditor.bind(this);
-  }
-
-  onCodeEditorChange(value) {
-    this.pagesStore.setItem({ body: value });
-  }
-
-  openInRichTextEditor() {
-    this.pagesStore.showRichTextEditor();
   }
 
   render() {
@@ -80,24 +68,6 @@ class PageForm extends React.Component {
             <PageBlocks />
           </div>
         </FormGroup>
-        <FormGroup controlId="body">
-          <ControlLabel>
-            <Translation message="Body" />
-          </ControlLabel>
-          <CodeEditor
-            onChange={this.onCodeEditorChange}
-            value={this.pagesStore.item.body}
-            width="auto"
-            height="360px"
-            className="code-editor"
-          />
-          <div className="richTextBtnWrapper">
-            <button onClick={this.openInRichTextEditor} className="rs-btn">
-              Open in Rich Text Editor
-            </button>
-          </div>
-        </FormGroup>
-        <RichTextModal value={item.body} />
       </Form>
     );
   }

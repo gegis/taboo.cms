@@ -9,9 +9,12 @@ class GalleryPageBlock extends React.Component {
     super(props);
     this.modal = React.createRef();
   }
+
   componentDidMount() {
-    const { galleriesStore, id } = this.props;
-    galleriesStore.loadById(id);
+    const { galleriesStore, id, gallery } = this.props;
+    if (!gallery) {
+      galleriesStore.loadById(id);
+    }
   }
 
   componentDidUpdate() {
@@ -29,12 +32,22 @@ class GalleryPageBlock extends React.Component {
     }
   }
 
-  render() {
-    const { id, galleriesStore } = this.props;
+  getGallery() {
+    const { id, gallery, galleriesStore } = this.props;
+    if (gallery) {
+      return gallery;
+    } else if (galleriesStore.galleries[id]) {
+      return galleriesStore.galleries[id];
+    }
+    return null;
+  }
+
+  getGalleryImages() {
+    const gallery = this.getGallery();
     const images = [];
 
-    if (galleriesStore.galleries[id]) {
-      galleriesStore.galleries[id].images.map((image, index) => {
+    if (gallery && gallery.images) {
+      gallery.images.map((image, index) => {
         images.push(
           <div className="gallery-item" key={index}>
             <a className="gallery-image-link" href="#" onClick={this.showModal.bind(this, image)}>
@@ -45,9 +58,13 @@ class GalleryPageBlock extends React.Component {
       });
     }
 
+    return images;
+  }
+
+  render() {
     return (
       <div className="gallery-image-wrapper">
-        <div className="gallery">{images}</div>
+        <div className="gallery">{this.getGalleryImages()}</div>
         <GalleryModal ref={this.modal} />
       </div>
     );
@@ -57,6 +74,7 @@ class GalleryPageBlock extends React.Component {
 GalleryPageBlock.propTypes = {
   id: PropTypes.string.isRequired,
   galleriesStore: PropTypes.object.isRequired,
+  gallery: PropTypes.object,
 };
 
 const enhance = compose(inject('galleriesStore'), observer);

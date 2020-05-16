@@ -9,7 +9,6 @@ const newItem = {
   id: null,
   title: '',
   url: '',
-  body: '',
   blocks: [],
   template: defaultTemplate,
   language: language,
@@ -55,6 +54,7 @@ class PagesAdminStore extends AbstractAdminStore {
     this.item.blocks.push({
       name: block.name,
       props: block.props,
+      template: block.template,
     });
   }
 

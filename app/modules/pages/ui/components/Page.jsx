@@ -4,19 +4,13 @@ import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 
-import GalleryModal from 'modules/galleries/ui/components/GalleryModal';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 import NotFound from 'modules/core/ui/components/NotFound';
-
-const locationOrigin = window.location.origin;
+import ConfigHelper from 'modules/core/ui/helpers/ConfigHelper';
 
 class Page extends Component {
   constructor(props) {
     super(props);
-    this.modal = React.createRef();
-    this.registerLinks = this.registerLinks.bind(this);
-    this.registerGalleryImageLinks = this.registerGalleryImageLinks.bind(this);
-    this.showGalleryImage = this.showGalleryImage.bind(this);
   }
 
   componentDidMount() {
@@ -37,61 +31,30 @@ class Page extends Component {
     const { pagesStore } = this.props;
     pagesStore.load(url).then(() => {
       window.scrollTo(0, 0); // TODO - find a way for smoother scroll
-      this.registerLinks();
-      this.registerGalleryImageLinks();
     });
   }
 
   getPageTitle() {
     const { pagesStore } = this.props;
-    let title = null;
     if (!pagesStore.pageNotFound && pagesStore.page && pagesStore.page.title) {
-      title = pagesStore.page.title;
+      return pagesStore.page.title;
     }
-    return title;
+    return null;
   }
 
-  getPageBody() {
-    const { pagesStore } = this.props;
-    let body = null;
-    if (!pagesStore.pageNotFound && pagesStore.page && pagesStore.page.body) {
-      body = <div dangerouslySetInnerHTML={{ __html: pagesStore.page.body }} />;
-    }
-    return body;
-  }
-
-  parseHref(href = '') {
-    return href.replace(locationOrigin, '');
-  }
-
-  navigateToPage(href, event) {
-    const { history } = this.props;
-    event.preventDefault();
-    event.stopPropagation();
-    return history.push(this.parseHref(href));
-  }
-
-  registerLinks() {
-    const links = document.querySelectorAll('.page a.nav');
-    Array.from(links).forEach(link => {
-      link.addEventListener('click', this.navigateToPage.bind(this, link.href));
+  getPageBlocks() {
+    const blocksMap = ConfigHelper.getPageBlocksMap();
+    const { page = {} } = this.props.pagesStore;
+    const { blocks = [] } = page;
+    const pageBlocks = [];
+    let PageBlockComponent;
+    blocks.map((block, index) => {
+      if (blocksMap[block.name] && blocksMap[block.name].displayComponent) {
+        PageBlockComponent = blocksMap[block.name].displayComponent;
+        pageBlocks.push(<PageBlockComponent key={index} {...block.props} />);
+      }
     });
-  }
-
-  registerGalleryImageLinks() {
-    const links = document.getElementsByClassName('gallery-image-link');
-    // TODO - build a list of next and prev images for gallery preview;
-    Array.from(links).forEach(link => {
-      link.addEventListener('click', this.showGalleryImage);
-    });
-  }
-
-  showGalleryImage(event) {
-    const { target: { dataset: { name = '', url = '' } = {} } = {} } = event;
-    const { current: currentModal = {} } = this.modal;
-    event.preventDefault();
-    event.stopPropagation();
-    currentModal.open(url, name);
+    return pageBlocks;
   }
 
   render() {
@@ -102,11 +65,8 @@ class Page extends Component {
     } else {
       const Template = TemplatesHelper.getTemplate(page.template, { templatesStore: this.props.templatesStore });
       return (
-        <Template metaTitle={title} title={title}>
-          <div className="page">
-            <div className="body">{this.getPageBody()}</div>
-          </div>
-          <GalleryModal ref={this.modal} />
+        <Template metaTitle={title} title={title} className="page">
+          {this.getPageBlocks()}
         </Template>
       );
     }
@@ -117,7 +77,6 @@ Page.propTypes = {
   pagesStore: PropTypes.object.isRequired,
   templatesStore: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
 };
 
 const enhance = compose(withRouter, inject('pagesStore', 'templatesStore'), observer);

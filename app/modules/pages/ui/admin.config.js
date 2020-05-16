@@ -39,6 +39,9 @@ const pageBlocks = [
     props: {
       html: '',
     },
+    template: {
+      path: '/modules/pages/views/htmlPageBlock',
+    },
     order: 1000,
     icon: React.createElement(Icon, { icon: 'file-text-o' }),
     previewComponent: HtmlPageBlockPreview,

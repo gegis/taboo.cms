@@ -16,10 +16,6 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
       required: [true, 'is required'],
       unique: true,
     },
-    body: {
-      type: String,
-      required: [true, 'is required'],
-    },
     blocks: [
       {
         name: {
@@ -27,6 +23,7 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
           required: [true, 'is required'],
         },
         props: Object,
+        template: Object,
       },
     ],
     template: {
@@ -41,16 +38,10 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
     language: {
       type: String,
     },
-    variables: {
-      type: Object,
-    },
     published: {
       type: Boolean,
       default: false,
     },
-    pages: [{ type: SchemaTypes.ObjectId, ref: 'Page' }],
-    // blocks: [{ type: SchemaTypes.ObjectId, ref: 'Block' }],
-    galleries: [{ type: SchemaTypes.ObjectId, ref: 'Gallery' }],
     createdBy: {
       type: SchemaTypes.ObjectId,
       ref: 'User',

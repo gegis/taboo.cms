@@ -61,7 +61,7 @@ class Template extends React.Component {
   }
 
   render() {
-    const { children, uiStore, authStore, className } = this.props;
+    const { children, uiStore, authStore, className, title, fluid = false } = this.props;
     return (
       <Container className={classNames('template', 'standard-template', className)}>
         <MetaTags>
@@ -71,9 +71,12 @@ class Template extends React.Component {
         {uiStore.loading && <div className="loader" />}
         {authStore.user.id && !authStore.verified && this.getVerificationMessage()}
         <Content className="main-content">
-          <Grid>
+          <Grid fluid={fluid}>
             <Row>
-              <Col md={24}>{children}</Col>
+              <Col md={24}>
+                <h1 className="title">{title}</h1>
+                <div className="body">{children}</div>
+              </Col>
             </Row>
           </Grid>
         </Content>
@@ -87,7 +90,9 @@ class Template extends React.Component {
 Template.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
+  title: PropTypes.string,
   metaTitle: PropTypes.string,
+  fluid: PropTypes.bool,
   uiStore: PropTypes.object,
   notificationsStore: PropTypes.object,
   localeStore: PropTypes.object,

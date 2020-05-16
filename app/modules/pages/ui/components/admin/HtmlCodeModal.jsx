@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Modal from 'app/modules/core/ui/components/admin/Modal';
 import Translation from 'modules/core/ui/components/Translation';
 import CodeEditor from 'modules/core/ui/components/CodeEditor';
+import { html as htmlBeautify } from 'js-beautify';
 
 class HtmlCodeModal extends React.Component {
   constructor(props) {
@@ -39,7 +40,7 @@ class HtmlCodeModal extends React.Component {
   onSave() {
     const { html } = this.state;
     const { setProps } = this.props;
-    setProps({ html });
+    setProps({ html: htmlBeautify(html) });
     this.close();
   }
 
@@ -63,7 +64,13 @@ class HtmlCodeModal extends React.Component {
         cancelName="Cancel"
       >
         <div className="rich-text-editor-wrapper">
-          <CodeEditor onChange={this.onCodeEditorChange} value={html} width="auto" className="code-editor" />
+          <CodeEditor
+            onChange={this.onCodeEditorChange}
+            value={html}
+            focus={true}
+            width="auto"
+            className="code-editor"
+          />
         </div>
       </Modal>
     );

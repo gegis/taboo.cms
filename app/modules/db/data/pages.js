@@ -5,7 +5,12 @@ module.exports = [
     template: 'standard',
     published: true,
     language: 'en',
-    body: `<section>
+    blocks: [
+      {
+        _id: '5ec042491d39df14f9778563',
+        name: 'HTML',
+        props: {
+          html: `<section>
     <div class="rs-panel rs-panel-default rs-panel-bordered">
       <div class="rs-panel-body">
         <h2>Taboo CMS</h2>
@@ -38,6 +43,10 @@ module.exports = [
        </div>
      </div>
 </section>`,
+        },
+        template: { path: '/modules/pages/views/htmlPageBlock' },
+      },
+    ],
   },
   {
     title: 'About',
@@ -45,7 +54,12 @@ module.exports = [
     template: 'standard',
     published: true,
     language: 'en',
-    body: `<section>
+    blocks: [
+      {
+        _id: '5ec042491d39df14f9778563',
+        name: 'HTML',
+        props: {
+          html: `<section>
     <div class="rs-panel rs-panel-default rs-panel-bordered">
         <div class="rs-panel-body">
             <h2>Header 2</h2>
@@ -67,15 +81,20 @@ module.exports = [
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                culpa qui officia deserunt mollit anim id est laborum.
+                <ul>
+                  <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                  <li>Duis aute irure dolor in reprehenderit in voluptate</li>
+                  <li>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit</li>
+                  <li>Minim veniam, quis nostrud exercitation ullamco</li>
+                </ul>
             </p>
         </div>
     </div>
 </section>`,
+        },
+        template: { path: '/modules/pages/views/htmlPageBlock' },
+      },
+    ],
   },
   {
     title: 'Contact',
@@ -83,7 +102,12 @@ module.exports = [
     template: 'standard',
     published: true,
     language: 'en',
-    body: `<section>
+    blocks: [
+      {
+        _id: '5ec042491d39df14f9778563',
+        name: 'HTML',
+        props: {
+          html: `<section>
     <div class="rs-panel rs-panel-default rs-panel-bordered">
         <div class="rs-panel-body">
             <h2>Header 2</h2>
@@ -105,15 +129,20 @@ module.exports = [
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                culpa qui officia deserunt mollit anim id est laborum.
+                <ul>
+                  <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
+                  <li>Duis aute irure dolor in reprehenderit in voluptate</li>
+                  <li>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit</li>
+                  <li>Minim veniam, quis nostrud exercitation ullamco</li>
+                </ul>
             </p>
         </div>
     </div>
 </section>`,
+        },
+        template: { path: '/modules/pages/views/htmlPageBlock' },
+      },
+    ],
   },
   {
     title: 'User Agreement',
@@ -121,7 +150,12 @@ module.exports = [
     template: 'standard',
     published: true,
     language: 'en',
-    body: `<section>
+    blocks: [
+      {
+        _id: '5ec042491d39df14f9778563',
+        name: 'HTML',
+        props: {
+          html: `<section>
     <div class="rs-panel rs-panel-default rs-panel-bordered">
         <div class="rs-panel-body">
             <h2>Header 2</h2>
@@ -153,6 +187,10 @@ module.exports = [
         </div>
     </div>
 </section>`,
+        },
+        template: { path: '/modules/pages/views/htmlPageBlock' },
+      },
+    ],
   },
   {
     title: 'Privacy Policy',
@@ -160,7 +198,12 @@ module.exports = [
     template: 'standard',
     published: true,
     language: 'en',
-    body: `<section>
+    blocks: [
+      {
+        _id: '5ec042491d39df14f9778563',
+        name: 'HTML',
+        props: {
+          html: `<section>
     <div class="rs-panel rs-panel-default rs-panel-bordered">
         <div class="rs-panel-body">
             <h2>Header 2</h2>
@@ -192,5 +235,9 @@ module.exports = [
         </div>
     </div>
 </section>`,
+        },
+        template: { path: '/modules/pages/views/htmlPageBlock' },
+      },
+    ],
   },
 ];

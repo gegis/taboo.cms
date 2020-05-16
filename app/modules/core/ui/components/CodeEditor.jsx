@@ -26,6 +26,7 @@ class CodeEditor extends React.Component {
       fontSize = 12,
       enableBasicAutocompletion = true,
       enableLiveAutocompletion = true,
+      focus = false,
       ...rest
     } = this.props;
     return (
@@ -36,6 +37,7 @@ class CodeEditor extends React.Component {
         name={id}
         value={value}
         fontSize={fontSize}
+        focus={focus}
         setOptions={{
           useWorker: false,
           tabSize: tabSize,
@@ -67,6 +69,7 @@ CodeEditor.propTypes = {
   theme: PropTypes.string,
   tabSize: PropTypes.number,
   fontSize: PropTypes.number,
+  focus: PropTypes.bool,
   enableBasicAutocompletion: PropTypes.bool,
   enableLiveAutocompletion: PropTypes.bool,
 };

@@ -6,7 +6,9 @@
           <%-pageTitle%>
         </h1>
         <div class="body">
-          <%-pageBody%>
+          <% for (let i=0; i < blocks.length; i++) { %>
+            <%- include(blocks[i].template.path, {helpers: helpers, props: blocks[i].props}) %>
+          <% } %>
         </div>
       </div>
     </div>

@@ -41,6 +41,11 @@ const pageBlocks = [
     props: {
       id: '',
     },
+    template: {
+      path: '/modules/galleries/views/galleryPageBlock',
+      beforeRenderService: 'modules/galleries/services/GalleriesService',
+      beforeRenderMethod: 'beforeGalleryRender',
+    },
     order: 100,
     icon: React.createElement(Icon, { icon: 'file-image-o' }),
     previewComponent: GalleryPageBlockPreview,
