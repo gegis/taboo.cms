@@ -9,7 +9,17 @@ const newItem = {
   id: null,
   title: '',
   url: '',
-  blocks: [],
+  blocks: [
+    {
+      name: 'HTML',
+      props: {
+        html: '',
+      },
+      template: {
+        path: '/modules/pages/views/htmlPageBlock',
+      },
+    },
+  ],
   template: defaultTemplate,
   language: language,
   background: '',
