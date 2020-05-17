@@ -10,7 +10,7 @@ class EditGalleryModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.galleriesStore = props.galleriesStore;
+    this.galleriesAdminStore = props.galleriesAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -18,19 +18,19 @@ class EditGalleryModal extends React.Component {
   }
 
   open(id) {
-    this.galleriesStore.loadById(id).then(() => {
+    this.galleriesAdminStore.loadById(id).then(() => {
       this.modal.current.open();
     });
   }
 
   close() {
-    this.galleriesStore.resetItem();
+    this.galleriesAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.galleriesStore;
-    this.galleriesStore.update(item).then(data => {
+    const { item } = this.galleriesAdminStore;
+    this.galleriesAdminStore.update(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully updated {item}',
@@ -59,10 +59,10 @@ class EditGalleryModal extends React.Component {
 }
 
 EditGalleryModal.propTypes = {
-  galleriesStore: PropTypes.object.isRequired,
+  galleriesAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('galleriesStore', 'notificationsStore'), observer);
+const enhance = compose(inject('galleriesAdminStore', 'notificationsStore'), observer);
 
 export default enhance(EditGalleryModal);

@@ -1,4 +1,5 @@
 const GalleriesAdminController = require('./controllers/GalleriesAdminController');
+const GalleriesController = require('./controllers/GalleriesController');
 
 module.exports = {
   enabled: true,
@@ -19,6 +20,15 @@ module.exports = {
     resources: ['admin.galleries.view', 'admin.galleries.manage'],
   },
   routes: [
+    {
+      method: 'GET',
+      path: '/api/galleries/:id',
+      action: GalleriesController.getOneById,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
     {
       method: 'GET',
       path: '/api/admin/galleries',
@@ -51,7 +61,6 @@ module.exports = {
         aclResource: 'admin.galleries.view',
       },
     },
-
     {
       method: 'POST',
       path: '/api/admin/galleries',

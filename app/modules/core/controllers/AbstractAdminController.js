@@ -65,7 +65,7 @@ class AbstractAdminController {
       data = { filter, fields, options };
       data = await this.beforeFindAll(ctx, data);
       query = model.find(data.filter, data.fields, data.options);
-      this.applyPopulateToQuery('findAll', query);
+      this.applyPopulateToQuery('findAll', query, this.parseQueryParamsPopulate(requestParams));
       itemsResult = await query.exec();
       items = await this.afterFindAll(ctx, itemsResult, data);
     } catch (err) {
@@ -189,9 +189,16 @@ class AbstractAdminController {
     };
   }
 
-  applyPopulateToQuery(method, query) {
-    if (method && query && this.props.populate && this.props.populate[method]) {
-      query.populate(this.props.populate[method]);
+  applyPopulateToQuery(method, query, populate = []) {
+    let allPopulate = [];
+    if (method && query) {
+      if (this.props.populate && this.props.populate[method]) {
+        allPopulate = allPopulate.concat(this.props.populate[method]);
+      }
+      if (populate) {
+        allPopulate = allPopulate.concat(populate);
+      }
+      query.populate(allPopulate);
     }
   }
 
@@ -217,6 +224,14 @@ class AbstractAdminController {
     ctx.body = {
       success: true,
     };
+  }
+
+  parseQueryParamsPopulate(requestParams = {}) {
+    let populate = [];
+    if (requestParams.populate) {
+      populate = requestParams.populate.split(',');
+    }
+    return populate;
   }
 }
 

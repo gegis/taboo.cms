@@ -1,40 +1,30 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { autorun } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { html as htmlBeautify } from 'js-beautify';
-
-import RichTextEditor from 'app/modules/core/ui/components/RichTextEditor';
 import Modal from 'app/modules/core/ui/components/admin/Modal';
 import Translation from 'modules/core/ui/components/Translation';
+import CodeEditor from 'modules/core/ui/components/CodeEditor';
+import { html as htmlBeautify } from 'js-beautify';
 
-class RichTextModal extends React.Component {
+const beautifyOptions = {
+  indent_size: 2,
+  indent_char: ' ',
+  indent_with_tabs: false,
+  wrap_line_length: 120,
+};
+
+class HtmlCodeModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.pagesStore = props.pagesStore;
-    this.localeStore = props.localeStore;
-    this.state = { value: props.value };
+    this.state = { html: props.html };
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onCodeEditorChange = this.onCodeEditorChange.bind(this);
-  }
-
-  componentDidMount() {
-    this.dispose = autorun(() => {
-      const { pagesStore } = this.props;
-      if (pagesStore.richTextEditorVisible === true) {
-        this.open();
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    this.dispose();
   }
 
   open() {
@@ -46,31 +36,33 @@ class RichTextModal extends React.Component {
   }
 
   onOpen() {
-    this.setState({ value: this.pagesStore.item.body });
+    const { html } = this.props;
+    this.setState({ html });
   }
 
   onClose() {
-    this.pagesStore.hideRichTextEditor();
+    this.setState({ html: '' });
   }
 
   onSave() {
-    this.pagesStore.setItem({ body: htmlBeautify(this.state.value) });
+    const { html } = this.state;
+    const { setProps } = this.props;
+    setProps({ html: htmlBeautify(html, beautifyOptions) });
     this.close();
   }
 
   onCodeEditorChange(value) {
-    this.setState({ value: value });
+    this.setState({ html: value });
   }
 
   render() {
-    const { item: { title = '' } = {} } = this.pagesStore;
-    const { value } = this.state;
+    const { html } = this.state;
     return (
       <Modal
         full
         backdrop="static"
-        className="use-max-width"
-        title={<Translation message="Edit Page - {title}" values={{ title }} />}
+        className="html-code-modal use-max-width"
+        title={<Translation message="HTML Editor" />}
         ref={this.modal}
         onOpen={this.onOpen}
         onClose={this.onClose}
@@ -79,19 +71,24 @@ class RichTextModal extends React.Component {
         cancelName="Cancel"
       >
         <div className="rich-text-editor-wrapper">
-          <RichTextEditor onChange={this.onCodeEditorChange} value={value} />
+          <CodeEditor
+            onChange={this.onCodeEditorChange}
+            value={html}
+            focus={true}
+            width="auto"
+            className="code-editor"
+          />
         </div>
       </Modal>
     );
   }
 }
 
-RichTextModal.propTypes = {
-  value: PropTypes.string,
-  pagesStore: PropTypes.object.isRequired,
-  localeStore: PropTypes.object.isRequired,
+HtmlCodeModal.propTypes = {
+  html: PropTypes.string,
+  setProps: PropTypes.func.isRequired,
 };
 
 const enhance = compose(inject('pagesStore', 'localeStore'), observer);
 
-export default enhance(RichTextModal);
+export default enhance(HtmlCodeModal);

@@ -3,7 +3,6 @@ import { Button } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { html as htmlBeautify } from 'js-beautify';
 
 import Modal from 'app/modules/core/ui/components/admin/Modal';
 import PageForm from './PageForm';
@@ -35,7 +34,6 @@ class EditPageModal extends React.Component {
   onSave() {
     const { item } = this.pagesStore;
     const page = Object.assign({}, item);
-    page.body = htmlBeautify(page.body);
     this.pagesStore.update(page).then(data => {
       this.notificationsStore.push({
         title: 'Success',
@@ -65,7 +63,6 @@ class EditPageModal extends React.Component {
         full
         keyboard={false}
         backdrop="static"
-        className="use-max-width"
         title="Edit Page"
         ref={this.modal}
         onSubmit={this.onSave}

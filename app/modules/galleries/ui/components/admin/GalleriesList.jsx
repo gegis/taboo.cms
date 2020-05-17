@@ -10,7 +10,7 @@ import BooleanIcon from 'modules/core/ui/components/admin/BooleanIcon';
 class RolesList extends React.Component {
   constructor(props) {
     super(props);
-    this.galleriesStore = props.galleriesStore;
+    this.galleriesAdminStore = props.galleriesAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
@@ -33,7 +33,7 @@ class RolesList extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.galleriesStore.items.map(item => (
+          {this.galleriesAdminStore.items.map(item => (
             <tr key={item._id}>
               <td className="id rs-hidden-sm">{item._id}</td>
               <td className="mobile-view-td">
@@ -69,12 +69,12 @@ class RolesList extends React.Component {
 }
 
 RolesList.propTypes = {
-  galleriesStore: PropTypes.object.isRequired,
+  galleriesAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('galleriesStore'), observer);
+const enhance = compose(inject('galleriesAdminStore'), observer);
 
 export default enhance(RolesList);

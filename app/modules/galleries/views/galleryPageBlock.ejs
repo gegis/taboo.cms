@@ -1,0 +1,22 @@
+<section class="gallery-section">
+    <div class="gallery">
+        <% for(let i = 0; i < props.gallery.images.length; i++) { %>
+        <div class="gallery-item">
+            <a
+                    class="gallery-image-link"
+                    href="<%= props.gallery.images[i].url %>"
+                    data-name="<%= props.gallery.images[i].name %>"
+                    data-url="<%= props.gallery.images[i].url %>"
+            >
+                <img
+                        class="gallery-image"
+                        src="<%= props.gallery.images[i].url %>"
+                        alt="<%= props.gallery.images[i].name %>"
+                        data-name="<%= props.gallery.images[i].name %>"
+                        data-url="<%= props.gallery.images[i].url %>"
+                />
+            </a>
+        </div>
+        <% } %>
+    </div>
+</section>

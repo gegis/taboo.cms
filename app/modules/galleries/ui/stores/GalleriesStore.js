@@ -1,73 +1,37 @@
-import { decorate, action } from 'mobx';
-import AbstractAdminStore from 'modules/core/ui/stores/AbstractAdminStore';
+import { decorate, action, observable, runInAction } from 'mobx';
+import axios from 'axios';
+import ResponseHelper from 'modules/core/ui/helpers/ResponseHelper';
 
-const newItem = {
-  id: null,
-  title: '',
-  images: [],
-  meta: {},
-  published: false,
-};
-
-class GalleriesStore extends AbstractAdminStore {
+class GalleriesStore {
   constructor() {
-    super({
-      newItem: newItem,
-      endpoints: {
-        loadAll: {
-          method: 'get',
-          path: '/api/admin/galleries',
-        },
-        loadById: {
-          method: 'get',
-          path: '/api/admin/galleries/:id',
-        },
-        create: {
-          method: 'post',
-          path: '/api/admin/galleries',
-        },
-        update: {
-          method: 'put',
-          path: '/api/admin/galleries/:id',
-        },
-        deleteById: {
-          method: 'delete',
-          path: '/api/admin/galleries/:id',
-        },
-      },
+    this.galleries = {};
+  }
+
+  loadById(id) {
+    return new Promise(resolve => {
+      axios
+        .get(`/api/galleries/${id}`)
+        .then(response => {
+          runInAction(() => {
+            const { data = {} } = response;
+            if (data._id) {
+              this.setGallery(data);
+            }
+            resolve(data);
+          });
+        })
+        .catch(ResponseHelper.handleError);
     });
   }
 
-  addImage(image) {
-    this.item.images.push(image);
-  }
-
-  removeImageById(id) {
-    let position = null;
-    this.item.images.find((item, i) => {
-      position = i;
-      return item._id === id;
-    });
-    if (position !== null) {
-      this.removeImageByPosition(position);
-    }
-  }
-
-  removeImageByPosition(index) {
-    this.item.images.splice(index, 1);
-  }
-
-  reorderImages(startIndex, endIndex) {
-    const [removed] = this.item.images.splice(startIndex, 1);
-    this.item.images.splice(endIndex, 0, removed);
+  setGallery(gallery) {
+    this.galleries[gallery._id] = gallery;
   }
 }
 
 decorate(GalleriesStore, {
-  addImage: action,
-  removeImageById: action,
-  removeImageByPosition: action,
-  reorderImages: action,
+  galleries: observable,
+  loadById: action,
 });
 
 export default new GalleriesStore();

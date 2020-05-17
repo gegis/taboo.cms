@@ -26,6 +26,7 @@ class CodeEditor extends React.Component {
       fontSize = 12,
       enableBasicAutocompletion = true,
       enableLiveAutocompletion = true,
+      focus = false,
       ...rest
     } = this.props;
     return (
@@ -36,10 +37,12 @@ class CodeEditor extends React.Component {
         name={id}
         value={value}
         fontSize={fontSize}
+        focus={focus}
         setOptions={{
           useWorker: false,
           tabSize: tabSize,
-          useSoftTabs: false,
+          useSoftTabs: true, // user space char
+          navigateWithinSoftTabs: true, // navigate in space char
           enableBasicAutocompletion: enableBasicAutocompletion,
           enableLiveAutocompletion: enableLiveAutocompletion,
           enableSnippets: true,
@@ -49,7 +52,7 @@ class CodeEditor extends React.Component {
           showGutter: true,
           showPrintMargin: true,
           printMargin: true,
-          printMarginColumn: 100,
+          printMarginColumn: 120,
           showFoldWidgets: true,
           highlightActiveLine: true,
         }}
@@ -67,6 +70,7 @@ CodeEditor.propTypes = {
   theme: PropTypes.string,
   tabSize: PropTypes.number,
   fontSize: PropTypes.number,
+  focus: PropTypes.bool,
   enableBasicAutocompletion: PropTypes.bool,
   enableLiveAutocompletion: PropTypes.bool,
 };

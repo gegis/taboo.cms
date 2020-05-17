@@ -11,14 +11,14 @@ import GalleriesList from './GalleriesList';
 class Galleries extends React.Component {
   constructor(props) {
     super(props);
-    this.galleriesStore = props.galleriesStore;
+    this.galleriesAdminStore = props.galleriesAdminStore;
   }
 
   render() {
     return (
       <ListPage
         name="Galleries"
-        entityStore={this.galleriesStore}
+        entityStore={this.galleriesAdminStore}
         ItemsListComponent={GalleriesList}
         CreateModalComponent={CreateGalleryModal}
         EditModalComponent={EditGalleryModal}
@@ -28,9 +28,9 @@ class Galleries extends React.Component {
 }
 
 Galleries.propTypes = {
-  galleriesStore: PropTypes.object.isRequired,
+  galleriesAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('galleriesStore'), observer);
+const enhance = compose(inject('galleriesAdminStore'), observer);
 
 export default enhance(Galleries);

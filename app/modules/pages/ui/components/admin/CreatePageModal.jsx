@@ -2,7 +2,6 @@ import React from 'react';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { html as htmlBeautify } from 'js-beautify';
 
 import Modal from 'app/modules/core/ui/components/admin/Modal';
 
@@ -32,7 +31,6 @@ class CreatePageModal extends React.Component {
   onSave() {
     const { item } = this.pagesStore;
     const page = Object.assign({}, item);
-    page.body = htmlBeautify(page.body);
     this.pagesStore.create(page).then(data => {
       this.notificationsStore.push({
         title: 'Success',
@@ -52,7 +50,6 @@ class CreatePageModal extends React.Component {
         full
         keyboard={false}
         backdrop="static"
-        className="use-max-width"
         title="Create New Page"
         ref={this.modal}
         onSubmit={this.onSave}

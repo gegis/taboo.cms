@@ -3,6 +3,8 @@ import { Icon } from 'rsuite';
 
 import Pages from './components/admin/Pages';
 import PagesAdminStore from './stores/PagesAdminStore';
+import HtmlPageBlockPreview from 'modules/pages/ui/components/admin/HtmlPageBlockPreview';
+import HtmlPageBlockActions from 'modules/pages/ui/components/admin/HtmlPageBlockActions';
 
 const enabled = true;
 
@@ -31,4 +33,20 @@ const primaryMenu = [
   },
 ];
 
-export { enabled, routes, stores, primaryMenu };
+const pageBlocks = [
+  {
+    name: 'HTML',
+    props: {
+      html: '',
+    },
+    template: {
+      path: '/modules/pages/views/htmlPageBlock',
+    },
+    order: 1000,
+    icon: React.createElement(Icon, { icon: 'file-text-o' }),
+    previewComponent: HtmlPageBlockPreview,
+    actionsComponent: HtmlPageBlockActions,
+  },
+];
+
+export { enabled, routes, stores, primaryMenu, pageBlocks };

@@ -9,7 +9,17 @@ const newItem = {
   id: null,
   title: '',
   url: '',
-  body: '',
+  blocks: [
+    {
+      name: 'HTML',
+      props: {
+        html: '',
+      },
+      template: {
+        path: '/modules/pages/views/htmlPageBlock',
+      },
+    },
+  ],
   template: defaultTemplate,
   language: language,
   background: '',
@@ -45,6 +55,34 @@ class PagesAdminStore extends AbstractAdminStore {
       },
     });
     this.richTextEditorVisible = false;
+  }
+
+  addBlock(block) {
+    if (!this.item.blocks) {
+      this.item.blocks = [];
+    }
+    this.item.blocks.push({
+      name: block.name,
+      props: block.props,
+      template: block.template,
+    });
+  }
+
+  setBlockProps(index, props) {
+    if (this.item.blocks[index]) {
+      this.item.blocks[index].props = Object.assign(this.item.blocks[index].props, props);
+    }
+  }
+
+  deleteBlock(index) {
+    if (this.item.blocks[index]) {
+      this.item.blocks.splice(index, 1);
+    }
+  }
+
+  reorderBlocks(startIndex, endIndex) {
+    const [removed] = this.item.blocks.splice(startIndex, 1);
+    this.item.blocks.splice(endIndex, 0, removed);
   }
 
   showRichTextEditor() {
@@ -85,6 +123,10 @@ decorate(PagesAdminStore, {
   showRichTextEditor: action,
   hideRichTextEditor: action,
   loadPreviousVersion: action,
+  addBlock: action,
+  deleteBlock: action,
+  reorderBlocks: action,
+  setBlockProps: action,
 });
 
 export default new PagesAdminStore();

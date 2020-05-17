@@ -23,7 +23,6 @@ class PagesAdminController extends AbstractAdminController {
 
   async beforeCreate(ctx, data) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
-    PagesService.populatePagesAndGalleries(data);
     data.createdBy = userId;
     return data;
   }
@@ -32,7 +31,6 @@ class PagesAdminController extends AbstractAdminController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     // Save current version as previous revision
     await RevisionService.saveById(PageModel, ctx.params.id);
-    PagesService.populatePagesAndGalleries(data);
     data.updatedBy = userId;
     return data;
   }
@@ -50,11 +48,11 @@ class PagesAdminController extends AbstractAdminController {
   }
 
   async getPrevious(ctx) {
-    const item = await RevisionService.getById(PageModel, ctx.params.id);
-    if (!item) {
+    const revisionPage = await RevisionService.getById(PageModel, ctx.params.id);
+    if (!revisionPage) {
       return ctx.throw(404, 'Previous version not found');
     }
-    ctx.body = item;
+    ctx.body = revisionPage;
   }
 }
 

@@ -11,6 +11,7 @@ class AbstractAdminStore {
     this.hasMoreResults = false;
     this.filter = null;
     this.search = '';
+    this.populate = '';
     this.items = [];
     this.sortBy = this.options.sortBy || 'name';
     this.sortDirection = this.options.sortDirection || 'asc';
@@ -38,6 +39,18 @@ class AbstractAdminStore {
     this.item[field] = value;
   }
 
+  setFilter(filter) {
+    this.filter = filter;
+  }
+
+  setSearch(search) {
+    this.search = search;
+  }
+
+  setPopulate(populate) {
+    this.populate = populate;
+  }
+
   loadAll(options = {}) {
     return new Promise(resolve => {
       const { loadAll } = this.options.endpoints;
@@ -50,8 +63,12 @@ class AbstractAdminStore {
       this.hasMoreResults = false;
       this.search = '';
       if (options.search) {
-        this.search = options.search;
+        this.setSearch(options.search);
         opts.params.search = options.search;
+      }
+      if (options.populate) {
+        this.setPopulate(options.populate);
+        opts.params.populate = options.populate;
       }
       if (this.filter) {
         opts.params.filter = this.filter;
@@ -81,6 +98,9 @@ class AbstractAdminStore {
       };
       if (this.search) {
         opts.params.search = this.search;
+      }
+      if (this.populate) {
+        opts.params.populate = this.populate;
       }
       if (this.filter) {
         opts.params.filter = this.filter;
@@ -183,14 +203,6 @@ class AbstractAdminStore {
     });
   }
 
-  setFilter(filter) {
-    this.filter = filter;
-  }
-
-  setSearch(search) {
-    this.search = search;
-  }
-
   getItemIndexById(id) {
     let index = null;
     this.items.find((item, i) => {
@@ -252,6 +264,7 @@ decorate(AbstractAdminStore, {
   hasMoreResults: observable,
   filter: observable,
   search: observable,
+  populate: observable,
   limit: observable,
   items: observable,
   item: observable,
@@ -266,6 +279,7 @@ decorate(AbstractAdminStore, {
   deleteById: action,
   setFilter: action,
   setSearch: action,
+  setPopulate: action,
   reorderItems: action,
   sortItems: action,
   setCheckboxItemValue: action,

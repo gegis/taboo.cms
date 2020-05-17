@@ -5,6 +5,8 @@ class AdminConfigHelper {
     this.modulesConfigs = this.importAllModulesConfigs();
     this.primaryMenu = [];
     this.primaryMenuNames = [];
+    this.pageBlocks = [];
+    this.pageBlocksMap = {};
   }
 
   /**
@@ -82,6 +84,37 @@ class AdminConfigHelper {
       }
     });
     return ArrayHelper.sortByProperty(items, 'order');
+  }
+
+  getPageBlocks() {
+    if (this.pageBlocks.length === 0) {
+      this.parsePageBlocks();
+    }
+    return this.pageBlocks;
+  }
+
+  getPageBlocksMap() {
+    if (this.pageBlocks.length === 0) {
+      this.parsePageBlocks();
+    }
+    return this.pageBlocksMap;
+  }
+
+  parsePageBlocks() {
+    let name;
+    [...this.modulesConfigs].map(config => {
+      if (config && config.enabled && config.pageBlocks) {
+        config.pageBlocks.map(pageBlock => {
+          name = pageBlock.name;
+          if (this.pageBlocksMap[name]) {
+            throw new Error(`Page block ${name} already exists`);
+          }
+          this.pageBlocksMap[name] = pageBlock;
+          this.pageBlocks.push(pageBlock);
+        });
+      }
+    });
+    this.pageBlocks = ArrayHelper.sortByProperty(this.pageBlocks, 'order');
   }
 }
 

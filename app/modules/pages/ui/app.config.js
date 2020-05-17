@@ -1,5 +1,8 @@
 import PagesStore from './stores/PagesStore';
 import Page from './components/Page';
+import HtmlPageBlock from './components/HtmlPageBlock';
+
+const enabled = true;
 
 const routes = [
   {
@@ -15,4 +18,11 @@ const stores = {
   pagesStore: PagesStore,
 };
 
-export { routes, stores };
+const pageBlocks = [
+  {
+    name: 'HTML',
+    displayComponent: HtmlPageBlock,
+  },
+];
+
+export { enabled, routes, stores, pageBlocks };
