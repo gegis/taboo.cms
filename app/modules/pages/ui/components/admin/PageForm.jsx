@@ -57,7 +57,7 @@ class PageForm extends React.Component {
             <Translation message="Published" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.published} onChange={setCheckboxItemValue.bind(null, 'published')} />
+            <Checkbox id="published" checked={item.published} onChange={setCheckboxItemValue.bind(null, 'published')} />
           </div>
         </FormGroup>
         <FormGroup controlId="blocks">

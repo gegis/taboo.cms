@@ -41,7 +41,8 @@ class CodeEditor extends React.Component {
         setOptions={{
           useWorker: false,
           tabSize: tabSize,
-          useSoftTabs: false,
+          useSoftTabs: true, // user space char
+          navigateWithinSoftTabs: true, // navigate in space char
           enableBasicAutocompletion: enableBasicAutocompletion,
           enableLiveAutocompletion: enableLiveAutocompletion,
           enableSnippets: true,
@@ -51,7 +52,7 @@ class CodeEditor extends React.Component {
           showGutter: true,
           showPrintMargin: true,
           printMargin: true,
-          printMarginColumn: 100,
+          printMarginColumn: 120,
           showFoldWidgets: true,
           highlightActiveLine: true,
         }}

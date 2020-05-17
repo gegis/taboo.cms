@@ -7,6 +7,13 @@ import Translation from 'modules/core/ui/components/Translation';
 import CodeEditor from 'modules/core/ui/components/CodeEditor';
 import { html as htmlBeautify } from 'js-beautify';
 
+const beautifyOptions = {
+  indent_size: 2,
+  indent_char: ' ',
+  indent_with_tabs: false,
+  wrap_line_length: 120,
+};
+
 class HtmlCodeModal extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +47,7 @@ class HtmlCodeModal extends React.Component {
   onSave() {
     const { html } = this.state;
     const { setProps } = this.props;
-    setProps({ html: htmlBeautify(html) });
+    setProps({ html: htmlBeautify(html, beautifyOptions) });
     this.close();
   }
 
