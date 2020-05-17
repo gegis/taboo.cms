@@ -90,7 +90,7 @@ class Template extends React.Component {
 Template.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   metaTitle: PropTypes.string,
   fluid: PropTypes.bool,
   uiStore: PropTypes.object,

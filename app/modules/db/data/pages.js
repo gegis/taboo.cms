@@ -7,7 +7,6 @@ module.exports = [
     language: 'en',
     blocks: [
       {
-        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
@@ -56,7 +55,6 @@ module.exports = [
     language: 'en',
     blocks: [
       {
-        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
@@ -104,7 +102,6 @@ module.exports = [
     language: 'en',
     blocks: [
       {
-        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
@@ -152,7 +149,6 @@ module.exports = [
     language: 'en',
     blocks: [
       {
-        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
@@ -200,7 +196,6 @@ module.exports = [
     language: 'en',
     blocks: [
       {
-        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
