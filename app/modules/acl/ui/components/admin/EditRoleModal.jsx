@@ -21,6 +21,7 @@ class EditRoleModal extends React.Component {
   }
 
   open(id) {
+    this.rolesStore.resetItem();
     this.aclStore.loadAllResources().then(resources => {
       this.rolesStore.loadById(id, resources);
       this.modal.current.open();

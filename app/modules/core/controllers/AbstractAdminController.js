@@ -136,8 +136,8 @@ class AbstractAdminController {
     let itemResult;
     let query;
     try {
-      apiHelper.cleanTimestamps(data);
       data = await this.beforeUpdate(ctx, ctx.params.id, data);
+      apiHelper.cleanTimestamps(data);
       query = model.findByIdAndUpdate(
         ctx.params.id,
         { $set: data },

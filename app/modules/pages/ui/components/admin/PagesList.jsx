@@ -11,14 +11,14 @@ class PagesList extends React.Component {
   constructor(props) {
     super(props);
     this.pagesStore = props.pagesStore;
-    this.templatesStore = props.templatesStore;
+    this.templatesAdminStore = props.templatesAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
   }
 
   componentDidMount() {
-    this.templatesStore.loadAll();
+    this.templatesAdminStore.loadAll();
   }
 
   getCopyValue(item) {
@@ -91,12 +91,12 @@ class PagesList extends React.Component {
 
 PagesList.propTypes = {
   pagesStore: PropTypes.object.isRequired,
-  templatesStore: PropTypes.object.isRequired,
+  templatesAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('pagesStore', 'templatesStore'), observer);
+const enhance = compose(inject('pagesStore', 'templatesAdminStore'), observer);
 
 export default enhance(PagesList);

@@ -18,6 +18,7 @@ class EditUploadModal extends React.Component {
   }
 
   open(id) {
+    this.uploadsStore.resetItem();
     this.uploadsStore.loadById(id).then(() => {
       this.modal.current.open();
     });

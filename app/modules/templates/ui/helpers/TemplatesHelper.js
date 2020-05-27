@@ -34,10 +34,13 @@ class TemplatesHelper {
     return eventName;
   }
 
-  emitTemplateChanges({ authStore, templatesStore }) {
+  emitTemplateChanges({ authStore, templatesAdminStore }) {
     clearTimeout(this.changesTimeout);
     this.changesTimeout = setTimeout(() => {
-      SocketsClient.emit(templatesStore.templatePreviewEmit, { user: authStore.user, template: templatesStore.item });
+      SocketsClient.emit(templatesAdminStore.templatePreviewEmit, {
+        user: authStore.user,
+        template: templatesAdminStore.item,
+      });
     }, this.changesTimeoutDelay);
   }
 

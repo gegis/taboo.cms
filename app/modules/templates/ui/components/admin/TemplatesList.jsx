@@ -9,7 +9,7 @@ import BooleanIcon from 'modules/core/ui/components/admin/BooleanIcon';
 class TemplatesList extends React.Component {
   constructor(props) {
     super(props);
-    this.templatesStore = props.templatesStore;
+    this.templatesAdminStore = props.templatesAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
   }
@@ -28,7 +28,7 @@ class TemplatesList extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.templatesStore.items.map(item => (
+          {this.templatesAdminStore.items.map(item => (
             <tr key={item.name}>
               <td>
                 <a href={item.preview} target="_blank" rel="noopener noreferrer">
@@ -53,12 +53,12 @@ class TemplatesList extends React.Component {
 }
 
 TemplatesList.propTypes = {
-  templatesStore: PropTypes.object.isRequired,
+  templatesAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('templatesStore'), observer);
+const enhance = compose(inject('templatesAdminStore'), observer);
 
 export default enhance(TemplatesList);

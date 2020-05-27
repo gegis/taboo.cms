@@ -18,6 +18,7 @@ class EditBlockModal extends React.Component {
   }
 
   open(id) {
+    this.blocksStore.resetItem();
     this.blocksStore.loadById(id).then(() => {
       this.modal.current.open();
     });

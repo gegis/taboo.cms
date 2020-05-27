@@ -10,7 +10,7 @@ import EditDrawer from './EditTemplateDrawer';
 class Templates extends React.Component {
   constructor(props) {
     super(props);
-    this.entityStore = props.templatesStore;
+    this.entityStore = props.templatesAdminStore;
   }
 
   render() {
@@ -26,9 +26,9 @@ class Templates extends React.Component {
 }
 
 Templates.propTypes = {
-  templatesStore: PropTypes.object.isRequired,
+  templatesAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('templatesStore'), observer);
+const enhance = compose(inject('templatesAdminStore'), observer);
 
 export default enhance(Templates);

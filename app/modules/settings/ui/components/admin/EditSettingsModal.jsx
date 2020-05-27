@@ -18,6 +18,7 @@ class EditSettingsModal extends React.Component {
   }
 
   open(id) {
+    this.settingsStore.resetItem();
     this.settingsStore.loadById(id).then(() => {
       this.modal.current.open();
     });

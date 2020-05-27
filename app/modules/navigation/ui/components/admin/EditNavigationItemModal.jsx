@@ -20,6 +20,7 @@ class EditNavigationItemModal extends React.Component {
 
   open(row) {
     const { node } = row;
+    this.navigationStore.resetNavigationItem();
     this.navigationStore.setNavigationItem(node);
     this.navigationStore.setNavigationItemRow(row);
     this.modal.current.open();

@@ -12,7 +12,7 @@ class PageForm extends React.Component {
     super(props);
     this.pagesStore = props.pagesStore;
     this.localeStore = props.localeStore;
-    this.templatesStore = props.templatesStore;
+    this.templatesAdminStore = props.templatesAdminStore;
   }
 
   render() {
@@ -44,7 +44,7 @@ class PageForm extends React.Component {
           <ControlLabel>
             <Translation message="Template" />
           </ControlLabel>
-          <FormControl name="template" accepter={InputPicker} data={this.templatesStore.templateOptions} />
+          <FormControl name="template" accepter={InputPicker} data={this.templatesAdminStore.templateOptions} />
         </FormGroup>
         <FormGroup controlId="language" className="inline">
           <ControlLabel>
@@ -60,14 +60,14 @@ class PageForm extends React.Component {
             <Checkbox id="published" checked={item.published} onChange={setCheckboxItemValue.bind(null, 'published')} />
           </div>
         </FormGroup>
-        <FormGroup controlId="blocks">
-          <ControlLabel>
-            <Translation message="Body" />
-          </ControlLabel>
-          <div className="rs-form-control-wrapper">
-            <PageBlocks />
+        <div className="blocks panel-wrapper" style={{ position: 'relative' }}>
+          <div className="header">
+            <h6>
+              <Translation message="Body" />
+            </h6>
           </div>
-        </FormGroup>
+          <PageBlocks />
+        </div>
       </Form>
     );
   }
@@ -76,9 +76,9 @@ class PageForm extends React.Component {
 PageForm.propTypes = {
   pagesStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
-  templatesStore: PropTypes.object.isRequired,
+  templatesAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('pagesStore', 'localeStore', 'templatesStore'), observer);
+const enhance = compose(inject('pagesStore', 'localeStore', 'templatesAdminStore'), observer);
 
 export default enhance(PageForm);

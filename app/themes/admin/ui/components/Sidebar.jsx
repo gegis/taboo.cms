@@ -45,7 +45,7 @@ class Sidebar extends React.Component {
             );
           });
           menuItems.push(
-            <Dropdown key={i} eventKey={i} title={item.text} icon={item.icon}>
+            <Dropdown key={i} eventKey={i} trigger="click" title={item.text} icon={item.icon}>
               {menuItemChildren}
             </Dropdown>
           );

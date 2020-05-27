@@ -12,7 +12,7 @@ import ImagePicker from 'modules/core/ui/components/ImagePicker';
 class SettingsInput extends React.Component {
   constructor(props) {
     super(props);
-    this.templatesStore = props.templatesStore;
+    this.templatesAdminStore = props.templatesAdminStore;
     this.localeStore = props.localeStore;
     this.onSettingsChange = this.onSettingsChange.bind(this);
     this.onLanguageSettingsChange = this.onLanguageSettingsChange.bind(this);
@@ -20,25 +20,25 @@ class SettingsInput extends React.Component {
   }
 
   onSettingsChange(key, value) {
-    const { onChange = null, authStore, templatesStore } = this.props;
-    this.templatesStore.onSettingsChange(key, value);
-    TemplatesHelper.emitTemplateChanges({ authStore, templatesStore });
+    const { onChange = null, authStore, templatesAdminStore } = this.props;
+    this.templatesAdminStore.onSettingsChange(key, value);
+    TemplatesHelper.emitTemplateChanges({ authStore, templatesAdminStore });
     if (onChange && typeof onChange === 'function') {
       onChange(key, value, 'settings');
     }
   }
 
   onLanguageSettingsChange(key, value) {
-    const { onChange = null, authStore, templatesStore } = this.props;
-    this.templatesStore.onLanguageSettingsChange(key, value);
-    TemplatesHelper.emitTemplateChanges({ authStore, templatesStore });
+    const { onChange = null, authStore, templatesAdminStore } = this.props;
+    this.templatesAdminStore.onLanguageSettingsChange(key, value);
+    TemplatesHelper.emitTemplateChanges({ authStore, templatesAdminStore });
     if (onChange && typeof onChange === 'function') {
       onChange(key, value, 'languageSettings');
     }
   }
 
   onLanguageChange(value) {
-    this.templatesStore.setLanguage(value, true);
+    this.templatesAdminStore.setLanguage(value, true);
   }
 
   getColorPicker({ settingsItem, settingsValueKey, settingsOnChange }) {
@@ -72,17 +72,17 @@ class SettingsInput extends React.Component {
 
     switch (settingsKey) {
       case 'settings':
-        settingsItem = this.templatesStore.settings;
+        settingsItem = this.templatesAdminStore.settings;
         settingsOnChange = this.onSettingsChange;
         break;
       case 'languageSettings':
-        settingsItem = this.templatesStore.languageSettings;
+        settingsItem = this.templatesAdminStore.languageSettings;
         settingsOnChange = this.onLanguageSettingsChange;
         break;
     }
 
     if (settingsOnChange !== null && typeof settingsOnChange === 'function') {
-      settingsOnChange = settingsOnChange.bind(this.templatesStore, settingsValueKey);
+      settingsOnChange = settingsOnChange.bind(this.templatesAdminStore, settingsValueKey);
     }
 
     switch (type) {
@@ -107,7 +107,7 @@ class SettingsInput extends React.Component {
         input = (
           <InputPicker
             className="template-language-input"
-            value={this.templatesStore.language}
+            value={this.templatesAdminStore.language}
             onChange={this.onLanguageChange}
             data={languageOptions}
             cleanable={false}
@@ -150,11 +150,11 @@ SettingsInput.propTypes = {
   onChange: PropTypes.func,
   settingsKey: PropTypes.string,
   settingsValueKey: PropTypes.string,
-  templatesStore: PropTypes.object.isRequired,
+  templatesAdminStore: PropTypes.object.isRequired,
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('templatesStore', 'authStore', 'localeStore'), observer);
+const enhance = compose(inject('templatesAdminStore', 'authStore', 'localeStore'), observer);
 
 export default enhance(SettingsInput);

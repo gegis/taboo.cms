@@ -18,6 +18,7 @@ class EditGalleryModal extends React.Component {
   }
 
   open(id) {
+    this.galleriesAdminStore.resetItem();
     this.galleriesAdminStore.loadById(id).then(() => {
       this.modal.current.open();
     });
