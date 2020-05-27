@@ -33,7 +33,9 @@
       }
       .rs-checkbox {
         display: inline-block;
-        padding: 2px 0
+        .rs-checkbox-checker {
+          min-height: 22px;
+        }
       }
       .rs-input,
       .rs-picker-search-input {
@@ -77,5 +79,25 @@
   }
   .cke_chrome {
     border: 0 none;
+  }
+}
+.page-blocks-wrapper {
+  position: relative;
+}
+.page-block-moving {
+  border-radius: @border-radius-base;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  //background-color: @B200;
+  background-color: rgba(229, 229, 234, 0.98);
+  z-index: 2000;
+  .spinner-cubes {
+    position: fixed;
+    top: 50%;
+    //top: ~'calc(50% - 30px)';
+    left: ~'calc(50% - 30px)';
   }
 }

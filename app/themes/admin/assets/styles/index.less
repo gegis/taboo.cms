@@ -2,6 +2,7 @@
 @import 'fonts';
 @import 'helpers';
 @import 'react-sortable-tree';
+@import 'loaders';
 
 html,
 body {
@@ -507,6 +508,9 @@ table {
       .rs-picker-cascader {
         width: 100%;
       }
+      .rs-picker-date {
+        width: 100%;
+      }
       .rs-picker-input {
         width: 100%;
       }
@@ -711,27 +715,6 @@ table {
 .html-code-modal {
   .code-editor {
     border: 1px solid @B200;
-  }
-}
-
-.loader {
-  border: 6px solid #249dd4;
-  border-top: 6px solid transparent;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  position: fixed;
-  top: 65px;
-  left: ~'calc(50vw - 20px)';
-  z-index: 10000;
-}
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
   }
 }
 

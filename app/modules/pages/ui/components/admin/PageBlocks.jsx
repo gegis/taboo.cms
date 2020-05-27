@@ -3,20 +3,17 @@ import { IconButton, Icon, Popover, Whisper, Button } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import Translation from 'app/modules/core/ui/components/Translation';
 import AdminConfigHelper from 'modules/core/ui/helpers/AdminConfigHelper';
-
-const SortableHandle = sortableHandle(({ children }) => <span>{children}</span>);
-const SortableItem = sortableElement(({ item }) => <div className="sortable-item">{item}</div>);
-const SortableContainer = sortableContainer(({ children }) => <div className="sortable-container">{children}</div>);
 
 class PageBlocks extends React.Component {
   constructor(props) {
     super(props);
     this.pagesStore = props.pagesStore;
     this.blocksPopover = null;
-    this.onSortEnd = this.onSortEnd.bind(this);
+    this.state = {
+      pageBlockMoving: false,
+    };
   }
 
   hideBlocksPopover() {
@@ -49,8 +46,29 @@ class PageBlocks extends React.Component {
     this.pagesStore.setBlockProps(index, blockProps);
   }
 
-  onSortEnd({ oldIndex, newIndex }) {
-    this.pagesStore.reorderBlocks(oldIndex, newIndex);
+  moveUp(index) {
+    if (index > 0) {
+      this.setState({ pageBlockMoving: true });
+      setTimeout(() => {
+        this.pagesStore.reorderBlocks(index, index - 1);
+      }, 50);
+      setTimeout(() => {
+        this.setState({ pageBlockMoving: false });
+      }, 1000);
+    }
+  }
+
+  moveDown(index) {
+    const { item } = this.props.pagesStore;
+    if (index < item.blocks.length - 1) {
+      this.setState({ pageBlockMoving: true });
+      setTimeout(() => {
+        this.pagesStore.reorderBlocks(index, index + 1);
+      }, 50);
+      setTimeout(() => {
+        this.setState({ pageBlockMoving: false });
+      }, 1000);
+    }
   }
 
   getPageBlock(block, index) {
@@ -69,11 +87,12 @@ class PageBlocks extends React.Component {
             <Button size="sm" color="red" title="Delete" onClick={this.deleteBlock.bind(this, index)}>
               <Icon icon="trash-o" />
             </Button>
-            <SortableHandle>
-              <span className="rs-btn rs-btn-subtle rs-btn-sm" title="Change sort order">
-                <Icon icon="sequence" />
-              </span>
-            </SortableHandle>
+            <Button size="sm" title="Move Up" onClick={this.moveUp.bind(this, index)}>
+              <Icon icon="arrow-up" />
+            </Button>
+            <Button size="sm" title="Move Down" onClick={this.moveDown.bind(this, index)}>
+              <Icon icon="arrow-down" />
+            </Button>
           </div>
           <div className="clearfix" />
         </div>
@@ -90,20 +109,25 @@ class PageBlocks extends React.Component {
     const pageBlocks = [];
     item.blocks.map((block, index) => {
       if (blocksMap[block.name] && blocksMap[block.name].previewComponent) {
-        pageBlocks.push(<SortableItem key={index} item={this.getPageBlock(block, index)} index={index} />);
+        pageBlocks.push(this.getPageBlock(block, index));
       }
     });
     return pageBlocks;
   }
 
   render() {
+    const { pageBlockMoving = false } = this.state;
     return (
       <div className="page-blocks-wrapper">
-        <div className="page-blocks">
-          <SortableContainer onSortEnd={this.onSortEnd} useDragHandle helperClass="sortable-helper">
-            {this.getPageBlocks()}
-          </SortableContainer>
-        </div>
+        {pageBlockMoving && (
+          <div className="page-block-moving">
+            <div className="spinner-cubes">
+              <div className="cube1" />
+              <div className="cube2" />
+            </div>
+          </div>
+        )}
+        <div className="page-blocks">{this.getPageBlocks()}</div>
         <div className="page-blocks-add-wrapper pull-right">
           <Whisper
             trigger="click"
