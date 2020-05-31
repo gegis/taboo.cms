@@ -24,7 +24,7 @@ const stores = {
 const primaryMenu = [
   {
     order: 340,
-    icon: React.createElement(Icon, { icon: 'frame' }),
+    icon: React.createElement(Icon, { icon: 'web' }),
     text: 'Templates',
     linkProps: {
       to: '/admin/templates',
