@@ -22,9 +22,10 @@ class SendGridService {
       throw new Error('Please specify options.to');
     }
     const from = email.from || config.mailer.from;
+    const to = this.parseEmailsList(email.to);
     const sgEmail = {
       from: from,
-      to: email.to,
+      to: to,
       subject: email.subject,
     };
 
@@ -51,6 +52,22 @@ class SendGridService {
           reject(error);
         });
     });
+  }
+
+  parseEmailsList(emails) {
+    let emailsList = [];
+    let splitEmails = '';
+    if (emails && typeof emails === 'string') {
+      splitEmails = emails.split(',');
+      splitEmails.map(email => {
+        if (email) {
+          emailsList.push(email.trim());
+        }
+      });
+    } else {
+      emailsList = emails;
+    }
+    return emailsList;
   }
 
   setEmailBody(email, data) {

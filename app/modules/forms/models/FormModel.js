@@ -23,6 +23,13 @@ const FormModel = MongoDbAdapter.setupModel('Form', {
     recipients: {
       type: String,
     },
+    conditionalRecipients: [
+      {
+        formField: String,
+        fieldValue: String,
+        recipients: String,
+      },
+    ],
     enabled: {
       type: Boolean,
       default: false,

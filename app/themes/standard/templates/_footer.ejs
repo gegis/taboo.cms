@@ -4,7 +4,7 @@
             <div class="rs-col">
                 <div class="rs-nav rs-nav-default navigation signed-out rs-nav-horizontal">
                     <ul>
-                        <% if(typeof footerNavigation === 'object') { %>
+                        <% if(typeof footerNavigation !== 'undefined' && footerNavigation !== null && typeof footerNavigation === 'object') { %>
                             <% for(let i = 0; i < footerNavigation.length; i++) { %>
                                 <li role="presentation" class="rs-nav-item rs-nav-item-content">
                                     <a

@@ -16,7 +16,7 @@ const requestTypes = [
   },
 ];
 
-class FormForm extends React.Component {
+class ContactUsTemplate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -109,7 +109,7 @@ class FormForm extends React.Component {
                 <FormControl name="email" />
               </FormGroup>
               <FormGroup controlId="requestType" className="inline">
-                <ControlLabel>Request Type</ControlLabel>
+                <ControlLabel>Select Department</ControlLabel>
                 <FormControl
                   name="requestType"
                   placeholder="Please Select"
@@ -139,13 +139,13 @@ class FormForm extends React.Component {
   }
 }
 
-FormForm.propTypes = {
+ContactUsTemplate.propTypes = {
   formsStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
   uiStore: PropTypes.object.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func,
 };
 
 const enhance = compose(inject('formsStore', 'notificationsStore', 'uiStore'), observer);
 
-export default enhance(FormForm);
+export default enhance(ContactUsTemplate);

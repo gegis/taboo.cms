@@ -7,6 +7,7 @@ const newItem = {
   id: '',
   title: '',
   recipients: '',
+  conditionalRecipients: [],
   header: '<div class="form-page-block-preview">Header</div>',
   footer: '<div class="form-page-block-preview">Footer</div>',
   template: '',
@@ -73,6 +74,14 @@ class FormsAdminStore extends AbstractAdminStore {
         .catch(ResponseHelper.handleError);
     });
   }
+
+  setConditionalRecipients(index, formField, fieldValue, recipients) {
+    this.item.conditionalRecipients[index] = {
+      formField: formField,
+      fieldValue: fieldValue,
+      recipients: recipients,
+    };
+  }
 }
 
 decorate(FormsAdminStore, {
@@ -81,6 +90,7 @@ decorate(FormsAdminStore, {
   setItems: action,
   resetEntries: action,
   loadEntries: action,
+  setConditionalRecipients: action,
 });
 
 export default new FormsAdminStore();

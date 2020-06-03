@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, FormControl, ControlLabel, Checkbox, InputPicker, HelpBlock, Panel } from 'rsuite';
+import { Form, FormGroup, FormControl, ControlLabel, Checkbox, InputPicker, HelpBlock, Panel, Input } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -40,13 +40,52 @@ class FormForm extends React.Component {
       FormTemplate = formTemplates[item.template].component;
       return (
         <PageBlockFrame style={{ height: '400px' }}>
-          <div className="form-page-block-preview">
+          <div className={`form-page-block-preview form-${item.template}`}>
             <FormTemplate />
           </div>
         </PageBlockFrame>
       );
     }
     return null;
+  }
+
+  updateConditionalRecipients(index, formField, fieldValue, recipients) {
+    this.formsAdminStore.setConditionalRecipients(index, formField, fieldValue, recipients);
+  }
+
+  getConditionalRecipientValue(index) {
+    const { item = {} } = this.formsAdminStore;
+    if (item.conditionalRecipients && item.conditionalRecipients[index]) {
+      return item.conditionalRecipients[index].recipients;
+    }
+    return '';
+  }
+
+  getConditionalRecipients() {
+    const { item = {} } = this.formsAdminStore;
+    const { formTemplates } = this.formsStore;
+    const recipients = [];
+    if (item.template && formTemplates[item.template] && formTemplates[item.template].conditionalRecipients) {
+      formTemplates[item.template].conditionalRecipients.map((recipient, index) => {
+        if (!item.conditionalRecipients || !item.conditionalRecipients[index]) {
+          this.formsAdminStore.setConditionalRecipients(index, recipient.formField, recipient.fieldValue, '');
+        }
+        recipients.push(
+          <FormGroup controlId="conditionalRecipients" key={index}>
+            <ControlLabel>
+              {recipient.formField} = {recipient.fieldValue}
+            </ControlLabel>
+            <div className="rs-form-control-wrapper">
+              <Input
+                value={this.getConditionalRecipientValue(index)}
+                onChange={this.updateConditionalRecipients.bind(this, index, recipient.formField, recipient.fieldValue)}
+              />
+            </div>
+          </FormGroup>
+        );
+      });
+    }
+    return recipients;
   }
 
   render() {
@@ -83,6 +122,10 @@ class FormForm extends React.Component {
           <FormControl name="recipients" />
           <HelpBlock tooltip>Comma separated emails list</HelpBlock>
         </FormGroup>
+        <Panel header="Conditional Recipients" bordered={true}>
+          {this.getConditionalRecipients()}
+          <HelpBlock>If a conditional requirement is met - it will use the matching recipients list</HelpBlock>
+        </Panel>
         <Panel header="Form Header">
           <RichTextEditor onChange={this.onCodeEditorChange.bind(this, 'header')} value={item.header} height="200px" />
         </Panel>

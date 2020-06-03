@@ -16,6 +16,8 @@ class FormsController extends AbstractController {
         getOne: ['_id'],
       },
     });
+    this.submit = this.submit.bind(this);
+    this.getFormRecipients = this.getFormRecipients.bind(this);
   }
 
   async submit(ctx) {
@@ -28,17 +30,19 @@ class FormsController extends AbstractController {
     let emailResponse;
     let emailParams = { ctx };
     let email = {};
+    let recipients;
     let form;
     if (formId) {
       form = await FormModel.findOne({ enabled: true, _id: formId });
       if (form) {
         await FormEntryModel.create({ form: formId, data: body });
         success = true;
-        if (form.recipients) {
+        recipients = this.getFormRecipients(form, body);
+        if (recipients) {
           if (from) {
             email.from = from;
           }
-          email.to = form.recipients;
+          email.to = recipients;
           email.subject = form.title;
           if (html) {
             email.html = html;
@@ -54,6 +58,23 @@ class FormsController extends AbstractController {
       }
     }
     ctx.body = { success: success };
+  }
+
+  getFormRecipients(form, formData = {}) {
+    let recipients = form.recipients;
+    let formField;
+    let fieldValue;
+    if (form && form.conditionalRecipients && form.conditionalRecipients.length > 0) {
+      for (let i = 0; i < form.conditionalRecipients.length; i++) {
+        formField = form.conditionalRecipients[i].formField;
+        fieldValue = form.conditionalRecipients[i].fieldValue;
+        if (formData[formField] && formData[formField] === fieldValue && form.conditionalRecipients[i].recipients) {
+          recipients = form.conditionalRecipients[i].recipients;
+          break;
+        }
+      }
+    }
+    return recipients;
   }
 }
 

@@ -7,6 +7,18 @@ const formTemplates = {
   contactUs: {
     name: 'Contact Us',
     component: ContactUsTemplate,
+    conditionalRecipients: [
+      {
+        formField: 'requestType',
+        fieldValue: 'Customer support',
+        recipients: '',
+      },
+      {
+        formField: 'requestType',
+        fieldValue: 'Business stuff',
+        recipients: '',
+      },
+    ],
   },
 };
 

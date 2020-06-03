@@ -374,6 +374,26 @@ class UsersService {
 
     return response;
   }
+
+  /**
+   * in node koa:
+   * app.proxy = true;
+   * in nginx
+   * proxy_set_header X-Real-IP $remote_addr;
+   * proxy_set_header X-Real-PORT $remote_port;
+   * proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+   *
+   * @param ctx
+   * @returns {string}
+   */
+  getUserIp(ctx) {
+    const { ip = '', header = {} } = ctx;
+    let userIp = ip;
+    if ((!userIp || userIp.indexOf('127.0.0.1') !== -1) && header['x-forwarded-for']) {
+      userIp = header['x-forwarded-for'];
+    }
+    return userIp;
+  }
 }
 
 module.exports = new UsersService();
