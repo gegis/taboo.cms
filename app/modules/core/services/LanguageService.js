@@ -1,4 +1,5 @@
-const { setLanguage } = require('@taboo/cms-core');
+const { setLanguage, config } = require('@taboo/cms-core');
+const { i18n: { enabledLanguages = [], defaultLocalesMapping = {} } = {} } = config;
 
 class LanguageService {
   setLanguage(ctx, namespace, { language = null, locale = null, saveInSession = false }) {
@@ -21,6 +22,14 @@ class LanguageService {
       locale: ctx.routeParams.locale,
       translations: ctx.routeParams.translations,
     };
+  }
+
+  languageIsValid(language) {
+    return language && enabledLanguages.indexOf(language) !== -1;
+  }
+
+  localeIsValid(locale) {
+    return locale && Object.values(defaultLocalesMapping).indexOf(locale) !== -1;
   }
 }
 module.exports = new LanguageService();

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CKEditor from 'ckeditor4-react';
+import CKEditor4 from 'ckeditor4-react';
 import UploadSelect from 'modules/uploads/ui/components/admin/UploadSelect';
 
 class RichTextEditor extends React.Component {
@@ -34,14 +34,10 @@ class RichTextEditor extends React.Component {
 
   // This is a workaround... because if modal is opened second time, editor ref is lost.
   getEditorInstance() {
-    let instance = null;
-    if (window.CKEDITOR && window.CKEDITOR.instances) {
-      for (let key in window.CKEDITOR.instances) {
-        instance = window.CKEDITOR.instances[key];
-        break;
-      }
+    if (window.CKEDITOR && window.CKEDITOR.currentInstance) {
+      return window.CKEDITOR.currentInstance;
     }
-    return instance;
+    return null;
   }
 
   componentWillUnmount() {
@@ -121,11 +117,11 @@ class RichTextEditor extends React.Component {
     const { value = '', config = this.defultConfig, type = 'classic' } = this.props;
     return (
       <div>
-        <CKEditor
+        <CKEditor4
           data={value}
           onChange={this.onChange}
           config={config}
-          type={type} // you can have as inline
+          type={type} // you can have as 'inline'
           onBeforeLoad={this.onBeforeLoad}
         />
         <UploadSelect ref={this.uploadSelectModal} closeOnSelect={true} onFileSelect={this.onUploadSelect} />

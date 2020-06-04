@@ -5,7 +5,7 @@ module.exports = {
     'app/**/*.js',
     'lib/**/*.js',
     'app/**/*.jsx',
-    '!app/assets/scripts/lib/**/*.js',
+    '!app/themes/**/assets/**/*.js',
     '!app/modules/**/ui/scripts/lib/**/*.js',
   ],
   clean: ['public/js', 'public/css', 'public/fonts', 'public/images'],
@@ -94,6 +94,11 @@ module.exports = {
       {
         src: 'app/themes/**/assets/images/**/*',
         dest: 'public/images',
+        flattenLevel: 1,
+      },
+      {
+        src: 'app/themes/admin/assets/ckeditor/**/*',
+        dest: 'public/admin/ckeditor',
       },
       {
         src: 'node_modules/rsuite/dist/styles/fonts/**/*',
