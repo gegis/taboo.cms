@@ -72,7 +72,7 @@ class ImagePicker extends React.Component {
           ref={this.imageSelect}
           onFileSelect={this.onUploadSelect}
           closeOnSelect={true}
-          filter={{ type: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'] }}
+          filter={{ type: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], isUserFile: false }}
         />
       </div>
     );

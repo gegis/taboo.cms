@@ -1,15 +1,22 @@
 import React from 'react';
-import { Form, FormGroup, FormControl, ControlLabel, Checkbox } from 'rsuite';
+import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Input } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import Translation from 'app/modules/core/ui/components/Translation';
+import ImagePicker from 'modules/core/ui/components/ImagePicker';
 
 class NavigationItemForm extends React.Component {
   constructor(props) {
     super(props);
     this.navigationStore = props.navigationStore;
+  }
+
+  onImageChange(key, value) {
+    const option = {};
+    option[key] = value;
+    this.navigationStore.setNavigationItem(option);
   }
 
   render() {
@@ -56,6 +63,20 @@ class NavigationItemForm extends React.Component {
             <Checkbox
               checked={navigationItem.enabled}
               onChange={setCheckboxNavigationItemValue.bind(null, 'enabled')}
+            />
+          </div>
+        </FormGroup>
+        <FormGroup controlId="icon" className="inline">
+          <ControlLabel>
+            <Translation message="Icon" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <ImagePicker
+              showPreview={true}
+              input={<Input value={navigationItem.icon} onChange={this.onImageChange.bind(this, 'icon')} />}
+              value={navigationItem.icon}
+              returnValueKey="url"
+              onChange={this.onImageChange.bind(this, 'icon')}
             />
           </div>
         </FormGroup>

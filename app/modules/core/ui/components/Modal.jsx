@@ -47,9 +47,12 @@ class Modal extends Component {
       <RsModal size={size} {...rest} show={this.state.show} onHide={this.close}>
         {title && (
           <RsModal.Header>
-            <RsModal.Title>
-              <Translation message={title} />
-            </RsModal.Title>
+            {typeof title === 'string' && (
+              <RsModal.Title>
+                <Translation message={title} />
+              </RsModal.Title>
+            )}
+            {typeof title === 'object' && <RsModal.Title>{title}</RsModal.Title>}
           </RsModal.Header>
         )}
         <RsModal.Body>{children}</RsModal.Body>
@@ -74,7 +77,7 @@ class Modal extends Component {
 Modal.propTypes = {
   children: PropTypes.node.isRequired,
   size: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   submitName: PropTypes.string,
   cancelName: PropTypes.string,
   onSubmit: PropTypes.func,

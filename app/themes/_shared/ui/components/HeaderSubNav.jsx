@@ -1,16 +1,17 @@
 import React from 'react';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
+import { Nav, Dropdown, Icon } from 'rsuite';
 import axios from 'axios';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { Nav, Dropdown } from 'rsuite';
-import { withRouter } from 'react-router-dom';
-import Translation from 'modules/core/ui/components/Translation';
+import { withRouter, Link } from 'react-router-dom';
 import ProfilePicture from 'modules/users/ui/components/ProfilePicture';
 import ResponseHelper from 'modules/core/ui/helpers/ResponseHelper';
-import NavLink from 'modules/core/ui/components/NavLink';
 import DropdownLink from 'modules/core/ui/components/DropdownLink';
 import LogoutButton from 'modules/core/ui/components/LogoutButton';
+
+const { usersSignInEnabled } = window.app.config;
 
 class HeaderSubNav extends React.Component {
   constructor(props) {
@@ -18,16 +19,17 @@ class HeaderSubNav extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
   }
 
-  goToAdmin() {
-    window.location = '/admin';
-  }
-
   handleLogout() {
-    const { authStore, history } = this.props;
+    const { authStore, history, notificationsStore } = this.props;
     axios
       .get('/api/logout')
       .then(response => {
         if (response && response.data && response.data.success) {
+          notificationsStore.push({
+            title: 'Information',
+            html: 'You have successfully logged out',
+            translate: true,
+          });
           authStore.loadUserAuth().then(() => {
             return history.push('/');
           });
@@ -38,47 +40,61 @@ class HeaderSubNav extends React.Component {
       .catch(ResponseHelper.handleError);
   }
 
-  getUserDropdown() {
+  goToAdmin() {
+    window.location = '/admin';
+  }
+
+  getAuthenticatedMenu() {
     const { authStore } = this.props;
+    // return [
+    // <Link key="home" to="/dashboard" className="home-btn">
+    //   {' '}
+    // </Link>,
+    // ];
     return (
-      <Nav className="user-menu signed-in" pullRight>
+      <Nav key="user-menu" className="user-menu signed-in" pullRight={true}>
         <Dropdown
-          icon={<ProfilePicture url={authStore.user.profilePictureUrl} size="xs" />}
-          title={<span className="rs-hidden-sm">{authStore.user.email}</span>}
+          icon={<ProfilePicture url={authStore.user.profilePictureUrl} size="xs" alternative={true} />}
+          title={
+            <span className="user-username" title={authStore.user.username}>
+              {authStore.user.username}
+            </span>
+          }
           placement="bottomEnd"
         >
-          <DropdownLink key="my-profile" to="/my-profile">
-            <Translation message="My Profile" />
+          <DropdownLink key="home" to="/">
+            <Icon icon="home" /> Home
           </DropdownLink>
-          {authStore.user.id && !authStore.verified && (
-            <DropdownLink key="account-verify" to="/account-verify">
-              <Translation message="Account Verification" />
-            </DropdownLink>
-          )}
-          {authStore.user.admin && <Dropdown.Item key="divider-verification" divider />}
+          <DropdownLink key="dashboard" to="/my-profile">
+            <Icon icon="user" /> My Account
+          </DropdownLink>
           {authStore.user.admin && (
             <Dropdown.Item key="admin" onSelect={this.goToAdmin}>
-              <Translation message="Admin" />
+              <Icon icon="frame" /> Admin
             </Dropdown.Item>
           )}
-          <Dropdown.Item key="divider-logout" divider />
-          <LogoutButton appearance="dropdownItem" />
+          <LogoutButton appearance="dropdownItem">
+            <Icon icon="sign-out" /> Logout
+          </LogoutButton>
         </Dropdown>
       </Nav>
     );
   }
 
-  getUnauthenticatedMenu() {
-    return (
-      <Nav className="user-menu signed-out" pullRight>
-        <NavLink className="rs-nav-item-content" to="/sign-in">
-          Sign In
-        </NavLink>
-        <NavLink className="rs-nav-item-content" to="/sign-up">
-          Sign Up
-        </NavLink>
-      </Nav>
-    );
+  getPublicMenu() {
+    const buttons = [
+      <Link key="home" to="/" className="home-btn">
+        {' '}
+      </Link>,
+    ];
+    if (usersSignInEnabled) {
+      buttons.push(
+        <Link key="login" to="/sign-in" className="rs-btn rs-btn-primary">
+          Login
+        </Link>
+      );
+    }
+    return buttons;
   }
 
   isAuthenticated() {
@@ -87,19 +103,23 @@ class HeaderSubNav extends React.Component {
   }
 
   render() {
-    if (this.isAuthenticated()) {
-      return this.getUserDropdown();
-    } else {
-      return this.getUnauthenticatedMenu();
-    }
+    const { className } = this.props;
+    return (
+      <div className={classNames('header-sub-nav', className)}>
+        {!this.isAuthenticated() && this.getPublicMenu()}
+        {this.isAuthenticated() && this.getAuthenticatedMenu()}
+      </div>
+    );
   }
 }
 
 HeaderSubNav.propTypes = {
+  className: PropTypes.string,
   authStore: PropTypes.object,
+  notificationsStore: PropTypes.object,
   history: PropTypes.object,
 };
 
-const enhance = compose(withRouter, inject('authStore'), observer);
+const enhance = compose(withRouter, inject('authStore', 'notificationsStore'), observer);
 
 export default enhance(HeaderSubNav);

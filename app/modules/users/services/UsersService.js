@@ -1,13 +1,19 @@
-const { config, logger, isAllowed } = require('@taboo/cms-core');
+const { config, logger, isAllowed, events, sockets } = require('@taboo/cms-core');
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
 const ACLService = require('modules/acl/services/ACLService');
+const SettingsService = require('modules/settings/services/SettingsService');
+const EmailsService = require('modules/emails/services/EmailsService');
 const MailerService = require('modules/mailer/services/MailerService');
-const LocaleHelper = require('modules/core/helpers/LocaleHelper');
 const ValidationHelper = require('modules/core/helpers/ValidationHelper');
 const UserModel = require('modules/users/models/UserModel');
 const RoleModel = require('modules/acl/models/RoleModel');
+const Json2csvParser = require('json2csv').Parser;
+
+const { server: { session: { options: { maxAge = 86400000 } = {}, rememberMeMaxAge = 86400000 } = {} } = {} } = config;
+
+const { users: { passwordMinLength = 6 } = {} } = config;
 
 class UsersService {
   async passwordsMatch(plainPass, hashedPass) {
@@ -43,7 +49,7 @@ class UsersService {
   }
 
   isUserRequestAllowed(ctx, user) {
-    const { taboo: { aclResource } = {} } = ctx;
+    const { routeParams: { aclResource } = {} } = ctx;
     if (aclResource) {
       // if isAllowed return value is undefined - it means acl is not enabled / implemented
       if (isAllowed(user, aclResource) === false) {
@@ -53,7 +59,7 @@ class UsersService {
     return true;
   }
 
-  async authenticateUser(ctx, email, password) {
+  async authenticateUser(ctx, email, password, rememberMe = false) {
     const { users: { signInEnabled = false } = {} } = config;
     let passMatch;
     if (!email) {
@@ -83,7 +89,7 @@ class UsersService {
       return ctx.throw(403, 'Forbidden');
     }
 
-    await this.setUserSession(ctx, user);
+    await this.setUserSession(ctx, user, rememberMe);
 
     return ctx.session.user;
   }
@@ -98,29 +104,49 @@ class UsersService {
     if (user && user.loginAttempts >= maxLoginAttempts) {
       return ctx.throw(404, 'Too many attempts');
     } else {
-      return ctx.throw(404, 'User not found');
+      return ctx.throw(404, 'Login details are invalid');
     }
   }
 
-  async setUserSession(ctx, user) {
+  async setUserSession(ctx, user, rememberMe = false) {
+    ctx.session.user = await this.parseUserSessionData(user, { rememberMe });
+    if (rememberMe) {
+      ctx.session.maxAge = rememberMeMaxAge;
+    } else {
+      ctx.session.maxAge = maxAge;
+    }
+  }
+
+  async parseUserSessionData(user, { authenticated = false, rememberMe = false }) {
+    let userSessionData = null;
     let acl;
     let profilePictureUrl;
-    if (user.profilePicture && user.profilePicture.url) {
-      profilePictureUrl = user.profilePicture.url;
+    if (user) {
+      if (user.profilePicture && user.profilePicture.url) {
+        profilePictureUrl = user.profilePicture.url;
+      }
+      acl = await ACLService.getUserACL(user);
+      userSessionData = {
+        id: user._id.toString(),
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        verified: user.verified,
+        admin: user.admin,
+        active: user.active,
+        profilePictureUrl: profilePictureUrl,
+        postsCount: user.postsCount,
+        viewedTopics: user.viewedTopics,
+        viewedTopicPosts: user.viewedTopicPosts,
+        roles: user.roles,
+        acl: acl,
+        rememberMe: rememberMe,
+      };
+      if (authenticated) {
+        userSessionData.authenticated = true;
+      }
     }
-    acl = await ACLService.getUserACL(user);
-    ctx.session.user = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      verified: user.verified,
-      admin: user.admin,
-      active: user.active,
-      profilePictureUrl: profilePictureUrl,
-      roles: user.roles,
-      acl: acl,
-    };
+    return userSessionData;
   }
 
   async updateUserSession(user) {
@@ -131,7 +157,7 @@ class UsersService {
     let userSession;
     if (sessionConfig && sessionConfig.options && sessionConfig.options.store && sessionConfig.options.store.model) {
       SessionModel = sessionConfig.options.store.model;
-      userSession = await SessionModel.findOne({ 'value.user.id': user._id.toString() });
+      userSession = await SessionModel.findOne({ 'value.user._id': user._id });
       if (userSession) {
         if (user.roles) {
           user.roles.map(role => {
@@ -146,8 +172,10 @@ class UsersService {
               'value.user.acl': acl,
               'value.user.admin': user.admin,
               'value.user.verified': user.verified,
+              'value.user.active': user.active,
               'value.user.firstName': user.firstName,
               'value.user.lastName': user.lastName,
+              'value.user.username': user.username,
               'value.user.email': user.email,
             },
           }
@@ -158,53 +186,68 @@ class UsersService {
 
   async logoutUser(ctx) {
     if (ctx.session.user && ctx.session.user.id) {
-      ctx.session = null;
+      ctx.session.visitor = { viewedTopics: ctx.session.user.viewedTopics };
+      delete ctx.session.user;
       return true;
     }
     return false;
   }
 
-  async resetPassword(ctx, email, linkPrefix = '') {
+  async resetPassword(ctx, userEmail, linkPrefix = '') {
+    const { routeParams: { language = 'en' } = {} } = ctx;
     const { users: { signInEnabled = false } = {} } = config;
     const emailToSend = {};
     let success = false;
     let user;
     let emailResponse;
+    let email;
+    let resetLink;
 
     if (linkPrefix && linkPrefix.charAt(0) !== '/') {
       linkPrefix = `/${linkPrefix}`;
     }
 
-    if (email) {
-      user = await UserModel.findOne({ email });
+    if (userEmail) {
+      user = await UserModel.findOne({ email: userEmail });
       if (user) {
         if (!signInEnabled && !user.admin) {
           return ctx.throw(403, 'Forbidden');
         }
-        user.passwordReset = uuidv1();
-        user.passwordResetRequested = new Date();
-
         try {
+          user.passwordReset = uuidv1();
+          user.passwordResetRequested = new Date();
+          email = await EmailsService.getEmail('passwordReset', language);
           await user.save();
-          emailToSend.to = email;
-          emailToSend.subject = LocaleHelper.translate(ctx, 'email_subject_users_password_reset');
-          emailResponse = await MailerService.send(emailToSend, {
+          resetLink = this.getResetLink(ctx, linkPrefix, user._id, user.passwordReset);
+          if (email.from) {
+            emailToSend.from = email.from;
+          }
+          emailToSend.to = userEmail;
+          emailToSend.subject = email.subject;
+          emailToSend.html = await EmailsService.composeEmailBody(
             ctx,
-            tplPath: 'users/passwordReset',
-            tplValues: {
-              user,
-              link: `${ctx.origin}${linkPrefix}/change-password/${user._id}/${user.passwordReset}`,
-            },
-          });
+            email.body,
+            Object.assign(
+              {},
+              { resetLink: `<a href="${resetLink}">${resetLink}</a>` },
+              { firstName: user.firstName, lastName: user.lastName, email: user.email, username: user.username }
+            )
+          );
+          emailResponse = await MailerService.send(emailToSend, { ctx });
           if (emailResponse && (emailResponse.success || emailResponse.accepted)) {
             success = true;
           }
         } catch (e) {
+          logger.error(e);
           return ctx.throw(400, 'Failed to send email');
         }
       }
     }
     return success;
+  }
+
+  getResetLink(ctx, linkPrefix, userId, resetToken) {
+    return `${ctx.origin}${linkPrefix}/change-password/${userId}/${resetToken}`;
   }
 
   async validateUniqueApiKey(ctx, data, userId = null) {
@@ -275,7 +318,7 @@ class UsersService {
     return success;
   }
 
-  async registerNewUser(data) {
+  async registerNewUser(ctx, data) {
     const userData = Object.assign({}, data);
     const role = await RoleModel.findOne({ name: 'User' });
     let userDoc = null;
@@ -295,12 +338,131 @@ class UsersService {
     if (user) {
       userDoc = Object.assign({}, user._doc);
       delete userDoc.password;
+      await this.sendUserVerificationEmail(ctx, user);
     }
 
     return userDoc;
   }
 
+  async sendUserVerificationEmail(ctx, user, userLanguage = 'en') {
+    const { routeParams: { language = userLanguage } = {} } = ctx;
+    const emailToSend = {};
+    const linkPrefix = ''; // TODO parse from config
+    const email = await EmailsService.getEmail('accountVerification', language);
+    let success = false;
+    let verifyLink;
+    let emailResponse;
+    if (user && email) {
+      try {
+        user.accountVerificationCode = uuidv1();
+        user.accountVerificationCodeRequested = new Date();
+        user.save();
+        verifyLink = this.getVerificationLink(ctx, linkPrefix, user._id, user.accountVerificationCode);
+        if (email.from) {
+          emailToSend.from = email.from;
+        }
+        emailToSend.to = user.email;
+        emailToSend.subject = email.subject;
+        emailToSend.html = await EmailsService.composeEmailBody(
+          ctx,
+          email.body,
+          Object.assign(
+            {},
+            { verifyLink: `<a href="${verifyLink}">${verifyLink}</a>` },
+            { firstName: user.firstName, lastName: user.lastName, email: user.email, username: user.username }
+          )
+        );
+        emailResponse = await MailerService.send(emailToSend, { ctx });
+        if (emailResponse && (emailResponse.success || emailResponse.accepted)) {
+          success = true;
+        }
+      } catch (e) {
+        success = false;
+        logger.error(e);
+      }
+    }
+    return {
+      success,
+      // accountVerificationCode: user.accountVerificationCode, // It's not safe - can bypass without email
+      accountVerificationCodeRequested: user.accountVerificationCodeRequested,
+    };
+  }
+
+  async sendUserDeactivationEmail(ctx, user, userLanguage = 'en') {
+    const { routeParams: { language = userLanguage } = {} } = ctx;
+    const emailToSend = {};
+    const accountDeactivationEmailRecipients = await SettingsService.get('accountDeactivationEmailRecipients');
+    const email = await EmailsService.getEmail('deactivatedAccount', language);
+    const userLink = `${ctx.origin}/admin/users?search=_id%20%3D%20${user._id}`;
+    let success = false;
+    let emailResponse;
+    if (user && email) {
+      try {
+        if (email.from) {
+          emailToSend.from = email.from;
+        }
+        emailToSend.to = accountDeactivationEmailRecipients.value;
+        emailToSend.subject = email.subject;
+        emailToSend.html = await EmailsService.composeEmailBody(
+          ctx,
+          email.body,
+          Object.assign({ username: user.username, userLink: userLink })
+        );
+        emailResponse = await MailerService.send(emailToSend, { ctx });
+        if (emailResponse && (emailResponse.success || emailResponse.accepted)) {
+          success = true;
+        }
+      } catch (e) {
+        success = false;
+        logger.error(e);
+      }
+    }
+    return success;
+  }
+
+  getVerificationLink(ctx, linkPrefix, userId, verificationToken) {
+    return `${ctx.origin}${linkPrefix}/verify-account/${userId}/${verificationToken}`;
+  }
+
   validateUserRegisterFields(data) {
+    const rules = Object.assign({}, this.getUserFieldsBasicRules(), {
+      agreeToTerms: [
+        {
+          test: 'isTrue',
+          message: 'You must agree with Terms & Conditions',
+        },
+      ],
+    });
+    const validationErrors = ValidationHelper.validateData(rules, data);
+    let response = null;
+
+    if (validationErrors && validationErrors.length > 0) {
+      response = {
+        validationMessage: 'Invalid Data',
+        validationErrors: validationErrors,
+      };
+    }
+
+    return response;
+  }
+
+  validateUserAccountFields(data) {
+    const addPasswordRule = !!(data && data.newPassword);
+    const rules = Object.assign({}, this.getUserFieldsBasicRules('newPassword', addPasswordRule));
+    const validationErrors = ValidationHelper.validateData(rules, data);
+    let response = null;
+
+    if (validationErrors && validationErrors.length > 0) {
+      response = {
+        validationMessage: 'Invalid Data',
+        validationErrors: validationErrors,
+      };
+    }
+
+    return response;
+  }
+
+  getUserFieldsBasicRules(passwordFieldName = 'password', addPasswordRule = true) {
     const rules = {
       firstName: [
         {
@@ -324,55 +486,91 @@ class UsersService {
           message: 'Email is not valid',
         },
       ],
-      street: [
-        {
-          test: 'isRequired',
-          message: 'Street is required',
-        },
-      ],
-      city: [
-        {
-          test: 'isRequired',
-          message: 'City is required',
-        },
-      ],
-      state: [
-        {
-          test: 'isRequired',
-          message: 'State is required',
-        },
-      ],
       country: [
         {
           test: 'isRequired',
           message: 'Country is required',
         },
       ],
-      postCode: [
+      username: [
         {
           test: 'isRequired',
-          message: 'ZIP Code is required',
+          message: 'Username is required',
         },
-      ],
-      password: [
         {
           test: 'isLength',
-          options: { min: 5 },
-          message: 'Password must be at least 5 characters long',
+          options: { min: 3 },
+          message: 'Username must be minimum 3 characters',
+        },
+        {
+          test: 'isLength',
+          options: { max: 20 },
+          message: 'Username must be maximum 20 characters',
+        },
+        {
+          test: 'notIndexOf',
+          options: {
+            caseSensitive: false,
+            values: ['admin', 'administrator'],
+          },
+          message: 'Username is already taken!',
+        },
+        {
+          test: 'testRegexp',
+          regexp: RegExp(/^[\w]+$/),
+          message: "Only alphanumeric symbols a-z, A-Z, 0-9 and '_'",
         },
       ],
     };
-    const validationErrors = ValidationHelper.validateData(rules, data);
-    let response = null;
 
-    if (validationErrors && validationErrors.length > 0) {
-      response = {
-        validationMessage: 'Invalid Data',
-        validationErrors: validationErrors,
-      };
+    if (addPasswordRule) {
+      rules[passwordFieldName] = [
+        {
+          test: 'isLength',
+          options: { min: passwordMinLength },
+          message: `Password must be at least ${passwordMinLength} characters long`,
+        },
+        {
+          test: 'testRegexp',
+          regexp: RegExp(/[A-Z]+/),
+          message: 'Should contain at least one upper case letter',
+        },
+        {
+          test: 'testRegexp',
+          regexp: RegExp(/[a-z]+/),
+          message: 'Should contain at least one lower case letter',
+        },
+        {
+          test: 'testRegexp',
+          regexp: RegExp(/\d+/),
+          message: 'Should contain at least one digit',
+        },
+      ];
     }
 
-    return response;
+    return rules;
+  }
+
+  async deleteUser(userId) {
+    const user = await this.getUserData({ _id: userId });
+    if (user) {
+      await this.onUserDelete(user);
+      await ACLService.deleteUserSession(user);
+    }
+    return user;
+  }
+
+  async onUserDelete(user) {
+    events.emit('onUserDelete', user);
+  }
+
+  async getUsers(filter, fields, sort = { createdAt: 'desc' }) {
+    return UserModel.find(filter, fields, { sort });
+  }
+
+  async jsonToCsv(data, fields) {
+    const json2csvParser = new Json2csvParser({ fields });
+    return json2csvParser.parse(data);
   }
 
   /**
@@ -393,6 +591,19 @@ class UsersService {
       userIp = header['x-forwarded-for'];
     }
     return userIp;
+  }
+
+  socketsEmitUserChanges(user) {
+    sockets.emit('users', `user-${user._id}-user-update`, {
+      _id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      email: user.email,
+      verified: user.verified,
+      active: user.active,
+      admin: user.admin,
+    });
   }
 }
 

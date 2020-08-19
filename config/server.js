@@ -1,5 +1,7 @@
+const shared = require('./shared');
+
 module.exports = {
-  port: process.env.PORT || 3000,
+  port: process.env.PORT || shared.port,
   secretKeys: ['REPLACE-ME-123456', '654321-REPLACE-ME'],
   globalPolicies: ['acl', 'i18n'],
   templates: {
@@ -29,12 +31,13 @@ module.exports = {
       secure: false,
       encrypt: true,
     },
+    rememberMeMaxAge: 1000 * 60 * 60 * 24 * 14, // 2 weeks
   },
   silentErrors: ['UnauthorizedError', 'BadRequestError', 'ForbiddenError', 'ValidationError', 'NotFoundError'],
   uploads: {
-    serveStaticPath: '../user-uploads',
-    uploadsPath: '../user-uploads/user-files',
-    urlPath: '/user-files',
+    serveStaticPath: '../cms-uploads',
+    uploadsPath: '../cms-uploads/files',
+    urlPath: '/files',
     allowedTypes: [
       'image/png',
       'image/jpg',
@@ -45,12 +48,39 @@ module.exports = {
       'video/x-matroska',
       'application/pdf',
     ],
-    secureUploadsPath: '../user-uploads-secure',
-    secureUrlPath: '/secure-files',
-    secureAllowedTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'application/pdf'],
-    secureAllowedImageTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'],
-    maxFileSize: 500 * 1024 * 1024,
+    maxFileSize: shared.maxFileSize,
     appendTimestamp: true,
+    userUploadsPath: '../user-uploads/user-files',
+    userUrlPath: '/user-files',
+    userAllowedDocumentTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'application/pdf'],
+    userAllowedImageTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'],
+    userMaxFileSize: shared.userMaxFileSize,
+    userMaxGifFileSize: shared.userMaxGifFileSize,
+    imageSizes: {
+      defaultSize: {
+        width: 685,
+      },
+      xlSize: {
+        width: 120,
+        height: 120,
+      },
+      lgSize: {
+        width: 80,
+        height: 80,
+      },
+      mdSize: {
+        width: 60,
+        height: 60,
+      },
+      smSize: {
+        width: 40,
+        height: 40,
+      },
+      xsSize: {
+        width: 32,
+        height: 32,
+      },
+    },
   },
   cache: {
     enabled: true,

@@ -6,11 +6,16 @@ const UserModel = require('modules/users/models/UserModel');
 const PageModel = require('modules/pages/models/PageModel');
 const NavigationModel = require('modules/navigation/models/NavigationModel');
 const SettingsModel = require('modules/settings/models/SettingsModel');
+const EmailModel = require('modules/emails/models/EmailModel');
+const CountryModel = require('modules/countries/models/CountryModel');
+const CoreHelper = require('modules/core/helpers/CoreHelper');
 
 const { admin: { cms: { initialUser, adminRoleName, userRoleName, userAclResources } = {} } = {} } = config;
 const pages = require('../data/pages');
 const navigation = require('../data/navigation');
 const settings = require('../data/settings');
+const emails = require('../data/emails');
+const countries = require('../data/countries');
 const TemplatesService = require('modules/templates/services/TemplatesService');
 
 module.exports = {
@@ -46,6 +51,12 @@ module.exports = {
     await this.createSettings(settings);
     CLIHelper.log('Created Settings', 'info');
 
+    await this.createEmails(emails);
+    CLIHelper.log('Created Emails', 'info');
+
+    await this.createCountries(countries);
+    CLIHelper.log('Created Settings', 'info');
+
     return 'Initial data load UP has successfully finished.';
   },
 
@@ -70,6 +81,12 @@ module.exports = {
 
     await this.deleteSettings(settings);
     CLIHelper.log('Deleted Settings', 'info');
+
+    await this.deleteEmails(emails);
+    CLIHelper.log('Deleted Emails', 'info');
+
+    await this.deleteCountries(countries);
+    CLIHelper.log('Deleted Countries', 'info');
 
     return 'Initial data load DOWN has successfully finished.';
   },
@@ -141,6 +158,30 @@ module.exports = {
     }
   },
 
+  async createEmails(emails = []) {
+    for (let i = 0; i < emails.length; i++) {
+      await EmailModel.create(emails[i]);
+    }
+  },
+
+  async deleteEmails(emails = []) {
+    for (let i = 0; i < emails.length; i++) {
+      await EmailModel.findOneAndDelete({ key: emails[i].key });
+    }
+  },
+
+  async createCountries(countries = []) {
+    for (let i = 0; i < countries.length; i++) {
+      await CountryModel.create(countries[i]);
+    }
+  },
+
+  async deleteCountries(countries = []) {
+    for (let i = 0; i < countries.length; i++) {
+      await CountryModel.findOneAndDelete({ key: countries[i].key });
+    }
+  },
+
   getAclResources() {
     return getAclResources();
   },
@@ -152,6 +193,8 @@ module.exports = {
       firstName: initialUser.firstName,
       lastName: initialUser.lastName,
       email: initialUser.email,
+      country: 'GB',
+      username: CoreHelper.parseSlug(initialUser.firstName),
       password: await UsersService.hashPassword(initialUser.pass),
       roles: [role],
     };

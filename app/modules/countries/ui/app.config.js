@@ -1,7 +1,9 @@
 import CountriesStore from './stores/CountriesStore';
 
+const enabled = true;
+
 const stores = {
   countriesStore: CountriesStore,
 };
 
-export { stores };
+export { enabled, stores };

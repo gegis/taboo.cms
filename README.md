@@ -244,27 +244,27 @@ You can find more information in [@taboo/cms-core](https://www.npmjs.com/package
 #### CMS CLI Commands
  Create New User:
 ```
-npm run taboo-cms-cli user create
+npm run taboo-cms-command user create
 ```
 Export all locales to csv files:
 ```
-npm run taboo-cms-cli locale export
+npm run taboo-cms-command locale export
 ```
 Import all locales from csv files:
 ```
-npm run taboo-cms-cli locale import both
+npm run taboo-cms-command locale import both
 ```
 Run DB migrations:
 ```
-npm run taboo-cms-cli db migrate
+npm run taboo-cms-command db migrate
 ```
 Run DB migration UP:
 ```
-npm run taboo-cms-cli db up 2020-04-10-load-initial-data.js
+npm run taboo-cms-command db up 2020-04-10-load-initial-data.js
 ```
 Run DB migration DOWN:
 ```
-npm run taboo-cms-cli db down 2020-04-10-load-initial-data.js
+npm run taboo-cms-command db down 2020-04-10-load-initial-data.js
 ```
 
 ## Roadmap

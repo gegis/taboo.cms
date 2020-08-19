@@ -7,6 +7,7 @@ module.exports = [
     language: 'en',
     blocks: [
       {
+        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
@@ -55,6 +56,7 @@ module.exports = [
     language: 'en',
     blocks: [
       {
+        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
@@ -102,6 +104,7 @@ module.exports = [
     language: 'en',
     blocks: [
       {
+        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
@@ -149,6 +152,7 @@ module.exports = [
     language: 'en',
     blocks: [
       {
+        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
@@ -196,6 +200,7 @@ module.exports = [
     language: 'en',
     blocks: [
       {
+        _id: '5ec042491d39df14f9778563',
         name: 'HTML',
         props: {
           html: `<section>
@@ -234,5 +239,62 @@ module.exports = [
         template: { path: '/modules/pages/views/htmlPageBlock' },
       },
     ],
+  },
+  {
+    _id: '5ee40ef53f714a5486f6a2b9',
+    headerMinimized: false,
+    fullWidth: false,
+    published: true,
+    title: 'Account Verified',
+    subtitle: '',
+    url: '/verify-account/success',
+    blocks: [
+      {
+        _id: '5ee40ef53f714a5486f6a2ba',
+        name: 'HTML',
+        props: {
+          html: `<div class="rs-grid-container">\n<section class="section dark">\n<h3 style="text-align: center;">
+Thank You For Verifying!</h3>\n\n<p style="text-align: center;">&nbsp;</p>\n\n<p style="text-align: center;"><br />\n
+<strong>Your Account has been successfully verified.</strong></p>\n\n<p>&nbsp;</p>\n\n<p>&nbsp;</p>\n\n
+<p style="text-align: center;"><a activeclassname="active-alt" class="rs-btn rs-btn-ghost white" href="/">Go To 
+Home Page </a></p>\n</section>\n</div>\n\n<p>&nbsp;</p>`,
+        },
+        template: { path: '/modules/pages/views/htmlPageBlock' },
+      },
+    ],
+    template: 'standard',
+    background: '',
+    headerBackground: '',
+    language: 'en',
+    meta: {},
+  },
+  {
+    _id: '5ee40f733f714a5486f6a2bb',
+    headerMinimized: false,
+    fullWidth: false,
+    published: true,
+    title: 'Account Verification Error',
+    subtitle: '',
+    url: '/verify-account/error',
+    blocks: [
+      {
+        _id: '5ee40f733f714a5486f6a2bc',
+        name: 'HTML',
+        props: {
+          html: `<div class="rs-grid-container">\n<section class="section dark">\n<h3 style="text-align: center;">
+Account Verification Failed!</h3>\n\n<p>&nbsp;</p>\n\n<p>&nbsp;</p>\n\n<p style="text-align: center;"><strong>
+Your Account verification has failed. Please contact us and we will try to help you.</strong></p>\n\n<p>&nbsp;</p>
+\n\n<p>&nbsp;</p>\n\n<p style="text-align: center;">
+<a activeclassname="active-alt" class="rs-btn rs-btn-ghost white" href="/contact-us">Contact Us</a></p>
+\n\n<p style="text-align: center;">&nbsp;</p>\n</section>\n</div>\n`,
+        },
+        template: { path: '/modules/pages/views/htmlPageBlock' },
+      },
+    ],
+    template: 'standard',
+    background: '',
+    headerBackground: '',
+    language: 'en',
+    meta: {},
   },
 ];

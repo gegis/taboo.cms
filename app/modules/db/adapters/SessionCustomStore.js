@@ -1,6 +1,14 @@
 const SessionModel = require('modules/db/models/SessionModel');
 
 class SessionCustomStore {
+  constructor() {
+    this.model = SessionModel;
+  }
+
+  getModel() {
+    return this.model;
+  }
+
   async destroy(key) {
     return SessionModel.deleteOne({ key });
   }
@@ -16,7 +24,7 @@ class SessionCustomStore {
   async set(key, value, maxAge, options) {
     const item = { value };
     if (options.rolling) {
-      item.updatedAt = new Date();
+      item.expiresAt = new Date(Date.now() + maxAge);
     }
     const result = await SessionModel.findOneAndUpdate({ key }, item, { new: true, upsert: true, safe: true });
     return result ? result.value : null;

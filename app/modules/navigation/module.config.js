@@ -79,7 +79,7 @@ module.exports = {
       order: 100,
       options: {
         errorResponseAsJson: true,
-        aclResource: 'admin.navigation.manage',
+        aclResource: 'admin.navigation.view',
       },
     },
     {

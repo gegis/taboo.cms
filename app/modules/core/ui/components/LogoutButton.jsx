@@ -31,17 +31,17 @@ class LogoutButton extends React.Component {
   }
 
   render() {
-    const { appearance = 'link' } = this.props;
+    const { appearance = 'link', children = <Translation message="Logout" /> } = this.props;
     if (appearance === 'dropdownItem') {
       return (
         <Dropdown.Item key="logout" onSelect={this.handleLogout}>
-          <Translation message="Logout" />
+          {children}
         </Dropdown.Item>
       );
     } else {
       return (
         <Button key="logout" appearance={appearance} onClick={this.handleLogout}>
-          <Translation message="Logout" />
+          {children}
         </Button>
       );
     }
@@ -50,6 +50,7 @@ class LogoutButton extends React.Component {
 
 LogoutButton.propTypes = {
   appearance: PropTypes.string,
+  children: PropTypes.node,
   authStore: PropTypes.object,
   history: PropTypes.object,
 };

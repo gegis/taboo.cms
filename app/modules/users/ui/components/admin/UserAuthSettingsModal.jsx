@@ -10,6 +10,8 @@ import {
   ButtonToolbar,
   Checkbox,
   MultiCascader,
+  Button,
+  SelectPicker,
 } from 'rsuite';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -73,8 +75,27 @@ class UserAuthSettingsModal extends React.Component {
     setItem({ apiKey: '' });
   }
 
+  resendAccountVerification(userId) {
+    this.usersStore.resendAccountVerification(userId).then(data => {
+      if (data.success) {
+        this.notificationsStore.push({
+          title: 'Success',
+          html: 'Verification email successfully sent',
+          translate: true,
+        });
+      } else {
+        this.notificationsStore.push({
+          type: 'error',
+          title: 'Failure',
+          html: 'Failed to send verification email',
+          translate: true,
+        });
+      }
+    });
+  }
+
   render() {
-    const { item, setItem, getFormData, setCheckboxItemValue } = this.usersStore;
+    const { item, setItem, getFormData, setCheckboxItemValue, allVerificationStatuses } = this.usersStore;
     const { allRolesForSelection } = this.rolesStore;
     return (
       <Modal
@@ -100,23 +121,18 @@ class UserAuthSettingsModal extends React.Component {
             </ControlLabel>
             <FormControl name="id" disabled />
           </FormGroup>
+          <div className="clearfix" />
           <FormGroup controlId="email" className="inline">
             <ControlLabel>
               <Translation message="Email" />
             </ControlLabel>
             <FormControl name="email" disabled />
           </FormGroup>
-          <FormGroup controlId="firstName" className="inline">
+          <FormGroup controlId="username" className="inline">
             <ControlLabel>
-              <Translation message="First Name" />
+              <Translation message="Username" />
             </ControlLabel>
-            <FormControl name="firstName" disabled />
-          </FormGroup>
-          <FormGroup controlId="lastName" className="inline">
-            <ControlLabel>
-              <Translation message="Last Name" />
-            </ControlLabel>
-            <FormControl name="lastName" disabled />
+            <FormControl name="username" disabled />
           </FormGroup>
           <FormGroup controlId="admin" className="inline">
             <ControlLabel>
@@ -136,7 +152,7 @@ class UserAuthSettingsModal extends React.Component {
           </FormGroup>
           <FormGroup controlId="loginAttempts" className="inline">
             <ControlLabel>
-              <Translation message="Login Attempts" />
+              <Translation message="Bad Login Attempts" />
             </ControlLabel>
             <FormControl name="loginAttempts" />
           </FormGroup>
@@ -148,6 +164,29 @@ class UserAuthSettingsModal extends React.Component {
               <FormControl name="roles" accepter={MultiCascader} data={allRolesForSelection} />
             </FormGroup>
           )}
+          <FormGroup controlId="verificationStatus" className="inline">
+            <ControlLabel>
+              <Translation message="Verification Status" />
+            </ControlLabel>
+            <FormControl name="verificationStatus" accepter={SelectPicker} data={allVerificationStatuses} />
+          </FormGroup>
+          <FormGroup controlId="verified" className="inline">
+            <ControlLabel>
+              <Translation message="Account Verified" />
+            </ControlLabel>
+            <div className="rs-form-control-wrapper">
+              <Checkbox
+                checked={item.verified}
+                onChange={setCheckboxItemValue.bind(null, 'verified')}
+                style={{ display: 'inline-block' }}
+              />
+              {!item.verified && (
+                <Button size="sm" appearance="primary" onClick={this.resendAccountVerification.bind(this, item._id)}>
+                  <Translation message="Resend Email" />
+                </Button>
+              )}
+            </div>
+          </FormGroup>
           <FormGroup controlId="apiKey" className="user-api-key-form-group">
             <ControlLabel>
               <Translation message="API Key" />

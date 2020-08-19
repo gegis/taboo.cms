@@ -76,16 +76,20 @@ class UploadForm extends React.Component {
             <div className="rs-form-data-value">{item.createdAt}</div>
           </div>
         </FormGroup>
-        <FormGroup controlId="isUserDocument" className="inline">
+        <FormGroup controlId="isUserFile" className="inline">
           <ControlLabel>
-            <Translation message="Is User Document" />
+            <Translation message="Is User File" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox
-              checked={item.isUserDocument}
-              onChange={setCheckboxItemValue.bind(null, 'isUserDocument')}
-              disabled
-            />
+            <Checkbox checked={item.isUserFile} onChange={setCheckboxItemValue.bind(null, 'isUserFile')} />
+          </div>
+        </FormGroup>
+        <FormGroup controlId="isPrivate" className="inline">
+          <ControlLabel>
+            <Translation message="Is Private" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <Checkbox checked={item.isPrivate} onChange={setCheckboxItemValue.bind(null, 'isPrivate')} />
           </div>
         </FormGroup>
         {/*TODO find out why it shows as not user document when it is*/}
@@ -97,12 +101,12 @@ class UploadForm extends React.Component {
             <Checkbox checked={item.verified} onChange={setCheckboxItemValue.bind(null, 'verified')} />
           </div>
         </FormGroup>
-        <FormGroup controlId="documentType" className="inline">
+        <FormGroup controlId="documentName" className="inline">
           <ControlLabel>
-            <Translation message="Document Type" />
+            <Translation message="Document Name" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <div className="rs-form-data-value">{item.documentType}</div>
+            <div className="rs-form-data-value">{item.documentName}</div>
           </div>
         </FormGroup>
         <FormGroup controlId="note">

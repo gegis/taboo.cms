@@ -28,7 +28,7 @@ class ACLService {
     let user;
     if (!resource || !SettingsService.getACLEnabled()) {
       allowed = true;
-    } else {
+    } else if (subject) {
       if (subject.request && subject.response) {
         user = subject.session.user;
       } else {

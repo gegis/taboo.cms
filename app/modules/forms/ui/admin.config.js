@@ -41,6 +41,11 @@ const pageBlocks = [
     props: {
       formId: '',
     },
+    template: {
+      path: '/modules/forms/views/formPageBlock',
+      beforeRenderService: 'modules/forms/services/FormsService',
+      beforeRenderMethod: 'beforeFormRender',
+    },
     order: 350,
     icon: React.createElement(Icon, { icon: 'frame' }),
     previewComponent: FormPageBlockPreview,

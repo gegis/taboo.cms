@@ -5,18 +5,17 @@ import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import axios from 'axios';
 import {
-  Panel,
   Form,
   FormGroup,
   ControlLabel,
   FormControl,
   Button,
-  ButtonToolbar,
   Grid,
   Row,
   Col,
   Schema,
   Notification,
+  HelpBlock,
 } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
@@ -112,47 +111,47 @@ class ResetPassword extends React.Component {
     }
 
     return (
-      <Template className="reset-password-page">
+      <Template
+        className="reset-password-page"
+        title="Forgot password"
+        metaTitle="Forgot password"
+        headerMinimized={true}
+      >
         <Grid fluid>
           <Row>
             <Col xs={24} md={12} mdOffset={6}>
-              <h1>
-                <Translation message="Forgot password?" />
-              </h1>
-              <Panel className="reset-pass-panel" bordered>
-                <Form
-                  fluid
-                  ref={this.form}
-                  onChange={this.onFormChange}
-                  onCheck={this.onFormCheck}
-                  formValue={formValue}
-                  formError={formError}
-                  checkTrigger="blur"
-                  model={this.model}
-                  onSubmit={this.handleSubmit}
-                >
-                  <FormGroup>
-                    <ControlLabel>
-                      <Translation message="Email" />
-                    </ControlLabel>
-                    <FormControl name="email" type="email" onKeyDown={this.onInputKeyDown} />
-                  </FormGroup>
-                  <FormGroup>
-                    <ButtonToolbar>
-                      <Link className="form-action-link" to="/sign-in">
-                        <Translation message="Sign in" />
-                      </Link>
-                      <Button className="pull-right" appearance="primary" onClick={this.handleSubmit}>
-                        <Translation message="Reset" />
-                      </Button>
-                    </ButtonToolbar>
-                  </FormGroup>
+              <Form
+                fluid
+                ref={this.form}
+                onChange={this.onFormChange}
+                onCheck={this.onFormCheck}
+                formValue={formValue}
+                formError={formError}
+                checkTrigger="blur"
+                model={this.model}
+                className="form"
+                onSubmit={this.handleSubmit}
+              >
+                <h1>Forgot password</h1>
+                <FormGroup>
+                  <ControlLabel>
+                    <Translation message="Email" />
+                  </ControlLabel>
+                  <FormControl name="email" type="email" onKeyDown={this.onInputKeyDown} />
+                  <HelpBlock>Enter your email and we will send you a link to reset your password</HelpBlock>
+                </FormGroup>
+                <FormGroup className="form-submit-wrapper">
+                  <Button className="" appearance="primary" onClick={this.handleSubmit}>
+                    <Translation message="Reset" />
+                  </Button>
                   <div className="clearfix" />
-                </Form>
-              </Panel>
-              <p className="color-passive">
-                <Translation message="Enter your email and we will send you a link to reset your password" />
-              </p>
+                </FormGroup>
+                <FormGroup className="form-footer-links">
+                  <Link className="form-action-link" to="/sign-in">
+                    Login
+                  </Link>
+                </FormGroup>
+              </Form>
             </Col>
           </Row>
         </Grid>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Panel, Grid, Row, Col, Nav, Icon } from 'rsuite';
+import { Panel, Grid, Row, Col, Nav, Icon, DateRangePicker } from 'rsuite';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
@@ -12,23 +12,14 @@ import NavLink from 'app/modules/core/ui/components/admin/NavLink';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
 import { autorun } from 'mobx';
 
+const { dateFormat } = window.app.config;
+
 class IndexPage extends Component {
   constructor(props) {
     super(props);
     this.aclStore = props.aclStore;
     this.dispose = autorun(() => {
-      if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.pages.view')) {
-        this.retrievePagesInfo();
-      }
-      if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view')) {
-        this.retrieveGalleriesInfo();
-      }
-      if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.uploads.view')) {
-        this.retrieveUploadsInfo();
-      }
-      if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.users.view')) {
-        this.retrieveUsersInfo();
-      }
+      this.retrieveAllData();
     });
     this.state = {
       galleries: {
@@ -44,50 +35,80 @@ class IndexPage extends Component {
         count: 0,
       },
     };
+    this.filterByDateRange = this.filterByDateRange.bind(this);
   }
 
   componentWillUnmount() {
     this.dispose();
   }
 
-  retrieveGalleriesInfo() {
-    axios
-      .get('/api/admin/galleries/count')
-      .then(response => {
-        if (response && response.data && response.data.count) {
-          this.setState({ galleries: { count: response.data.count } });
-        }
-      })
-      .catch(ResponseHelper.handleError);
+  getRequestParams(filter) {
+    const params = {};
+    if (filter) {
+      params.params = {
+        filter: filter,
+      };
+    }
+    return params;
   }
 
-  retrievePagesInfo() {
+  retrieveAllData(filter = null) {
+    if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.pages.view')) {
+      this.retrievePagesInfo(filter);
+    }
+    if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view')) {
+      this.retrieveGalleriesInfo(filter);
+    }
+    if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.uploads.view')) {
+      this.retrieveUploadsInfo(filter);
+    }
+    if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.users.view')) {
+      this.retrieveUsersInfo(filter);
+    }
+  }
+
+  retrievePagesInfo(filter) {
+    const params = this.getRequestParams(filter);
     axios
-      .get('/api/admin/pages/count')
+      .get('/api/admin/pages/count', params)
       .then(response => {
-        if (response && response.data && response.data.count) {
+        if (response && response.data) {
           this.setState({ pages: { count: response.data.count } });
         }
       })
       .catch(ResponseHelper.handleError);
   }
 
-  retrieveUploadsInfo() {
+  retrieveGalleriesInfo(filter) {
+    const params = this.getRequestParams(filter);
     axios
-      .get('/api/admin/uploads/count')
+      .get('/api/admin/galleries/count', params)
       .then(response => {
-        if (response && response.data && response.data.count) {
+        if (response && response.data) {
+          this.setState({ galleries: { count: response.data.count } });
+        }
+      })
+      .catch(ResponseHelper.handleError);
+  }
+
+  retrieveUploadsInfo(filter) {
+    const params = this.getRequestParams(filter);
+    axios
+      .get('/api/admin/uploads/count', params)
+      .then(response => {
+        if (response && response.data) {
           this.setState({ uploads: { count: response.data.count } });
         }
       })
       .catch(ResponseHelper.handleError);
   }
 
-  retrieveUsersInfo() {
+  retrieveUsersInfo(filter) {
+    const params = this.getRequestParams(filter);
     axios
-      .get('/api/admin/users/count')
+      .get('/api/admin/users/count', params)
       .then(response => {
-        if (response && response.data && response.data.count) {
+        if (response && response.data) {
           this.setState({ users: { count: response.data.count } });
         }
       })
@@ -102,9 +123,9 @@ class IndexPage extends Component {
             <span className="rs-hidden-sm">Pages</span>
           </NavLink>
         )}
-        {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.galleries.view') && (
-          <NavLink to="/admin/galleries" icon={<Icon icon="file-image-o" />}>
-            <span className="rs-hidden-sm">Galleries</span>
+        {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.casinos.view') && (
+          <NavLink to="/admin/casinos" icon={<Icon icon="bank" />}>
+            <span className="rs-hidden-sm">Casinos</span>
           </NavLink>
         )}
         {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.uploads.view') && (
@@ -121,10 +142,51 @@ class IndexPage extends Component {
     );
   }
 
+  getActionButtons() {
+    const buttons = [];
+    buttons.push(
+      <DateRangePicker
+        key="date-range-filter"
+        isoWeek={true}
+        placement="bottomEnd"
+        appearance="default"
+        placeholder="Filter by Date Created"
+        style={{ width: 230 }}
+        format={dateFormat}
+        onChange={this.filterByDateRange}
+      />
+    );
+    return buttons;
+  }
+
+  filterByDateRange(dates) {
+    let filter = null;
+    let from, to;
+    if (Object.keys(dates).length > 1) {
+      from = new Date(dates[0]);
+      from.setHours(0, 0, 0);
+      to = new Date(dates[1]);
+      to.setHours(23, 59, 59);
+      filter = {
+        createdAt: {
+          $gte: from,
+          $lte: to,
+        },
+      };
+    }
+
+    this.retrieveAllData(filter);
+  }
+
   render() {
-    const { galleries, pages, users, uploads } = this.state;
+    const { pages, users, uploads, galleries } = this.state;
     return (
-      <Layout pageTitle="Dashboard" headerNav={this.getHeaderNav()} className="dashboard">
+      <Layout
+        pageTitle="Dashboard"
+        headerNav={this.getHeaderNav()}
+        pageActions={this.getActionButtons()}
+        className="dashboard"
+      >
         <Grid fluid className="grid-default-gutter">
           <Row>
             {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.pages.view') && (

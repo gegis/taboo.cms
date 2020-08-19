@@ -3,10 +3,11 @@ import axios from 'axios';
 import AbstractAdminStore from 'app/modules/core/ui/stores/AbstractAdminStore';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
 
-const { userVerificationStatuses = [], userDocumentTypes = [] } = window.app.config;
+const { userVerificationStatuses = [], userDocumentNames = [] } = window.app.config;
 
 const newItem = {
   id: '',
+  username: '',
   firstName: '',
   lastName: '',
   email: '',
@@ -14,18 +15,9 @@ const newItem = {
   admin: false,
   active: false,
   verified: false,
-  businessAccount: false,
   loginAttempts: 0,
   roles: [],
-  companyName: '',
-  street: '',
-  city: '',
-  state: '',
   country: '',
-  postCode: '',
-  phone: '',
-  website: '',
-  description: '',
   verificationStatus: 'new',
   verificationNote: '',
   apiKey: '',
@@ -59,12 +51,18 @@ class UsersAdminStore extends AbstractAdminStore {
       },
     });
 
-    this.userDocumentTypes = userDocumentTypes;
+    this.userDocumentNames = userDocumentNames;
     this.allVerificationStatuses = [];
     userVerificationStatuses.map(item => {
       this.allVerificationStatuses.push({ label: item, value: item });
     });
     this.toggleUserDocumentVerified = this.toggleUserDocumentVerified.bind(this);
+    this.updateSelectedUsersFields = this.updateSelectedUsersFields.bind(this);
+    this.selected = [];
+  }
+
+  setSelected(data) {
+    this.selected = data;
   }
 
   loadById(id) {
@@ -82,6 +80,33 @@ class UsersAdminStore extends AbstractAdminStore {
             }
             data.password = '';
             this.item = data;
+            resolve(data);
+          });
+        })
+        .catch(ResponseHelper.handleError);
+    });
+  }
+
+  updateSelectedUsersFields(field, value) {
+    return new Promise(resolve => {
+      const opts = {
+        field: field,
+        value: value,
+        users: this.selected,
+      };
+      axios
+        .put('/admin/users/set-field-value-for-ids', opts)
+        .then(response => {
+          runInAction(() => {
+            const { data } = response;
+            let items = this.items;
+            for (let i = 0; i < data.length; i++) {
+              let index = this.getItemIndexById(data[i]._id);
+              if (index !== null) {
+                items[index] = data[i];
+                this.setItems(items);
+              }
+            }
             resolve(data);
           });
         })
@@ -107,12 +132,33 @@ class UsersAdminStore extends AbstractAdminStore {
         .catch(ResponseHelper.handleError);
     });
   }
+
+  resendAccountVerification(userId) {
+    return new Promise(resolve => {
+      axios
+        .get(`/api/admin/user/${userId}/resend-verify-account`)
+        .then(response => {
+          runInAction(() => {
+            const { data } = response;
+            if (data && data.success) {
+              super.setItem({
+                accountVerificationCode: data.accountVerificationCode,
+                accountVerificationCodeRequested: data.accountVerificationCodeRequested,
+              });
+            }
+            resolve(data);
+          });
+        })
+        .catch(ResponseHelper.handleError);
+    });
+  }
 }
 
 decorate(UsersAdminStore, {
-  userDocumentTypes: observable,
+  userDocumentNames: observable,
   allVerificationStatuses: observable,
   toggleUserDocumentVerified: action,
+  updateSelectedUsersFields: action,
 });
 
 export default new UsersAdminStore();

@@ -10,7 +10,7 @@ import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 
 const { StringType } = Schema.Types;
 
-class AccountVerification extends React.Component {
+class DELETEAccountVerification extends React.Component {
   constructor(props) {
     super(props);
     const { usersStore } = props;
@@ -210,7 +210,7 @@ class AccountVerification extends React.Component {
   }
 }
 
-AccountVerification.propTypes = {
+DELETEAccountVerification.propTypes = {
   usersStore: PropTypes.object.isRequired,
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
@@ -225,4 +225,4 @@ const enhance = compose(
   observer
 );
 
-export default enhance(AccountVerification);
+export default enhance(DELETEAccountVerification);

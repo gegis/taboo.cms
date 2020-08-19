@@ -9,6 +9,7 @@ const newPage = {
   url: '',
   template: '',
   language: language,
+  headerBackground: '',
   background: '',
   meta: {},
   published: false,
@@ -24,7 +25,7 @@ class PagesStore {
   load(url) {
     this.pageNotFound = false;
     this.url = url;
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const opts = {
         params: { url },
       };
@@ -41,10 +42,11 @@ class PagesStore {
           const { response } = e;
           if (response && response.status === 404) {
             runInAction(() => {
-              this.page = Object.assign({}, newPage);
               this.pageNotFound = true;
+              this.page = Object.assign({}, newPage);
             });
           }
+          reject(e);
         });
     });
   }

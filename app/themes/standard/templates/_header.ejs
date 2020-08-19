@@ -7,23 +7,11 @@
             <div class="navigation rs-col rs-hidden-sm rs-col-md-13">
                 <!-- TODO (templates) this one is no longer needed, unless load it from db for classic!!! but it should be template specific -->
                 <div class="rs-nav rs-nav-default navigation rs-nav-horizontal">
-                    <ul>
-                        <% if(typeof headerNavigation !== 'undefined' && headerNavigation !== null && typeof headerNavigation === 'object') { %>
-                            <% for(let i = 0; i < headerNavigation.items.length; i++) { %>
-                                <li role="presentation" class="rs-nav-item rs-nav-item-content">
-                                    <a aria-current="page"
-                                       class="rs-nav-item-content active"
-                                       role="button"
-                                       tabindex="0"
-                                       href="<%- headerNavigation.items[i].url %>"
-                                    >
-                                        <%- headerNavigation.items[i].title %>
-                                        <span class="rs-ripple-pond"><span class="rs-ripple"></span></span>
-                                    </a>
-                                </li>
-                            <% } %>
-                        <% } %>
-                    </ul>
+                    <% if(typeof headerNavigation !== 'undefined' && headerNavigation !== null && typeof headerNavigation === 'object') { %>
+                        <div class="rs-nav rs-nav-default rs-nav-horizontal">
+                            <%- templatesHelper.getNavigationHtml(headerNavigation.items) %>
+                        </div>
+                    <% } %>
                 </div>
             </div>
             <div class="user-menu rs-col rs-col-xs-18 rs-col-md-8">

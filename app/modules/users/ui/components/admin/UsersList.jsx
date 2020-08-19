@@ -17,6 +17,8 @@ class UsersList extends React.Component {
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
     this.authModal = React.createRef();
+    this.handleSelect = this.handleSelect.bind(this);
+    this.handleAction = this.handleAction.bind(this);
   }
 
   getUserRoles(user) {
@@ -49,12 +51,46 @@ class UsersList extends React.Component {
     ];
   }
 
+  handleSelect(user) {
+    const { usersStore } = this.props;
+    const { selected = [] } = usersStore;
+    let data = selected;
+    let index = data.indexOf(user._id);
+    if (index === -1) {
+      data = data.concat(user._id);
+    } else {
+      data.splice(index, 1);
+    }
+    usersStore.setSelected(data);
+  }
+
+  handleAction(event) {
+    if (event === 'mark-as-exported') {
+      this.updateExported(true);
+    }
+  }
+
+  updateExported(value) {
+    const { usersStore } = this.props;
+    const { selected } = usersStore;
+    if (selected.length > 0) {
+      usersStore.updateSelectedUsersFields('exported', value);
+    }
+  }
+
   render() {
     return (
       <div>
+        {/*TODO Uncomment this once ui confirmed*/}
+        {/*<Dropdown icon={<Icon icon="ellipsis-v" />} onSelect={this.handleAction.bind(this)}>*/}
+        {/*  <Dropdown.Item eventKey="mark-as-exported" icon={<Icon icon="file" />}>*/}
+        {/*    Mark as Exported*/}
+        {/*  </Dropdown.Item>*/}
+        {/*</Dropdown>*/}
         <table>
           <thead>
             <tr>
+              {/*<th className="rs-hidden-sm"></th>*/}
               <th className="rs-visible-sm">User</th>
               <th className="rs-hidden-sm">User</th>
               <th className="rs-hidden-sm">Verified</th>
@@ -66,10 +102,11 @@ class UsersList extends React.Component {
           <tbody>
             {this.usersStore.items.map(item => (
               <tr key={item._id}>
+                {/*<td className="rs-hidden-sm">*/}
+                {/*  <Checkbox onChange={this.handleSelect.bind(this, item)} />*/}
+                {/*</td>*/}
                 <td className="rs-visible-sm mobile-view-td">
-                  <div>
-                    {item.firstName} {item.lastName}
-                  </div>
+                  <div>{item.username}</div>
                   <div>{item.email}</div>
                   <div className="subject">
                     <div>{this.getUserRoles(item).join(', ')}</div>
@@ -89,9 +126,7 @@ class UsersList extends React.Component {
                   <div className="subject sm">{item._id}</div>
                 </td>
                 <td className="rs-hidden-sm max-overflow">
-                  <div>
-                    {item.firstName} {item.lastName}
-                  </div>
+                  <div>{item.username}</div>
                   <div>{item.email}</div>
                   <div className="subject">{this.getUserRoles(item).join(', ')}</div>
                 </td>

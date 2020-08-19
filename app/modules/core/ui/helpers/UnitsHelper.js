@@ -29,16 +29,16 @@ class UnitsHelper {
     return null;
   }
 
-  parseSizeAsMB(value) {
+  parseSizeAsMB(value, decimalPlaces = 1) {
     if (value) {
-      return parseFloat(parseInt(value) / 1000000).toFixed(2) + ' MB';
+      return parseFloat(parseInt(value) / 1048576).toFixed(decimalPlaces) + ' MB';
     }
     return null;
   }
 
-  parseSizeAsKB(value) {
+  parseSizeAsKB(value, decimalPlaces = 1) {
     if (value) {
-      return parseFloat(parseInt(value) / 1000).toFixed(2) + ' KB';
+      return parseFloat(parseInt(value) / 1024).toFixed(decimalPlaces) + ' KB';
     }
     return null;
   }

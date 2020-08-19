@@ -1,8 +1,10 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import { Form, FormGroup, Panel, IconButton, Icon, Button, InputGroup, Input } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
+import qs from 'qs';
 
 import Layout from 'app/themes/admin/ui/components/Layout';
 import Translation from 'app/modules/core/ui/components/Translation';
@@ -28,8 +30,18 @@ class ListPage extends React.Component {
   }
 
   componentDidMount() {
-    this.entityStore.setSearch('');
-    this.entityStore.loadAll();
+    const { location = {} } = this.props;
+    const loadOptions = {};
+    let queryParams;
+    if (location) {
+      queryParams = qs.parse(location.search, {
+        ignoreQueryPrefix: true,
+      });
+      if (queryParams.search) {
+        loadOptions.search = queryParams.search;
+      }
+    }
+    this.entityStore.loadAll(loadOptions);
   }
 
   onSearchChange(value) {
@@ -79,8 +91,9 @@ class ListPage extends React.Component {
   getPageActions() {
     const { current: createModal = null } = this.createModal;
     const { pageActionButtons = [], pageActionCreateTitle = 'Create New', pageActionCreateIcon = 'file' } = this.props;
+    const actionButtons = [].concat(pageActionButtons);
     if (createModal) {
-      pageActionButtons.push(
+      actionButtons.push(
         <IconButton
           key="add-btn"
           icon={<Icon icon={pageActionCreateIcon} />}
@@ -91,7 +104,7 @@ class ListPage extends React.Component {
         </IconButton>
       );
     }
-    return pageActionButtons;
+    return actionButtons;
   }
 
   openCreateModal() {
@@ -155,7 +168,7 @@ class ListPage extends React.Component {
   }
 
   render() {
-    const { name, CreateModalComponent, EditModalComponent, ItemsListComponent } = this.props;
+    const { name, subtitle, CreateModalComponent, EditModalComponent, ItemsListComponent } = this.props;
     return (
       <Layout
         className={name.toLowerCase()}
@@ -164,6 +177,7 @@ class ListPage extends React.Component {
         pageActions={this.getPageActions()}
       >
         <Panel className="shadow">
+          {subtitle && <div className="main-content-subtitle">{subtitle}</div>}
           {this.entityStore.items.length > 0 && (
             <ItemsListComponent
               openEditModal={this.openEditModal}
@@ -191,15 +205,17 @@ ListPage.propTypes = {
   uiAdminStore: PropTypes.object.isRequired,
   entityStore: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
+  subtitle: PropTypes.node,
   pageActionCreateTitle: PropTypes.string,
   pageActionCreateIcon: PropTypes.string,
   CreateModalComponent: PropTypes.object,
   EditModalComponent: PropTypes.object,
   pageActionButtons: PropTypes.array,
-  ItemsListComponent: PropTypes.object.isRequired,
+  ItemsListComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
   useCreateModalForEdit: PropTypes.bool,
+  location: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('localeStore', 'notificationsStore', 'uiAdminStore'), observer);
+const enhance = compose(withRouter, inject('localeStore', 'notificationsStore', 'uiAdminStore'), observer);
 
 export default enhance(ListPage);

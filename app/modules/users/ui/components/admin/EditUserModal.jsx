@@ -34,7 +34,6 @@ class EditUserModal extends React.Component {
 
   close() {
     this.usersStore.resetItem();
-    this.usersStore.loadAll();
     this.modal.current.close();
   }
 

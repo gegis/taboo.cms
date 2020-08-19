@@ -4,24 +4,24 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import {
-  Panel,
   Form,
   FormGroup,
   ControlLabel,
   FormControl,
   Button,
-  ButtonToolbar,
   Grid,
   Row,
   Col,
   Schema,
   Notification,
   Nav,
+  Checkbox,
 } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import NavLink from 'app/modules/core/ui/components/NavLink';
 import SocketsClient from 'app/modules/core/ui/helpers/SocketsClient';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
+import UsersHelper from 'modules/users/ui/helpers/UsersHelper';
 
 const { StringType } = Schema.Types;
 
@@ -31,6 +31,7 @@ class SignIn extends React.Component {
     const formValue = {
       email: '',
       password: '',
+      rememberMe: false,
     };
     this.state = {
       formValue: formValue,
@@ -51,7 +52,7 @@ class SignIn extends React.Component {
 
   handleSubmit() {
     const { authStore, localeStore, history } = this.props;
-    const { email, password } = this.state.formValue;
+    const { email, password, rememberMe } = this.state.formValue;
     if (!this.form.current.check()) {
       Notification.error({
         title: 'Form Validation',
@@ -60,15 +61,20 @@ class SignIn extends React.Component {
       });
       return;
     }
-    authStore.loginUser(email, password).then(data => {
+    authStore.loginUser(email, password, rememberMe).then(data => {
       if (data) {
         authStore.loadUserAuth().then(user => {
+          const userUpdateEvent = UsersHelper.getUserEventName('update', authStore);
           if (user) {
+            // TODO might need SocketsClient.leave on sign out.
             // In case if user had to sign in, we register event with his id
-            SocketsClient.on(this.getUserEventName('update'), () => {
-              authStore.loadUserAuth();
+            SocketsClient.off(userUpdateEvent);
+            SocketsClient.join('users').then(() => {
+              SocketsClient.on(userUpdateEvent, () => {
+                authStore.loadUserAuth();
+              });
             });
-            return history.push('/dashboard');
+            return history.push('/my-profile');
           } else {
             return history.push('/');
           }
@@ -77,16 +83,13 @@ class SignIn extends React.Component {
     });
   }
 
-  getUserEventName(action) {
-    const { authStore } = this.props;
-    let eventName = null;
-    if (authStore.user && authStore.user.id) {
-      eventName = `user-${authStore.user.id}-user-${action}`;
-    }
-    return eventName;
+  onFormChange(formValue) {
+    this.setState({ formValue });
   }
 
-  onFormChange(formValue) {
+  onFormCheckboxChange(field, event, value) {
+    const { formValue } = this.state;
+    formValue[field] = value;
     this.setState({ formValue });
   }
 
@@ -120,50 +123,70 @@ class SignIn extends React.Component {
     }
 
     return (
-      <Template className="sign-in-page" topRightMenu={this.getTopRightMenu()}>
+      <Template
+        className="sign-in-page"
+        metaTitle="Login"
+        title="Login"
+        headerMinimized={true}
+        topRightMenu={this.getTopRightMenu()}
+      >
         <Grid fluid>
           <Row>
             <Col xs={24} md={12} mdOffset={6}>
-              <h1>
-                <Translation message="Sign in" />
-              </h1>
-              <Panel className="login-panel" bordered>
-                <Form
-                  fluid
-                  ref={this.form}
-                  onChange={this.onFormChange}
-                  onCheck={this.onFormCheck}
-                  formValue={formValue}
-                  formError={formError}
-                  checkTrigger="blur"
-                  model={this.model}
-                  onSubmit={this.handleSubmit}
-                >
-                  <FormGroup>
-                    <ControlLabel>
-                      <Translation message="Email" />
-                    </ControlLabel>
-                    <FormControl name="email" type="email" onKeyDown={this.onInputKeyDown} />
-                  </FormGroup>
-                  <FormGroup>
-                    <ControlLabel>
-                      <Translation message="Password" />
-                    </ControlLabel>
-                    <FormControl name="password" type="password" onKeyDown={this.onInputKeyDown} />
-                  </FormGroup>
-                  <FormGroup>
-                    <ButtonToolbar>
-                      <Link className="form-action-link" to="/reset-password">
-                        <Translation message="Forgot password?" />
-                      </Link>
-                      <Button className="pull-right" appearance="primary" onClick={this.handleSubmit}>
-                        <Translation message="Sign in" />
-                      </Button>
-                    </ButtonToolbar>
-                  </FormGroup>
+              <Form
+                fluid
+                ref={this.form}
+                className="form"
+                onChange={this.onFormChange}
+                onCheck={this.onFormCheck}
+                formValue={formValue}
+                formError={formError}
+                checkTrigger="blur"
+                model={this.model}
+                onSubmit={this.handleSubmit}
+              >
+                <h1>Login</h1>
+                <FormGroup>
+                  <ControlLabel>
+                    <Translation message="Email" />
+                  </ControlLabel>
+                  <FormControl name="email" type="email" onKeyDown={this.onInputKeyDown} />
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>
+                    <Translation message="Password" />
+                  </ControlLabel>
+                  <FormControl name="password" type="password" onKeyDown={this.onInputKeyDown} />
+                </FormGroup>
+                <FormGroup>
+                  <Checkbox
+                    name="rememberMe"
+                    checked={formValue.rememberMe}
+                    onChange={this.onFormCheckboxChange.bind(this, 'rememberMe')}
+                  >
+                    Remember Me
+                  </Checkbox>
+                </FormGroup>
+                <FormGroup>
+                  <Button appearance="primary" className="btn-huge" onClick={this.handleSubmit}>
+                    <Translation message="Login" />
+                  </Button>
+                </FormGroup>
+                <FormGroup className="form-footer-links">
+                  <div className="pull-left">
+                    <Link className="form-action-link" to="/reset-password">
+                      <Translation message="Forgot password?" />
+                    </Link>
+                  </div>
+                  <div className="pull-right">
+                    Don&apos;t have an account yet?{' '}
+                    <Link className="form-action-link" to="/sign-up">
+                      Create Account
+                    </Link>
+                  </div>
                   <div className="clearfix" />
-                </Form>
-              </Panel>
+                </FormGroup>
+              </Form>
             </Col>
           </Row>
         </Grid>

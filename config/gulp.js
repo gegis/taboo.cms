@@ -14,9 +14,9 @@ module.exports = {
     watch: ['app', 'config'],
     ext: 'js ejs',
     ignore: [
-      'app/modules/**/ui',
-      'app/themes/**/ui',
-      'app/themes/**/assets',
+      'app/modules/**/ui/**/*',
+      'app/themes/**/ui/**/*',
+      'app/themes/**/assets/**/*',
       'app/themes/uiTemplates.js',
       'app/themes/uiTemplatesSettings.js',
     ],
@@ -105,6 +105,10 @@ module.exports = {
         dest: 'public/fonts',
       },
     ],
-    watch: ['app/themes/**/assets/images/**/*', 'app/themes/**/assets/fonts/**/*'],
+    watch: [
+      'app/themes/**/assets/images/**/*',
+      'app/themes/**/assets/fonts/**/*',
+      '!app/themes/admin/assets/ckeditor/**/*',
+    ],
   },
 };

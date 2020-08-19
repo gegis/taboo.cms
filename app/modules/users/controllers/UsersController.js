@@ -1,7 +1,8 @@
-const { config } = require('@taboo/cms-core');
+const { config, logger } = require('@taboo/cms-core');
 const validator = require('validator');
 const CountriesService = require('modules/countries/services/CountriesService');
 const UsersService = require('modules/users/services/UsersService');
+const SettingsService = require('modules/settings/services/SettingsService');
 const CoreHelper = require('modules/core/helpers/CoreHelper');
 const UserModel = require('modules/users/models/UserModel');
 
@@ -23,7 +24,7 @@ class UsersController {
         'documentIncorporation',
         'profilePicture',
       ]);
-      countryOptions = CountriesService.getKeyValueArray();
+      countryOptions = CountriesService.getAllArray();
     } catch (e) {
       ctx.throw(404, e);
     }
@@ -31,7 +32,49 @@ class UsersController {
     ctx.viewParams.countryOptions = countryOptions;
   }
 
-  async accountVerify(ctx) {
+  /**
+   * Verifies user's email (accountVerification link landing page for new account registration)
+   */
+  async verifyAccount(ctx) {
+    const { session = {} } = ctx;
+    const { user: { id: sessionUserId } = {} } = session;
+    const { userId, token } = ctx.params;
+    const verifyAccountRedirectSuccess = await SettingsService.get('verifyAccountRedirectSuccess');
+    const verifyAccountRedirectError = await SettingsService.get('verifyAccountRedirectError');
+    let success = false;
+    let user;
+    try {
+      user = await UserModel.findById(userId).populate('profilePicture');
+      if (user && user.accountVerificationCode && user.accountVerificationCode === token) {
+        user.verified = true;
+        user.verificationStatus = 'approved';
+        user.accountVerificationCode = '';
+        user.save();
+        success = true;
+      }
+      if (userId === sessionUserId) {
+        await UsersService.setUserSession(ctx, user);
+      } else {
+        await UsersService.updateUserSession(user);
+      }
+      UsersService.socketsEmitUserChanges(user);
+    } catch (e) {
+      logger.error(e);
+      success = false;
+      ctx.throw(404, e);
+    }
+    if (success) {
+      ctx.redirect(verifyAccountRedirectSuccess.value);
+    } else {
+      ctx.redirect(verifyAccountRedirectError.value);
+    }
+  }
+
+  /**
+   * Landing page for user documents verification
+   * TODO rename this type of verification from account verification to documents verification
+   */
+  async verifyDocs(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user;
     try {
@@ -75,7 +118,6 @@ class UsersController {
    * @apiSuccessExample {json} Success Response:
    * HTTP/1.1 200 OK
    * {
-   *   "businessAccount": false,
    *   "verified": false,
    *   "verificationStatus": "new",
    *   "admin": false,
@@ -157,7 +199,7 @@ class UsersController {
 
     try {
       await UsersService.validateUniqueApiKey(ctx, data);
-      user = await UsersService.registerNewUser(data);
+      user = await UsersService.registerNewUser(ctx, data);
     } catch (err) {
       return ctx.throw(400, err);
     }
@@ -206,8 +248,8 @@ class UsersController {
    *   }
    */
   async login(ctx) {
-    const { body: { email = null, password = null } = {} } = ctx.request;
-    ctx.body = await UsersService.authenticateUser(ctx, email, password);
+    const { body: { email = null, password = null, rememberMe = false } = {} } = ctx.request;
+    ctx.body = await UsersService.authenticateUser(ctx, email, password, rememberMe);
   }
 
   /**
@@ -268,6 +310,7 @@ class UsersController {
   }
 
   async getAuth(ctx) {
+    // TODO - double check if it needs 'refresh' get params to update user info from db!!!
     const authUser = ctx.session.user || {};
     ctx.body = authUser;
   }
@@ -291,8 +334,12 @@ class UsersController {
   async updateCurrent(ctx) {
     const { body = {} } = ctx.request;
     const { session: { user: { id: userId } = {} } = {} } = ctx;
+    const validationError = UsersService.validateUserAccountFields(body);
     let user;
     try {
+      if (validationError) {
+        return ctx.throw(400, validationError);
+      }
       await UsersService.validateUniqueApiKey(ctx, body, userId);
       if (Object.prototype.hasOwnProperty.call(body, 'id')) {
         delete body._id;
@@ -308,16 +355,39 @@ class UsersController {
         'documentIncorporation',
         'profilePicture',
       ]);
-      ctx.session.user.firstName = user.firstName;
-      ctx.session.user.lastName = user.lastName;
+      ctx.session.user.username = user.username;
       ctx.session.user.email = user.email;
       if (user.profilePicture && user.profilePicture.url) {
         ctx.session.user.profilePictureUrl = user.profilePicture.url;
       }
+      UsersService.socketsEmitUserChanges(user);
     } catch (e) {
       ctx.throw(400, e);
     }
     ctx.body = user;
+  }
+
+  async deactivateCurrent(ctx) {
+    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      ctx.throw(404, 'Not Found');
+    }
+    user.active = false;
+    user.verificationNote = 'User requested deactivation!';
+    await user.save();
+    // TODO - deactivated for now - as it needs new scope confirmed!
+    // await UsersService.sendUserDeactivationEmail(ctx, user);
+    ctx.body = user;
+  }
+
+  async resendVerification(ctx) {
+    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      ctx.throw(404, 'Not Found');
+    }
+    ctx.body = await UsersService.sendUserVerificationEmail(ctx, user);
   }
 
   async searchUser(ctx) {
@@ -347,8 +417,7 @@ class UsersController {
 
     userToReturn = {
       _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      username: user.username,
       email: user.email,
       profilePictureUrl: profilePictureUrl,
     };

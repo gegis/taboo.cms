@@ -32,6 +32,13 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
     background: {
       type: String,
     },
+    headerBackground: {
+      type: String,
+    },
+    fullWidth: {
+      type: Boolean,
+      default: false,
+    },
     meta: {
       type: Object,
     },

@@ -13,6 +13,14 @@ class Navigation extends React.Component {
     super(props);
   }
 
+  getLinkIcon(item) {
+    return (
+      <span className="icon">
+        <img src={item.icon} alt={`${item.title} icon`} />
+      </span>
+    );
+  }
+
   getLinkItem(item, level, i) {
     const props = {};
     let LinkComponent = NavLink;
@@ -25,12 +33,14 @@ class Navigation extends React.Component {
     if (item.url.indexOf('http') === 0) {
       return (
         <LinkComponent key={`${level}-${i}`} href={item.url} {...props}>
+          {item.icon && this.getLinkIcon(item)}
           {item.title}
         </LinkComponent>
       );
     } else {
       return (
         <LinkComponent key={`${level}-${i}`} to={item.url} {...props}>
+          {item.icon && this.getLinkIcon(item)}
           {item.title}
         </LinkComponent>
       );

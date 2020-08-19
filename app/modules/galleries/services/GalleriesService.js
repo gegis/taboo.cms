@@ -5,7 +5,7 @@ class GalleriesService {
     return await GalleryModel.findOne(filter).populate('images');
   }
 
-  async beforeGalleryRender(props) {
+  async beforeGalleryRender(ctx, props) {
     props.gallery = {};
     if (props.id) {
       props.gallery = await this.findOne({ _id: props.id, published: true });

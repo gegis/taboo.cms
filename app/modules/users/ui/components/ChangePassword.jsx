@@ -4,20 +4,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import axios from 'axios';
-import {
-  Panel,
-  Form,
-  FormGroup,
-  ControlLabel,
-  FormControl,
-  Button,
-  ButtonToolbar,
-  Grid,
-  Row,
-  Col,
-  Schema,
-  Notification,
-} from 'rsuite';
+import { Form, FormGroup, ControlLabel, FormControl, Button, Grid, Row, Col, Schema, Notification } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
@@ -113,49 +100,61 @@ class ChangePassword extends React.Component {
       return <Redirect to="/dashboard" />;
     }
     return (
-      <Template className="change-password-page">
+      <Template
+        className="change-password-page"
+        title="Password Change"
+        metaTitle="Password Change"
+        headerMinimized={true}
+      >
         <Grid fluid>
           <Row>
             <Col xs={24} sm={16} lg={12} smOffset={4} lgOffset={6}>
-              <h1>
-                <Translation message="Password Change" />
-              </h1>
-              <Panel className="change-password-panel" bordered>
-                <Form
-                  fluid
-                  ref={this.form}
-                  onChange={this.onFormChange}
-                  onCheck={this.onFormCheck}
-                  formValue={formValue}
-                  formError={formError}
-                  checkTrigger="blur"
-                  model={this.model}
-                  onSubmit={this.handleSubmit}
-                >
-                  <FormGroup>
-                    <ControlLabel>
-                      <Translation message="New Password" />
-                    </ControlLabel>
-                    <FormControl name="newPass" type="password" onKeyDown={this.onInputKeyDown} />
-                  </FormGroup>
-                  <FormGroup>
-                    <ControlLabel>
-                      <Translation message="Repeat Password" />
-                    </ControlLabel>
-                    <FormControl name="newPassRepeat" type="password" onKeyDown={this.onInputKeyDown} />
-                  </FormGroup>
-                  <FormGroup>
-                    <ButtonToolbar>
-                      <Link className="form-action-link" to="/sign-in">
-                        <Translation message="Sign in" />
-                      </Link>
-                      <Button className="pull-right" appearance="primary" onClick={this.handleSubmit}>
-                        <Translation message="Change" />
-                      </Button>
-                    </ButtonToolbar>
-                  </FormGroup>
-                </Form>
-              </Panel>
+              <Form
+                fluid
+                ref={this.form}
+                onChange={this.onFormChange}
+                onCheck={this.onFormCheck}
+                formValue={formValue}
+                formError={formError}
+                checkTrigger="blur"
+                model={this.model}
+                onSubmit={this.handleSubmit}
+                className="form"
+              >
+                <h1>Password Change</h1>
+                <FormGroup>
+                  <ControlLabel>
+                    <Translation message="New Password" />
+                  </ControlLabel>
+                  <FormControl
+                    name="newPass"
+                    type="password"
+                    onKeyDown={this.onInputKeyDown}
+                    autoComplete="new-password"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>
+                    <Translation message="Repeat Password" />
+                  </ControlLabel>
+                  <FormControl
+                    name="newPassRepeat"
+                    type="password"
+                    onKeyDown={this.onInputKeyDown}
+                    autoComplete="new-password"
+                  />
+                </FormGroup>
+                <FormGroup className="form-submit-wrapper">
+                  <Button appearance="primary" onClick={this.handleSubmit}>
+                    <Translation message="Change" />
+                  </Button>
+                </FormGroup>
+                <FormGroup className="form-footer-links">
+                  <Link className="form-action-link" to="/sign-in">
+                    Login
+                  </Link>
+                </FormGroup>
+              </Form>
             </Col>
           </Row>
         </Grid>

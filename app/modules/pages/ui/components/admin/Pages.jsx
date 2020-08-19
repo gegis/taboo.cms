@@ -12,6 +12,7 @@ class Pages extends React.Component {
   constructor(props) {
     super(props);
     this.entityStore = props.pagesStore;
+    this.entityStore.setFilter(null);
   }
 
   render() {

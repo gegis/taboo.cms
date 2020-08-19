@@ -21,6 +21,7 @@ import {
 import Translation from 'app/modules/core/ui/components/Translation';
 import Layout from 'app/themes/admin/ui/components/Layout';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
+import AdminHelper from 'modules/core/ui/helpers/AdminHelper';
 
 const { StringType } = Schema.Types;
 
@@ -145,7 +146,7 @@ class Login extends React.Component {
                       <Button appearance="primary" onClick={this.handleSubmit}>
                         <Translation message="Login" />
                       </Button>
-                      <Link to="/admin/reset-password">Forgot password?</Link>
+                      <Link to={`/${AdminHelper.getAdminAccessUrlPrefix()}/reset-password`}>Forgot password?</Link>
                     </ButtonToolbar>
                   </FormGroup>
                 </Form>

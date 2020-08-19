@@ -1,6 +1,7 @@
 const { logger, config, filesHelper } = require('@taboo/cms-core');
 const fs = require('fs');
 const path = require('path');
+const CoreHelper = require('modules/core/helpers/CoreHelper');
 const UploadsService = require('modules/uploads/services/UploadsService');
 const UploadsHelper = require('modules/uploads/helpers/UploadsHelper');
 const UploadModel = require('modules/uploads/models/UploadModel');
@@ -8,34 +9,40 @@ const UploadModel = require('modules/uploads/models/UploadModel');
 class UploadsController {
   async uploadUserFile(ctx) {
     const {
-      uploads: { appendTimestamp, secureAllowedTypes, secureAllowedImageTypes, secureUploadsPath, secureUrlPath },
+      uploads: { appendTimestamp, userAllowedDocumentTypes, userAllowedImageTypes, userUploadsPath, userUrlPath } = {},
     } = config.server;
     const {
-      users: { documentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'] },
+      users: { documentNames = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'] },
     } = config;
-    const {
+    let {
       files: { file = null } = {},
-      header: { 'user-document-type': userDocType = '' },
+      header: { 'document-name': documentName = '', 'is-private': isPrivate = false },
     } = ctx.request;
     const data = {};
     const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const isUserDocument = documentTypes.indexOf(userDocType) !== -1; // if not one of documentTypes, we assume it is image
-    const isProfilePicture = userDocType === 'profilePicture'; // if not one of documentTypes, we assume it is image
+    // if one of documentNames, we assume it is user document and not image
+    const isDocument = documentNames.indexOf(documentName) !== -1;
+    const isProfilePicture = documentName === 'profilePicture';
     let resizeResult, tmpPath, fileName, url, filePath, fileSize, prettyFileName, dbItem;
+
+    if (isDocument) {
+      isPrivate = true;
+    }
 
     try {
       if (!file) {
         throw new Error('File was no uploaded');
       }
-      if (!secureUploadsPath) {
+      if (!userUploadsPath) {
         throw new Error('Uploads dir not specified');
       }
-      if (isUserDocument) {
-        if (secureAllowedTypes.indexOf(file.type) === -1) {
+      UploadsService.validateFileSize(file);
+      if (isDocument) {
+        if (userAllowedDocumentTypes.indexOf(file.type) === -1) {
           throw new Error(`File type ${file.type} is not allowed`);
         }
       } else {
-        if (secureAllowedImageTypes.indexOf(file.type) === -1) {
+        if (userAllowedImageTypes.indexOf(file.type) === -1) {
           throw new Error(`File type ${file.type} is not allowed`);
         }
       }
@@ -43,12 +50,16 @@ class UploadsController {
       tmpPath = file.path;
       prettyFileName = file.name;
       fileName = UploadsHelper.getFileName(file.name, appendTimestamp);
-      url = path.join(secureUrlPath, file.type, fileName);
-      filePath = path.resolve(secureUploadsPath, file.type, fileName);
+      url = path.join(userUrlPath, file.type, fileName);
+      filePath = UploadsService.getUserFilePath(userId, file.type, fileName);
       await filesHelper.moveFile(tmpPath, filePath);
 
-      if (!isUserDocument) {
-        resizeResult = await UploadsService.processUserImage(filePath, isProfilePicture);
+      if (!isDocument && file.type !== 'image/gif') {
+        if (isProfilePicture) {
+          resizeResult = await UploadsService.processUserImage(filePath, { width: 300 }, true);
+        } else {
+          resizeResult = await UploadsService.processUserImage(filePath);
+        }
         if (resizeResult && resizeResult.newPath) {
           await filesHelper.unlinkFile(resizeResult.oldPath);
           filePath = resizeResult.newPath;
@@ -62,26 +73,26 @@ class UploadsController {
       data.url = url;
       data.path = filePath;
       data.user = userId;
-      data.isUserDocument = isUserDocument;
-      data.documentType = userDocType;
+      data.isUserFile = true;
+      data.isPrivate = isPrivate;
+      data.isDocument = isDocument;
+      data.documentName = documentName;
 
       dbItem = await UploadModel.create(data);
-      if (secureUrlPath) {
-        dbItem.url = path.join(secureUrlPath, dbItem._id.toString());
-        await dbItem.save();
-      }
+      dbItem.url = path.join(userUrlPath, dbItem._id.toString());
+      await dbItem.save();
       await UploadsService.updateUserFiles(ctx, userId, dbItem);
     } catch (e) {
       logger.error(e);
       if (filePath && filesHelper.fileExists(filePath)) {
         filesHelper.unlinkFile(filePath);
       }
-      ctx.throw(e);
+      ctx.throw(400, e);
     }
     ctx.body = dbItem;
   }
 
-  async serveSecureUserFiles(ctx) {
+  async serveUserFiles(ctx) {
     const { session: { user: { id: userId, admin } = {} } = {} } = ctx;
     const file = await UploadModel.findById(ctx.params.id);
     const params = Object.assign({}, ctx.request.query);
@@ -89,7 +100,7 @@ class UploadsController {
     if (!file) {
       return ctx.throw(404, 'Not Found');
     }
-    if (file.isUserDocument && !admin && file.user.toString() !== userId) {
+    if (file.isPrivate && file.isUserFile && !admin && file.user.toString() !== userId) {
       return ctx.throw(401, 'Not Authorized');
     }
     filePath = file.path;
@@ -101,6 +112,19 @@ class UploadsController {
     }
     ctx.set('Content-Type', file.type);
     ctx.body = fs.createReadStream(filePath);
+  }
+
+  async apiGetUserUploads(ctx) {
+    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    const defaultFilter = { user: userId, isUserFile: true };
+    const defaultSort = { createdAt: 'desc' };
+    const searchFields = ['name', 'url'];
+    const params = CoreHelper.parseRequestParams(ctx, { defaultFilter, searchFields, defaultSort });
+    let uploads = [];
+    if (userId) {
+      uploads = await UploadModel.find(params.filter, params.fields, params.options);
+    }
+    ctx.body = uploads;
   }
 }
 

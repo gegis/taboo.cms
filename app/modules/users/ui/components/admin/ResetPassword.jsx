@@ -21,6 +21,7 @@ import {
 import Translation from 'app/modules/core/ui/components/Translation';
 import Layout from 'app/themes/admin/ui/components/Layout';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
+import AdminHelper from 'modules/core/ui/helpers/AdminHelper';
 
 const { StringType } = Schema.Types;
 
@@ -73,7 +74,7 @@ class ResetPassword extends React.Component {
               ),
               duration: 15000,
             });
-            return history.push('/admin/login');
+            return history.push(`/${AdminHelper.getAdminAccessUrlPrefix()}/login`);
           } else {
             Notification.error({
               title: 'Password Reset',
@@ -149,7 +150,7 @@ class ResetPassword extends React.Component {
                       <Button appearance="primary" onClick={this.handleSubmit}>
                         <Translation message="Reset" />
                       </Button>
-                      <Link to="/admin/login">Go back to login</Link>
+                      <Link to={`/${AdminHelper.getAdminAccessUrlPrefix()}/login`}>Go back to login</Link>
                     </ButtonToolbar>
                   </FormGroup>
                 </Form>

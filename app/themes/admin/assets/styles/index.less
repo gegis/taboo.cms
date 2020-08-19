@@ -173,6 +173,11 @@ table {
         font-weight: 500;
       }
     }
+    .main-content-subtitle {
+      font-size: 13px;
+      padding: 0 5px 10px;
+      border-bottom: 1px solid @B100;
+    }
     .main-content-header-blank {
       height: 20px;
     }
@@ -205,7 +210,7 @@ table {
       &:hover {
         overflow-y: auto;
       }
-      .rs-dropdown:not(.rs-dropdown-open) {
+      .rs-dropdown:not(.rs-dropdown-expand) {
         .rs-dropdown-menu {
           height: 0;
         }
@@ -333,6 +338,17 @@ table {
 }
 .subject {
   color: #888;
+  &.md {
+    font-size: 14px;
+  }
+  &.sm {
+    font-size: 12px;
+  }
+  &.xs {
+    font-size: 11px;
+  }
+}
+.value {
   &.md {
     font-size: 14px;
   }
@@ -512,6 +528,9 @@ table {
         width: 100%;
       }
       .rs-picker-input {
+        width: 100%;
+      }
+      .rs-picker-tree {
         width: 100%;
       }
       .rs-picker-check {
@@ -715,6 +734,11 @@ table {
 .html-code-modal {
   .code-editor {
     border: 1px solid @B200;
+  }
+}
+.page-subtitle {
+  &textarea {
+    text-align: justify-all;
   }
 }
 

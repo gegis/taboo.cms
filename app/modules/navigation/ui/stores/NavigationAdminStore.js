@@ -19,6 +19,7 @@ const newNavigationItem = {
   pageLink: '',
   openInNewPage: false,
   enabled: true,
+  icon: '',
 };
 
 class NavigationAdminStore extends AbstractAdminStore {
@@ -62,10 +63,10 @@ class NavigationAdminStore extends AbstractAdminStore {
   loadNavigationOptions() {
     return new Promise(resolve => {
       super.loadAll().then(data => {
-        if (data) {
+        if (data && data.items) {
           runInAction(() => {
             this.navigationOptions = [];
-            data.map(item => {
+            data.items.map(item => {
               this.navigationOptions.push({ label: this.getNavigationOptionLabel(item), value: item.name });
             });
           });

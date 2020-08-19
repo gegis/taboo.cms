@@ -160,7 +160,7 @@ class GalleryImages extends React.Component {
         <UploadSelect
           ref={this.uploadSelect}
           onFileSelect={this.onFileSelect}
-          filter={{ type: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'] }}
+          filter={{ type: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], isUserFile: false }}
         />
       </div>
     );

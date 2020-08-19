@@ -66,12 +66,12 @@ class AdminConfigHelper {
                 this.primaryMenu[index].dropdown = [];
               }
               this.primaryMenu[index].dropdown = this.primaryMenu[index].dropdown.concat(menuItem.dropdown);
-              return ArrayHelper.sortByProperty(this.primaryMenu[index].dropdown, 'order');
+              this.primaryMenu[index].dropdown = ArrayHelper.sortByProperty(this.primaryMenu[index].dropdown, 'order');
             }
           });
         }
       });
-      return ArrayHelper.sortByProperty(this.primaryMenu, 'order');
+      this.primaryMenu = ArrayHelper.sortByProperty(this.primaryMenu, 'order');
     }
     return this.primaryMenu;
   }

@@ -24,9 +24,18 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/secure-files/:id',
-      action: UploadsController.serveSecureUserFiles,
-      policies: ['isUser'],
+      path: '/member-files/:id',
+      action: UploadsController.serveUserFiles,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/uploads',
+      action: UploadsController.apiGetUserUploads,
+      policies: [],
       options: {
         errorResponseAsJson: true,
       },
@@ -54,7 +63,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/api/admin/uploads/count',
-      action: UploadsAdminController.count,
+      action: UploadsAdminController.countFiltered,
       policies: ['isAdmin'],
       order: 1000,
       options: {

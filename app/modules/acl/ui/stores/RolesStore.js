@@ -70,9 +70,9 @@ class RolesStore extends AbstractAdminStore {
         .then(response => {
           runInAction(() => {
             const { data = [] } = response;
-            if (data) {
+            if (data && data.items) {
               this.allRolesForSelection = [];
-              data.map(item => {
+              data.items.map(item => {
                 this.allRolesForSelection.push({ label: item.name, value: item._id });
               });
             }

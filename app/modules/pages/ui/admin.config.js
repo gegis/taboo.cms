@@ -37,7 +37,7 @@ const pageBlocks = [
   {
     name: 'HTML',
     props: {
-      html: '',
+      html: '<div class="rs-grid-container"><section class="section light"></section></div>',
     },
     template: {
       path: '/modules/pages/views/htmlPageBlock',

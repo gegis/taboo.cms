@@ -14,4 +14,5 @@ class StringHelper extends Array {
   }
 }
 
-export default new StringHelper();
+// To make it reusable for backend
+module.exports = new StringHelper();

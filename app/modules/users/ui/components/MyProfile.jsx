@@ -4,53 +4,38 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import {
-  Panel,
+  HelpBlock,
   Form,
   FormGroup,
   ControlLabel,
   FormControl,
   Button,
-  ButtonToolbar,
   Grid,
   Row,
   Col,
-  Schema,
   Notification,
   SelectPicker,
+  Icon,
 } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import DocumentUpload from 'app/modules/uploads/ui/components/DocumentUpload';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
-
-const { StringType } = Schema.Types;
+import Modal from 'modules/core/ui/components/Modal';
+import UsersHelper from 'modules/users/ui/helpers/UsersHelper';
 
 class MyProfile extends React.Component {
   constructor(props) {
     super(props);
-    const { usersStore } = props;
-    this.model = Schema.Model({
-      firstName: StringType().isRequired('First Name is required.'),
-      lastName: StringType().isRequired('Last Name is required.'),
-      street: StringType().isRequired('Street is required.'),
-      city: StringType().isRequired('City is required.'),
-      state: StringType().isRequired('State is required.'),
-      country: StringType().isRequired('Country is required.'),
-      postCode: StringType().isRequired('Zip Code is required.'),
-      email: StringType()
-        .isEmail('Please enter a valid email address.')
-        .isRequired('Email address is required.'),
-      password: StringType().minLength(5, 'Password must be at least 5 characters long'),
-      companyName: StringType().addRule(value => {
-        if (usersStore.user.businessAccount && !value) {
-          return false;
-        }
-        return true;
-      }, 'Company name is required.'),
-    });
+    this.formValidation = UsersHelper.getUserFormValidation();
     this.form = React.createRef();
+    this.modal = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onInputKeyDown = this.onInputKeyDown.bind(this);
     this.onDocumentDrop = this.onDocumentDrop.bind(this);
+    this.onDeactivateAccount = this.onDeactivateAccount.bind(this);
+    this.deactivateAccount = this.deactivateAccount.bind(this);
+    this.cancel = this.cancel.bind(this);
+    this.resendVerification = this.resendVerification.bind(this);
   }
 
   componentDidMount() {
@@ -60,7 +45,7 @@ class MyProfile extends React.Component {
   }
 
   handleSubmit() {
-    const { localeStore, usersStore } = this.props;
+    const { localeStore, usersStore, authStore } = this.props;
     const userData = Object.assign({}, usersStore.user);
     if (Object.prototype.hasOwnProperty.call(userData, 'profilePicture')) {
       delete userData.profilePicture;
@@ -74,6 +59,7 @@ class MyProfile extends React.Component {
     } else {
       usersStore.saveUser(userData).then(data => {
         if (data && data._id) {
+          authStore.loadUserAuth();
           Notification.info({
             title: 'Success',
             description: localeStore.getTranslation('Successfully saved'),
@@ -84,228 +70,215 @@ class MyProfile extends React.Component {
     }
   }
 
+  cancel() {
+    const { usersStore } = this.props;
+    usersStore.loadUser();
+  }
+
   onInputKeyDown(event) {
     if (event.key === 'Enter') {
       this.handleSubmit();
     }
   }
 
-  onDocumentDrop(documentType, files = []) {
+  onDocumentDrop(documentName, files = []) {
     const { uploadsStore, usersStore, authStore } = this.props;
-    uploadsStore.uploadUserDocument(files[0], documentType).then(() => {
+    uploadsStore.uploadUserDocument(files[0], documentName).then(() => {
       usersStore.loadUser();
       authStore.loadUserAuth();
     });
   }
 
-  render() {
-    const { usersStore, countriesStore, templatesStore } = this.props;
-    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
-    let pageTitle = 'My Personal Profile';
-    let descriptionTitle = 'Bio';
-    if (usersStore.user.businessAccount) {
-      pageTitle = 'My Business Profile';
-      descriptionTitle = 'Description of the Business';
+  onDeactivateAccount() {
+    const { current } = this.modal;
+    if (current) {
+      current.open();
     }
+  }
+
+  deactivateAccount() {
+    const { usersStore, uiStore } = this.props;
+    uiStore.setLoading(true);
+    usersStore.deactivateUser().then(data => {
+      uiStore.setLoading(false);
+      if (data) {
+        Notification.info({
+          title: 'Success',
+          description: 'Account has been deactivated',
+          duration: 15000,
+        });
+        this.logoutUser();
+      }
+    });
+  }
+
+  resendVerification() {
+    const { usersStore, uiStore } = this.props;
+    const { user: { email } = {} } = usersStore;
+    uiStore.setLoading(true);
+    usersStore.resendVerification().then(data => {
+      uiStore.setLoading(false);
+      if (data) {
+        Notification.info({
+          title: 'Success',
+          description: `Verification successfully sent to ${email}.`,
+          duration: 10000,
+        });
+      }
+    });
+  }
+
+  logoutUser() {
+    const { usersStore, authStore, history } = this.props;
+    usersStore.logoutUser(authStore).then(data => {
+      if (data && data.success) {
+        authStore.loadUserAuth().then(() => {
+          return history.push('/');
+        });
+      } else {
+        throw new Error('Error logging out');
+      }
+    });
+  }
+
+  render() {
+    const { usersStore, countriesStore, templatesStore, authStore } = this.props;
+    const { verified = false } = authStore;
+    const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     return (
-      <Template className="my-profile-page">
-        <Grid fluid>
+      <Template
+        className="my-profile-page"
+        title="Account Settings"
+        metaTitle="Account Settings"
+        headerMinimized={true}
+      >
+        <Grid>
           <Row>
-            <Col sm={24} md={16} mdOffset={4}>
-              <h1>
-                <Translation message={pageTitle} />
-              </h1>
-              <Panel className="my-profile-panel" bordered>
-                <Form
-                  fluid
-                  ref={this.form}
-                  onChange={usersStore.setUserData}
-                  onCheck={usersStore.setUserError}
-                  formValue={usersStore.user}
-                  formError={usersStore.userError}
-                  checkTrigger="blur"
-                  model={this.model}
-                  onSubmit={this.handleSubmit}
-                  autoComplete="off"
-                  className="my-profile"
-                >
-                  <Row>
-                    <Col xs={24} md={8}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Profile Picture" />
-                        </ControlLabel>
-                        <DocumentUpload
-                          className="profile-picture-upload"
-                          onFileDrop={this.onDocumentDrop.bind(this, 'profilePicture')}
-                          documentName="profilePicture"
-                          currentDocument={usersStore.user.profilePicture}
-                          imageSize="md"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  {!usersStore.user.businessAccount && (
-                    <Row>
-                      <Col xs={24} md={12}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="First Name" />
-                          </ControlLabel>
-                          <FormControl name="firstName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                      <Col xs={24} md={12}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="Last Name" />
-                          </ControlLabel>
-                          <FormControl name="lastName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  )}
-                  {usersStore.user.businessAccount && (
-                    <Row>
-                      <Col xs={24}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="Company Name" />
-                          </ControlLabel>
-                          <FormControl name="companyName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  )}
-                  <Row>
-                    <Col xs={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Email" />
-                        </ControlLabel>
-                        <FormControl name="email" type="email" autoComplete="off" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="New Password" />
-                        </ControlLabel>
-                        <FormControl
-                          name="newPassword"
-                          type="password"
-                          autoComplete="off"
-                          onKeyDown={this.onInputKeyDown}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Street Address" />
-                        </ControlLabel>
-                        <FormControl name="street" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="City" />
-                        </ControlLabel>
-                        <FormControl name="city" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="State" />
-                        </ControlLabel>
-                        <FormControl name="state" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Country" />
-                        </ControlLabel>
-                        <FormControl name="country" accepter={SelectPicker} data={countriesStore.countriesSelect} />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="ZIP Code" />
-                        </ControlLabel>
-                        <FormControl name="postCode" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Phone Number" />
-                        </ControlLabel>
-                        <FormControl name="phone" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={24}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Website" />
-                        </ControlLabel>
-                        <FormControl name="website" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col xs={24}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message={descriptionTitle} />
-                        </ControlLabel>
-                        <FormControl name="description" componentClass="textarea" />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  {usersStore.user.businessAccount && (
-                    <Row>
-                      <Col xs={24}>
-                        <div className="legal-representative">
-                          <Translation message="Legal Representative" />
-                        </div>
-                        <div className="v-spacer-3" />
-                      </Col>
-                      <Col xs={24} md={12}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="First Name" />
-                          </ControlLabel>
-                          <FormControl name="firstName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                      <Col xs={24} md={12}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="Last Name" />
-                          </ControlLabel>
-                          <FormControl name="lastName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  )}
-                  <Row>
-                    <Col xs={24}>
-                      <FormGroup>
-                        <ButtonToolbar>
-                          <Button className="pull-right" appearance="primary" onClick={this.handleSubmit}>
-                            <Translation message="Save" />
-                          </Button>
-                        </ButtonToolbar>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </Form>
-              </Panel>
+            <Col sm={24} md={12} mdOffset={6}>
+              <Form
+                fluid
+                ref={this.form}
+                onChange={usersStore.setUserData}
+                onCheck={usersStore.setUserError}
+                formValue={usersStore.user}
+                formError={usersStore.userError}
+                checkTrigger="change"
+                model={this.formValidation}
+                onSubmit={this.handleSubmit}
+                autoComplete="off"
+                className="form my-profile"
+              >
+                <h1>Account Settings</h1>
+                <FormGroup>
+                  <ControlLabel>
+                    <Translation message="Profile Picture" />
+                  </ControlLabel>
+                  <DocumentUpload
+                    className="profile-picture-upload"
+                    onFileDrop={this.onDocumentDrop.bind(this, 'profilePicture')}
+                    documentName="profilePicture"
+                    currentDocument={usersStore.user.profilePicture}
+                    imageSize="xl"
+                  />
+                </FormGroup>
+                <FormGroup controlId="firstName">
+                  <ControlLabel>
+                    <Translation message="First Name" />
+                  </ControlLabel>
+                  <FormControl name="firstName" autoComplete="off" onKeyDown={this.onInputKeyDown} />
+                </FormGroup>
+                <FormGroup controlId="lastName">
+                  <ControlLabel>
+                    <Translation message="Last Name" />
+                  </ControlLabel>
+                  <FormControl name="lastName" autoComplete="off" onKeyDown={this.onInputKeyDown} />
+                </FormGroup>
+                <FormGroup controlId="username">
+                  <ControlLabel>
+                    <Translation message="Username" />
+                  </ControlLabel>
+                  <FormControl name="username" autoComplete="off" onKeyDown={this.onInputKeyDown} />
+                </FormGroup>
+                <FormGroup controlId="email">
+                  <ControlLabel>
+                    <Translation message="Email" />
+                  </ControlLabel>
+                  <FormControl name="email" type="email" autoComplete="off" onKeyDown={this.onInputKeyDown} />
+                </FormGroup>
+                <FormGroup controlId="password">
+                  <ControlLabel>
+                    <Translation message="New Password" />
+                  </ControlLabel>
+                  <FormControl
+                    name="newPassword"
+                    type="password"
+                    autoComplete="new-password"
+                    onKeyDown={this.onInputKeyDown}
+                  />
+                  <HelpBlock>Leave it empty if you don&apos;t want to change it</HelpBlock>
+                </FormGroup>
+                <FormGroup controlId="country">
+                  <ControlLabel>
+                    <Translation message="Country" />
+                  </ControlLabel>
+                  <FormControl name="country" accepter={SelectPicker} data={countriesStore.allCountriesOptions} />
+                </FormGroup>
+                <FormGroup className="form-submit-wrapper">
+                  <div className="pull-left">
+                    <Button appearance="ghost" onClick={this.cancel}>
+                      Cancel
+                    </Button>
+                  </div>
+                  <div className="pull-right">
+                    <Button appearance="primary" onClick={this.handleSubmit}>
+                      Save
+                    </Button>
+                  </div>
+                  <div className="clearfix" />
+                </FormGroup>
+                {!verified && (
+                  <div>
+                    <hr />
+                    <FormGroup className="resend-verification-wrapper">
+                      <div className="pull-left">
+                        <ControlLabel>Account Not Verified</ControlLabel>
+                      </div>
+                      <div className="pull-right">
+                        <Button appearance="primary" className="resend-verification" onClick={this.resendVerification}>
+                          Send Again
+                        </Button>
+                      </div>
+                      <div className="clearfix" />
+                    </FormGroup>
+                  </div>
+                )}
+                <hr />
+                <FormGroup className="deactivate-account-wrapper">
+                  <div className="pull-left">
+                    <ControlLabel>Deactivate Account</ControlLabel>
+                  </div>
+                  <div className="pull-right">
+                    <Button appearance="link" className="deactivate-account-link" onClick={this.onDeactivateAccount}>
+                      <Icon icon="trash" /> Deactivate Account
+                    </Button>
+                  </div>
+                  <div className="clearfix" />
+                </FormGroup>
+              </Form>
             </Col>
           </Row>
         </Grid>
+        <Modal
+          ref={this.modal}
+          className="deactivate-account-modal"
+          title="Deactivate Account"
+          onSubmit={this.deactivateAccount}
+          submitName="Deactivate"
+          size="xs"
+        >
+          <div className="v-spacer-5" />
+          <p>It will permanently delete your account and all of the related information to your account.</p>
+        </Modal>
       </Template>
     );
   }
@@ -318,12 +291,13 @@ MyProfile.propTypes = {
   countriesStore: PropTypes.object.isRequired,
   uploadsStore: PropTypes.object.isRequired,
   templatesStore: PropTypes.object.isRequired,
+  uiStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
 const enhance = compose(
   withRouter,
-  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'uploadsStore', 'templatesStore'),
+  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'uploadsStore', 'templatesStore', 'uiStore'),
   observer
 );
 

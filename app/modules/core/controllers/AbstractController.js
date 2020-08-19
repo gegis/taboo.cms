@@ -40,13 +40,18 @@ class AbstractController {
     this.getPopulate = this.getPopulate.bind(this);
   }
 
+  async beforeGetAll(ctx, params) {
+    return params;
+  }
+
   async getAll(ctx) {
     ctx.body = await this.getAllItems(ctx);
   }
 
   async getAllItems(ctx) {
-    const params = this.parseGetAllQuery(ctx);
+    let params = this.parseGetAllQuery(ctx);
     const populate = this.getPopulate(ctx, 'getAll');
+    params = await this.beforeGetAll(ctx, params);
     const query = this.model.find(params.filter, params.fields, params.options);
     if (populate && populate.length > 0) {
       query.populate(populate);
@@ -75,7 +80,11 @@ class AbstractController {
   }
 
   async getOne(ctx) {
-    ctx.body = await this.getOneItem(ctx);
+    const item = await this.getOneItem(ctx);
+    if (!item) {
+      ctx.throw(404, 'Not Found');
+    }
+    ctx.body = item;
   }
 
   async getOneItem(ctx) {

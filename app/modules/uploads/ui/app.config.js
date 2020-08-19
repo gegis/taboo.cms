@@ -5,7 +5,7 @@ const enabled = true;
 
 const routes = [
   {
-    path: '/user-files/image/*',
+    path: '/files/image/*',
     exact: true,
     component: ImagePreview,
     authorised: true,

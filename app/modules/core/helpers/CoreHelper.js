@@ -1,4 +1,4 @@
-const { config } = require('@taboo/cms-core');
+const { config, apiHelper } = require('@taboo/cms-core');
 const moment = require('moment');
 const mongoose = require('mongoose');
 
@@ -19,6 +19,47 @@ class CoreHelper {
     return moment().format(format);
   }
 
+  parseRequestParams(
+    ctx,
+    { defaultFilter = null, defaultSort = null, defaultFields = null, searchFields = null } = {}
+  ) {
+    const { query = {} } = ctx;
+    const params = {};
+    let { filter, fields, limit, skip, sort } = apiHelper.parseRequestParams(query, [
+      'filter',
+      'fields',
+      'limit',
+      'skip',
+      'sort',
+    ]);
+
+    if (defaultFilter) {
+      filter = Object.assign({}, defaultFilter, filter);
+    }
+
+    if (query.search && searchFields) {
+      this.applySearchToFilter(query.search, searchFields, filter);
+    }
+
+    if (sort === null && defaultSort) {
+      sort = defaultSort;
+    }
+
+    if (fields === null && defaultFields) {
+      fields = defaultFields;
+    }
+
+    params.filter = filter;
+    params.fields = fields;
+    params.options = {
+      limit: limit,
+      skip: skip,
+      sort: sort,
+    };
+
+    return params;
+  }
+
   /**
    * It constructs mongoose ready filter object combining $or and $and depending on how many search phrases
    * @param searchValue
@@ -33,7 +74,17 @@ class CoreHelper {
     let searchAnd = [];
     let phraseCopy;
     options = Object.assign({}, defaultSearchOptions, options);
-    if (searchValue && searchFields) {
+    // If searchValue contains ' = ' then assume left part is column name and right part is value
+    if (searchValue && searchValue.indexOf(' = ') !== -1) {
+      searchPhrases = searchValue.split(' = ');
+      filterObj[searchPhrases[0]] = searchPhrases[1];
+    } else if (searchValue && searchValue.indexOf(' > ') !== -1) {
+      searchPhrases = searchValue.split(' > ');
+      filterObj[searchPhrases[0]] = { $gt: searchPhrases[1] };
+    } else if (searchValue && searchValue.indexOf(' < ') !== -1) {
+      searchPhrases = searchValue.split(' < ');
+      filterObj[searchPhrases[0]] = { $lt: searchPhrases[1] };
+    } else if (searchValue && searchFields) {
       // TODO also add whole phrase as single search regexp!!!
       searchPhrases = searchValue.split(options.separator);
       searchPhrases.map(phrase => {
@@ -53,8 +104,16 @@ class CoreHelper {
               }
             } else if (options.dateFields && options.dateFields.indexOf(field) !== -1) {
               phraseCopy = this.convertDateSearchPhrase(phraseCopy);
-              fieldSearch[field] = phraseCopy;
-              searchOr.push(fieldSearch);
+              if (phraseCopy) {
+                fieldSearch[field] = phraseCopy;
+                searchOr.push(fieldSearch);
+              }
+            } else if (options.dateStringFields && options.dateStringFields.indexOf(field) !== -1) {
+              phraseCopy = this.convertDateSearchPhrase(phraseCopy, true);
+              if (phraseCopy) {
+                fieldSearch[field] = phraseCopy;
+                searchOr.push(fieldSearch);
+              }
             } else {
               phraseCopy = this.escapePhrase(phraseCopy);
               fieldSearch[field] = new RegExp(phraseCopy, options.regExpFlags);
@@ -75,6 +134,31 @@ class CoreHelper {
     }
   }
 
+  // TODO make this more generic and not country specific
+  parseCountriesSortFromParams(params = {}, countriesFilterKey = 'countries') {
+    const { filter = {}, options: { sort = null } = {} } = params;
+    let $inCountries = [];
+    if (filter[countriesFilterKey] && filter[countriesFilterKey].$in) {
+      $inCountries = filter[countriesFilterKey].$in;
+    }
+    const [countryId = null] = $inCountries;
+    let newSort = {};
+    if (countryId) {
+      newSort[`countrySort.${countryId}`] = 'asc';
+      if (sort) {
+        Object.keys(sort).map(key => {
+          newSort[key] = sort[key];
+        });
+      }
+      if (!params.options) {
+        params.options = {};
+      }
+      params.options.sort = newSort;
+    }
+
+    return params;
+  }
+
   escapePhrase(phrase) {
     phrase = phrase.replace(/\+/i, '\\+');
     phrase = phrase.replace(/\?/i, '\\?');
@@ -89,14 +173,24 @@ class CoreHelper {
     return value;
   }
 
-  convertDateSearchPhrase(phrase) {
+  convertDateSearchPhrase(phrase, dateAsString = false) {
     const {
       client: { dateFormat = 'DD/MM/YYYY' },
     } = config;
+    let filter = null;
     if (phrase && phrase.indexOf('/') !== -1 && phrase.length === 10) {
-      phrase = moment(phrase, dateFormat).format('YYYY-MM-DD');
+      filter = {
+        $gte: `${moment(phrase, dateFormat).format('YYYY-MM-DD')}T00:00:00Z`,
+        $lte: `${moment(phrase, dateFormat).format('YYYY-MM-DD')}T23:59:59Z`,
+      };
+      if (!dateAsString) {
+        filter = {
+          $gte: new Date(filter.$gte),
+          $lte: new Date(filter.$lte),
+        };
+      }
     }
-    return phrase;
+    return filter;
   }
 
   firstUpper(string = '') {

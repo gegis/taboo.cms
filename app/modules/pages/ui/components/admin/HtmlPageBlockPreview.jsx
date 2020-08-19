@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RichTextEditor from 'modules/core/ui/components/RichTextEditor';
+import RichTextEditor from 'modules/core/ui/components/admin/RichTextEditor';
 
 class HtmlPageBlockPreview extends React.Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class HtmlPageBlockPreview extends React.Component {
     const { html } = this.props;
     return (
       <div className="html-page-block-preview">
-        <RichTextEditor onChange={this.onCodeEditorChange} value={html} height="300px" enterMode={2} />
+        <RichTextEditor onChange={this.onCodeEditorChange} value={html} height="300" enterMode={1} />
       </div>
     );
   }

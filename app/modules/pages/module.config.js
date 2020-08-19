@@ -35,7 +35,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/api/admin/pages/count',
-      action: PagesAdminController.count,
+      action: PagesAdminController.countFiltered,
       policies: ['isAdmin'],
       order: 1000,
       options: {

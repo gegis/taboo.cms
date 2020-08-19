@@ -8,10 +8,14 @@ import NotFound from 'app/modules/core/ui/components/NotFound';
 import UserRoute from 'app/modules/core/ui/components/UserRoute';
 import SocketsClient from 'app/modules/core/ui/helpers/SocketsClient';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
+import UiHelper from 'modules/core/ui/helpers/UiHelper';
+import UsersHelper from 'modules/users/ui/helpers/UsersHelper';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.loadAuthTimeout = null;
+    this.loadAuthTimeoutMs = 1000 * 60 * 5;
     this.getRoutes = this.getRoutes.bind(this);
   }
 
@@ -27,33 +31,48 @@ class App extends React.Component {
           });
         });
       }
+      if (authStore.user && authStore.user.id) {
+        SocketsClient.join('users').then(() => {
+          SocketsClient.on(UsersHelper.getUserEventName('update', authStore), () => {
+            authStore.loadUserAuth();
+          });
+        });
+      }
     });
-    SocketsClient.join('users').then(() => {
-      SocketsClient.on(this.getUserEventName('update'), () => {
-        authStore.loadUserAuth();
-      });
-    });
+    this.autoLoadAuth(true);
   }
 
   componentWillUnmount() {
     const { authStore, templatesStore } = this.props;
-    SocketsClient.off(this.getUserEventName('update'));
+    SocketsClient.off(UsersHelper.getUserEventName('update', authStore));
     SocketsClient.off(TemplatesHelper.getTemplatePreviewReceiveEventName({ authStore, templatesStore }));
+    clearTimeout(this.loadAuthTimeout);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      window.scrollTo(0, 0);
+    const { gtag, app: { config: { gaId } = {} } = {} } = window;
+    const { location: { pathname = null } = {} } = this.props;
+    const { location: { pathname: prevPathname = null } = {} } = prevProps;
+    if (pathname !== prevPathname) {
+      UiHelper.scrollToTop();
+      if (gtag && gaId && pathname) {
+        gtag('config', gaId, { page_path: pathname });
+      }
     }
   }
 
-  getUserEventName(action) {
+  autoLoadAuth(delay = false) {
     const { authStore } = this.props;
-    let eventName = null;
-    if (authStore.user && authStore.user.id) {
-      eventName = `user-${authStore.user.id}-user-${action}`;
+    if (!delay) {
+      authStore.loadUserAuth();
     }
-    return eventName;
+    clearTimeout(this.loadAuthTimeout);
+    this.loadAuthTimeout = setTimeout(() => {
+      if (delay) {
+        authStore.loadUserAuth();
+      }
+      this.autoLoadAuth(delay);
+    }, this.loadAuthTimeoutMs);
   }
 
   getRoutes() {

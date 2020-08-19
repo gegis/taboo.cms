@@ -6,9 +6,9 @@ const SessionModel = MongoDbAdapter.setupModel('Session', {
   schema: {
     key: String,
     value: Object,
-    updatedAt: {
-      default: new Date(),
-      expires: maxAge / 1000, // maxAge is in milliseconds but we need seconds.
+    expiresAt: {
+      default: new Date(Date.now() + maxAge),
+      expires: 0,
       type: Date,
     },
   },

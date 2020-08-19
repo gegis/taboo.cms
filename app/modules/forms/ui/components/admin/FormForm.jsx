@@ -5,7 +5,7 @@ import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import Translation from 'app/modules/core/ui/components/Translation';
-import RichTextEditor from 'modules/core/ui/components/RichTextEditor';
+import RichTextEditor from 'modules/core/ui/components/admin/RichTextEditor';
 import PageBlockFrame from 'modules/pages/ui/components/admin/PageBlockFrame';
 
 class FormForm extends React.Component {
@@ -127,11 +127,11 @@ class FormForm extends React.Component {
           <HelpBlock>If a conditional requirement is met - it will use the matching recipients list</HelpBlock>
         </Panel>
         <Panel header="Form Header">
-          <RichTextEditor onChange={this.onCodeEditorChange.bind(this, 'header')} value={item.header} height="200px" />
+          <RichTextEditor onChange={this.onCodeEditorChange.bind(this, 'header')} value={item.header} height="200" />
         </Panel>
         <Panel header={this.getTemplatePanelHeader()}>{this.getTemplate()}</Panel>
         <Panel header="Form Footer">
-          <RichTextEditor onChange={this.onCodeEditorChange.bind(this, 'footer')} value={item.footer} height="200px" />
+          <RichTextEditor onChange={this.onCodeEditorChange.bind(this, 'footer')} value={item.footer} height="200" />
         </Panel>
       </Form>
     );
