@@ -11,8 +11,8 @@ class SettingsService {
 
   async beforeTemplateRender(ctx) {
     const { routeParams: { clientConfig = {} } = {} } = ctx;
-    // TODO move to config
-    const settingsKeysToAppend = ['verifyAccountNotification'];
+    // TODO - implemented so that all public configs go in here!!!
+    const settingsKeysToAppend = ['verifyEmailNotification', 'verifyDocsNotification'];
     const settingsClientConfig = await this.getPublic('clientConfig');
     await this.appendSettingsToClientConfig(settingsKeysToAppend, clientConfig);
     if (settingsClientConfig && typeof settingsClientConfig === 'object') {

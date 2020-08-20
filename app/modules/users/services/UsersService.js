@@ -129,9 +129,11 @@ class UsersService {
       userSessionData = {
         id: user._id.toString(),
         _id: user._id,
-        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         verified: user.verified,
+        emailVerified: user.emailVerified,
         admin: user.admin,
         active: user.active,
         profilePictureUrl: profilePictureUrl,
@@ -171,11 +173,11 @@ class UsersService {
               'value.user.roles': roles,
               'value.user.acl': acl,
               'value.user.admin': user.admin,
+              'value.user.emailVerified': user.emailVerified,
               'value.user.verified': user.verified,
               'value.user.active': user.active,
               'value.user.firstName': user.firstName,
               'value.user.lastName': user.lastName,
-              'value.user.username': user.username,
               'value.user.email': user.email,
             },
           }
@@ -230,7 +232,7 @@ class UsersService {
             Object.assign(
               {},
               { resetLink: `<a href="${resetLink}">${resetLink}</a>` },
-              { firstName: user.firstName, lastName: user.lastName, email: user.email, username: user.username }
+              { firstName: user.firstName, lastName: user.lastName, email: user.email }
             )
           );
           emailResponse = await MailerService.send(emailToSend, { ctx });
@@ -267,6 +269,11 @@ class UsersService {
     } = config;
     let success = false;
     let user;
+    const validationError = this.validateUserPassword(data.newPass);
+
+    if (validationError) {
+      return ctx.throw(400, validationError);
+    }
     if (!data.userId) {
       return ctx.throw(400, 'User not found');
     }
@@ -369,7 +376,7 @@ class UsersService {
           Object.assign(
             {},
             { verifyLink: `<a href="${verifyLink}">${verifyLink}</a>` },
-            { firstName: user.firstName, lastName: user.lastName, email: user.email, username: user.username }
+            { firstName: user.firstName, lastName: user.lastName, email: user.email }
           )
         );
         emailResponse = await MailerService.send(emailToSend, { ctx });
@@ -379,6 +386,13 @@ class UsersService {
       } catch (e) {
         success = false;
         logger.error(e);
+      }
+    } else {
+      if (!user) {
+        logger.error(new Error('sendUserVerificationEmail: User not found'));
+      }
+      if (!email) {
+        logger.error(new Error('sendUserVerificationEmail: Email template not found'));
       }
     }
     return {
@@ -406,7 +420,7 @@ class UsersService {
         emailToSend.html = await EmailsService.composeEmailBody(
           ctx,
           email.body,
-          Object.assign({ username: user.username, userLink: userLink })
+          Object.assign({ firstName: user.firstName, lastName: user.lastName, email: user.email, userLink: userLink })
         );
         emailResponse = await MailerService.send(emailToSend, { ctx });
         if (emailResponse && (emailResponse.success || emailResponse.accepted)) {
@@ -421,7 +435,7 @@ class UsersService {
   }
 
   getVerificationLink(ctx, linkPrefix, userId, verificationToken) {
-    return `${ctx.origin}${linkPrefix}/verify-account/${userId}/${verificationToken}`;
+    return `${ctx.origin}${linkPrefix}/verify-email/${userId}/${verificationToken}`;
   }
 
   validateUserRegisterFields(data) {
@@ -462,6 +476,22 @@ class UsersService {
     return response;
   }
 
+  validateUserPassword(password) {
+    const rules = {
+      password: this.getUserPasswordRules(),
+    };
+    const validationErrors = ValidationHelper.validateData(rules, { password: password });
+    let response = null;
+    if (validationErrors && validationErrors.length > 0) {
+      response = {
+        validationMessage: 'Invalid Password',
+        validationErrors: validationErrors,
+      };
+    }
+
+    return response;
+  }
+
   getUserFieldsBasicRules(passwordFieldName = 'password', addPasswordRule = true) {
     const rules = {
       firstName: [
@@ -492,63 +522,71 @@ class UsersService {
           message: 'Country is required',
         },
       ],
-      username: [
-        {
-          test: 'isRequired',
-          message: 'Username is required',
-        },
-        {
-          test: 'isLength',
-          options: { min: 3 },
-          message: 'Username must be minimum 3 characters',
-        },
-        {
-          test: 'isLength',
-          options: { max: 20 },
-          message: 'Username must be maximum 20 characters',
-        },
-        {
-          test: 'notIndexOf',
-          options: {
-            caseSensitive: false,
-            values: ['admin', 'administrator'],
-          },
-          message: 'Username is already taken!',
-        },
-        {
-          test: 'testRegexp',
-          regexp: RegExp(/^[\w]+$/),
-          message: "Only alphanumeric symbols a-z, A-Z, 0-9 and '_'",
-        },
-      ],
+      // username: this.getUsernameRules(),
     };
 
     if (addPasswordRule) {
-      rules[passwordFieldName] = [
-        {
-          test: 'isLength',
-          options: { min: passwordMinLength },
-          message: `Password must be at least ${passwordMinLength} characters long`,
-        },
-        {
-          test: 'testRegexp',
-          regexp: RegExp(/[A-Z]+/),
-          message: 'Should contain at least one upper case letter',
-        },
-        {
-          test: 'testRegexp',
-          regexp: RegExp(/[a-z]+/),
-          message: 'Should contain at least one lower case letter',
-        },
-        {
-          test: 'testRegexp',
-          regexp: RegExp(/\d+/),
-          message: 'Should contain at least one digit',
-        },
-      ];
+      rules[passwordFieldName] = this.getUserPasswordRules();
     }
 
     return rules;
+  }
+
+  getUserPasswordRules() {
+    return [
+      {
+        test: 'isLength',
+        options: { min: passwordMinLength },
+        message: `Password must be at least ${passwordMinLength} characters long`,
+      },
+      {
+        test: 'testRegexp',
+        regexp: RegExp(/[A-Z]+/),
+        message: 'Should contain at least one upper case letter',
+      },
+      {
+        test: 'testRegexp',
+        regexp: RegExp(/[a-z]+/),
+        message: 'Should contain at least one lower case letter',
+      },
+      {
+        test: 'testRegexp',
+        regexp: RegExp(/\d+/),
+        message: 'Should contain at least one digit',
+      },
+    ];
+  }
+
+  getUsernameRules() {
+    return [
+      {
+        test: 'isRequired',
+        message: 'Username is required',
+      },
+      {
+        test: 'isLength',
+        options: { min: 3 },
+        message: 'Username must be minimum 3 characters',
+      },
+      {
+        test: 'isLength',
+        options: { max: 20 },
+        message: 'Username must be maximum 20 characters',
+      },
+      {
+        test: 'notIndexOf',
+        options: {
+          caseSensitive: false,
+          values: ['admin', 'administrator'],
+        },
+        message: 'Username is already taken!',
+      },
+      {
+        test: 'testRegexp',
+        regexp: RegExp(/^[\w]+$/),
+        message: "Only alphanumeric symbols a-z, A-Z, 0-9 and '_'",
+      },
+    ];
   }
 
   async deleteUser(userId) {
@@ -598,7 +636,6 @@ class UsersService {
       _id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
-      username: user.username,
       email: user.email,
       verified: user.verified,
       active: user.active,

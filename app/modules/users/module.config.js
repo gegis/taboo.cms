@@ -35,8 +35,8 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/verify-account/:userId/:token',
-      action: UsersController.verifyAccount,
+      path: '/verify-email/:userId/:token',
+      action: UsersController.verifyEmail,
       policies: [],
     },
     {
@@ -47,8 +47,8 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/my-profile',
-      action: UsersController.myProfile,
+      path: '/account-settings',
+      action: UsersController.accountSettings,
       policies: ['isUser'],
     },
     {
@@ -232,8 +232,8 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/api/admin/user/:id/resend-verify-account',
-      action: UsersAdminController.resendVerifyAccount,
+      path: '/api/admin/user/:id/resend-verify-email',
+      action: UsersAdminController.resendVerifyEmail,
       policies: ['isAdmin'],
       options: {
         errorResponseAsJson: true,

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
@@ -37,17 +37,20 @@ class Template extends React.Component {
   }
 
   getVerificationMessage() {
-    return (
-      <Message
-        className="header-notification"
-        type="error"
-        description={
-          <div>
-            Please <Link to="/account-verify">verify</Link> your account.
-          </div>
-        }
-      />
-    );
+    const { authStore } = this.props;
+    const { user, verified, emailVerified, verifyEmailNotification, verifyDocsNotification } = authStore;
+    let messageBlock = null;
+    let messages = [];
+
+    if (!verified && user.id) {
+      if (!emailVerified) {
+        messages.push(<div key="verify-email">{verifyEmailNotification}</div>);
+      }
+      messages.push(<div key="verify-docs">{verifyDocsNotification}</div>);
+      messageBlock = <Message className="header-notification" type="error" description={messages} />;
+    }
+
+    return messageBlock;
   }
 
   getMetaTitle() {
@@ -61,7 +64,7 @@ class Template extends React.Component {
   }
 
   render() {
-    const { children, uiStore, authStore, className, title, fluid = false } = this.props;
+    const { children, uiStore, className, title, fluid = false } = this.props;
     return (
       <Container className={classNames('template', 'standard-template', className)}>
         <MetaTags>
@@ -69,7 +72,7 @@ class Template extends React.Component {
         </MetaTags>
         <Header />
         {uiStore.loading && <div className="loader" />}
-        {authStore.user.id && !authStore.verified && this.getVerificationMessage()}
+        {this.getVerificationMessage()}
         <Content className="main-content">
           <Grid fluid={fluid}>
             <Row>

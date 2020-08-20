@@ -16,22 +16,17 @@ const actions = [
   {
     name: 'accountVerification',
     title: 'Account Verification',
-    variables: ['{{email}}', '{{username}}', '{{verifyLink}}'],
+    variables: ['{{email}}', '{{firstName}}', '{{lastName}}', '{{verifyLink}}'],
   },
   {
     name: 'passwordReset',
     title: 'Password Reset',
-    variables: ['{{email}}', '{{username}}', '{{resetLink}}'],
-  },
-  {
-    name: 'reportedPost',
-    title: 'Reported Post',
-    variables: ['{{postLink}}'],
+    variables: ['{{email}}', '{{firstName}}', '{{lastName}}', '{{resetLink}}'],
   },
   {
     name: 'deactivatedAccount',
     title: 'Deactivated Account',
-    variables: ['{{username}}'],
+    variables: ['{{email}}', '{{firstName}}', '{{lastName}}'],
   },
 ];
 

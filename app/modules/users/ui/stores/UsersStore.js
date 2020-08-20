@@ -5,7 +5,8 @@ import SocketsClient from 'modules/core/ui/helpers/SocketsClient';
 import UsersHelper from 'modules/users/ui/helpers/UsersHelper';
 
 const newSignupUser = {
-  username: '',
+  firstName: '',
+  lastName: '',
   email: '',
   password: '',
   country: '',
@@ -19,7 +20,8 @@ const newUser = {
   country: '',
   createdAt: '',
   email: '',
-  username: '',
+  firstName: '',
+  lastName: '',
   loginAttempts: 0,
   newPassword: '',
   roles: [],

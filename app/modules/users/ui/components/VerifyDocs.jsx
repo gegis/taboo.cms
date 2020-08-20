@@ -3,25 +3,14 @@ import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
-import { Panel, Form, Message, Grid, Row, Col, Schema, Notification, Icon } from 'rsuite';
+import { Panel, Form, Message, Grid, Row, Col, Notification, Icon } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import DocumentUpload from 'app/modules/uploads/ui/components/DocumentUpload';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 
-const { StringType } = Schema.Types;
-
 class VerifyDocs extends React.Component {
   constructor(props) {
     super(props);
-    this.model = Schema.Model({
-      firstName: StringType().isRequired('First Name is required.'),
-      lastName: StringType().isRequired('Last Name is required.'),
-      country: StringType().isRequired('Country is required.'),
-      email: StringType()
-        .isEmail('Please enter a valid email address.')
-        .isRequired('Email address is required.'),
-      password: StringType().minLength(5, 'Password must be at least 5 characters long'),
-    });
     this.form = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onInputKeyDown = this.onInputKeyDown.bind(this);
@@ -137,7 +126,6 @@ class VerifyDocs extends React.Component {
                   formValue={uploadsStore.documents}
                   formError={uploadsStore.userError}
                   checkTrigger="blur"
-                  model={this.model}
                   onSubmit={this.handleSubmit}
                   autoComplete="off"
                   className="account-verification"

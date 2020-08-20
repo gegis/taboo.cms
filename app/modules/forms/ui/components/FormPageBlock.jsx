@@ -57,11 +57,6 @@ class FormPageBlock extends Component {
               <div className="form-page-block">
                 <Row>
                   <Col>
-                    <h2 className="form-title">{form.title}</h2>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
                     <div className="form-header" dangerouslySetInnerHTML={{ __html: form.header }} />
                   </Col>
                 </Row>

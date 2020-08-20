@@ -111,12 +111,7 @@ class ResetPassword extends React.Component {
     }
 
     return (
-      <Template
-        className="reset-password-page"
-        title="Forgot password"
-        metaTitle="Forgot password"
-        headerMinimized={true}
-      >
+      <Template className="reset-password-page" metaTitle="Forgot password" headerMinimized={true}>
         <Grid fluid>
           <Row>
             <Col xs={24} md={12} mdOffset={6}>
@@ -132,7 +127,9 @@ class ResetPassword extends React.Component {
                 className="form"
                 onSubmit={this.handleSubmit}
               >
-                <h1>Forgot password</h1>
+                <h1>
+                  <Translation message="Forgot password" />
+                </h1>
                 <FormGroup>
                   <ControlLabel>
                     <Translation message="Email" />

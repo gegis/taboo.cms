@@ -80,7 +80,7 @@ class UsersAdminController extends AbstractAdminController {
     return user;
   }
 
-  async resendVerifyAccount(ctx) {
+  async resendVerifyEmail(ctx) {
     const { params: { id } = {} } = ctx;
     const user = await UserModel.findById(id);
     ctx.body = await UsersService.sendUserVerificationEmail(ctx, user);

@@ -13,16 +13,11 @@ class Dashboard extends Component {
     const { templateComponents } = templatesStore;
     const Template = templateComponents[templatesStore.defaultTemplateName];
     return (
-      <Template className="dashboard" title="User Profile" metaTitle="User Profile" headerMinimized={true}>
+      <Template className="dashboard" title="My Profile" metaTitle="My Profile" headerMinimized={true}>
         <Grid>
           <Row>
             <Col sm={24} md={12} mdOffset={6}>
               <Panel className="dashboard single-panel" bordered>
-                <Row>
-                  <Col>
-                    <h1>My Account</h1>
-                  </Col>
-                </Row>
                 <Row>
                   <Col md={6}>
                     <div style={{ textAlign: 'center' }}>
@@ -30,10 +25,12 @@ class Dashboard extends Component {
                     </div>
                   </Col>
                   <Col md={18}>
-                    <h3>{authStore.user.username}</h3>
+                    <h3>
+                      {authStore.user.firstName} {authStore.user.lastName}
+                    </h3>
                     <h4>{authStore.user.email}</h4>
                     <p>
-                      <Link to="/my-profile">Account Settings</Link>
+                      <Link to="/account-settings">Account Settings</Link>
                     </p>
                   </Col>
                 </Row>

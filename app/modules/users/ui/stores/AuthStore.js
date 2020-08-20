@@ -2,15 +2,24 @@ import { decorate, observable, action, runInAction } from 'mobx';
 import axios from 'axios';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
 
-const { config: { settings: { verifyAccountNotification = 'Please verify your account' } = {} } = {} } = window.app;
+const {
+  config: {
+    settings: {
+      verifyEmailNotification = 'Please verify your email.',
+      verifyDocsNotification = 'Please verify your account.',
+    } = {},
+  } = {},
+} = window.app;
 
 class AuthStore {
   constructor() {
     this.user = {};
     this.authenticated = null; // if null - means it is still loading
     this.admin = false;
+    this.emailVerified = true; // true - to avoid initial flashes
     this.verified = true; // true - to avoid initial flashes
-    this.verifyAccountNotification = verifyAccountNotification;
+    this.verifyEmailNotification = verifyEmailNotification;
+    this.verifyDocsNotification = verifyDocsNotification;
   }
 
   loginUser(email, password, rememberMe = false) {
@@ -45,10 +54,12 @@ class AuthStore {
               this.authenticated = true;
               this.admin = data.admin;
               this.verified = data.verified;
+              this.emailVerified = data.emailVerified;
             } else {
               this.user = {};
               this.authenticated = false;
               this.verified = false;
+              this.emailVerified = false;
             }
             resolve(this.user);
           });
@@ -67,7 +78,8 @@ decorate(AuthStore, {
   authenticated: observable,
   admin: observable,
   verified: observable,
-  verifyAccountNotification: observable,
+  verifyEmailNotification: observable,
+  verifyDocsNotification: observable,
   loadUserAuth: action,
   setVerified: action,
 });

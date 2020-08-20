@@ -14,7 +14,7 @@ class UsersController {
   async signIn() {}
   async resetPassword() {}
   async changePassword() {}
-  async myProfile(ctx) {
+  async accountSettings(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user, countryOptions;
     try {
@@ -35,20 +35,22 @@ class UsersController {
   /**
    * Verifies user's email (accountVerification link landing page for new account registration)
    */
-  async verifyAccount(ctx) {
+  async verifyEmail(ctx) {
     const { session = {} } = ctx;
     const { user: { id: sessionUserId } = {} } = session;
     const { userId, token } = ctx.params;
-    const verifyAccountRedirectSuccess = await SettingsService.get('verifyAccountRedirectSuccess');
-    const verifyAccountRedirectError = await SettingsService.get('verifyAccountRedirectError');
+    const verifyAccountRedirectSuccess = await SettingsService.get('verifyEmailRedirectSuccess');
+    const verifyAccountRedirectError = await SettingsService.get('verifyEmailRedirectError');
     let success = false;
     let user;
     try {
       user = await UserModel.findById(userId).populate('profilePicture');
       if (user && user.accountVerificationCode && user.accountVerificationCode === token) {
-        user.verified = true;
-        user.verificationStatus = 'approved';
-        user.accountVerificationCode = '';
+        user.emailVerified = true;
+        // TODO set to approved only if docs verification is not needed
+        // user.verified = true;
+        // user.verificationStatus = 'approved';
+        user.emailVerificationCode = '';
         user.save();
         success = true;
       }
@@ -63,9 +65,9 @@ class UsersController {
       success = false;
       ctx.throw(404, e);
     }
-    if (success) {
+    if (success && verifyAccountRedirectSuccess) {
       ctx.redirect(verifyAccountRedirectSuccess.value);
-    } else {
+    } else if (verifyAccountRedirectError) {
       ctx.redirect(verifyAccountRedirectError.value);
     }
   }
@@ -228,7 +230,7 @@ class UsersController {
    *   "verified": true,
    *   "admin": true,
    *   "active": true,
-   *   "profilePictureUrl": "/secure-files/5ddeab9e2054481c8b8a680a",
+   *   "profilePictureUrl": "/user-files/5ddeab9e2054481c8b8a680a",
    *   "roles": [
    *     "5dd47db6dcb439238bd29ee5"
    *   ],
@@ -377,7 +379,7 @@ class UsersController {
     user.verificationNote = 'User requested deactivation!';
     await user.save();
     // TODO - deactivated for now - as it needs new scope confirmed!
-    // await UsersService.sendUserDeactivationEmail(ctx, user);
+    await UsersService.sendUserDeactivationEmail(ctx, user);
     ctx.body = user;
   }
 

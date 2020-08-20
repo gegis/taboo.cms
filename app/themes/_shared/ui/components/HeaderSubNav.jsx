@@ -56,8 +56,8 @@ class HeaderSubNav extends React.Component {
         <Dropdown
           icon={<ProfilePicture url={authStore.user.profilePictureUrl} size="xs" alternative={true} />}
           title={
-            <span className="user-username" title={authStore.user.username}>
-              {authStore.user.username}
+            <span className="user-email" title={authStore.user.email}>
+              {authStore.user.email}
             </span>
           }
           placement="bottomEnd"
@@ -65,8 +65,8 @@ class HeaderSubNav extends React.Component {
           <DropdownLink key="home" to="/">
             <Icon icon="home" /> Home
           </DropdownLink>
-          <DropdownLink key="dashboard" to="/my-profile">
-            <Icon icon="user" /> My Account
+          <DropdownLink key="dashboard" to="/account-settings">
+            <Icon icon="user" /> Account Settings
           </DropdownLink>
           {authStore.user.admin && (
             <Dropdown.Item key="admin" onSelect={this.goToAdmin}>
@@ -82,15 +82,14 @@ class HeaderSubNav extends React.Component {
   }
 
   getPublicMenu() {
-    const buttons = [
-      <Link key="home" to="/" className="home-btn">
-        {' '}
-      </Link>,
-    ];
+    const buttons = [];
     if (usersSignInEnabled) {
       buttons.push(
-        <Link key="login" to="/sign-in" className="rs-btn rs-btn-primary">
-          Login
+        <Link key="sign-in" to="/sign-in" className="rs-btn rs-btn-primary">
+          Sign In
+        </Link>,
+        <Link key="sign-up" to="/sign-up" className="rs-btn">
+          Sign Up
         </Link>
       );
     }

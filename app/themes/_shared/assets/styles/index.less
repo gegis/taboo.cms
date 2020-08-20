@@ -104,8 +104,9 @@ textarea.rs-input {
 .header {
   border-bottom: 1px solid @B200;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  .user-menu {
+  .header-sub-nav {
     text-align: right;
+    padding: 15px 0 0;
   }
   .nav-brand {
     &.logo {
@@ -127,7 +128,7 @@ textarea.rs-input {
   }
   .user-menu {
     .rs-dropdown {
-      padding: 12px 5px 0;
+      padding: 0;
     }
     .rs-dropdown-toggle {
       height: 42px;
@@ -152,6 +153,11 @@ textarea.rs-input {
   .rs-nav-item-content {
     color: @B025;
   }
+}
+
+h1.title {
+  text-align: center;
+  min-height: 62px;
 }
 
 @import './forms';

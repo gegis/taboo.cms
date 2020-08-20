@@ -16,6 +16,7 @@ import {
   Notification,
   Nav,
   Checkbox,
+  Panel,
 } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import NavLink from 'app/modules/core/ui/components/NavLink';
@@ -74,7 +75,7 @@ class SignIn extends React.Component {
                 authStore.loadUserAuth();
               });
             });
-            return history.push('/my-profile');
+            return history.push('/account-settings');
           } else {
             return history.push('/');
           }
@@ -125,68 +126,63 @@ class SignIn extends React.Component {
     return (
       <Template
         className="sign-in-page"
-        metaTitle="Login"
-        title="Login"
+        title="Sign In"
+        metaTitle="Sign In"
         headerMinimized={true}
         topRightMenu={this.getTopRightMenu()}
       >
         <Grid fluid>
           <Row>
             <Col xs={24} md={12} mdOffset={6}>
-              <Form
-                fluid
-                ref={this.form}
-                className="form"
-                onChange={this.onFormChange}
-                onCheck={this.onFormCheck}
-                formValue={formValue}
-                formError={formError}
-                checkTrigger="blur"
-                model={this.model}
-                onSubmit={this.handleSubmit}
-              >
-                <h1>Login</h1>
-                <FormGroup>
-                  <ControlLabel>
-                    <Translation message="Email" />
-                  </ControlLabel>
-                  <FormControl name="email" type="email" onKeyDown={this.onInputKeyDown} />
-                </FormGroup>
-                <FormGroup>
-                  <ControlLabel>
-                    <Translation message="Password" />
-                  </ControlLabel>
-                  <FormControl name="password" type="password" onKeyDown={this.onInputKeyDown} />
-                </FormGroup>
-                <FormGroup>
-                  <Checkbox
-                    name="rememberMe"
-                    checked={formValue.rememberMe}
-                    onChange={this.onFormCheckboxChange.bind(this, 'rememberMe')}
-                  >
-                    Remember Me
-                  </Checkbox>
-                </FormGroup>
-                <FormGroup>
-                  <Button appearance="primary" className="btn-huge" onClick={this.handleSubmit}>
-                    <Translation message="Login" />
-                  </Button>
-                </FormGroup>
-                <FormGroup className="form-footer-links">
-                  <div className="pull-left">
-                    <Link className="form-action-link" to="/reset-password">
-                      <Translation message="Forgot password?" />
-                    </Link>
-                  </div>
-                  <div className="pull-right">
-                    Don&apos;t have an account yet?{' '}
-                    <Link className="form-action-link" to="/sign-up">
-                      Create Account
-                    </Link>
-                  </div>
-                  <div className="clearfix" />
-                </FormGroup>
-              </Form>
+              <Panel bordered>
+                <Form
+                  fluid
+                  ref={this.form}
+                  className="form"
+                  onChange={this.onFormChange}
+                  onCheck={this.onFormCheck}
+                  formValue={formValue}
+                  formError={formError}
+                  checkTrigger="blur"
+                  model={this.model}
+                  onSubmit={this.handleSubmit}
+                >
+                  <FormGroup>
+                    <ControlLabel>
+                      <Translation message="Email" />
+                    </ControlLabel>
+                    <FormControl name="email" type="email" onKeyDown={this.onInputKeyDown} />
+                  </FormGroup>
+                  <FormGroup>
+                    <ControlLabel>
+                      <Translation message="Password" />
+                    </ControlLabel>
+                    <FormControl name="password" type="password" onKeyDown={this.onInputKeyDown} />
+                  </FormGroup>
+                  <FormGroup>
+                    <Checkbox
+                      name="rememberMe"
+                      checked={formValue.rememberMe}
+                      onChange={this.onFormCheckboxChange.bind(this, 'rememberMe')}
+                    >
+                      <Translation message="Remember Me" />
+                    </Checkbox>
+                  </FormGroup>
+                  <FormGroup>
+                    <Button appearance="primary" className="btn-huge" onClick={this.handleSubmit}>
+                      <Translation message="Sign In" />
+                    </Button>
+                  </FormGroup>
+                  <FormGroup className="form-footer-links">
+                    <div className="pull-right">
+                      <Link className="form-action-link" to="/reset-password">
+                        <Translation message="Forgot password?" />
+                      </Link>
+                    </div>
+                    <div className="clearfix" />
+                  </FormGroup>
+                </Form>
+              </Panel>
             </Col>
           </Row>
         </Grid>

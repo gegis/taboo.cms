@@ -50,7 +50,7 @@ module.exports = {
     ],
     maxFileSize: shared.maxFileSize,
     appendTimestamp: true,
-    userUploadsPath: '../user-uploads/user-files',
+    userUploadsPath: '../cms-uploads/user-files',
     userUrlPath: '/user-files',
     userAllowedDocumentTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'application/pdf'],
     userAllowedImageTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'],

@@ -25,14 +25,13 @@ const UserModel = MongoDbAdapter.setupModel('User', {
       validate: [validator.isEmail, 'Invalid Email'],
       lowercase: true,
     },
-    username: {
-      type: String,
-      required: [true, 'is required'],
-      unique: true,
-      uniqueCaseInsensitive: true,
-      validate: [/^[\w]+$/, "Only alphanumeric symbols a-z, A-Z, 0-9 and '_'"],
-      // validate: [validator.isAlphanumeric, 'Only letters and numbers allowed'],
-    },
+    // username: {
+    //   type: String,
+    //   required: [true, 'is required'],
+    //   unique: true,
+    //   uniqueCaseInsensitive: true,
+    //   validate: [/^[\w]+$/, "Only alphanumeric symbols a-z, A-Z, 0-9 and '_'"],
+    // },
     country: {
       type: String,
       required: [true, 'is required'],
@@ -63,6 +62,10 @@ const UserModel = MongoDbAdapter.setupModel('User', {
     profilePicture: {
       type: SchemaTypes.ObjectId,
       ref: 'Upload',
+    },
+    emailVerified: {
+      type: Boolean,
+      default: false,
     },
     verified: {
       type: Boolean,
@@ -100,6 +103,14 @@ const UserModel = MongoDbAdapter.setupModel('User', {
     apiKey: {
       type: String,
       default: '',
+    },
+    documentPersonal1: {
+      type: SchemaTypes.ObjectId,
+      ref: 'Upload',
+    },
+    documentPersonal2: {
+      type: SchemaTypes.ObjectId,
+      ref: 'Upload',
     },
   },
   afterSchemaCreate(schema) {

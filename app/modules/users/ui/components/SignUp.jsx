@@ -15,6 +15,7 @@ import {
   Notification,
   Checkbox,
   SelectPicker,
+  Panel,
 } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import SocketsClient from 'modules/core/ui/helpers/SocketsClient';
@@ -23,8 +24,6 @@ import UsersHelper from 'modules/users/ui/helpers/UsersHelper';
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
-    // TODO move this Schema.Model into helper to be reused in my-profile as well!!!
-    // TODO Also have all min max lengths in configs!!!
     this.formValidation = UsersHelper.getSignUpFormValidation();
     this.form = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -76,7 +75,7 @@ class SignUp extends React.Component {
                 authStore.loadUserAuth();
               });
             });
-            return history.push('/my-profile');
+            return history.push('/account-settings');
           } else {
             return history.push('/');
           }
@@ -102,89 +101,79 @@ class SignUp extends React.Component {
     }
 
     return (
-      <Template className="sign-up-page" metaTitle="Sign Up" title="Sign Up" headerMinimized={true}>
+      <Template className="sign-up-page" title="Sign Up" metaTitle="Sign Up" headerMinimized={true}>
         <Grid fluid>
           <Row>
             <Col xs={24} md={12} mdOffset={6}>
-              <Form
-                fluid
-                ref={this.form}
-                onChange={usersStore.setSignupUserData}
-                onCheck={usersStore.setSignupUserError}
-                formValue={usersStore.signupUser}
-                formError={usersStore.signupUserError}
-                checkTrigger="change"
-                model={this.formValidation}
-                onSubmit={this.handleSubmit}
-                className="form"
-                autoComplete="off"
-              >
-                <h1>Create Account</h1>
-                <FormGroup controlId="username">
-                  <ControlLabel>
-                    <Translation message="Username" />
-                  </ControlLabel>
-                  <FormControl name="username" autoComplete="off" type="text" onKeyDown={this.onInputKeyDown} />
-                </FormGroup>
-                <FormGroup controlId="email">
-                  <ControlLabel>
-                    <Translation message="Email" />
-                  </ControlLabel>
-                  <FormControl name="email" type="email" autoComplete="off" onKeyDown={this.onInputKeyDown} />
-                </FormGroup>
-                <FormGroup controlId="password">
-                  <ControlLabel>
-                    <Translation message="Password" />
-                  </ControlLabel>
-                  <FormControl
-                    name="password"
-                    type="password"
-                    autoComplete="new-password"
-                    onKeyDown={this.onInputKeyDown}
-                  />
-                </FormGroup>
-                <FormGroup controlId="country">
-                  <ControlLabel>
-                    <Translation message="Country" />
-                  </ControlLabel>
-                  <FormControl name="country" accepter={SelectPicker} data={countriesStore.allCountriesOptions} />
-                </FormGroup>
-                <FormGroup className="user-agreement">
-                  <Checkbox
-                    name="agreeToAll"
-                    onChange={setSignupUserCheckboxValue.bind(null, 'agreeToAll')}
-                    checked={usersStore.signupUser.agreeToAll}
-                  >
-                    I agree to All
-                  </Checkbox>
-                  <Checkbox
-                    name="agreeToTerms"
-                    onChange={setSignupUserCheckboxValue.bind(null, 'agreeToTerms')}
-                    checked={usersStore.signupUser.agreeToTerms}
-                  >
-                    I agree to{' '}
-                    <a target="_blank" href="/terms-and-conditions">
-                      Terms & Conditions
-                    </a>
-                  </Checkbox>
-                  <Checkbox
-                    name="agreeToRewards"
-                    onChange={setSignupUserCheckboxValue.bind(null, 'agreeToRewards')}
-                    checked={usersStore.signupUser.agreeToRewards}
-                  >
-                    I agree to{' '}
-                    <a target="_blank" href="/terms-and-conditions">
-                      Rewards & Offers
-                    </a>
-                  </Checkbox>
-                </FormGroup>
-                <FormGroup className="form-submit-wrapper">
-                  <Button appearance="primary" className="btn-huge" onClick={this.handleSubmit}>
-                    Create Account
-                  </Button>
-                </FormGroup>
-                <div className="clearfix" />
-              </Form>
+              <Panel bordered>
+                <Form
+                  fluid
+                  ref={this.form}
+                  onChange={usersStore.setSignupUserData}
+                  onCheck={usersStore.setSignupUserError}
+                  formValue={usersStore.signupUser}
+                  formError={usersStore.signupUserError}
+                  checkTrigger="change"
+                  model={this.formValidation}
+                  onSubmit={this.handleSubmit}
+                  className="form"
+                  autoComplete="off"
+                >
+                  <FormGroup controlId="firstName">
+                    <ControlLabel>
+                      <Translation message="First Name" />
+                    </ControlLabel>
+                    <FormControl name="firstName" autoComplete="off" type="text" onKeyDown={this.onInputKeyDown} />
+                  </FormGroup>
+                  <FormGroup controlId="lastName">
+                    <ControlLabel>
+                      <Translation message="Last Name" />
+                    </ControlLabel>
+                    <FormControl name="lastName" autoComplete="off" type="text" onKeyDown={this.onInputKeyDown} />
+                  </FormGroup>
+                  <FormGroup controlId="email">
+                    <ControlLabel>
+                      <Translation message="Email" />
+                    </ControlLabel>
+                    <FormControl name="email" type="email" autoComplete="off" onKeyDown={this.onInputKeyDown} />
+                  </FormGroup>
+                  <FormGroup controlId="password">
+                    <ControlLabel>
+                      <Translation message="Password" />
+                    </ControlLabel>
+                    <FormControl
+                      name="password"
+                      type="password"
+                      autoComplete="new-password"
+                      onKeyDown={this.onInputKeyDown}
+                    />
+                  </FormGroup>
+                  <FormGroup controlId="country">
+                    <ControlLabel>
+                      <Translation message="Country" />
+                    </ControlLabel>
+                    <FormControl name="country" accepter={SelectPicker} data={countriesStore.allCountriesOptions} />
+                  </FormGroup>
+                  <FormGroup className="user-agreement">
+                    <Checkbox
+                      name="agreeToTerms"
+                      onChange={setSignupUserCheckboxValue.bind(null, 'agreeToTerms')}
+                      checked={usersStore.signupUser.agreeToTerms}
+                    >
+                      I agree to{' '}
+                      <a target="_blank" href="/terms-and-conditions">
+                        Terms & Conditions
+                      </a>
+                    </Checkbox>
+                  </FormGroup>
+                  <FormGroup className="form-submit-wrapper">
+                    <Button appearance="primary" className="btn-huge" onClick={this.handleSubmit}>
+                      Create Account
+                    </Button>
+                  </FormGroup>
+                  <div className="clearfix" />
+                </Form>
+              </Panel>
             </Col>
           </Row>
         </Grid>

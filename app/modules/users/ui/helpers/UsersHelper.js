@@ -22,11 +22,13 @@ class UsersHelper {
 
   getFormValidationModel(passwordFieldName = 'password', passwordRequired = true) {
     const rules = {
-      username: StringType()
-        .isRequired('Username is required.')
-        .minLength(3, 'Minimum 3 characters')
-        .maxLength(20, 'Maximum 20 characters')
-        .pattern(/^[\w]+$/, "Only alphanumeric symbols a-z, A-Z, 0-9 and '_'"),
+      // username: StringType()
+      //   .isRequired('Username is required.')
+      //   .minLength(3, 'Minimum 3 characters')
+      //   .maxLength(20, 'Maximum 20 characters')
+      //   .pattern(/^[\w]+$/, "Only alphanumeric symbols a-z, A-Z, 0-9 and '_'"),
+      firstName: StringType().isRequired('First Name is required.'),
+      lastName: StringType().isRequired('Last Name is required.'),
       email: StringType()
         .isEmail('Please enter a valid email address.')
         .isRequired('Email address is required.'),

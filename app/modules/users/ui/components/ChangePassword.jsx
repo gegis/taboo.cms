@@ -8,6 +8,7 @@ import { Form, FormGroup, ControlLabel, FormControl, Button, Grid, Row, Col, Sch
 import Translation from 'app/modules/core/ui/components/Translation';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
+import UsersHelper from 'modules/users/ui/helpers/UsersHelper';
 
 const { StringType } = Schema.Types;
 
@@ -19,6 +20,7 @@ class ChangePassword extends React.Component {
       newPass: '',
       newPassRepeat: '',
     };
+    const { schema: { newPassword = null } = {} } = UsersHelper.getUserFormValidation();
     this.state = {
       userId: params.userId,
       token: params.token,
@@ -33,6 +35,9 @@ class ChangePassword extends React.Component {
           return data.newPass === value;
         }, "Passwords don't match"),
     });
+    if (newPassword) {
+      // this.model.schema.newPass = newPassword;
+    }
     this.form = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onFormChange = this.onFormChange.bind(this);
@@ -116,12 +121,11 @@ class ChangePassword extends React.Component {
                 onCheck={this.onFormCheck}
                 formValue={formValue}
                 formError={formError}
-                checkTrigger="blur"
+                checkTrigger="change"
                 model={this.model}
                 onSubmit={this.handleSubmit}
                 className="form"
               >
-                <h1>Password Change</h1>
                 <FormGroup>
                   <ControlLabel>
                     <Translation message="New Password" />

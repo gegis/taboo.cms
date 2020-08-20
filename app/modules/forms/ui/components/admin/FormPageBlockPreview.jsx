@@ -13,7 +13,7 @@ class FormPageBlockPreview extends React.Component {
     const Template = TemplatesHelper.getTemplate('blank', { templatesStore });
     return (
       <div className="form-page-block-preview">
-        <PageBlockFrame style={{ height: '580px' }}>
+        <PageBlockFrame style={{ height: '350px' }}>
           <Template fluid>
             <FormPageBlock formId={formId} {...rest} />
           </Template>

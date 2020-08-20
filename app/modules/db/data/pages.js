@@ -1,5 +1,6 @@
 module.exports = [
   {
+    _id: '5dd575666a19cc6918296c6c',
     title: 'Welcome to Taboo CMS',
     url: '/',
     template: 'standard',
@@ -7,7 +8,7 @@ module.exports = [
     language: 'en',
     blocks: [
       {
-        _id: '5ec042491d39df14f9778563',
+        _id: '5dd571630203d247ef37c257',
         name: 'HTML',
         props: {
           html: `<section>
@@ -49,6 +50,7 @@ module.exports = [
     ],
   },
   {
+    _id: '5dd59786cc85912a1bc3863f',
     title: 'About',
     url: '/about',
     template: 'standard',
@@ -97,8 +99,32 @@ module.exports = [
     ],
   },
   {
-    title: 'Contact',
+    _id: '5dd575666a19cc6918296c6c',
+    published: true,
+    title: 'Contact Us',
     url: '/contact',
+    language: 'en',
+    blocks: [
+      {
+        _id: '5f3e643393c42f7f3a0535b7',
+        name: 'Form',
+        props: { formId: '5f3e63f993c42f7f3a0535b4' },
+        template: {
+          path: '/modules/forms/views/formPageBlock',
+          beforeRenderService: 'modules/forms/services/FormsService',
+          beforeRenderMethod: 'beforeFormRender',
+        },
+      },
+    ],
+    meta: {},
+    template: 'standard',
+    background: '',
+    headerBackground: '',
+  },
+  {
+    _id: '5f3e605531c69e7bc25823ae',
+    title: 'Terms & Conditions',
+    url: '/terms-and-conditions',
     template: 'standard',
     published: true,
     language: 'en',
@@ -145,54 +171,7 @@ module.exports = [
     ],
   },
   {
-    title: 'User Agreement',
-    url: '/user-agreement',
-    template: 'standard',
-    published: true,
-    language: 'en',
-    blocks: [
-      {
-        _id: '5ec042491d39df14f9778563',
-        name: 'HTML',
-        props: {
-          html: `<section>
-    <div class="rs-panel rs-panel-default rs-panel-bordered">
-        <div class="rs-panel-body">
-            <h2>Header 2</h2>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-        </div>
-    </div>
-    <div class="v-spacer-3"></div>
-    <div class="rs-panel rs-panel-default rs-panel-bordered">
-        <div class="rs-panel-body">
-            <h3>Header 3</h3>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                <ul>
-                  <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco</li>
-                  <li>Duis aute irure dolor in reprehenderit in voluptate</li>
-                  <li>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit</li>
-                  <li>Minim veniam, quis nostrud exercitation ullamco</li>
-                </ul>
-            </p>
-        </div>
-    </div>
-</section>`,
-        },
-        template: { path: '/modules/pages/views/htmlPageBlock' },
-      },
-    ],
-  },
-  {
+    _id: '5dd68b358777b748a9d95415',
     title: 'Privacy Policy',
     url: '/privacy-policy',
     template: 'standard',
@@ -247,17 +226,17 @@ module.exports = [
     published: true,
     title: 'Account Verified',
     subtitle: '',
-    url: '/verify-account/success',
+    url: '/verify-email/success',
     blocks: [
       {
         _id: '5ee40ef53f714a5486f6a2ba',
         name: 'HTML',
         props: {
-          html: `<div class="rs-grid-container">\n<section class="section dark">\n<h3 style="text-align: center;">
-Thank You For Verifying!</h3>\n\n<p style="text-align: center;">&nbsp;</p>\n\n<p style="text-align: center;"><br />\n
-<strong>Your Account has been successfully verified.</strong></p>\n\n<p>&nbsp;</p>\n\n<p>&nbsp;</p>\n\n
-<p style="text-align: center;"><a activeclassname="active-alt" class="rs-btn rs-btn-ghost white" href="/">Go To 
-Home Page </a></p>\n</section>\n</div>\n\n<p>&nbsp;</p>`,
+          html: `<div class="rs-grid-container"><section class="section"><h3 style="text-align: center;">
+Thank You For Verifying!</h3><p style="text-align: center;">&nbsp;</p><p style="text-align: center;"><br />
+<strong>Your Account has been successfully verified.</strong></p><p>&nbsp;</p><p>&nbsp;</p>
+<p style="text-align: center;"><a class="rs-btn rs-btn-ghost white" href="/">Go To 
+Home Page </a></p><p>&nbsp;</p></section></div>`,
         },
         template: { path: '/modules/pages/views/htmlPageBlock' },
       },
@@ -275,18 +254,17 @@ Home Page </a></p>\n</section>\n</div>\n\n<p>&nbsp;</p>`,
     published: true,
     title: 'Account Verification Error',
     subtitle: '',
-    url: '/verify-account/error',
+    url: '/verify-email/error',
     blocks: [
       {
         _id: '5ee40f733f714a5486f6a2bc',
         name: 'HTML',
         props: {
-          html: `<div class="rs-grid-container">\n<section class="section dark">\n<h3 style="text-align: center;">
-Account Verification Failed!</h3>\n\n<p>&nbsp;</p>\n\n<p>&nbsp;</p>\n\n<p style="text-align: center;"><strong>
-Your Account verification has failed. Please contact us and we will try to help you.</strong></p>\n\n<p>&nbsp;</p>
-\n\n<p>&nbsp;</p>\n\n<p style="text-align: center;">
-<a activeclassname="active-alt" class="rs-btn rs-btn-ghost white" href="/contact-us">Contact Us</a></p>
-\n\n<p style="text-align: center;">&nbsp;</p>\n</section>\n</div>\n`,
+          html: `<div class="rs-grid-container"><section class="section"><p>&nbsp</p><p style="text-align: center;">
+<strong>Your Account verification has failed. Please contact us and we will try to help you.</strong></p><p>&nbsp;</p>
+<p>&nbsp;</p><p style="text-align: center;">
+<a class="rs-btn rs-btn-ghost white" href="/contact-us">Contact Us</a></p>
+<p style="text-align: center;">&nbsp;</p></section></div>`,
         },
         template: { path: '/modules/pages/views/htmlPageBlock' },
       },

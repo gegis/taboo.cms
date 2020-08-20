@@ -136,14 +136,6 @@ class UserForm extends React.Component {
           </ControlLabel>
           <FormControl name="country" accepter={SelectPicker} data={this.countriesAdminStore.allCountriesOptions} />
         </FormGroup>
-        <FormGroup controlId="verified" className="inline">
-          <ControlLabel>
-            <Translation message="Account Verified" />
-          </ControlLabel>
-          <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.verified} onChange={setCheckboxItemValue.bind(null, 'verified')} />
-          </div>
-        </FormGroup>
         <FormGroup controlId="active" className="inline">
           <ControlLabel>
             <Translation message="Active" />
@@ -152,6 +144,28 @@ class UserForm extends React.Component {
             <Checkbox checked={item.active} onChange={setCheckboxItemValue.bind(null, 'active')} />
           </div>
         </FormGroup>
+        <FormGroup controlId="admin" className="inline">
+          <ControlLabel>
+            <Translation message="Admin" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <Checkbox checked={item.admin} onChange={setCheckboxItemValue.bind(null, 'admin')} />
+          </div>
+        </FormGroup>
+        <FormGroup controlId="loginAttempts" className="inline">
+          <ControlLabel>
+            <Translation message="Bad Login Attempts" />
+          </ControlLabel>
+          <FormControl name="loginAttempts" />
+        </FormGroup>
+        {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.acl.view') && (
+          <FormGroup controlId="roles" className="inline">
+            <ControlLabel>
+              <Translation message="Roles" />
+            </ControlLabel>
+            <FormControl name="roles" accepter={MultiCascader} data={allRolesForSelection} />
+          </FormGroup>
+        )}
         {/*<FormGroup controlId="exported" className="inline">*/}
         {/*  <ControlLabel>*/}
         {/*    <Translation message="Exported" />*/}
@@ -160,6 +174,28 @@ class UserForm extends React.Component {
         {/*    <Checkbox checked={item.exported} onChange={setCheckboxItemValue.bind(null, 'exported')} />*/}
         {/*  </div>*/}
         {/*</FormGroup>*/}
+        <FormGroup controlId="userDocuments">
+          <ControlLabel>
+            <Translation message="User Documents" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">{this.getUserDocumentsPreview()}</div>
+        </FormGroup>
+        <FormGroup controlId="verified" className="inline">
+          <ControlLabel>
+            <Translation message="Account Verified" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <Checkbox checked={item.verified} onChange={setCheckboxItemValue.bind(null, 'verified')} />
+          </div>
+        </FormGroup>
+        <FormGroup controlId="emailVerified" className="inline">
+          <ControlLabel>
+            <Translation message="Email Verified" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <Checkbox checked={item.emailVerified} onChange={setCheckboxItemValue.bind(null, 'emailVerified')} />
+          </div>
+        </FormGroup>
         <FormGroup controlId="verificationStatus" className="inline">
           <ControlLabel>
             <Translation message="Verification Status" />
@@ -178,28 +214,6 @@ class UserForm extends React.Component {
           </ControlLabel>
           <div className="rs-form-control-wrapper">
             <Checkbox checked={item.agreeToTerms} onChange={setCheckboxItemValue.bind(null, 'agreeToTerms')} disabled />
-          </div>
-        </FormGroup>
-        <FormGroup controlId="loginAttempts" className="inline">
-          <ControlLabel>
-            <Translation message="Bad Login Attempts" />
-          </ControlLabel>
-          <FormControl name="loginAttempts" />
-        </FormGroup>
-        {this.aclStore.isAllowed(this.aclStore.userACL, 'admin.acl.view') && (
-          <FormGroup controlId="roles" className="inline">
-            <ControlLabel>
-              <Translation message="Roles" />
-            </ControlLabel>
-            <FormControl name="roles" accepter={MultiCascader} data={allRolesForSelection} />
-          </FormGroup>
-        )}
-        <FormGroup controlId="admin" className="inline">
-          <ControlLabel>
-            <Translation message="Admin" />
-          </ControlLabel>
-          <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.admin} onChange={setCheckboxItemValue.bind(null, 'admin')} />
           </div>
         </FormGroup>
       </Form>

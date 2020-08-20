@@ -23,7 +23,7 @@ import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 import Modal from 'modules/core/ui/components/Modal';
 import UsersHelper from 'modules/users/ui/helpers/UsersHelper';
 
-class MyProfile extends React.Component {
+class AccountSettings extends React.Component {
   constructor(props) {
     super(props);
     this.formValidation = UsersHelper.getUserFormValidation();
@@ -113,16 +113,24 @@ class MyProfile extends React.Component {
   }
 
   resendVerification() {
-    const { usersStore, uiStore } = this.props;
+    const { usersStore, uiStore, notificationsStore } = this.props;
     const { user: { email } = {} } = usersStore;
     uiStore.setLoading(true);
     usersStore.resendVerification().then(data => {
       uiStore.setLoading(false);
-      if (data) {
-        Notification.info({
+      if (data && data.success) {
+        notificationsStore.push({
           title: 'Success',
-          description: `Verification successfully sent to ${email}.`,
-          duration: 10000,
+          html: 'Verification successfully sent to {email}.',
+          translationVars: { email: email },
+          translate: true,
+        });
+      } else {
+        notificationsStore.push({
+          type: 'error',
+          title: 'Error',
+          html: 'Verification send has failed.',
+          translate: true,
         });
       }
     });
@@ -147,7 +155,7 @@ class MyProfile extends React.Component {
     const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     return (
       <Template
-        className="my-profile-page"
+        className="account-settings-page"
         title="Account Settings"
         metaTitle="Account Settings"
         headerMinimized={true}
@@ -166,9 +174,8 @@ class MyProfile extends React.Component {
                 model={this.formValidation}
                 onSubmit={this.handleSubmit}
                 autoComplete="off"
-                className="form my-profile"
+                className="form account-settings"
               >
-                <h1>Account Settings</h1>
                 <FormGroup>
                   <ControlLabel>
                     <Translation message="Profile Picture" />
@@ -192,12 +199,6 @@ class MyProfile extends React.Component {
                     <Translation message="Last Name" />
                   </ControlLabel>
                   <FormControl name="lastName" autoComplete="off" onKeyDown={this.onInputKeyDown} />
-                </FormGroup>
-                <FormGroup controlId="username">
-                  <ControlLabel>
-                    <Translation message="Username" />
-                  </ControlLabel>
-                  <FormControl name="username" autoComplete="off" onKeyDown={this.onInputKeyDown} />
                 </FormGroup>
                 <FormGroup controlId="email">
                   <ControlLabel>
@@ -241,7 +242,7 @@ class MyProfile extends React.Component {
                     <hr />
                     <FormGroup className="resend-verification-wrapper">
                       <div className="pull-left">
-                        <ControlLabel>Account Not Verified</ControlLabel>
+                        <ControlLabel>Email Not Verified</ControlLabel>
                       </div>
                       <div className="pull-right">
                         <Button appearance="primary" className="resend-verification" onClick={this.resendVerification}>
@@ -284,21 +285,31 @@ class MyProfile extends React.Component {
   }
 }
 
-MyProfile.propTypes = {
+AccountSettings.propTypes = {
   usersStore: PropTypes.object.isRequired,
   authStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
   countriesStore: PropTypes.object.isRequired,
   uploadsStore: PropTypes.object.isRequired,
   templatesStore: PropTypes.object.isRequired,
+  notificationsStore: PropTypes.object.isRequired,
   uiStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
 const enhance = compose(
   withRouter,
-  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'uploadsStore', 'templatesStore', 'uiStore'),
+  inject(
+    'usersStore',
+    'authStore',
+    'localeStore',
+    'countriesStore',
+    'uploadsStore',
+    'templatesStore',
+    'uiStore',
+    'notificationsStore'
+  ),
   observer
 );
 
-export default enhance(MyProfile);
+export default enhance(AccountSettings);

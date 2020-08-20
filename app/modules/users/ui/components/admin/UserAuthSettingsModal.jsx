@@ -164,12 +164,6 @@ class UserAuthSettingsModal extends React.Component {
               <FormControl name="roles" accepter={MultiCascader} data={allRolesForSelection} />
             </FormGroup>
           )}
-          <FormGroup controlId="verificationStatus" className="inline">
-            <ControlLabel>
-              <Translation message="Verification Status" />
-            </ControlLabel>
-            <FormControl name="verificationStatus" accepter={SelectPicker} data={allVerificationStatuses} />
-          </FormGroup>
           <FormGroup controlId="verified" className="inline">
             <ControlLabel>
               <Translation message="Account Verified" />
@@ -180,12 +174,30 @@ class UserAuthSettingsModal extends React.Component {
                 onChange={setCheckboxItemValue.bind(null, 'verified')}
                 style={{ display: 'inline-block' }}
               />
-              {!item.verified && (
+            </div>
+          </FormGroup>
+          <FormGroup controlId="emailVerified" className="inline">
+            <ControlLabel>
+              <Translation message="Email Verified" />
+            </ControlLabel>
+            <div className="rs-form-control-wrapper">
+              <Checkbox
+                checked={item.emailVerified}
+                onChange={setCheckboxItemValue.bind(null, 'emailVerified')}
+                style={{ display: 'inline-block' }}
+              />
+              {!item.emailVerified && (
                 <Button size="sm" appearance="primary" onClick={this.resendAccountVerification.bind(this, item._id)}>
                   <Translation message="Resend Email" />
                 </Button>
               )}
             </div>
+          </FormGroup>
+          <FormGroup controlId="verificationStatus" className="inline">
+            <ControlLabel>
+              <Translation message="Verification Status" />
+            </ControlLabel>
+            <FormControl name="verificationStatus" accepter={SelectPicker} data={allVerificationStatuses} />
           </FormGroup>
           <FormGroup controlId="apiKey" className="user-api-key-form-group">
             <ControlLabel>

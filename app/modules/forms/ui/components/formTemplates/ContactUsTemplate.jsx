@@ -5,14 +5,19 @@ import { observer, inject } from 'mobx-react';
 import validator from 'validator';
 import PropTypes from 'prop-types';
 
+// TODO - move to config
 const requestTypes = [
   {
-    label: 'Customer support',
-    value: 'Customer support',
+    label: 'Generic',
+    value: 'Generic',
   },
   {
-    label: 'Business stuff',
-    value: 'Business stuff',
+    label: 'Request a callback',
+    value: 'Request a callback',
+  },
+  {
+    label: 'Customer Support',
+    value: 'Customer Support',
   },
 ];
 
@@ -23,8 +28,9 @@ class ContactUsTemplate extends React.Component {
       form: {
         name: '',
         email: '',
+        phone: '',
         requestType: '',
-        request: '',
+        message: '',
       },
     };
     this.onInputChange = this.onInputChange.bind(this);
@@ -47,8 +53,10 @@ class ContactUsTemplate extends React.Component {
     }
     if (!data.requestType) {
       return 'Please select Request Type';
+    } else if (data.requestType === 'Request a callback' && !data.phone) {
+      return 'Please enter your Phone Number';
     }
-    if (!data.request) {
+    if (!data.message) {
       return 'Please enter your message';
     }
 
@@ -84,8 +92,9 @@ class ContactUsTemplate extends React.Component {
             form: {
               name: '',
               email: '',
+              phone: '',
               requestType: '',
-              request: '',
+              message: '',
             },
           });
         }
@@ -99,34 +108,34 @@ class ContactUsTemplate extends React.Component {
       <div className="contact-us-template">
         <Form fluid onChange={this.onInputChange} formValue={form}>
           <Row>
-            <Col md={12}>
-              <FormGroup controlId="name" className="inline">
+            <Col mdOffset={6} md={12}>
+              <FormGroup controlId="name">
                 <ControlLabel>Full Name</ControlLabel>
                 <FormControl name="name" />
               </FormGroup>
-              <FormGroup controlId="email" className="inline">
+              <FormGroup controlId="email">
                 <ControlLabel>Email Address</ControlLabel>
                 <FormControl name="email" />
               </FormGroup>
-              <FormGroup controlId="requestType" className="inline">
-                <ControlLabel>Select Department</ControlLabel>
+              <FormGroup controlId="phone">
+                <ControlLabel>Phone Number</ControlLabel>
+                <FormControl name="phone" />
+              </FormGroup>
+              <FormGroup controlId="requestType">
+                <ControlLabel>Request Type</ControlLabel>
                 <FormControl
                   name="requestType"
-                  placeholder="Please Select"
+                  placeholder="Please Select..."
                   data={requestTypes}
                   accepter={InputPicker}
                 />
               </FormGroup>
-            </Col>
-            <Col md={12}>
-              <FormGroup controlId="request" className="inline">
-                <ControlLabel>What&apos;s Up</ControlLabel>
-                <FormControl name="request" componentClass="textarea" />
+              <FormGroup controlId="message" className="inline">
+                <ControlLabel>Message</ControlLabel>
+                <FormControl name="message" componentClass="textarea" />
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
-            <Col>
+            <Col mdOffset={6} md={12}>
               <Button appearance="primary" className="form-submit pull-right" onClick={this.onFormSubmit}>
                 Submit
               </Button>

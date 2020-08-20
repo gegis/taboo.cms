@@ -1,8 +1,6 @@
 const { config } = require('@taboo/cms-core');
 const LanguageService = require('modules/core/services/LanguageService');
-const {
-  uploads: { urlPath: userFilesPath = '/user-files', secureUrlPath: secureFilesPath = '/secure-files' } = {},
-} = config;
+const { uploads: { urlPath: userFilesPath = '/files', secureUrlPath: secureFilesPath = '/user-files' } = {} } = config;
 
 module.exports = async (ctx, next) => {
   const { routeParams: { moduleRoute: { path: routePath = '' } = {} } = {} } = ctx;

@@ -76,8 +76,8 @@ class MobileSidebar extends React.Component {
           </div>
           {authStore.authenticated && authStore.user && (
             <div>
-              <Link to="/my-profile" className="mobile-sidebar-link">
-                My Account
+              <Link to="/account-settings" className="mobile-sidebar-link">
+                Account Settings
               </Link>
               <div className="v-spacer-3" />
               <LogoutButton appearance="primary" />

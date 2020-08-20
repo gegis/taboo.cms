@@ -49,7 +49,7 @@ class Header extends React.Component {
       <RsHeader className="header">
         <Grid>
           <Row className="menu">
-            <Col xs={6} md={3} className="nav-brand-wrapper">
+            <Col xs={12} md={3} className="nav-brand-wrapper">
               <Link to={this.getLogoLinkTo()} className="nav-brand logo">
                 {this.getLogo()}
               </Link>
@@ -57,10 +57,10 @@ class Header extends React.Component {
             <Col md={13} smHidden className="navigation">
               <Navigation navigationName={this.getNavigationName()} />
             </Col>
-            <Col md={8} smHidden className="user-menu">
+            <Col md={8} smHidden>
               <HeaderSubNav />
             </Col>
-            <Col xs={18} className="sidebar-toggle-wrapper rs-visible-sm">
+            <Col xs={12} className="sidebar-toggle-wrapper rs-visible-sm">
               <button type="button" className="rs-btn rs-btn-subtle sidebar-toggle" onClick={this.openSidebar}>
                 <i className="rs-icon rs-icon-bars" />
               </button>

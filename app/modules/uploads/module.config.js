@@ -24,7 +24,7 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/member-files/:id',
+      path: '/user-files/:id',
       action: UploadsController.serveUserFiles,
       policies: [],
       options: {
