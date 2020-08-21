@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Button, Icon } from 'rsuite';
+import { Button, Icon, InputGroup } from 'rsuite';
 import UploadSelect from 'modules/uploads/ui/components/admin/UploadSelect';
 
 class ImagePicker extends React.Component {
@@ -53,9 +53,20 @@ class ImagePicker extends React.Component {
   }
 
   getInput() {
-    const { input } = this.props;
+    const { input, onClear = null } = this.props;
     if (input) {
-      return <div className="input-wrapper">{input}</div>;
+      return (
+        <div className="input-wrapper">
+          <InputGroup inside>
+            {input}
+            {onClear && (
+              <InputGroup.Button onClick={onClear}>
+                <Icon icon="times-circle" />
+              </InputGroup.Button>
+            )}
+          </InputGroup>
+        </div>
+      );
     }
     return null;
   }
@@ -87,6 +98,7 @@ ImagePicker.propTypes = {
   input: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   button: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   className: PropTypes.string,
+  onClear: PropTypes.func,
 };
 
 export default ImagePicker;

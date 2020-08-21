@@ -234,4 +234,8 @@ module.exports = {
   'Bad Login Attempts': 'Bad Login Attempts',
   'Email Verified': 'Email Verified',
   'Agree To Terms & Conditions': 'Agree To Terms & Conditions',
+  'Meta Information': 'Meta Information',
+  'Meta Title': 'Meta Title',
+  'Meta Keywords': 'Meta Keywords',
+  'Meta Description': 'Meta Description',
 };

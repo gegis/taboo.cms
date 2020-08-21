@@ -70,6 +70,7 @@ class PageForm extends React.Component {
               value={item.background}
               returnValueKey="url"
               onChange={this.onImageChange.bind(this, 'background')}
+              onClear={this.onImageChange.bind(this, 'background', '')}
             />
           </div>
           <HelpBlock tooltip>Recommended size: 1600 x 500 px </HelpBlock>
@@ -87,6 +88,7 @@ class PageForm extends React.Component {
               value={item.headerBackground}
               returnValueKey="url"
               onChange={this.onImageChange.bind(this, 'headerBackground')}
+              onClear={this.onImageChange.bind(this, 'headerBackground', '')}
             />
           </div>
           <HelpBlock tooltip>Recommended size: 1600 x 500 px </HelpBlock>
