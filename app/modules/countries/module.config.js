@@ -12,12 +12,6 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/countries',
-      action: CountriesController.index,
-      policies: [],
-    },
-    {
-      method: 'GET',
       path: '/api/countries/system',
       action: CountriesController.getAllSystem,
       policies: [],

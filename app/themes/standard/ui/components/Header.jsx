@@ -45,8 +45,9 @@ class Header extends React.Component {
   }
 
   render() {
+    const { headerStyle } = this.props;
     return (
-      <RsHeader className="header">
+      <RsHeader className="header" style={headerStyle}>
         <Grid>
           <Row className="menu">
             <Col xs={12} md={3} className="nav-brand-wrapper">
@@ -74,6 +75,7 @@ class Header extends React.Component {
 }
 
 Header.propTypes = {
+  headerStyle: PropTypes.object,
   authStore: PropTypes.object,
   uiStore: PropTypes.object,
   templatesStore: PropTypes.object,

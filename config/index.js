@@ -51,6 +51,6 @@ module.exports = {
   logger: logger,
   gulp: gulp,
   countries: {
-    defaultCountryIso: 'gb',
+    defaultCountryIso: 'GB',
   },
 };

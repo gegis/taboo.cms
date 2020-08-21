@@ -6,7 +6,7 @@ const ArrayHelper = require('modules/core/helpers/ArrayHelper');
 const countries = require('../data/countries');
 const {
   api: { countries: { defaultSort = { sort: 'asc' } } = {} } = {},
-  countries: { defaultCountryIso = 'gb' } = {},
+  countries: { defaultCountryIso = 'GB' } = {},
 } = config;
 
 class CountriesService {
@@ -56,7 +56,7 @@ class CountriesService {
     return country;
   }
 
-  async getUserCountry(ctx, setUserCountry = false) {
+  async getVisitorCountry(ctx, setUserCountry = false) {
     const { session } = ctx;
     // const ip = UsersService.getUserIp(ctx);
     let country = null;

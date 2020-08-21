@@ -21,8 +21,12 @@ class PagesService {
       pageVariables = {};
       pageVariables = Object.assign({}, ctx.viewParams);
       pageVariables.metaTitle = `${page.title} | ${metaTitle}`;
+      if (page.metaTitle) {
+        pageVariables.metaTitle = `${page.metaTitle} | ${metaTitle}`;
+      }
+      pageVariables.metaKeywords = page.metaKeywords;
+      pageVariables.metaDescription = page.metaDescription;
       pageVariables.pageTitle = page.title;
-      pageVariables.metaDescription = page.subtitle;
       pageVariables.fullWidth = page.fullWidth;
       pageVariables.blocks = page.blocks;
       if (page.language) {

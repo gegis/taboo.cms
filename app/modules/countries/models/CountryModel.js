@@ -16,10 +16,6 @@ const CountryModel = MongoDbAdapter.setupModel('Country', {
     imageUrl: {
       type: String,
     },
-    allowUserSelect: {
-      type: Boolean,
-      default: false,
-    },
     enabled: {
       type: Boolean,
       default: false,

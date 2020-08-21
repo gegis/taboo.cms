@@ -42,14 +42,6 @@ class Page extends Component {
       });
   }
 
-  getPageTitle() {
-    const { pagesStore } = this.props;
-    if (!pagesStore.pageNotFound && pagesStore.page && pagesStore.page.title) {
-      return pagesStore.page.title;
-    }
-    return null;
-  }
-
   getPageBlocks() {
     const blocksMap = ConfigHelper.getPageBlocksMap();
     const { page = {} } = this.props.pagesStore;
@@ -72,8 +64,10 @@ class Page extends Component {
     const style = {};
     if (page.background) {
       style.backgroundColor = 'transparent';
-    } else if (page.headerBackground) {
-      style.backgroundImage = `url('${page.headerBackground}')`;
+    }
+    if (page.headerBackground) {
+      style.background = `transparent url('${page.headerBackground}') no-repeat 50% 50%`;
+      style.backgroundSize = 'cover';
     }
     return style;
   }
@@ -82,7 +76,7 @@ class Page extends Component {
     const { page = {} } = this.props.pagesStore;
     if (page.background) {
       return {
-        background: `transparent url('${page.background}') no-repeat 50% 0`,
+        background: `transparent url('${page.background}') no-repeat 50% 50%`,
         backgroundAttachment: 'fixed',
         backgroundSize: 'cover',
       };
@@ -90,21 +84,41 @@ class Page extends Component {
     return null;
   }
 
+  getPageTitle() {
+    const { pagesStore } = this.props;
+    if (!pagesStore.pageNotFound && pagesStore.page && pagesStore.page.title) {
+      return pagesStore.page.title;
+    }
+    return null;
+  }
+
+  getMetaTitle(title) {
+    const { pagesStore } = this.props;
+    const { page: { metaTitle = null } = {} } = pagesStore;
+    if (metaTitle) {
+      return metaTitle;
+    }
+    return title;
+  }
+
   render() {
     const { pagesStore } = this.props;
     const { page = {}, pageNotFound } = pagesStore;
-    const { fullWidth = false } = page;
+    const { fullWidth = false, metaKeywords, metaDescription } = page;
     const title = this.getPageTitle();
+    const metaTitle = this.getMetaTitle(title);
     if (pageNotFound) {
       return <NotFound />;
     } else {
       const Template = TemplatesHelper.getTemplate(page.template, { templatesStore: this.props.templatesStore });
       return (
         <Template
-          metaTitle={title}
           title={title}
-          containerStyle={this.getContentStyle()}
+          metaTitle={metaTitle}
+          metaKeywords={metaKeywords}
+          metaDescription={metaDescription}
           headerStyle={this.getHeaderStyle()}
+          contentStyle={this.getContentStyle()}
           fluid={fullWidth}
           className="page"
         >

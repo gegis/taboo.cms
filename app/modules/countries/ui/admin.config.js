@@ -23,13 +23,13 @@ const stores = {
 
 const primaryMenu = [
   {
-    text: 'Casino Settings',
-    order: 200,
+    order: 2000,
     icon: React.createElement(Icon, { icon: 'cog' }),
-    acl: 'admin.casinoDetails.view',
+    text: 'Settings',
+    acl: 'admin.settings.view',
     dropdown: [
       {
-        order: 80,
+        order: 200,
         icon: React.createElement(Icon, { icon: 'globe' }),
         text: 'Countries',
         linkProps: {

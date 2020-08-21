@@ -26,7 +26,6 @@ class CountriesList extends React.Component {
           <th>Image</th>
           <th>Name</th>
           <th>ISO</th>
-          <th>User Select </th>
           <th>Enabled</th>
           <th className="action-buttons-2">Actions</th>
         </tr>
@@ -46,9 +45,6 @@ class CountriesList extends React.Component {
         {item.name}
       </td>,
       <td key="iso">{item.iso}</td>,
-      <td key="allowUserSelect">
-        <BooleanIcon value={item.allowUserSelect} />
-      </td>,
       <td key="enabled">
         <BooleanIcon value={item.enabled} />
       </td>,

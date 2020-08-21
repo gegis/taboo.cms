@@ -8,7 +8,6 @@ const newItem = {
   name: '',
   iso: '',
   imageUrl: '',
-  allowUserSelect: false,
   enabled: false,
 };
 

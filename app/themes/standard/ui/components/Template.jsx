@@ -42,11 +42,13 @@ class Template extends React.Component {
     let messageBlock = null;
     let messages = [];
 
-    if (!verified && user.id) {
+    if ((!verified || !emailVerified) && user.id) {
       if (!emailVerified) {
         messages.push(<div key="verify-email">{verifyEmailNotification}</div>);
       }
-      messages.push(<div key="verify-docs">{verifyDocsNotification}</div>);
+      if (!verified) {
+        messages.push(<div key="verify-docs">{verifyDocsNotification}</div>);
+      }
       messageBlock = <Message className="header-notification" type="error" description={messages} />;
     }
 
@@ -64,16 +66,28 @@ class Template extends React.Component {
   }
 
   render() {
-    const { children, uiStore, className, title, fluid = false } = this.props;
+    const {
+      children,
+      uiStore,
+      className,
+      title,
+      contentStyle,
+      headerStyle,
+      metaKeywords = '',
+      metaDescription = '',
+      fluid = false,
+    } = this.props;
     return (
       <Container className={classNames('template', 'standard-template', className)}>
         <MetaTags>
           <title>{this.getMetaTitle()}</title>
+          <meta name="description" content={metaDescription} />
+          <meta name="keywords" content={metaKeywords} />
         </MetaTags>
-        <Header />
+        <Header headerStyle={headerStyle} />
         {uiStore.loading && <div className="loader" />}
         {this.getVerificationMessage()}
-        <Content className="main-content">
+        <Content className="main-content" style={contentStyle}>
           <Grid fluid={fluid}>
             <Row>
               <Col md={24}>
@@ -95,7 +109,11 @@ Template.propTypes = {
   className: PropTypes.string,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   metaTitle: PropTypes.string,
+  metaKeywords: PropTypes.string,
+  metaDescription: PropTypes.string,
   fluid: PropTypes.bool,
+  headerStyle: PropTypes.object,
+  contentStyle: PropTypes.object,
   uiStore: PropTypes.object,
   notificationsStore: PropTypes.object,
   localeStore: PropTypes.object,

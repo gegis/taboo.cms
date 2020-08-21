@@ -107,13 +107,40 @@ class PageForm extends React.Component {
             <Checkbox id="published" checked={item.published} onChange={setCheckboxItemValue.bind(null, 'published')} />
           </div>
         </FormGroup>
-        <div className="blocks panel-wrapper" style={{ position: 'relative' }}>
+        <div className="panel-wrapper blocks">
           <div className="header">
             <h6>
               <Translation message="Body" />
             </h6>
           </div>
           <PageBlocks />
+        </div>
+        <div className="panel-wrapper meta">
+          <div className="header">
+            <h6>
+              <Translation message="Meta Information" />
+            </h6>
+          </div>
+          <div className="body">
+            <FormGroup controlId="metaTitle" className="inline">
+              <ControlLabel>
+                <Translation message="Meta Title" />
+              </ControlLabel>
+              <FormControl name="metaTitle" />
+            </FormGroup>
+            <FormGroup controlId="metaKeywords" className="inline">
+              <ControlLabel>
+                <Translation message="Meta Keywords" />
+              </ControlLabel>
+              <FormControl name="metaKeywords" />
+            </FormGroup>
+            <FormGroup controlId="metaDescription">
+              <ControlLabel>
+                <Translation message="Meta Description" />
+              </ControlLabel>
+              <FormControl name="metaDescription" componentClass="textarea" rows={2} />
+            </FormGroup>
+          </div>
         </div>
       </Form>
     );

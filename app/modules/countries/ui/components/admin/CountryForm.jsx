@@ -58,15 +58,6 @@ class CountryForm extends React.Component {
             />
           </div>
         </FormGroup>
-        <FormGroup controlId="allowUserSelect" className="inline">
-          <ControlLabel>
-            <Translation message="Allow User Select" />
-            <HelpBlock tooltip>Select it to appear in Countries select in Casinos filter</HelpBlock>
-          </ControlLabel>
-          <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.allowUserSelect} onChange={setCheckboxItemValue.bind(null, 'allowUserSelect')} />
-          </div>
-        </FormGroup>
         <FormGroup controlId="enabled" className="inline">
           <ControlLabel>
             <Translation message="Enabled" />

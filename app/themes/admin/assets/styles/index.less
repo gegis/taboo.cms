@@ -447,9 +447,21 @@ table {
 }
 .rs-form {
   .panel-wrapper {
+    position: relative;
     margin: 20px 20px 10px;
     .header {
       margin-bottom: 10px;
+    }
+    .body {
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      padding: 20px 0;
+      margin-bottom: 10px;
+    }
+    &::after {
+      clear: both;
+      content: ' ';
+      display: table;
     }
   }
   .rs-control-label {

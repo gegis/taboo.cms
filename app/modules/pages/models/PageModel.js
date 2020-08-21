@@ -39,15 +39,21 @@ const PageModel = MongoDbAdapter.setupModel('Page', {
       type: Boolean,
       default: false,
     },
-    meta: {
-      type: Object,
-    },
     language: {
       type: String,
     },
     published: {
       type: Boolean,
       default: false,
+    },
+    metaTitle: {
+      type: String,
+    },
+    metaDescription: {
+      type: String,
+    },
+    metaKeywords: {
+      type: String,
     },
     createdBy: {
       type: SchemaTypes.ObjectId,
