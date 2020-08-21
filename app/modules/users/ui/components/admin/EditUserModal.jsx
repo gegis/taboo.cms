@@ -14,6 +14,7 @@ class EditUserModal extends React.Component {
     this.notificationsStore = props.notificationsStore;
     this.aclStore = props.aclStore;
     this.rolesStore = props.rolesStore;
+    this.uiAdminStore = props.uiAdminStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -33,6 +34,11 @@ class EditUserModal extends React.Component {
   }
 
   close() {
+    const { search = '', filter = null } = this.usersStore;
+    this.uiAdminStore.setLoading(true);
+    this.usersStore.loadAll({ search, filter }).then(() => {
+      this.uiAdminStore.setLoading(false);
+    });
     this.usersStore.resetItem();
     this.modal.current.close();
   }
@@ -72,8 +78,9 @@ EditUserModal.propTypes = {
   notificationsStore: PropTypes.object.isRequired,
   aclStore: PropTypes.object.isRequired,
   rolesStore: PropTypes.object.isRequired,
+  uiAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('usersStore', 'notificationsStore', 'aclStore', 'rolesStore'), observer);
+const enhance = compose(inject('usersStore', 'notificationsStore', 'aclStore', 'rolesStore', 'uiAdminStore'), observer);
 
 export default enhance(EditUserModal);

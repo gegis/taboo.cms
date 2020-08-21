@@ -113,12 +113,12 @@ class UserForm extends React.Component {
           </ControlLabel>
           <FormControl name="email" />
         </FormGroup>
-        <FormGroup controlId="username" className="inline">
-          <ControlLabel>
-            <Translation message="Username" />
-          </ControlLabel>
-          <FormControl name="username" />
-        </FormGroup>
+        {/*<FormGroup controlId="username" className="inline">*/}
+        {/*  <ControlLabel>*/}
+        {/*    <Translation message="Username" />*/}
+        {/*  </ControlLabel>*/}
+        {/*  <FormControl name="username" />*/}
+        {/*</FormGroup>*/}
         <FormGroup controlId="password" className="inline">
           <ControlLabel>
             <Translation message="Password" />

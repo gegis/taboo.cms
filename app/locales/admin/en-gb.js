@@ -231,4 +231,7 @@ module.exports = {
   Image: 'Image',
   ISO: 'ISO',
   'Full Width': 'Full Width',
+  'Bad Login Attempts': 'Bad Login Attempts',
+  'Email Verified': 'Email Verified',
+  'Agree To Terms & Conditions': 'Agree To Terms & Conditions',
 };

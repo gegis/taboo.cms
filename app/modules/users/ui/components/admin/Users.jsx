@@ -56,7 +56,7 @@ class Users extends React.Component {
 
   getPageActionButtons() {
     const filter = this.entityStore.filter || {};
-    const { verified = null, agreeToRewards = null } = filter;
+    const { verified = null, emailVerified = null } = filter;
     const buttons = [];
     buttons.push(
       <DateRangePicker
@@ -79,22 +79,18 @@ class Users extends React.Component {
         ]}
         onChange={this.filter}
         value={verified}
-      />
-    );
-    buttons.push(
+      />,
       <Filter
-        key="subscribed-filter"
-        title="Filter Subscribed"
-        filterKey="agreeToRewards"
+        key="email-verified-filter"
+        title="Filter Verified Email"
+        filterKey="emailVerified"
         options={[
-          { label: 'Subscribed', value: true },
-          { label: 'Not Subscribed', value: false },
+          { label: 'Email Verified', value: true },
+          { label: 'Email Not Verified', value: false },
         ]}
         onChange={this.filter}
-        value={agreeToRewards}
-      />
-    );
-    buttons.push(
+        value={emailVerified}
+      />,
       <a
         className="rs-btn rs-btn-default rs-btn-icon rs-btn-icon-placement-left rs-btn-icon-with-text"
         href={`/api/admin/users/export${this.getFilterQuery()}`}
@@ -103,6 +99,7 @@ class Users extends React.Component {
         <Icon icon="share-square-o" /> Export Users
       </a>
     );
+
     return buttons;
   }
 

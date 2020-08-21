@@ -7,7 +7,6 @@ const { userVerificationStatuses = [], userDocumentNames = [] } = window.app.con
 
 const newItem = {
   id: '',
-  username: '',
   firstName: '',
   lastName: '',
   email: '',
@@ -15,12 +14,15 @@ const newItem = {
   admin: false,
   active: false,
   verified: false,
+  emailVerified: false,
   loginAttempts: 0,
   roles: [],
   country: '',
   verificationStatus: 'new',
   verificationNote: '',
   apiKey: '',
+  agreeToTerms: false,
+  // exported: false,
 };
 
 class UsersAdminStore extends AbstractAdminStore {
