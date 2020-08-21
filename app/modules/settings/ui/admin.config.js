@@ -29,6 +29,7 @@ const primaryMenu = [
       {
         icon: React.createElement(Icon, { icon: 'sliders' }),
         text: 'Generic',
+        order: 100,
         linkProps: {
           to: '/admin/settings/generic',
         },

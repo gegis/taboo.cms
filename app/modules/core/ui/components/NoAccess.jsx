@@ -6,15 +6,21 @@ import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
 import Translation from 'modules/core/ui/components/Translation';
 
 class NoAccess extends React.Component {
+  getTitle() {
+    const { localeStore } = this.props;
+    return localeStore.getTranslation('No Access');
+  }
+
   render() {
-    const { localeStore, templatesStore } = this.props;
+    const { templatesStore } = this.props;
     const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     return (
-      <Template metaTitle={localeStore.getTranslation('No Access')} className="no-access">
-        <h1>403</h1>
-        <p>
-          <Translation message="No Access" />
-        </p>
+      <Template metaTitle={this.getTitle()} subtitle={this.getTitle()} title="403" className="not-found">
+        <div className="section dark" style={{ minHeight: '400px' }}>
+          <h2 style={{ textAlign: 'center' }}>
+            <Translation message="No Access" />
+          </h2>
+        </div>
       </Template>
     );
   }

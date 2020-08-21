@@ -5,7 +5,7 @@ module.exports = {
     'app/**/*.js',
     'lib/**/*.js',
     'app/**/*.jsx',
-    '!app/assets/scripts/lib/**/*.js',
+    '!app/themes/**/assets/**/*.js',
     '!app/modules/**/ui/scripts/lib/**/*.js',
   ],
   clean: ['public/js', 'public/css', 'public/fonts', 'public/images'],
@@ -14,9 +14,9 @@ module.exports = {
     watch: ['app', 'config'],
     ext: 'js ejs',
     ignore: [
-      'app/modules/**/ui',
-      'app/themes/**/ui',
-      'app/themes/**/assets',
+      'app/modules/**/ui/**/*',
+      'app/themes/**/ui/**/*',
+      'app/themes/**/assets/**/*',
       'app/themes/uiTemplates.js',
       'app/themes/uiTemplatesSettings.js',
     ],
@@ -94,12 +94,21 @@ module.exports = {
       {
         src: 'app/themes/**/assets/images/**/*',
         dest: 'public/images',
+        flattenLevel: 1,
+      },
+      {
+        src: 'app/themes/admin/assets/ckeditor/**/*',
+        dest: 'public/admin/ckeditor',
       },
       {
         src: 'node_modules/rsuite/dist/styles/fonts/**/*',
         dest: 'public/fonts',
       },
     ],
-    watch: ['app/themes/**/assets/images/**/*', 'app/themes/**/assets/fonts/**/*'],
+    watch: [
+      'app/themes/**/assets/images/**/*',
+      'app/themes/**/assets/fonts/**/*',
+      '!app/themes/admin/assets/ckeditor/**/*',
+    ],
   },
 };

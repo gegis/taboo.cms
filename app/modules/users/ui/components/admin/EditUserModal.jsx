@@ -20,6 +20,7 @@ class EditUserModal extends React.Component {
   }
 
   open(id) {
+    this.usersStore.resetItem();
     this.usersStore.loadById(id).then(() => {
       if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.acl.view')) {
         this.rolesStore.loadAllRolesForSelection().then(() => {
@@ -33,7 +34,6 @@ class EditUserModal extends React.Component {
 
   close() {
     this.usersStore.resetItem();
-    this.usersStore.loadAll();
     this.modal.current.close();
   }
 

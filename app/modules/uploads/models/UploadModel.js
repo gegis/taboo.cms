@@ -27,13 +27,21 @@ const UploadModel = MongoDbAdapter.setupModel('Upload', {
       type: String,
       required: [true, 'is required'],
     },
-    documentType: {
-      type: String,
-      default: '',
-    },
-    isUserDocument: {
+    isUserFile: {
       type: Boolean,
       default: false,
+    },
+    isPrivate: {
+      type: Boolean,
+      default: false,
+    },
+    isDocument: {
+      type: Boolean,
+      default: false,
+    },
+    documentName: {
+      type: String,
+      default: '',
     },
     verified: {
       type: Boolean,

@@ -1,5 +1,6 @@
 const { Password, Confirm, Input } = require('enquirer');
 const CLIHelper = require('modules/cli/helpers/CLIHelper');
+const CoreHelper = require('modules/core/helpers/CoreHelper');
 const UsersService = require('modules/users/services/UsersService');
 const UserModel = require('modules/users/models/UserModel');
 const RoleModel = require('modules/acl/models/RoleModel');
@@ -54,6 +55,9 @@ class UserCommand {
 
     this.user.firstName = this.user.email.split('@')[0];
     this.user.lastName = this.user.email.split('@')[0];
+
+    this.user.username = CoreHelper.parseSlug(this.user.firstName);
+    this.user.country = 'GB';
   }
 
   getEmailPrompt() {

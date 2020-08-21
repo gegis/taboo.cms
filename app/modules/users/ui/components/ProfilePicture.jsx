@@ -5,6 +5,9 @@ class ProfilePicture extends React.Component {
   constructor(props) {
     super(props);
     this.notFoundImageUrl = '/images/_shared/profile-picture.png';
+    if (props.alternative) {
+      this.notFoundImageUrl = '/images/_shared/profile-picture-alt.png';
+    }
     this.errorCount = 0;
     this.onImageError = this.onImageError.bind(this);
   }
@@ -48,6 +51,7 @@ ProfilePicture.propTypes = {
   url: PropTypes.string,
   className: PropTypes.string,
   size: PropTypes.string,
+  alternative: PropTypes.bool,
 };
 
 export default ProfilePicture;

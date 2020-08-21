@@ -2,8 +2,6 @@
 @import './fonts';
 @import './helpers';
 @import './loading';
-@import './gallery';
-@import './user-profile/index';
 
 html,
 body {
@@ -25,8 +23,24 @@ body {
 }
 
 #root {
-  display: flex;
   height: 100%;
+}
+.main-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  overflow: auto;
+  min-height: 100%;
+  width: 100%;
+  height: 100%; /* NEW */
+}
+.main-content {
+  padding: 15px 15px 50px;
+}
+.page-block-frame-inner {
+  .main-content {
+    padding: 0;
+  }
 }
 .helper-copy-value-input {
   position: absolute;
@@ -87,14 +101,12 @@ textarea.rs-input {
   min-width: 270px;
 }
 
-.main-content {
-  padding: 15px 15px 50px;
-}
 .header {
   border-bottom: 1px solid @B200;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  .user-menu {
+  .header-sub-nav {
     text-align: right;
+    padding: 15px 0 0;
   }
   .nav-brand {
     &.logo {
@@ -116,7 +128,7 @@ textarea.rs-input {
   }
   .user-menu {
     .rs-dropdown {
-      padding: 12px 5px 0;
+      padding: 0;
     }
     .rs-dropdown-toggle {
       height: 42px;
@@ -143,6 +155,14 @@ textarea.rs-input {
   }
 }
 
+h1.title {
+  text-align: center;
+  min-height: 62px;
+}
+
+@import './forms';
+@import './gallery';
+@import './user-profile/index';
 @import './modal';
 @import './responsive';
 @import './print';

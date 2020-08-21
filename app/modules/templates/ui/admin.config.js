@@ -3,6 +3,7 @@ import { Icon } from 'rsuite';
 
 import Templates from './components/admin/Templates';
 import TemplatesAdminStore from './stores/TemplatesAdminStore';
+import TemplatesStore from './stores/TemplatesStore';
 
 const enabled = true;
 
@@ -16,13 +17,14 @@ const routes = [
 ];
 
 const stores = {
-  templatesStore: TemplatesAdminStore,
+  templatesAdminStore: TemplatesAdminStore,
+  templatesStore: TemplatesStore,
 };
 
 const primaryMenu = [
   {
     order: 340,
-    icon: React.createElement(Icon, { icon: 'frame' }),
+    icon: React.createElement(Icon, { icon: 'web' }),
     text: 'Templates',
     linkProps: {
       to: '/admin/templates',

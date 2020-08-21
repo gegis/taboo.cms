@@ -1,0 +1,15 @@
+<h2>Contact Us Request - <%= requestType %></h2>
+<p>
+    <strong><%= name %> &lt;<%= email %>&gt;</strong>
+</p>
+<% if (typeof phone !== 'undefined' && phone) { %>
+    <p>
+        <strong><%= phone %></strong>
+    </p>
+<% } %>
+<h3>
+    Message
+</h3>
+<p>
+    <%= message %>
+</p>

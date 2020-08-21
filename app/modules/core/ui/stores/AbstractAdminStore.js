@@ -7,7 +7,8 @@ class AbstractAdminStore {
   constructor(options) {
     this.options = options;
     this.page = 1;
-    this.limit = 50;
+    this.limit = options.limit || 50;
+    this.total = 0;
     this.hasMoreResults = false;
     this.filter = null;
     this.search = '';
@@ -61,25 +62,30 @@ class AbstractAdminStore {
       };
       this.page = 1;
       this.hasMoreResults = false;
-      this.search = '';
       if (options.search) {
         this.setSearch(options.search);
         opts.params.search = options.search;
+      } else {
+        this.setSearch('');
       }
       if (options.populate) {
         this.setPopulate(options.populate);
         opts.params.populate = options.populate;
       }
-      if (this.filter) {
+      if (options.filter) {
+        this.setFilter(options.filter);
+        opts.params.filter = options.filter;
+      } else if (this.filter) {
         opts.params.filter = this.filter;
       }
       axios[loadAll.method](loadAll.path, opts)
         .then(response => {
           runInAction(() => {
-            const { data = [] } = response;
-            this.setItems(data);
-            this.hasMoreResults = data.length === this.limit;
-            resolve(data);
+            const { data: { items = [], total = 0, page = 1, limit = 1 } = {} } = response;
+            this.setItems(items);
+            this.total = total;
+            this.hasMoreResults = page * limit < total;
+            resolve(response.data);
           });
         })
         .catch(ResponseHelper.handleError);
@@ -108,10 +114,11 @@ class AbstractAdminStore {
       axios[loadAll.method](loadAll.path, opts)
         .then(response => {
           runInAction(() => {
-            const { data = [] } = response;
-            this.hasMoreResults = data.length === this.limit;
-            this.setItems(this.items.concat(data));
-            resolve(data);
+            const { data: { items = [], total = 0, page = 1, limit = 1 } = {} } = response;
+            this.setItems(this.items.concat(items));
+            this.total = total;
+            this.hasMoreResults = page * limit < total;
+            resolve(response.data);
           });
         })
         .catch(ResponseHelper.handleError);
@@ -157,7 +164,7 @@ class AbstractAdminStore {
   update(data, updateItems = true) {
     return new Promise(resolve => {
       const { update } = this.options.endpoints;
-      axios[update.method](update.path.replace(':id', data.id), data)
+      axios[update.method](update.path.replace(':id', data._id), data)
         .then(response => {
           runInAction(() => {
             let index, items;
@@ -221,25 +228,73 @@ class AbstractAdminStore {
 
   reorderItems(startIndex, endIndex) {
     return new Promise(resolve => {
-      const [removed] = this.items.splice(startIndex, 1);
-      const { update, reorder } = this.options.endpoints;
-      let endpoint = {
-        method: update.method,
-        path: update.path.replace(':id', 'reorder'),
-      };
-      if (reorder) {
-        endpoint = reorder;
+      if (this.search) {
+        ResponseHelper.handleError(new Error('Reorder is not allowed if you have an active search'));
+      } else {
+        runInAction(() => {
+          const [removed] = this.items.splice(startIndex, 1);
+          this.items.splice(endIndex, 0, removed);
+        });
+        const data = {
+          items: this.parseReorderItems(),
+        };
+        const { update, reorder } = this.options.endpoints;
+        let endpoint = {
+          method: update.method,
+          path: update.path.replace(':id', 'reorder'),
+        };
+        if (reorder) {
+          endpoint = reorder;
+        }
+        axios[endpoint.method](endpoint.path, data)
+          .then(response => {
+            resolve(response.data);
+          })
+          .catch(ResponseHelper.handleError);
       }
-      runInAction(() => {
-        this.items.splice(endIndex, 0, removed);
-      });
-      axios[endpoint.method](endpoint.path, this.items)
-        .then(response => {
-          resolve(response.data);
-        })
-        .catch(ResponseHelper.handleError);
     });
   }
+
+  parseReorderItems() {
+    const items = [];
+    let newItem;
+    this.items.map((item, i) => {
+      newItem = { _id: item._id, sort: i };
+      items.push(newItem);
+    });
+    return items;
+  }
+
+  // TODO - too unstable
+  // reorderItems(startIndex, endIndex) {
+  //   return new Promise(resolve => {
+  //     const data = {
+  //       oldPosition: startIndex,
+  //       newPosition: endIndex,
+  //       item: Object.assign({}, this.items[startIndex]),
+  //     };
+  //     const [removed] = this.items.splice(startIndex, 1);
+  //     const { update, reorder } = this.options.endpoints;
+  //     let endpoint = {
+  //       method: update.method,
+  //       path: update.path.replace(':id', 'reorder'),
+  //     };
+  //
+  //     if (reorder) {
+  //       endpoint = reorder;
+  //     }
+  //
+  //     runInAction(() => {
+  //       this.items.splice(endIndex, 0, removed);
+  //     });
+  //
+  //     axios[endpoint.method](endpoint.path, data)
+  //       .then(response => {
+  //         resolve(response.data);
+  //       })
+  //       .catch(ResponseHelper.handleError);
+  //   });
+  // }
 
   /**
    * It's a workaround for rsuite Forms to update data on change
@@ -261,6 +316,7 @@ class AbstractAdminStore {
 
 decorate(AbstractAdminStore, {
   page: observable,
+  total: observable,
   hasMoreResults: observable,
   filter: observable,
   search: observable,

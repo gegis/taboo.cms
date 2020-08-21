@@ -45,15 +45,15 @@ class Template extends React.Component {
   }
 
   render() {
-    const { children, uiStore, className } = this.props;
+    const { children, uiStore, className, fluid = false } = this.props;
     return (
-      <Container className={classNames('template', 'standard-template', className)}>
+      <Container id="main-container" className={classNames('main-container', 'template', 'blank-template', className)}>
         <MetaTags>
           <title>{this.getMetaTitle()}</title>
         </MetaTags>
         {uiStore.loading && <div className="loader" />}
         <Content className="main-content">
-          <Grid>
+          <Grid fluid={fluid}>
             <Row>
               <Col md={24}>{children}</Col>
             </Row>
@@ -73,6 +73,7 @@ Template.propTypes = {
   notificationsStore: PropTypes.object,
   localeStore: PropTypes.object,
   templatesStore: PropTypes.object,
+  fluid: PropTypes.bool,
 };
 
 const enhance = compose(withRouter, inject('uiStore', 'notificationsStore', 'localeStore', 'templatesStore'), observer);

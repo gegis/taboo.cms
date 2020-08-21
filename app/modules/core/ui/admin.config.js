@@ -4,6 +4,7 @@ import IndexPage from './components/admin/IndexPage';
 
 import RouterStore from './stores/RouterStore';
 import UIAdminStore from './stores/UIAdminStore';
+import UIStore from './stores/UIStore';
 import NotificationsStore from './stores/NotificationsStore';
 import LocaleStore from './stores/LocaleStore';
 
@@ -12,6 +13,7 @@ const enabled = true;
 const stores = {
   routerStore: RouterStore,
   uiAdminStore: UIAdminStore,
+  uiStore: UIStore,
   notificationsStore: NotificationsStore,
   localeStore: LocaleStore,
 };

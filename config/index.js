@@ -5,11 +5,9 @@ const db = require('./db');
 const mailer = require('./mailer');
 const logger = require('./logger');
 const gulp = require('./gulp');
-const templates = require('./templates');
 const sockets = require('./sockets');
-const verificationStatuses = ['new', 'pending', 'failed', 'approved'];
-const userDocumentTypes = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'];
-const settingsTypes = ['string', 'integer', 'float', 'json', 'boolean'];
+const client = require('./client');
+const shared = require('./shared');
 
 module.exports = {
   environment: process.env.NODE_ENV || 'development',
@@ -33,43 +31,18 @@ module.exports = {
     },
   },
   users: {
-    signInEnabled: true,
-    signUpEnabled: true,
-    verificationStatuses: verificationStatuses,
-    documentTypes: userDocumentTypes,
+    signInEnabled: shared.usersSignInEnabled,
+    signUpEnabled: shared.usersSignUpEnabled,
+    verificationStatuses: shared.verificationStatuses,
+    documentNames: shared.userDocumentNames,
+    passwordMinLength: shared.userPasswordMinLength,
   },
   sockets: sockets,
-  client: {
-    metaTitle: 'Taboo CMS',
-    admin: {
-      language: 'en',
-      locale: 'en-gb',
-    },
-    language: 'en',
-    locale: 'en-gb',
-    languages: i18n.languages,
-    dateFormat: 'DD/MM/YYYY',
-    dateTimeFormat: 'DD/MM/YYYY HH:mm:ss',
-    userACLRefreshThreshold: 1000 * 60 * 5,
-    userInfoUpdateInterval: 1000 * 60,
-    userVerificationStatuses: verificationStatuses,
-    userDocumentTypes: userDocumentTypes,
-    templates: {
-      defaultTemplate: templates.defaultTemplate,
-      previewRoute: templates.previewRoute,
-      socketsEvents: {
-        templatePreviewEmit: templates.socketsEvents.templatePreviewEmit,
-        templatePreviewReceive: templates.socketsEvents.templatePreviewReceive,
-      },
-    },
-    settings: {
-      types: settingsTypes,
-    },
-  },
+  client: client,
   settings: {
-    types: settingsTypes,
+    types: shared.settingsTypes,
   },
-  templates: templates,
+  templates: shared.templates,
   server: server,
   i18n: i18n,
   api: api,
@@ -77,4 +50,7 @@ module.exports = {
   mailer: mailer,
   logger: logger,
   gulp: gulp,
+  countries: {
+    defaultCountryIso: 'GB',
+  },
 };

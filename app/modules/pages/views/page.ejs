@@ -1,16 +1,26 @@
-<div class="rs-grid-container">
-  <div class="rs-row">
-    <div class="rs-col rs-col-md-24">
-      <div class="page">
-        <h1 class="title">
-          <%-pageTitle%>
-        </h1>
-        <div class="body">
-          <% for (let i=0; i < blocks.length; i++) { %>
-            <%- include(blocks[i].template.path, {helpers: helpers, props: blocks[i].props}) %>
-          <% } %>
+<%
+getGridClassName = function (fullWidth) {
+    if (fullWidth) {
+        return 'rs-grid-container-fluid';
+    }
+    return 'rs-grid-container';
+}
+%>
+<div class="<%- getGridClassName(fullWidth) %>">
+    <div class="rs-row">
+        <div class="rs-col rs-col-md-24">
+            <div class="page">
+                <h1 class="title">
+                    <%- pageTitle %>
+                </h1>
+                <div class="body">
+                    <% for (let i = 0; i < blocks.length; i++) { %>
+                        <% if (blocks[i].template && blocks[i].template.path) { %>
+                            <%- include(blocks[i].template.path, {helpers: helpers, props: blocks[i].props}) %>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>

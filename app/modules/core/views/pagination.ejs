@@ -1,0 +1,67 @@
+<%
+getPagination = function (urlPattern, {page = 1, limit = 10, total = 0, maxPages = null, showFirst = true, showLast = true}) {
+    let html = '';
+    let className;
+    let pages = 0
+    let startPage = 1;
+    let endPage = 1;
+    let hiddenPagesBefore = 0;
+    let hasHiddenPagesAfter = false;
+
+    if (urlPattern && total > limit) {
+        pages = Math.ceil(parseInt(total) / parseInt(limit));
+        if (maxPages && pages > maxPages) {
+            hiddenPagesBefore = page - Math.floor(maxPages / 2);
+            startPage = hiddenPagesBefore > 1 ? hiddenPagesBefore : 1;
+            hasHiddenPagesAfter = startPage + maxPages <= pages;
+            if (!hasHiddenPagesAfter) {
+                endPage = pages;
+                startPage = pages - maxPages + 1;
+                if (startPage < 1) {
+                    startPage = 1;
+                }
+            } else {
+                endPage = startPage + maxPages - 1;
+            }
+        } else {
+            endPage = pages;
+        }
+        if (showFirst && hiddenPagesBefore > 1) {
+            html += `
+<li class="rs-pagination-btn">
+    <a href="${urlPattern.replace(':pageNumber', 1)}">
+        1 <span class="rs-ripple-pond"><span class="rs-ripple"></span></span>
+    </a>
+</li >
+<li class="rs-pagination-btn">
+    <a>...</a>
+</li >`;
+        }
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === page) {
+                className = 'rs-pagination-btn rs-pagination-btn-active';
+            } else {
+                className = 'rs-pagination-btn'
+            }
+            html += `
+<li class="${className}">
+    <a href="${urlPattern.replace(':pageNumber', i)}">
+        ${i} <span class="rs-ripple-pond"><span class="rs-ripple"></span></span>
+    </a>
+</li >`;
+        }
+        if (showLast && hasHiddenPagesAfter) {
+            html += `
+<li class="rs-pagination-btn">
+    <a>...</a>
+</li >
+<li class="rs-pagination-btn">
+    <a href="${urlPattern.replace(':pageNumber', pages)}">
+        ${pages} <span class="rs-ripple-pond"><span class="rs-ripple"></span></span>
+    </a>
+</li >`;
+        }
+    }
+    return `<ul class="rs-pagination">${html}</ul>`;
+}
+%>

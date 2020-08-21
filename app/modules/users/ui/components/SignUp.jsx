@@ -4,52 +4,27 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import {
-  Panel,
   Form,
   FormGroup,
   ControlLabel,
   FormControl,
   Button,
-  ButtonToolbar,
   Grid,
   Row,
   Col,
-  Schema,
   Notification,
-  RadioGroup,
-  Radio,
   Checkbox,
   SelectPicker,
+  Panel,
 } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
-
-const { StringType } = Schema.Types;
+import SocketsClient from 'modules/core/ui/helpers/SocketsClient';
+import UsersHelper from 'modules/users/ui/helpers/UsersHelper';
 
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
-    const { usersStore } = props;
-    this.model = Schema.Model({
-      firstName: StringType().isRequired('First Name is required.'),
-      lastName: StringType().isRequired('Last Name is required.'),
-      street: StringType().isRequired('Street is required.'),
-      city: StringType().isRequired('City is required.'),
-      state: StringType().isRequired('State is required.'),
-      country: StringType().isRequired('Country is required.'),
-      postCode: StringType().isRequired('Zip Code is required.'),
-      email: StringType()
-        .isEmail('Please enter a valid email address.')
-        .isRequired('Email address is required.'),
-      password: StringType()
-        .isRequired('Password is required.')
-        .minLength(5, 'Password must be at least 5 characters long'),
-      companyName: StringType().addRule(value => {
-        if (usersStore.accountType === 'business' && !value) {
-          return false;
-        }
-        return true;
-      }, 'Company name is required.'),
-    });
+    this.formValidation = UsersHelper.getSignUpFormValidation();
     this.form = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onInputKeyDown = this.onInputKeyDown.bind(this);
@@ -61,21 +36,24 @@ class SignUp extends React.Component {
   }
 
   handleSubmit() {
-    const { localeStore, usersStore } = this.props;
+    const { usersStore, uiStore } = this.props;
+    const { signupUser } = usersStore;
     if (!this.form.current.check()) {
       Notification.error({
         title: 'Invalid Data',
-        description: localeStore.getTranslation('Please check all the fields'),
+        description: 'Please check all the fields',
         duration: 10000,
       });
-    } else if (!usersStore.userAgreement) {
+    } else if (!signupUser.agreeToTerms) {
       Notification.error({
         title: 'Invalid Data',
-        description: localeStore.getTranslation('You have to agree with terms and conditions'),
-        duration: 15000,
+        description: 'You must agree with Terms & Conditions',
+        duration: 10000,
       });
     } else {
+      uiStore.setLoading(true);
       usersStore.registerUser().then(data => {
+        uiStore.setLoading(false);
         if (data && data._id) {
           this.loginUser(usersStore.signupUser.email, usersStore.signupUser.password);
         }
@@ -89,8 +67,15 @@ class SignUp extends React.Component {
       if (data) {
         usersStore.resetSignupUser();
         authStore.loadUserAuth().then(user => {
+          const userUpdateEvent = UsersHelper.getUserEventName('update', authStore);
           if (user) {
-            return history.push('/dashboard');
+            SocketsClient.off(userUpdateEvent);
+            SocketsClient.join('users').then(() => {
+              SocketsClient.on(userUpdateEvent, () => {
+                authStore.loadUserAuth();
+              });
+            });
+            return history.push('/account-settings');
           } else {
             return history.push('/');
           }
@@ -107,6 +92,7 @@ class SignUp extends React.Component {
 
   render() {
     const { authStore, usersStore, countriesStore, templatesStore } = this.props;
+    const { setSignupUserCheckboxValue } = usersStore;
     const { templateComponents } = templatesStore;
     const Template = templateComponents[templatesStore.defaultTemplateName];
 
@@ -115,25 +101,11 @@ class SignUp extends React.Component {
     }
 
     return (
-      <Template className="sign-up-page">
+      <Template className="sign-up-page" title="Sign Up" metaTitle="Sign Up" headerMinimized={true}>
         <Grid fluid>
           <Row>
-            <Col xs={24} md={16} mdOffset={4}>
-              <h1>
-                <Translation message="Create your account" />
-              </h1>
-              <div className="account-type">
-                <RadioGroup
-                  inline
-                  name="accountType"
-                  value={usersStore.accountType}
-                  onChange={usersStore.setAccountType}
-                >
-                  <Radio value="personal">Personal</Radio>
-                  <Radio value="business">Business</Radio>
-                </RadioGroup>
-              </div>
-              <Panel className="login-panel shadow" bordered>
+            <Col xs={24} md={12} mdOffset={6}>
+              <Panel bordered>
                 <Form
                   fluid
                   ref={this.form}
@@ -141,158 +113,63 @@ class SignUp extends React.Component {
                   onCheck={usersStore.setSignupUserError}
                   formValue={usersStore.signupUser}
                   formError={usersStore.signupUserError}
-                  checkTrigger="blur"
-                  model={this.model}
+                  checkTrigger="change"
+                  model={this.formValidation}
                   onSubmit={this.handleSubmit}
+                  className="form"
                   autoComplete="off"
                 >
-                  {usersStore.accountType === 'personal' && (
-                    <Row>
-                      <Col sm={24} md={12}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="First Name" />
-                          </ControlLabel>
-                          <FormControl name="firstName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                      <Col sm={24} md={12}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="Last Name" />
-                          </ControlLabel>
-                          <FormControl name="lastName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  )}
-                  {usersStore.accountType === 'business' && (
-                    <Row>
-                      <Col sm={24}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="Company Name" />
-                          </ControlLabel>
-                          <FormControl name="companyName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  )}
-                  <Row>
-                    <Col sm={24}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Email" />
-                        </ControlLabel>
-                        <FormControl name="email" type="email" autoComplete="off" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col sm={24}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Password" />
-                        </ControlLabel>
-                        <FormControl
-                          name="password"
-                          type="password"
-                          autoComplete="off"
-                          onKeyDown={this.onInputKeyDown}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col sm={24}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Street Address" />
-                        </ControlLabel>
-                        <FormControl name="street" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col sm={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="City" />
-                        </ControlLabel>
-                        <FormControl name="city" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col sm={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="State" />
-                        </ControlLabel>
-                        <FormControl name="state" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                    <Col sm={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="Country" />
-                        </ControlLabel>
-                        <FormControl name="country" accepter={SelectPicker} data={countriesStore.countriesSelect} />
-                      </FormGroup>
-                    </Col>
-                    <Col sm={24} md={12}>
-                      <FormGroup>
-                        <ControlLabel>
-                          <Translation message="ZIP Code" />
-                        </ControlLabel>
-                        <FormControl name="postCode" type="text" onKeyDown={this.onInputKeyDown} />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  {usersStore.accountType === 'business' && (
-                    <Row>
-                      <Col sm={24}>
-                        <div className="legal-representative">
-                          <Translation message="Legal Representative" />
-                        </div>
-                        <div className="v-spacer-2" />
-                      </Col>
-                      <Col sm={24} md={12}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="First Name" />
-                          </ControlLabel>
-                          <FormControl name="firstName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                      <Col sm={24} md={12}>
-                        <FormGroup>
-                          <ControlLabel>
-                            <Translation message="Last Name" />
-                          </ControlLabel>
-                          <FormControl name="lastName" type="text" onKeyDown={this.onInputKeyDown} />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  )}
-                  <Row>
-                    <Col sm={24}>
-                      <FormGroup className="user-agreement">
-                        <Checkbox
-                          name="userAgreement"
-                          onChange={usersStore.setUserAgreement}
-                          value={usersStore.userAgreement}
-                        >
-                          I agree to{' '}
-                          <a target="_blank" href="/user-agreement">
-                            User Agreement
-                          </a>{' '}
-                          and{' '}
-                          <a target="_blank" href="/privacy-policy">
-                            Privacy Policy
-                          </a>
-                        </Checkbox>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <FormGroup>
-                    <ButtonToolbar>
-                      <Button appearance="primary" className="pull-right" onClick={this.handleSubmit}>
-                        <Translation message="Sign up" />
-                      </Button>
-                    </ButtonToolbar>
+                  <FormGroup controlId="firstName">
+                    <ControlLabel>
+                      <Translation message="First Name" />
+                    </ControlLabel>
+                    <FormControl name="firstName" autoComplete="off" type="text" onKeyDown={this.onInputKeyDown} />
+                  </FormGroup>
+                  <FormGroup controlId="lastName">
+                    <ControlLabel>
+                      <Translation message="Last Name" />
+                    </ControlLabel>
+                    <FormControl name="lastName" autoComplete="off" type="text" onKeyDown={this.onInputKeyDown} />
+                  </FormGroup>
+                  <FormGroup controlId="email">
+                    <ControlLabel>
+                      <Translation message="Email" />
+                    </ControlLabel>
+                    <FormControl name="email" type="email" autoComplete="off" onKeyDown={this.onInputKeyDown} />
+                  </FormGroup>
+                  <FormGroup controlId="password">
+                    <ControlLabel>
+                      <Translation message="Password" />
+                    </ControlLabel>
+                    <FormControl
+                      name="password"
+                      type="password"
+                      autoComplete="new-password"
+                      onKeyDown={this.onInputKeyDown}
+                    />
+                  </FormGroup>
+                  <FormGroup controlId="country">
+                    <ControlLabel>
+                      <Translation message="Country" />
+                    </ControlLabel>
+                    <FormControl name="country" accepter={SelectPicker} data={countriesStore.allCountriesOptions} />
+                  </FormGroup>
+                  <FormGroup className="user-agreement">
+                    <Checkbox
+                      name="agreeToTerms"
+                      onChange={setSignupUserCheckboxValue.bind(null, 'agreeToTerms')}
+                      checked={usersStore.signupUser.agreeToTerms}
+                    >
+                      I agree to{' '}
+                      <a target="_blank" href="/terms-and-conditions">
+                        Terms & Conditions
+                      </a>
+                    </Checkbox>
+                  </FormGroup>
+                  <FormGroup className="form-submit-wrapper">
+                    <Button appearance="primary" className="btn-huge" onClick={this.handleSubmit}>
+                      Create Account
+                    </Button>
                   </FormGroup>
                   <div className="clearfix" />
                 </Form>
@@ -311,12 +188,13 @@ SignUp.propTypes = {
   localeStore: PropTypes.object.isRequired,
   countriesStore: PropTypes.object.isRequired,
   templatesStore: PropTypes.object.isRequired,
+  uiStore: PropTypes.object.isRequired,
   history: PropTypes.object,
 };
 
 const enhance = compose(
   withRouter,
-  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'templatesStore'),
+  inject('usersStore', 'authStore', 'localeStore', 'countriesStore', 'templatesStore', 'uiStore'),
   observer
 );
 

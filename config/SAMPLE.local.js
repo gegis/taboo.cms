@@ -1,8 +1,9 @@
+const shared = require('./shared');
+
 module.exports = {
   environment: process.env.NODE_ENV || 'development',
-  debug: true,
   server: {
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || shared.port,
     cache: {
       enabled: false,
     },

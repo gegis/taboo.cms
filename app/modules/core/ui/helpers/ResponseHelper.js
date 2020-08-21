@@ -1,4 +1,5 @@
 import UIStore from 'app/modules/core/ui/stores/UIStore';
+import UIAdminStore from 'app/modules/core/ui/stores/UIAdminStore';
 import NotificationsStore from 'app/modules/core/ui/stores/NotificationsStore';
 import ACLStore from 'app/modules/acl/ui/stores/ACLStore';
 import AuthStore from 'app/modules/users/ui/stores/AuthStore';
@@ -17,6 +18,7 @@ class ResponseHelper {
     const { response: { status: errResponseStatus = null } = {} } = err;
     let message = '';
     UIStore.setLoading(false);
+    UIAdminStore.setLoading(false);
     if (validationMessage && validationErrors) {
       this.handleValidationErrors(validationMessage, validationErrors);
     } else if (Object.keys(errors).length > 0) {

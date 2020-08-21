@@ -5,18 +5,11 @@ import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
 
 const defaultLanguage = 'en';
 const defaultLocale = 'en-gb';
-const defaultLocaleMapping = {
-  en: 'en-gb',
-  it: 'it-it',
-};
+const defaultLocaleMapping = { en: 'en-gb' };
 const defaultLanguages = [
   {
     title: 'English',
     code: 'en',
-  },
-  {
-    title: 'Italian',
-    code: 'it',
   },
 ];
 const language = window.app.config.language || defaultLanguage;

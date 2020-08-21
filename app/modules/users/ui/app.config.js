@@ -2,8 +2,9 @@ import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import ResetPassword from './components/ResetPassword';
 import ChangePassword from './components/ChangePassword';
-import MyProfile from './components/MyProfile';
-import AccountVerification from './components/AccountVerification';
+import AccountSettings from './components/AccountSettings';
+import VerifyEmail from './components/VerifyEmail';
+import VerifyDocs from './components/VerifyDocs';
 
 import AuthStore from './stores/AuthStore';
 import UsersStore from './stores/UsersStore';
@@ -39,15 +40,21 @@ const routes = [
     authorised: false,
   },
   {
-    path: '/my-profile',
+    path: '/verify-email/:userId/:token',
     exact: true,
-    component: MyProfile,
+    component: VerifyEmail,
+    authorised: false,
+  },
+  {
+    path: '/account-settings',
+    exact: true,
+    component: AccountSettings,
     authorised: true,
   },
   {
-    path: '/account-verify',
+    path: '/verify-docs',
     exact: true,
-    component: AccountVerification,
+    component: VerifyDocs,
     authorised: true,
   },
 ];

@@ -13,27 +13,24 @@ class Dashboard extends Component {
     const { templateComponents } = templatesStore;
     const Template = templateComponents[templatesStore.defaultTemplateName];
     return (
-      <Template className="dashboard">
+      <Template className="dashboard" title="My Profile" metaTitle="My Profile" headerMinimized={true}>
         <Grid>
           <Row>
-            <Col md={16} mdOffset={4}>
-              <h1>Dashboard</h1>
-              <Panel className="dashboard" bordered>
+            <Col sm={24} md={12} mdOffset={6}>
+              <Panel className="dashboard single-panel" bordered>
                 <Row>
                   <Col md={6}>
                     <div style={{ textAlign: 'center' }}>
-                      <ProfilePicture url={authStore.user.profilePictureUrl} size="md" />
+                      <ProfilePicture url={authStore.user.profilePictureUrl} size="xl" />
                     </div>
-                    <div className="v-spacer-2" />
                   </Col>
                   <Col md={18}>
-                    <p>
+                    <h3>
                       {authStore.user.firstName} {authStore.user.lastName}
-                      <br />
-                      {authStore.user.email}
-                    </p>
+                    </h3>
+                    <h4>{authStore.user.email}</h4>
                     <p>
-                      <Link to="/my-profile">My Profile</Link>
+                      <Link to="/account-settings">Account Settings</Link>
                     </p>
                   </Col>
                 </Row>

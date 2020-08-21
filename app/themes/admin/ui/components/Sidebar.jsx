@@ -38,20 +38,28 @@ class Sidebar extends React.Component {
         if (item.dropdown && item.dropdown.length > 0) {
           menuItemChildren = [];
           item.dropdown.map((child, j) => {
-            menuItemChildren.push(
-              <NavDropDownLink key={`${i}-${j}`} icon={child.icon} {...child.linkProps}>
-                <Translation message={child.text} />
-              </NavDropDownLink>
-            );
+            if (this.aclStore.isAllowed(this.aclStore.userACL, child.acl)) {
+              menuItemChildren.push(
+                <NavDropDownLink
+                  key={`${i}-${j}`}
+                  eventKey={`${i}-${j}`}
+                  icon={child.icon}
+                  {...child.linkProps}
+                  onSelect={this.onDropdownSelect.bind(this, i)}
+                >
+                  <Translation message={child.text} />
+                </NavDropDownLink>
+              );
+            }
           });
           menuItems.push(
-            <Dropdown key={i} eventKey={i} title={item.text} icon={item.icon}>
+            <Dropdown key={i} eventKey={i} trigger="click" title={item.text} icon={item.icon}>
               {menuItemChildren}
             </Dropdown>
           );
         } else {
           menuItems.push(
-            <NavLink key={i} eventKey={i} icon={item.icon} onSelect={this.onDropdownSelect} {...item.linkProps}>
+            <NavLink key={i} eventKey={i} icon={item.icon} {...item.linkProps}>
               <Translation message={item.text} />
             </NavLink>
           );

@@ -1,6 +1,6 @@
 const { config } = require('@taboo/cms-core');
 const LanguageService = require('modules/core/services/LanguageService');
-const { uploads: { urlPath = '/user-files', secureUrlPath = '/secure-files' } = {} } = config;
+const { uploads: { urlPath: userFilesPath = '/files', secureUrlPath: secureFilesPath = '/user-files' } = {} } = config;
 
 module.exports = async (ctx, next) => {
   const { routeParams: { moduleRoute: { path: routePath = '' } = {} } = {} } = ctx;
@@ -8,13 +8,17 @@ module.exports = async (ctx, next) => {
   let locale = null;
   let namespace = 'client';
 
-  if (routePath && routePath.indexOf(urlPath) !== 0 && routePath.indexOf(secureUrlPath) !== 0) {
+  if (routePath && routePath.indexOf(userFilesPath) !== 0 && routePath.indexOf(secureFilesPath) !== 0) {
     if (routePath.indexOf('/admin') !== -1) {
       namespace = 'admin';
     }
     if (ctx.params && (ctx.params.language || ctx.params.locale)) {
-      language = ctx.params.language;
-      locale = ctx.params.locale;
+      if (ctx.params.language && LanguageService.languageIsValid(ctx.params.language)) {
+        language = ctx.params.language;
+      }
+      if (ctx.params.locale && LanguageService.localeIsValid(ctx.params.locale)) {
+        locale = ctx.params.locale;
+      }
     } else {
       if (namespace === 'client' && ctx.session && ctx.session.locale) {
         locale = ctx.session.locale;

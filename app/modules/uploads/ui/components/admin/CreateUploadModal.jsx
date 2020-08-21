@@ -46,12 +46,22 @@ class CreateUploadModal extends React.Component {
 
   onUpload() {
     this.uploadsStore.uploadItems((err, data) => {
+      const { itemsToUpload = [] } = this.uploadsStore;
+      let uploadedItems = 0;
       if (!err && data) {
         this.notificationsStore.push({
           html: 'Successfully uploaded {item}',
           translationVars: { item: data.name },
           translate: true,
         });
+        itemsToUpload.map(item => {
+          if (item.status === 'uploaded') {
+            uploadedItems++;
+          }
+        });
+        if (uploadedItems === itemsToUpload.length) {
+          this.close();
+        }
       }
     });
   }

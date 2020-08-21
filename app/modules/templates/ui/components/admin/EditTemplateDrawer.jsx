@@ -11,7 +11,7 @@ class EditTemplateDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.drawer = React.createRef();
-    this.templatesStore = props.templatesStore;
+    this.templatesAdminStore = props.templatesAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -20,42 +20,43 @@ class EditTemplateDrawer extends React.Component {
   }
 
   open(id) {
-    this.templatesStore.loadById(id).then(data => {
+    this.templatesAdminStore.resetItem();
+    this.templatesAdminStore.loadById(id).then(data => {
       this.drawer.current.open();
       setTimeout(() => {
-        this.templatesStore.setPreviewPath(data.name);
+        this.templatesAdminStore.setPreviewPath(data.name);
       }, 150);
     });
   }
 
   close() {
-    this.templatesStore.resetItem();
-    this.templatesStore.unsetPreviewPath();
+    this.templatesAdminStore.resetItem();
+    this.templatesAdminStore.unsetPreviewPath();
     this.drawer.current.close();
   }
 
   onSave() {
-    const { item } = this.templatesStore;
-    this.templatesStore.update(item).then(data => {
+    const { item } = this.templatesAdminStore;
+    this.templatesAdminStore.update(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully updated {item}',
         translationVars: { item: data.title },
         translate: true,
       });
-      this.templatesStore.resetItem();
-      this.templatesStore.loadAll();
+      this.templatesAdminStore.resetItem();
+      this.templatesAdminStore.loadAll();
       this.close();
     });
   }
 
   getDrawerTitle() {
-    const { item } = this.templatesStore;
+    const { item } = this.templatesAdminStore;
     return <Translation message="{title} Template" values={{ title: item.title }} />;
   }
 
   getSettingsComponent() {
-    const { item, templatesSettings } = this.templatesStore;
+    const { item, templatesSettings } = this.templatesAdminStore;
     if (item && item.name && templatesSettings[item.name]) {
       return templatesSettings[item.name];
     }
@@ -63,12 +64,12 @@ class EditTemplateDrawer extends React.Component {
   }
 
   onIframeLoad() {
-    const { authStore, templatesStore } = this.props;
-    TemplatesHelper.emitTemplateChanges({ authStore, templatesStore });
+    const { authStore, templatesAdminStore } = this.props;
+    TemplatesHelper.emitTemplateChanges({ authStore, templatesAdminStore });
   }
 
   render() {
-    const { previewPath } = this.templatesStore;
+    const { previewPath } = this.templatesAdminStore;
     const Settings = this.getSettingsComponent();
     return (
       <Drawer
@@ -95,11 +96,11 @@ class EditTemplateDrawer extends React.Component {
 }
 
 EditTemplateDrawer.propTypes = {
-  templatesStore: PropTypes.object.isRequired,
+  templatesAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
   authStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('templatesStore', 'notificationsStore', 'authStore'), observer);
+const enhance = compose(inject('templatesAdminStore', 'notificationsStore', 'authStore'), observer);
 
 export default enhance(EditTemplateDrawer);

@@ -18,6 +18,7 @@ class EditUploadModal extends React.Component {
   }
 
   open(id) {
+    this.uploadsStore.resetItem();
     this.uploadsStore.loadById(id).then(() => {
       this.modal.current.open();
     });
@@ -31,8 +32,10 @@ class EditUploadModal extends React.Component {
   onSave() {
     const { item } = this.uploadsStore;
     const updateItem = {
-      id: item.id,
+      _id: item._id,
       name: item.name,
+      isUserFile: item.isUserFile,
+      isPrivate: item.isPrivate,
       verified: item.verified,
       note: item.note,
     };

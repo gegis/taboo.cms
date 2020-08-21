@@ -2,8 +2,8 @@ import React from 'react';
 import { compose } from 'recompose';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { Drawer, Button } from 'rsuite';
-import { Link, withRouter } from 'react-router-dom';
+import { Drawer } from 'rsuite';
+import { withRouter, Link } from 'react-router-dom';
 import Translation from 'app/modules/core/ui/components/Translation';
 import ButtonLink from 'app/modules/core/ui/components/ButtonLink';
 import ProfilePicture from 'modules/users/ui/components/ProfilePicture';
@@ -36,10 +36,7 @@ class MobileSidebar extends React.Component {
   }
 
   getNavigationName() {
-    const { authStore, templatesStore } = this.props;
-    if (authStore.authenticated && authStore.user) {
-      return templatesStore.languageSettings.headerNavigationAuthenticated;
-    }
+    const { templatesStore } = this.props;
     return templatesStore.languageSettings.headerNavigation;
   }
 
@@ -52,7 +49,7 @@ class MobileSidebar extends React.Component {
         show={uiStore.userSidebarOpen}
         onHide={this.close}
         backdrop={true}
-        className="user-sidebar"
+        className="mobile-sidebar"
       >
         <Drawer.Header />
         <Drawer.Body onClick={this.handleClick}>
@@ -60,21 +57,29 @@ class MobileSidebar extends React.Component {
             <div>
               <ProfilePicture url={authStore.user.profilePictureUrl} size="xs" />
               {authStore.user.email}
-              <div className="v-spacer-5" />
+              <div className="v-spacer-3" />
             </div>
           )}
           <Navigation navigationName={this.getNavigationName()} vertical={true} />
           {authStore.authenticated && authStore.user && authStore.user.admin && (
             <div>
-              <div className="v-spacer-5" />
-              <Button appearance="link" key="admin" onClick={this.goToAdmin}>
+              <div className="v-spacer-3" />
+              <a href="#" className="mobile-sidebar-link" key="admin" onClick={this.goToAdmin}>
                 <Translation message="Admin" />
-              </Button>
+              </a>
             </div>
           )}
+          <div>
+            <Link to="/" className="mobile-sidebar-link">
+              Home
+            </Link>
+          </div>
           {authStore.authenticated && authStore.user && (
             <div>
-              <div className="v-spacer-5" />
+              <Link to="/account-settings" className="mobile-sidebar-link">
+                Account Settings
+              </Link>
+              <div className="v-spacer-3" />
               <LogoutButton appearance="primary" />
             </div>
           )}

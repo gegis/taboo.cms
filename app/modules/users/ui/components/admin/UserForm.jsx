@@ -21,7 +21,12 @@ class UserForm extends React.Component {
     this.aclStore = props.aclStore;
     this.usersStore = props.usersStore;
     this.rolesStore = props.rolesStore;
+    this.countriesAdminStore = props.countriesAdminStore;
     this.getUserDocumentsPreview = this.getUserDocumentsPreview.bind(this);
+  }
+
+  componentDidMount() {
+    this.countriesAdminStore.loadAllCountriesOptions();
   }
 
   getFilePreview(item) {
@@ -45,20 +50,20 @@ class UserForm extends React.Component {
   }
 
   getUserDocumentsPreview() {
-    const { item, userDocumentTypes, toggleUserDocumentVerified } = this.usersStore;
+    const { item, userDocumentNames, toggleUserDocumentVerified } = this.usersStore;
     let preview = [];
-    userDocumentTypes.map(docType => {
-      if (item[docType]) {
+    userDocumentNames.map(docName => {
+      if (item[docName]) {
         preview.push(
-          <div key={item[docType]._id} className="user-document-wrapper">
+          <div key={item[docName]._id} className="user-document-wrapper">
             <div className="user-document">
               <div>
-                <Translation message={docType} />
+                <Translation message={docName} />
               </div>
-              <div className="document-file-preview">{this.getFilePreview(item[docType])}</div>
+              <div className="document-file-preview">{this.getFilePreview(item[docName])}</div>
               <div className="document-verified">
                 Verified:{' '}
-                <Checkbox checked={item[docType].verified} onChange={toggleUserDocumentVerified.bind(null, docType)} />
+                <Checkbox checked={item[docName].verified} onChange={toggleUserDocumentVerified.bind(null, docName)} />
               </div>
             </div>
           </div>
@@ -81,6 +86,14 @@ class UserForm extends React.Component {
             <FormControl name="id" disabled />
           </FormGroup>
         )}
+        {item.id && (
+          <FormGroup controlId="createdAt" className="inline">
+            <ControlLabel>
+              <Translation message="Created At" />
+            </ControlLabel>
+            <FormControl name="createdAt" disabled />
+          </FormGroup>
+        )}
         {item.id && <div className="clearfix" />}
         <FormGroup controlId="firstName" className="inline">
           <ControlLabel>
@@ -100,24 +113,28 @@ class UserForm extends React.Component {
           </ControlLabel>
           <FormControl name="email" />
         </FormGroup>
+        <FormGroup controlId="username" className="inline">
+          <ControlLabel>
+            <Translation message="Username" />
+          </ControlLabel>
+          <FormControl name="username" />
+        </FormGroup>
         <FormGroup controlId="password" className="inline">
           <ControlLabel>
             <Translation message="Password" />
           </ControlLabel>
-          <FormControl name="password" type="password" autoComplete="off" />
+          <FormControl name="password" type="password" autoComplete="new-password" />
           {item.id && (
             <HelpBlock tooltip>
               <Translation message="Leave it empty if you do not want to change it" />
             </HelpBlock>
           )}
         </FormGroup>
-        <FormGroup controlId="admin" className="inline">
+        <FormGroup controlId="country" className="inline">
           <ControlLabel>
-            <Translation message="Admin" />
+            <Translation message="Country" />
           </ControlLabel>
-          <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.admin} onChange={setCheckboxItemValue.bind(null, 'admin')} />
-          </div>
+          <FormControl name="country" accepter={SelectPicker} data={this.countriesAdminStore.allCountriesOptions} />
         </FormGroup>
         <FormGroup controlId="active" className="inline">
           <ControlLabel>
@@ -127,9 +144,17 @@ class UserForm extends React.Component {
             <Checkbox checked={item.active} onChange={setCheckboxItemValue.bind(null, 'active')} />
           </div>
         </FormGroup>
+        <FormGroup controlId="admin" className="inline">
+          <ControlLabel>
+            <Translation message="Admin" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <Checkbox checked={item.admin} onChange={setCheckboxItemValue.bind(null, 'admin')} />
+          </div>
+        </FormGroup>
         <FormGroup controlId="loginAttempts" className="inline">
           <ControlLabel>
-            <Translation message="Login Attempts" />
+            <Translation message="Bad Login Attempts" />
           </ControlLabel>
           <FormControl name="loginAttempts" />
         </FormGroup>
@@ -141,11 +166,35 @@ class UserForm extends React.Component {
             <FormControl name="roles" accepter={MultiCascader} data={allRolesForSelection} />
           </FormGroup>
         )}
+        {/*<FormGroup controlId="exported" className="inline">*/}
+        {/*  <ControlLabel>*/}
+        {/*    <Translation message="Exported" />*/}
+        {/*  </ControlLabel>*/}
+        {/*  <div className="rs-form-control-wrapper">*/}
+        {/*    <Checkbox checked={item.exported} onChange={setCheckboxItemValue.bind(null, 'exported')} />*/}
+        {/*  </div>*/}
+        {/*</FormGroup>*/}
         <FormGroup controlId="userDocuments">
           <ControlLabel>
             <Translation message="User Documents" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">{this.getUserDocumentsPreview()}</div>
+        </FormGroup>
+        <FormGroup controlId="verified" className="inline">
+          <ControlLabel>
+            <Translation message="Account Verified" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <Checkbox checked={item.verified} onChange={setCheckboxItemValue.bind(null, 'verified')} />
+          </div>
+        </FormGroup>
+        <FormGroup controlId="emailVerified" className="inline">
+          <ControlLabel>
+            <Translation message="Email Verified" />
+          </ControlLabel>
+          <div className="rs-form-control-wrapper">
+            <Checkbox checked={item.emailVerified} onChange={setCheckboxItemValue.bind(null, 'emailVerified')} />
+          </div>
         </FormGroup>
         <FormGroup controlId="verificationStatus" className="inline">
           <ControlLabel>
@@ -159,83 +208,13 @@ class UserForm extends React.Component {
           </ControlLabel>
           <FormControl name="verificationNote" componentClass="textarea" />
         </FormGroup>
-        <FormGroup controlId="verified" className="inline">
+        <FormGroup controlId="agreeToTerms" className="inline">
           <ControlLabel>
-            <Translation message="Account Verified" />
+            <Translation message="Agree To Terms & Conditions" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.verified} onChange={setCheckboxItemValue.bind(null, 'verified')} />
+            <Checkbox checked={item.agreeToTerms} onChange={setCheckboxItemValue.bind(null, 'agreeToTerms')} disabled />
           </div>
-        </FormGroup>
-        <FormGroup controlId="businessAccount" className="inline">
-          <ControlLabel>
-            <Translation message="Business Account" />
-          </ControlLabel>
-          <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.businessAccount} onChange={setCheckboxItemValue.bind(null, 'businessAccount')} />
-          </div>
-        </FormGroup>
-        <FormGroup controlId="companyName" className="inline">
-          <ControlLabel>
-            <Translation message="Company Name" />
-          </ControlLabel>
-          <FormControl name="companyName" />
-        </FormGroup>
-
-        <FormGroup controlId="street" className="inline">
-          <ControlLabel>
-            <Translation message="Street" />
-          </ControlLabel>
-          <FormControl name="street" />
-        </FormGroup>
-
-        <FormGroup controlId="city" className="inline">
-          <ControlLabel>
-            <Translation message="City" />
-          </ControlLabel>
-          <FormControl name="city" />
-        </FormGroup>
-
-        <FormGroup controlId="state" className="inline">
-          <ControlLabel>
-            <Translation message="State" />
-          </ControlLabel>
-          <FormControl name="state" />
-        </FormGroup>
-
-        <FormGroup controlId="country" className="inline">
-          <ControlLabel>
-            <Translation message="Country" />
-          </ControlLabel>
-          <FormControl name="country" />
-        </FormGroup>
-
-        <FormGroup controlId="postCode" className="inline">
-          <ControlLabel>
-            <Translation message="Postcode" />
-          </ControlLabel>
-          <FormControl name="postCode" />
-        </FormGroup>
-
-        <FormGroup controlId="phone" className="inline">
-          <ControlLabel>
-            <Translation message="Phone" />
-          </ControlLabel>
-          <FormControl name="phone" />
-        </FormGroup>
-
-        <FormGroup controlId="website" className="inline">
-          <ControlLabel>
-            <Translation message="Website" />
-          </ControlLabel>
-          <FormControl name="website" />
-        </FormGroup>
-
-        <FormGroup controlId="description">
-          <ControlLabel>
-            <Translation message="Description" />
-          </ControlLabel>
-          <FormControl name="description" componentClass="textarea" />
         </FormGroup>
       </Form>
     );
@@ -246,8 +225,9 @@ UserForm.propTypes = {
   aclStore: PropTypes.object.isRequired,
   usersStore: PropTypes.object.isRequired,
   rolesStore: PropTypes.object.isRequired,
+  countriesAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('aclStore', 'usersStore', 'rolesStore'), observer);
+const enhance = compose(inject('aclStore', 'usersStore', 'rolesStore', 'countriesAdminStore'), observer);
 
 export default enhance(UserForm);

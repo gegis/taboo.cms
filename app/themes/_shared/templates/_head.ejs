@@ -1,12 +1,34 @@
 <head>
-  <title><%=metaTitle%></title>
+  <title><%= metaTitle %></title>
   <meta charset="utf-8" />
+  <% if (typeof metaDescription !== 'undefined') { %>
+    <meta name="description" content="<%= metaDescription %>">
+  <% } %>
+  <% if (typeof metaKeywords !== 'undefined') { %>
+    <meta name="keywords" content="<%= metaKeywords %>">
+  <% } %>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+  <% if (_clientConfig.env !== 'production') { %>
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+  <% } %>
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-  <link rel="stylesheet" type="text/css" id="theme-lib-stylesheet" href="/css/_shared/lib.css?v=<%=_version%>" />
-  <link rel="stylesheet" type="text/css" href="/css/modules.css?v=<%=_version%>" />
-  <link rel="stylesheet" type="text/css" id="theme-stylesheet" href="/css/_shared/index.css?v=<%=_version%>" />
+  <link rel="stylesheet" type="text/css" id="theme-lib-stylesheet" href="/css/_shared/lib.css?v=<%= _version %>" />
+  <link rel="stylesheet" type="text/css" href="/css/modules.css?v=<%= _version %>" />
+  <link rel="stylesheet" type="text/css" id="theme-stylesheet" href="/css/_shared/index.css?v=<%= _version %>" />
   <style id="theme-style"><%- themeStyle %></style>
+  <% if (_clientConfig.gtag && _clientConfig.gaId) { %>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<%- _clientConfig.gtag %>"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '<%- _clientConfig.gaId %>');
+    </script>
+  <% } %>
 </head>

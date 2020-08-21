@@ -11,13 +11,28 @@ import SocketsClient from 'modules/core/ui/helpers/SocketsClient';
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.loadAuthTimeout = null;
+    this.loadAuthTimeoutMs = 1000 * 60 * 10;
     this.getRoutes = this.getRoutes.bind(this);
+    this.autoLoadAuth = this.autoLoadAuth.bind(this);
   }
 
   componentDidMount() {
+    this.autoLoadAuth();
+    SocketsClient.join('admin');
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.loadAuthTimeout);
+  }
+
+  autoLoadAuth() {
     const { authStore } = this.props;
     authStore.loadUserAuth();
-    SocketsClient.join('admin');
+    clearTimeout(this.loadAuthTimeout);
+    this.loadAuthTimeout = setTimeout(() => {
+      this.autoLoadAuth();
+    }, this.loadAuthTimeoutMs);
   }
 
   getRoutes() {

@@ -15,7 +15,7 @@ const UserModel = MongoDbAdapter.setupModel('User', {
     },
     lastName: {
       type: String,
-      required: true,
+      required: [true, 'is required'],
     },
     email: {
       type: String,
@@ -25,30 +25,27 @@ const UserModel = MongoDbAdapter.setupModel('User', {
       validate: [validator.isEmail, 'Invalid Email'],
       lowercase: true,
     },
-    companyName: {
-      type: String,
-    },
-    businessAccount: {
-      type: Boolean,
-      default: false,
-    },
-    street: {
-      type: String,
-    },
-    city: {
-      type: String,
-    },
-    state: {
-      type: String,
-    },
+    // username: {
+    //   type: String,
+    //   required: [true, 'is required'],
+    //   unique: true,
+    //   uniqueCaseInsensitive: true,
+    //   validate: [/^[\w]+$/, "Only alphanumeric symbols a-z, A-Z, 0-9 and '_'"],
+    // },
     country: {
       type: String,
-    },
-    postCode: {
-      type: String,
+      required: [true, 'is required'],
     },
     password: {
       type: String,
+    },
+    agreeToTerms: {
+      type: Boolean,
+      default: false,
+    },
+    exported: {
+      type: Boolean,
+      default: false,
     },
     passwordReset: {
       type: String,
@@ -56,30 +53,19 @@ const UserModel = MongoDbAdapter.setupModel('User', {
     passwordResetRequested: {
       type: Date,
     },
-    phone: {
+    accountVerificationCode: {
       type: String,
     },
-    description: {
-      type: String,
-    },
-    website: {
-      type: String,
+    accountVerificationCodeRequested: {
+      type: Date,
     },
     profilePicture: {
       type: SchemaTypes.ObjectId,
       ref: 'Upload',
     },
-    documentPersonal1: {
-      type: SchemaTypes.ObjectId,
-      ref: 'Upload',
-    },
-    documentPersonal2: {
-      type: SchemaTypes.ObjectId,
-      ref: 'Upload',
-    },
-    documentIncorporation: {
-      type: SchemaTypes.ObjectId,
-      ref: 'Upload',
+    emailVerified: {
+      type: Boolean,
+      default: false,
     },
     verified: {
       type: Boolean,
@@ -117,6 +103,14 @@ const UserModel = MongoDbAdapter.setupModel('User', {
     apiKey: {
       type: String,
       default: '',
+    },
+    documentPersonal1: {
+      type: SchemaTypes.ObjectId,
+      ref: 'Upload',
+    },
+    documentPersonal2: {
+      type: SchemaTypes.ObjectId,
+      ref: 'Upload',
     },
   },
   afterSchemaCreate(schema) {

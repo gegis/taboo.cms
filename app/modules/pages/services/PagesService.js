@@ -21,7 +21,13 @@ class PagesService {
       pageVariables = {};
       pageVariables = Object.assign({}, ctx.viewParams);
       pageVariables.metaTitle = `${page.title} | ${metaTitle}`;
+      if (page.metaTitle) {
+        pageVariables.metaTitle = `${page.metaTitle} | ${metaTitle}`;
+      }
+      pageVariables.metaKeywords = page.metaKeywords;
+      pageVariables.metaDescription = page.metaDescription;
       pageVariables.pageTitle = page.title;
+      pageVariables.fullWidth = page.fullWidth;
       pageVariables.blocks = page.blocks;
       if (page.language) {
         LanguageService.setLanguage(ctx, 'client', { language: page.language });
@@ -47,12 +53,12 @@ class PagesService {
       // Not in cache - try to retrieve, parse and cache it
       page = await PageModel.findOne(filter);
       if (page) {
-        if (page && page.blocks) {
+        if (page.blocks) {
           for (let i = 0; i < page.blocks.length; i++) {
             block = page.blocks[i];
             if (block.template && block.template.beforeRenderService && block.template.beforeRenderMethod) {
               beforeRenderModule = require(block.template.beforeRenderService);
-              block.props = await beforeRenderModule[block.template.beforeRenderMethod](block.props);
+              block.props = await beforeRenderModule[block.template.beforeRenderMethod](ctx, block.props);
             }
           }
         }

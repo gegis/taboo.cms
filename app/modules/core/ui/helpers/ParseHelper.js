@@ -5,6 +5,15 @@ class ParseHelper {
     }
     return false;
   }
+
+  parseAsInteger(value) {
+    if (typeof value === 'number') {
+      return parseInt(value);
+    } else if (typeof value === 'string') {
+      return parseInt(value.replace(/[^\d]/g, ''), 10);
+    }
+    return NaN;
+  }
 }
 
 export default new ParseHelper();

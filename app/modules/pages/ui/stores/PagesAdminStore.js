@@ -13,7 +13,7 @@ const newItem = {
     {
       name: 'HTML',
       props: {
-        html: '',
+        html: '<div class="rs-grid-container"><section class="section light"></section></div>',
       },
       template: {
         path: '/modules/pages/views/htmlPageBlock',
@@ -21,10 +21,12 @@ const newItem = {
     },
   ],
   template: defaultTemplate,
-  language: language,
   background: '',
+  headerBackground: '',
+  fullWidth: false,
+  language: language,
   meta: {},
-  published: false,
+  published: true,
 };
 
 class PagesAdminStore extends AbstractAdminStore {

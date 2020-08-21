@@ -21,6 +21,7 @@ class EditPageModal extends React.Component {
   }
 
   open(id) {
+    this.pagesStore.resetItem();
     this.pagesStore.loadById(id).then(() => {
       this.modal.current.open();
     });

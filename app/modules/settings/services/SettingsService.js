@@ -11,40 +11,59 @@ class SettingsService {
 
   async beforeTemplateRender(ctx) {
     const { routeParams: { clientConfig = {} } = {} } = ctx;
+    // TODO - implemented so that all public configs go in here!!!
+    const settingsKeysToAppend = ['verifyEmailNotification', 'verifyDocsNotification'];
     const settingsClientConfig = await this.getPublic('clientConfig');
+    await this.appendSettingsToClientConfig(settingsKeysToAppend, clientConfig);
     if (settingsClientConfig && typeof settingsClientConfig === 'object') {
       _.merge(clientConfig, settingsClientConfig);
     }
   }
 
+  async appendSettingsToClientConfig(settingsKeys = [], clientConfig = {}) {
+    if (!clientConfig.settings) {
+      clientConfig.settings = {};
+    }
+    for (let i = 0; i < settingsKeys.length; i++) {
+      let value = await this.getPublic(settingsKeys[i]);
+      if (value !== null) {
+        clientConfig.settings[settingsKeys[i]] = value;
+      }
+    }
+  }
+
   async getPublic(key) {
+    return this.get(key, true, true);
+  }
+
+  async get(key, returnOnlyValue = false, publicValue = false) {
     const cacheKey = key;
     let dbItem = null;
     let itemData = CacheService.get(this.cacheId, cacheKey);
 
     if (!itemData) {
-      dbItem = await SettingsModel.findOne({ key, public: true }, ['value', 'type']);
+      if (publicValue) {
+        dbItem = await SettingsModel.findOne({ key, public: true }, ['value', 'type']);
+      } else {
+        dbItem = await SettingsModel.findOne({ key }, ['key', 'value', 'public', 'type', 'category']);
+      }
       if (dbItem) {
         itemData = dbItem._doc;
         CacheService.set(this.cacheId, cacheKey, itemData);
       }
     }
 
-    if (itemData && itemData.value) {
+    if (itemData) {
       itemData = this.parseValue(itemData);
-      return itemData.value;
+    } else {
+      return null;
     }
-    return null;
-  }
 
-  async get(key) {
-    let itemData = null;
-    const item = await SettingsModel.findOne({ key }, ['key', 'value', 'public', 'type', 'category']);
-    if (item) {
-      itemData = item._doc;
-      itemData = this.parseValue(itemData);
+    if (returnOnlyValue) {
+      return itemData.value;
+    } else {
+      return itemData;
     }
-    return itemData;
   }
 
   async setPublic(key, value, type = 'string') {
@@ -146,6 +165,15 @@ class SettingsService {
 
   getACLEnabled() {
     return isAllowed() !== undefined;
+  }
+
+  splitValue(value, separator = ',') {
+    if (value) {
+      return value.split(separator).map(item => {
+        return item.trim();
+      });
+    }
+    return null;
   }
 }
 

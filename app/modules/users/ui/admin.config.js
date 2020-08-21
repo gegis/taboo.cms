@@ -8,6 +8,7 @@ import ChangePassword from './components/admin/ChangePassword';
 
 import AuthStore from './stores/AuthStore';
 import UsersAdminStore from './stores/UsersAdminStore';
+import AdminHelper from 'modules/core/ui/helpers/AdminHelper';
 
 const enabled = true;
 
@@ -24,15 +25,15 @@ const routes = [
     admin: true,
   },
   {
-    path: '/admin/login',
+    path: `/${AdminHelper.getAdminAccessUrlPrefix()}/login`,
     component: Login,
   },
   {
-    path: '/admin/reset-password',
+    path: `/${AdminHelper.getAdminAccessUrlPrefix()}/reset-password`,
     component: ResetPassword,
   },
   {
-    path: '/admin/change-password/:userId/:token',
+    path: `/${AdminHelper.getAdminAccessUrlPrefix()}/change-password/:userId/:token`,
     component: ChangePassword,
   },
 ];

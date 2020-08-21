@@ -4,6 +4,7 @@ const { templates: { themesPath } = {} } = config;
 const NavigationService = require('modules/navigation/services/NavigationService');
 const CacheService = require('modules/cache/services/CacheService');
 const TemplateModel = require('modules/templates/models/TemplateModel');
+const StringHelper = require('modules/core/ui/helpers/StringHelper');
 
 const { templates: { socketsEvents: { templatePreviewEmit = '', templatePreviewReceive = '' } = {} } = {} } = config;
 
@@ -11,6 +12,13 @@ class TemplatesService {
   constructor() {
     this.cacheId = 'templates';
     this.afterModulesSetup = this.afterModulesSetup.bind(this);
+    this.beforeTemplateRender = this.beforeTemplateRender.bind(this);
+    this.getNavigationByKeys = this.getNavigationByKeys.bind(this);
+    this.getByName = this.getByName.bind(this);
+    this.getDefault = this.getDefault.bind(this);
+    this.getFsTemplates = this.getFsTemplates.bind(this);
+    this.getFsTemplate = this.getFsTemplate.bind(this);
+    this.getProfilePicture = this.getProfilePicture.bind(this);
   }
 
   async afterModulesSetup() {
@@ -34,6 +42,13 @@ class TemplatesService {
     let templateLanguageSettings = null;
     let newParams = {
       themeStyle: '',
+      templatesHelper: {
+        getNavigationHtml: this.getNavigationHtml,
+        pluralize: this.pluralize,
+        firstUpper: StringHelper.firstUpper,
+        firstLower: StringHelper.firstLower,
+        getProfilePicture: this.getProfilePicture,
+      },
     };
     let template = null;
     if (_template && language) {
@@ -52,6 +67,64 @@ class TemplatesService {
     }
 
     return newParams;
+  }
+
+  pluralize(count, singular, plural) {
+    if (count === 1) {
+      return singular;
+    } else {
+      return plural;
+    }
+  }
+
+  getProfilePicture(user, { className = '', size = '', alternative = false } = {}) {
+    let notFoundImageUrl = '/images/_shared/profile-picture.png';
+    let imageUrl = this.getProfilePictureUrl(user);
+    let wrapperClassName = 'profile-picture';
+
+    if (alternative) {
+      notFoundImageUrl = '/images/_shared/profile-picture-alt.png';
+    }
+
+    if (className) {
+      wrapperClassName += ` ${className}`;
+    }
+
+    if (!imageUrl) {
+      imageUrl = notFoundImageUrl;
+    }
+
+    if (size) {
+      imageUrl += `?size=${size}`;
+      wrapperClassName += ` ${size}`;
+    }
+
+    return `
+<span class="${wrapperClassName}">
+  <img src="${imageUrl}" alt="${user.username}" />
+</span>`;
+  }
+
+  getProfilePictureUrl(user) {
+    if (user && user.profilePicture && user.profilePicture.url) {
+      return user.profilePicture.url;
+    }
+    return null;
+  }
+
+  getNavigationHtml(navigationItems, level = 0, nav = '<ul>') {
+    let item;
+    for (let i = 0; i < navigationItems.length; i++) {
+      item = navigationItems[i];
+      if (item.enabled) {
+        if (item.children && item.children.length > 0) {
+          nav += `<li><a>${item.title}</a>${this.getNavigationHtml(item.children, level + 1)}</li>`;
+        } else {
+          nav += `<li><a href="${item.url}">${item.title}</a></li>`;
+        }
+      }
+    }
+    return `${nav}</ul>`;
   }
 
   async getNavigationByKeys(navigationKeys = [], navigationNames) {

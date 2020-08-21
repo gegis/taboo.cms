@@ -86,9 +86,11 @@ class TemplatesAdminStore extends AbstractAdminStore {
 
   loadAll(options = {}) {
     return new Promise(resolve => {
-      super.loadAll(options).then(templates => {
-        this.setTemplateOptions(templates);
-        resolve(templates);
+      super.loadAll(options).then(data => {
+        if (data && data.items) {
+          this.setTemplateOptions(data.items);
+        }
+        resolve(data);
       });
     });
   }

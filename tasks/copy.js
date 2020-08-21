@@ -5,14 +5,14 @@ const mergeStream = require('merge-stream');
 const copyTask = (options, watchEnabled = false) => {
   const { paths = [], watch, watching = false } = options;
   const tasks = paths.map(copyItem => {
-    let flattenLevel = 1;
     if (typeof copyItem.flattenLevel !== 'undefined') {
-      flattenLevel = copyItem.flattenLevel;
+      return gulp
+        .src(copyItem.src)
+        .pipe(flatten({ includeParents: copyItem.flattenLevel }))
+        .pipe(gulp.dest(copyItem.dest));
+    } else {
+      return gulp.src(copyItem.src).pipe(gulp.dest(copyItem.dest));
     }
-    return gulp
-      .src(copyItem.src)
-      .pipe(flatten({ includeParents: flattenLevel }))
-      .pipe(gulp.dest(copyItem.dest));
   });
 
   if (watchEnabled && watch && !watching) {

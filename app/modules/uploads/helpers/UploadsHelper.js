@@ -7,6 +7,7 @@ class UploadsHelper {
     let fileNameParts;
     if (appendTimestamp) {
       fileNameParts = filesHelper.getFileNameParts(fileName);
+      fileNameParts.name = CoreHelper.parseSlug(fileNameParts.name);
       fileNameParts.name += '-' + CoreHelper.getUnixTimestamp();
       fileName = [fileNameParts.name, fileNameParts.extension].join('.');
     }

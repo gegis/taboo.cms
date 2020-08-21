@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -44,17 +45,11 @@ class UploadsList extends React.Component {
   }
 
   getUserInfo(item) {
-    let user;
     if (item && item.user && typeof item.user === 'object') {
-      user = item.user;
       return (
-        <div>
-          <div className="">
-            {user.firstName} {user.lastName}
-          </div>
-          <div className="">{user.email}</div>
-          <div className="">{user._id}</div>
-        </div>
+        <Link to={`/admin/users?search=username %3D ${item.user.username}`} title="View User">
+          {item.user.username}
+        </Link>
       );
     }
     return item.user;
@@ -69,8 +64,7 @@ class UploadsList extends React.Component {
               <Translation message="Preview" />
             </th>
             <th>File</th>
-            <th className="rs-hidden-sm">User Doc</th>
-            <th className="rs-hidden-sm">Verified</th>
+            <th className="rs-hidden-sm">User File</th>
             <th className="rs-hidden-sm">User</th>
             <th className="action-buttons-3">Actions</th>
           </tr>
@@ -91,10 +85,7 @@ class UploadsList extends React.Component {
                 </div>
               </td>
               <td className="rs-hidden-sm">
-                <BooleanIcon value={item.isUserDocument} />
-              </td>
-              <td className="rs-hidden-sm">
-                <BooleanIcon value={item.verified} />
+                <BooleanIcon value={item.isUserFile} />
               </td>
               <td className="rs-hidden-sm">{this.getUserInfo(item)}</td>
               <td>

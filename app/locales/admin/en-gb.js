@@ -223,4 +223,12 @@ module.exports = {
   'User Navigation': 'User Navigation',
   'Create New Navigation Item': 'Create New Navigation Item',
   'Edit Navigation Item': 'Edit Navigation Item',
+  'Header Background Image': 'Header Background Image',
+  'Background Image': 'Background Image',
+  Forms: 'Forms',
+  Emails: 'Emails',
+  Countries: 'Countries',
+  Image: 'Image',
+  ISO: 'ISO',
+  'Full Width': 'Full Width',
 };

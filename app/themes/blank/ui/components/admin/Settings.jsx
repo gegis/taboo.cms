@@ -9,7 +9,7 @@ import SettingsInput from 'modules/templates/ui/components/admin/SettingsInput';
 class Settings extends React.Component {
   constructor(props) {
     super(props);
-    this.templatesStore = props.templatesStore;
+    this.templatesAdminStore = props.templatesAdminStore;
     this.navigationStore = props.navigationStore;
   }
 
@@ -18,7 +18,7 @@ class Settings extends React.Component {
   }
 
   render() {
-    const { setItem, item, getFormData, setCheckboxItemValue } = this.templatesStore;
+    const { setItem, item, getFormData, setCheckboxItemValue } = this.templatesAdminStore;
     return (
       <div>
         <SettingsInput className="template-language-input-wrapper" type="TemplateLanguage" label="Template Language" />
@@ -87,10 +87,10 @@ class Settings extends React.Component {
 }
 
 Settings.propTypes = {
-  templatesStore: PropTypes.object,
+  templatesAdminStore: PropTypes.object,
   navigationStore: PropTypes.object,
 };
 
-const enhance = compose(inject('templatesStore', 'navigationStore'), observer);
+const enhance = compose(inject('templatesAdminStore', 'navigationStore'), observer);
 
 export default enhance(Settings);

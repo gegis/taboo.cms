@@ -1,51 +1,39 @@
 import { decorate, observable, action, runInAction } from 'mobx';
 import axios from 'axios';
 import ResponseHelper from 'app/modules/core/ui/helpers/ResponseHelper';
+import SocketsClient from 'modules/core/ui/helpers/SocketsClient';
+import UsersHelper from 'modules/users/ui/helpers/UsersHelper';
 
 const newSignupUser = {
   firstName: '',
   lastName: '',
-  companyName: '',
   email: '',
   password: '',
-  street: '',
-  city: '',
-  postCode: '',
-  state: '',
   country: '',
-  businessAccount: false,
+  agreeToAll: false,
+  agreeToTerms: false,
 };
 
 const newUser = {
   active: false,
   admin: false,
-  businessAccount: false,
-  city: '',
-  companyName: '',
   country: '',
   createdAt: '',
-  description: '',
   email: '',
   firstName: '',
   lastName: '',
   loginAttempts: 0,
   newPassword: '',
-  phone: '',
-  postCode: '',
   roles: [],
-  state: '',
-  street: '',
   updatedAt: '',
   verified: false,
   verificationStatus: '',
   verificationNote: '',
   profilePicture: {},
-  website: '',
 };
 
 class UsersStore {
   constructor() {
-    this.accountType = 'personal'; // 'personal' || 'business'
     this.userAgreement = false;
     this.signupUser = Object.assign({}, newSignupUser);
     this.signupUserError = {};
@@ -53,8 +41,8 @@ class UsersStore {
     this.userError = {};
     this.setSignupUserData = this.setSignupUserData.bind(this);
     this.setSignupUserError = this.setSignupUserError.bind(this);
-    this.setAccountType = this.setAccountType.bind(this);
     this.setUserAgreement = this.setUserAgreement.bind(this);
+    this.setSignupUserCheckboxValue = this.setSignupUserCheckboxValue.bind(this);
     this.resetSignupUser = this.setUserAgreement.bind(this);
     this.setUserData = this.setUserData.bind(this);
     this.setUserError = this.setUserError.bind(this);
@@ -73,7 +61,7 @@ class UsersStore {
             data.newPassword = '';
           }
           runInAction(() => {
-            this.user = Object.assign(this.user, data);
+            this.user = Object.assign({}, this.user, data);
           });
           resolve(data);
         })
@@ -93,7 +81,7 @@ class UsersStore {
           }
 
           runInAction(() => {
-            this.user = Object.assign(this.user, data);
+            this.user = Object.assign({}, this.user, data);
           });
 
           resolve(data);
@@ -105,9 +93,6 @@ class UsersStore {
   registerUser() {
     return new Promise(resolve => {
       const data = Object.assign({}, this.signupUser, { userAgreement: this.userAgreement });
-      if (this.accountType === 'business') {
-        data.businessAccount = true;
-      }
       axios
         .post('/api/users/register', data)
         .then(response => {
@@ -118,23 +103,70 @@ class UsersStore {
     });
   }
 
+  deactivateUser() {
+    return new Promise(resolve => {
+      axios
+        .put('/api/users/deactivate')
+        .then(response => {
+          const { data = {} } = response;
+          resolve(data);
+        })
+        .catch(ResponseHelper.handleError);
+    });
+  }
+
+  resendVerification() {
+    return new Promise(resolve => {
+      axios
+        .put('/api/users/resend-verification')
+        .then(response => {
+          const { data = {} } = response;
+          resolve(data);
+        })
+        .catch(ResponseHelper.handleError);
+    });
+  }
+
+  logoutUser(authStore) {
+    return new Promise(resolve => {
+      const userUpdateEvent = UsersHelper.getUserEventName('update', authStore);
+      axios
+        .get('/api/logout')
+        .then(response => {
+          const { data = {} } = response;
+          SocketsClient.off(userUpdateEvent);
+          SocketsClient.leave('users');
+          resolve(data);
+        })
+        .catch(ResponseHelper.handleError);
+    });
+  }
+
   resetSignupUser() {
-    this.accountType = 'personal'; // 'personal' || 'business'
     this.userAgreement = false;
     this.signupUser = Object.assign({}, newSignupUser);
     this.signupUserError = {};
   }
 
+  setSignupUserCheckboxValue(key, event, checked) {
+    const data = {};
+    data[key] = checked;
+    if (key === 'agreeToAll') {
+      data.agreeToTerms = checked;
+    }
+    this.signupUser = Object.assign({}, this.signupUser, data);
+  }
+
   setSignupUserData(data) {
-    this.signupUser = Object.assign(this.signupUser, data);
+    this.signupUser = Object.assign({}, this.signupUser, data);
   }
 
   setSignupUserError(error) {
-    this.signupUserError = error;
+    this.signupUserError = Object.assign({}, error);
   }
 
   setUserData(data) {
-    this.user = Object.assign(this.user, data);
+    this.user = Object.assign({}, this.user, data);
   }
 
   setUserError(error) {
@@ -144,10 +176,6 @@ class UsersStore {
   resetUser() {
     this.user = Object.assign({}, newUser);
     this.userError = {};
-  }
-
-  setAccountType(value) {
-    this.accountType = value;
   }
 
   setUserAgreement(value, checked) {
@@ -167,7 +195,6 @@ class UsersStore {
 }
 
 decorate(UsersStore, {
-  accountType: observable,
   userAgreement: observable,
   signupUser: observable,
   signupUserError: observable,
@@ -175,7 +202,7 @@ decorate(UsersStore, {
   userError: observable,
   setSignupUserData: action,
   setSignupUserError: action,
-  setAccountType: action,
+  setSignupUserCheckboxValue: action,
   setUserAgreement: action,
   registerUser: action,
   resetSignupUser: action,
@@ -185,6 +212,7 @@ decorate(UsersStore, {
   loadUser: action,
   saveUser: action,
   getUserFormData: action,
+  deleteUser: action,
 });
 
 export default new UsersStore();

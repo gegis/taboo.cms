@@ -1,6 +1,8 @@
 const UsersController = require('./controllers/UsersController');
 const UsersAdminController = require('./controllers/UsersAdminController');
 
+const AdminHelper = require('modules/core/ui/helpers/AdminHelper');
+
 module.exports = {
   enabled: true,
   installed: true,
@@ -33,20 +35,26 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/verify-email/:userId/:token',
+      action: UsersController.verifyEmail,
+      policies: [],
+    },
+    {
+      method: 'GET',
       path: '/sign-in',
       action: UsersController.signIn,
       policies: [],
     },
     {
       method: 'GET',
-      path: '/my-profile',
-      action: UsersController.myProfile,
+      path: '/account-settings',
+      action: UsersController.accountSettings,
       policies: ['isUser'],
     },
     {
       method: 'GET',
-      path: '/account-verify',
-      action: UsersController.accountVerify,
+      path: '/verify-docs',
+      action: UsersController.verifyDocs,
       policies: ['isUser'],
     },
     {
@@ -128,6 +136,24 @@ module.exports = {
       },
     },
     {
+      method: 'PUT',
+      path: '/api/users/deactivate',
+      action: UsersController.deactivateCurrent,
+      policies: ['isUser'],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
+      method: 'PUT',
+      path: '/api/users/resend-verification',
+      action: UsersController.resendVerification,
+      policies: ['isUser'],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
       method: 'POST',
       path: '/api/users/search',
       action: UsersController.searchUser,
@@ -146,22 +172,31 @@ module.exports = {
       },
     },
     {
-      method: 'GET',
-      path: '/admin/login',
-      action: UsersAdminController.admin,
+      method: 'PUT',
+      path: '/admin/users/set-field-value-for-ids',
+      action: UsersAdminController.updateUsersField,
       policies: [],
     },
     {
       method: 'GET',
-      path: '/admin/reset-password',
+      path: `/${AdminHelper.getAdminAccessUrlPrefix()}/login`,
       action: UsersAdminController.admin,
       policies: [],
+      // policies: ['adminAllowedIp'],
     },
     {
       method: 'GET',
-      path: '/admin/change-password/:userId/:token',
+      path: `/${AdminHelper.getAdminAccessUrlPrefix()}/reset-password`,
       action: UsersAdminController.admin,
       policies: [],
+      // policies: ['adminAllowedIp'],
+    },
+    {
+      method: 'GET',
+      path: `/${AdminHelper.getAdminAccessUrlPrefix()}/change-password/:userId/:token`,
+      action: UsersAdminController.admin,
+      policies: [],
+      // policies: ['adminAllowedIp'],
     },
     {
       method: 'GET',
@@ -176,7 +211,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/api/admin/users/count',
-      action: UsersAdminController.count,
+      action: UsersAdminController.countFiltered,
       policies: ['isAdmin'],
       order: 1000,
       options: {
@@ -193,6 +228,16 @@ module.exports = {
       options: {
         errorResponseAsJson: true,
         aclResource: 'admin.users.view',
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/admin/user/:id/resend-verify-email',
+      action: UsersAdminController.resendVerifyEmail,
+      policies: ['isAdmin'],
+      options: {
+        errorResponseAsJson: true,
+        aclResource: 'admin.users.manage',
       },
     },
     {
@@ -223,6 +268,16 @@ module.exports = {
       options: {
         errorResponseAsJson: true,
         aclResource: 'admin.users.manage',
+      },
+    },
+    {
+      method: 'get',
+      path: '/api/admin/users/export',
+      action: UsersAdminController.exportUsers,
+      policies: ['isAdmin'],
+      options: {
+        errorResponseAsJson: true,
+        aclResource: 'admin.users.view',
       },
     },
   ],

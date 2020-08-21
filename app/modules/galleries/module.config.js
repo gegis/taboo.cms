@@ -42,7 +42,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/api/admin/galleries/count',
-      action: GalleriesAdminController.count,
+      action: GalleriesAdminController.countFiltered,
       policies: ['isAdmin'],
       order: 100,
       options: {

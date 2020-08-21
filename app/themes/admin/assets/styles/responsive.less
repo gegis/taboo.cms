@@ -4,7 +4,7 @@
 .rs-visible-lg {
   display: none;
 }
-@media (max-width: @screen-phone-min) {
+@media (max-width: @screen-phone) {
   .rs-hidden-xs,
   .rs-hidden-sm,
   .rs-hidden-md,
@@ -31,6 +31,54 @@
       min-width: 80px !important;
     }
   }
+  .rs-form-horizontal {
+    .rs-form-group {
+      .rs-control-label {
+        text-align: left;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .rs-form-control-wrapper {
+        width: 100%;
+      }
+      .code-editor {
+        width: 100% !important;
+      }
+      &.with-btn {
+        .rs-form-control-wrapper {
+          width: ~'calc(100% - 45px)';
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+  .user-auth-settings-form {
+    .user-api-key-form-group {
+      .rs-control-label {
+        display: block;
+        width: 100%;
+      }
+      .rs-form-control-wrapper {
+        width: ~'calc(100% - 95px)';
+      }
+      .rs-btn-toolbar {
+        display: inline-block;
+        padding: 0 3% 0 0;
+      }
+    }
+  }
+  .rs-modal-full {
+    width: 100%;
+    margin: 0;
+    .rs-modal-dialog {
+      margin: 7px;
+      .rs-modal-body {
+        max-height: ~'calc(100vh - 210px) !important';
+        height: ~'calc(100vh - 210px)';
+      }
+    }
+  }
 }
 
 @media (min-width: @screen-phone) and (max-width: @screen-phone-max) {
@@ -43,6 +91,17 @@
   .rs-visible-md,
   .rs-visible-lg {
     display: block;
+  }
+  .rs-modal-full {
+    width: 100%;
+    margin: 0;
+    .rs-modal-dialog {
+      margin: 7px;
+      .rs-modal-body {
+        max-height: ~'calc(100vh - 210px) !important';
+        height: ~'calc(100vh - 210px)';
+      }
+    }
   }
 }
 
@@ -64,52 +123,6 @@
   .rs-visible-lg {
     display: block;
   }
-}
-
-@media screen and (max-width: 452px) {
-  .rs-form-horizontal {
-    .rs-form-group {
-      .rs-control-label {
-        text-align: left;
-      }
-      .rs-form-control-wrapper {
-        width: 100%;
-      }
-      .code-editor {
-        width: 100% !important;
-      }
-    }
-  }
-  .user-auth-settings-form {
-    .user-api-key-form-group {
-      .rs-control-label {
-        display: block;
-        width: 100%;
-      }
-      .rs-form-control-wrapper {
-        width: ~'calc(100% - 95px)';
-      }
-      .rs-btn-toolbar {
-        display: inline-block;
-        padding: 0 3% 0 0;
-      }
-    }
-  }
-}
-@media screen and (max-width: 959px) {
-  .rs-modal-full {
-    width: 100%;
-    margin: 0;
-    .rs-modal-dialog {
-      margin: 7px;
-      .rs-modal-body {
-        max-height: ~'calc(100vh - 210px) !important';
-        height: ~'calc(100vh - 210px)';
-      }
-    }
-  }
-}
-@media screen and (min-width: 960px) {
   .rs-form-horizontal {
     .rs-form-group {
       &.inline {
@@ -121,6 +134,31 @@
           width: 52%;
         }
       }
+      &.inline-narrow {
+        width: 33.3333%;
+        .rs-control-label {
+          width: 50%;
+        }
+        .rs-form-control-wrapper {
+          width: 40%;
+        }
+      }
+      &.with-btn {
+        .rs-form-control-wrapper {
+          width: ~'calc(52% - 40px)';
+          margin-right: 5px;
+        }
+      }
     }
   }
+}
+
+@media screen and (max-width: 452px) {
+
+}
+@media screen and (max-width: 959px) {
+
+}
+@media screen and (min-width: 960px) {
+
 }

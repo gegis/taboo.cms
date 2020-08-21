@@ -18,6 +18,7 @@ class EditNavigationModal extends React.Component {
   }
 
   open(id) {
+    this.navigationStore.resetItem();
     this.navigationStore.loadById(id).then(() => {
       this.modal.current.open();
     });

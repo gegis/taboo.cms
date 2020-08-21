@@ -12,9 +12,16 @@ class HtmlPageBlock extends React.Component {
   }
 
   isLocalNavLink(url) {
-    if (url && url.indexOf(locationOrigin) !== -1 && url.indexOf('#') !== 0) {
+    if (
+      url.indexOf('#') !== -1 ||
+      url.indexOf('javascript') !== -1 ||
+      url.indexOf('mailto') !== -1 ||
+      url.indexOf('tel') !== -1
+    ) {
+      return false;
+    } else if (url && url.indexOf(locationOrigin) !== -1) {
       return true;
-    } else if (url && url.indexOf('http') === -1 && url.indexOf('#') !== 0) {
+    } else if (url && url.indexOf('http') === -1) {
       return true;
     }
     return false;
