@@ -23,12 +23,12 @@ const primaryMenu = [
   {
     order: 3000,
     icon: React.createElement(Icon, { icon: 'file-o' }),
-    text: 'Logs',
+    name: 'Logs',
     acl: 'admin.logs.api.view',
     dropdown: [
       {
         icon: React.createElement(Icon, { icon: 'file-o' }),
-        text: 'API Logs',
+        name: 'API Logs',
         linkProps: {
           to: '/admin/logs/api',
         },

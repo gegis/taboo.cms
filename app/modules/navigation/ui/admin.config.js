@@ -23,7 +23,7 @@ const primaryMenu = [
   {
     order: 325,
     icon: React.createElement(Icon, { icon: 'sitemap' }),
-    text: 'Navigation',
+    name: 'Navigation',
     linkProps: {
       to: '/admin/navigation',
     },

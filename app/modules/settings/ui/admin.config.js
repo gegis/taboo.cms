@@ -23,12 +23,12 @@ const primaryMenu = [
   {
     order: 2000,
     icon: React.createElement(Icon, { icon: 'cog' }),
-    text: 'Settings',
+    name: 'Settings',
     acl: 'admin.settings.view',
     dropdown: [
       {
         icon: React.createElement(Icon, { icon: 'sliders' }),
-        text: 'Generic',
+        name: 'Generic',
         order: 100,
         linkProps: {
           to: '/admin/settings/generic',

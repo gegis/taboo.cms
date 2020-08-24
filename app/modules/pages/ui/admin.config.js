@@ -25,7 +25,7 @@ const primaryMenu = [
   {
     order: 300,
     icon: React.createElement(Icon, { icon: 'file' }),
-    text: 'Pages',
+    name: 'Pages',
     linkProps: {
       to: '/admin/pages',
     },

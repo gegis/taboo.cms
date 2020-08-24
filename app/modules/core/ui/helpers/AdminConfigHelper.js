@@ -57,10 +57,10 @@ class AdminConfigHelper {
       this.modulesConfigs.map(config => {
         if (config && config.enabled && config.primaryMenu) {
           config.primaryMenu.map(menuItem => {
-            const index = this.primaryMenuNames.indexOf(menuItem.text);
+            const index = this.primaryMenuNames.indexOf(menuItem.name);
             if (index === -1) {
               this.primaryMenu.push(menuItem);
-              this.primaryMenuNames.push(menuItem.text);
+              this.primaryMenuNames.push(menuItem.name);
             } else {
               if (!this.primaryMenu[index].dropdown) {
                 this.primaryMenu[index].dropdown = [];

@@ -26,7 +26,7 @@ const primaryMenu = [
   {
     order: 1010,
     icon: React.createElement(Icon, { icon: 'unlock-alt' }),
-    text: 'User Roles',
+    name: 'User Roles',
     linkProps: {
       to: '/admin/roles',
     },

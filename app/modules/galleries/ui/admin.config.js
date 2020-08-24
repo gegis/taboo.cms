@@ -27,7 +27,7 @@ const primaryMenu = [
   {
     order: 350,
     icon: React.createElement(Icon, { icon: 'file-image-o' }),
-    text: 'Galleries',
+    name: 'Galleries',
     linkProps: {
       to: '/admin/galleries',
     },

@@ -27,7 +27,7 @@ const primaryMenu = [
   {
     order: 350,
     icon: React.createElement(Icon, { icon: 'frame' }),
-    text: 'Forms',
+    name: 'Forms',
     linkProps: {
       to: '/admin/forms',
     },

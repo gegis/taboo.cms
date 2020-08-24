@@ -42,7 +42,7 @@ const primaryMenu = [
   {
     order: 1000,
     icon: React.createElement(Icon, { icon: 'group' }),
-    text: 'Users',
+    name: 'Users',
     linkProps: {
       to: '/admin/users',
     },
