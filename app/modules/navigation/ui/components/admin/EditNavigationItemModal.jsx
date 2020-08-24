@@ -12,7 +12,6 @@ class EditNavigationItemModal extends React.Component {
     super(props);
     this.modal = React.createRef();
     this.navigationStore = props.navigationStore;
-    this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -34,12 +33,6 @@ class EditNavigationItemModal extends React.Component {
   onSave() {
     const { updateNavigationItem, navigationItem, navigationItemRow } = this.navigationStore;
     updateNavigationItem(navigationItem, navigationItemRow);
-    this.notificationsStore.push({
-      title: 'Success',
-      html: 'Successfully updated {item}',
-      translationVars: { item: navigationItem.title },
-      translate: true,
-    });
     this.close();
   }
 
@@ -63,9 +56,8 @@ class EditNavigationItemModal extends React.Component {
 
 EditNavigationItemModal.propTypes = {
   navigationStore: PropTypes.object.isRequired,
-  notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore', 'notificationsStore'), observer);
+const enhance = compose(inject('navigationStore'), observer);
 
 export default enhance(EditNavigationItemModal);

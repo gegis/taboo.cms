@@ -12,7 +12,6 @@ class CreateNavigationItemModal extends React.Component {
     super(props);
     this.modal = React.createRef();
     this.navigationStore = props.navigationStore;
-    this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -32,12 +31,6 @@ class CreateNavigationItemModal extends React.Component {
     const { navigationItem } = this.navigationStore;
     this.navigationStore.addNewNavigationItem(navigationItem);
     this.navigationStore.resetNavigationItem();
-    this.notificationsStore.push({
-      title: 'Success',
-      html: 'Successfully created {item}',
-      translationVars: { item: navigationItem.title },
-      translate: true,
-    });
     this.close();
   }
 
@@ -61,9 +54,8 @@ class CreateNavigationItemModal extends React.Component {
 
 CreateNavigationItemModal.propTypes = {
   navigationStore: PropTypes.object.isRequired,
-  notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore', 'notificationsStore'), observer);
+const enhance = compose(inject('navigationStore'), observer);
 
 export default enhance(CreateNavigationItemModal);
