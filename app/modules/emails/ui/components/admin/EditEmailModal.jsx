@@ -10,7 +10,7 @@ class EditEmailModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.emailsStore = props.emailsStore;
+    this.emailsAdminStore = props.emailsAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -18,27 +18,27 @@ class EditEmailModal extends React.Component {
   }
 
   open(id) {
-    this.emailsStore.resetItem();
-    this.emailsStore.loadById(id).then(() => {
+    this.emailsAdminStore.resetItem();
+    this.emailsAdminStore.loadById(id).then(() => {
       this.modal.current.open();
     });
   }
 
   close() {
-    this.emailsStore.resetItem();
+    this.emailsAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.emailsStore;
-    this.emailsStore.update(item).then(data => {
+    const { item } = this.emailsAdminStore;
+    this.emailsAdminStore.update(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully updated {item}',
         translationVars: { item: data._id },
         translate: true,
       });
-      this.emailsStore.resetItem();
+      this.emailsAdminStore.resetItem();
       this.close();
     });
   }
@@ -62,10 +62,10 @@ class EditEmailModal extends React.Component {
 }
 
 EditEmailModal.propTypes = {
-  emailsStore: PropTypes.object.isRequired,
+  emailsAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('emailsStore', 'notificationsStore'), observer);
+const enhance = compose(inject('emailsAdminStore', 'notificationsStore'), observer);
 
 export default enhance(EditEmailModal);

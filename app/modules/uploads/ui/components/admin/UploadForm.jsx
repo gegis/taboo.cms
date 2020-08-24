@@ -10,11 +10,11 @@ import UnitsHelper from 'app/modules/core/ui/helpers/UnitsHelper';
 class UploadForm extends React.Component {
   constructor(props) {
     super(props);
-    this.uploadsStore = props.uploadsStore;
+    this.uploadsAdminStore = props.uploadsAdminStore;
   }
 
   render() {
-    const { item, setItem, setCheckboxItemValue } = this.uploadsStore;
+    const { item, setItem, setCheckboxItemValue } = this.uploadsAdminStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
@@ -121,9 +121,9 @@ class UploadForm extends React.Component {
 }
 
 UploadForm.propTypes = {
-  uploadsStore: PropTypes.object.isRequired,
+  uploadsAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('uploadsStore'), observer);
+const enhance = compose(inject('uploadsAdminStore'), observer);
 
 export default enhance(UploadForm);

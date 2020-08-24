@@ -9,7 +9,7 @@ import BooleanIcon from 'modules/core/ui/components/admin/BooleanIcon';
 class ModuleNameList extends React.Component {
   constructor(props) {
     super(props);
-    this.moduleNameStore = props.moduleNameStore;
+    this.moduleNameAdminStore = props.moduleNameAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
@@ -31,7 +31,7 @@ class ModuleNameList extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.moduleNameStore.items.map(item => (
+          {this.moduleNameAdminStore.items.map(item => (
             <tr key={item._id}>
               <td className="id rs-hidden-sm">{item._id}</td>
               <td>{item.name}</td>
@@ -57,12 +57,12 @@ class ModuleNameList extends React.Component {
 }
 
 ModuleNameList.propTypes = {
-  moduleNameStore: PropTypes.object.isRequired,
+  moduleNameAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('moduleNameStore'), observer);
+const enhance = compose(inject('moduleNameAdminStore'), observer);
 
 export default enhance(ModuleNameList);

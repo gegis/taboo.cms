@@ -10,11 +10,11 @@ class Settings extends React.Component {
   constructor(props) {
     super(props);
     this.templatesAdminStore = props.templatesAdminStore;
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
   }
 
   componentDidMount() {
-    this.navigationStore.loadNavigationOptions();
+    this.navigationAdminStore.loadNavigationOptions();
   }
 
   render() {
@@ -92,7 +92,7 @@ class Settings extends React.Component {
               label="Header Navigation"
               settingsKey="languageSettings"
               settingsValueKey="headerNavigation"
-              data={this.navigationStore.navigationOptions}
+              data={this.navigationAdminStore.navigationOptions}
             />
             <SettingsInput
               type="InputPicker"
@@ -103,7 +103,7 @@ class Settings extends React.Component {
               }
               settingsKey="languageSettings"
               settingsValueKey="headerNavigationAuthenticated"
-              data={this.navigationStore.navigationOptions}
+              data={this.navigationAdminStore.navigationOptions}
             />
             <SettingsInput
               type="ColorPicker"
@@ -124,7 +124,7 @@ class Settings extends React.Component {
               label="Footer Navigation"
               settingsKey="languageSettings"
               settingsValueKey="footerNavigation"
-              data={this.navigationStore.navigationOptions}
+              data={this.navigationAdminStore.navigationOptions}
             />
             <SettingsInput
               type="InputPicker"
@@ -135,7 +135,7 @@ class Settings extends React.Component {
               }
               settingsKey="languageSettings"
               settingsValueKey="footerNavigationAuthenticated"
-              data={this.navigationStore.navigationOptions}
+              data={this.navigationAdminStore.navigationOptions}
             />
             <SettingsInput
               type="ColorPicker"
@@ -164,9 +164,9 @@ class Settings extends React.Component {
 
 Settings.propTypes = {
   templatesAdminStore: PropTypes.object,
-  navigationStore: PropTypes.object,
+  navigationAdminStore: PropTypes.object,
 };
 
-const enhance = compose(inject('templatesAdminStore', 'navigationStore'), observer);
+const enhance = compose(inject('templatesAdminStore', 'navigationAdminStore'), observer);
 
 export default enhance(Settings);

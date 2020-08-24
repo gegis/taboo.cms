@@ -10,11 +10,11 @@ class Settings extends React.Component {
   constructor(props) {
     super(props);
     this.templatesAdminStore = props.templatesAdminStore;
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
   }
 
   componentDidMount() {
-    this.navigationStore.loadNavigationOptions();
+    this.navigationAdminStore.loadNavigationOptions();
   }
 
   render() {
@@ -88,9 +88,9 @@ class Settings extends React.Component {
 
 Settings.propTypes = {
   templatesAdminStore: PropTypes.object,
-  navigationStore: PropTypes.object,
+  navigationAdminStore: PropTypes.object,
 };
 
-const enhance = compose(inject('templatesAdminStore', 'navigationStore'), observer);
+const enhance = compose(inject('templatesAdminStore', 'navigationAdminStore'), observer);
 
 export default enhance(Settings);

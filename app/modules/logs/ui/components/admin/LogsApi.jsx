@@ -9,7 +9,7 @@ import LogsApiList from './LogsApiList';
 class LogsApi extends React.Component {
   constructor(props) {
     super(props);
-    this.entityStore = props.logsApiStore;
+    this.entityStore = props.logsApiAdminStore;
   }
 
   render() {
@@ -18,9 +18,9 @@ class LogsApi extends React.Component {
 }
 
 LogsApi.propTypes = {
-  logsApiStore: PropTypes.object.isRequired,
+  logsApiAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('logsApiStore'), observer);
+const enhance = compose(inject('logsApiAdminStore'), observer);
 
 export default enhance(LogsApi);

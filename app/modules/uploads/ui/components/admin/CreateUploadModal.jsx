@@ -14,7 +14,7 @@ class CreateUploadModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.uploadsStore = props.uploadsStore;
+    this.uploadsAdminStore = props.uploadsAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -32,21 +32,21 @@ class CreateUploadModal extends React.Component {
   }
 
   onDrop(files = []) {
-    this.uploadsStore.prependItemsToUpload(files);
+    this.uploadsAdminStore.prependItemsToUpload(files);
   }
 
   onOpen() {
-    this.uploadsStore.resetItemsToUpload();
+    this.uploadsAdminStore.resetItemsToUpload();
   }
 
   onClose() {
-    this.uploadsStore.resetItemsToUpload();
-    this.uploadsStore.loadAll();
+    this.uploadsAdminStore.resetItemsToUpload();
+    this.uploadsAdminStore.loadAll();
   }
 
   onUpload() {
-    this.uploadsStore.uploadItems((err, data) => {
-      const { itemsToUpload = [] } = this.uploadsStore;
+    this.uploadsAdminStore.uploadItems((err, data) => {
+      const { itemsToUpload = [] } = this.uploadsAdminStore;
       let uploadedItems = 0;
       if (!err && data) {
         this.notificationsStore.push({
@@ -124,7 +124,7 @@ class CreateUploadModal extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.uploadsStore.itemsToUpload.map((file, i) => (
+            {this.uploadsAdminStore.itemsToUpload.map((file, i) => (
               <tr key={file.name + i}>
                 <td>{file.name}</td>
                 <td>{file.type}</td>
@@ -140,10 +140,10 @@ class CreateUploadModal extends React.Component {
 }
 
 CreateUploadModal.propTypes = {
-  uploadsStore: PropTypes.object.isRequired,
+  uploadsAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('uploadsStore', 'notificationsStore'), observer);
+const enhance = compose(inject('uploadsAdminStore', 'notificationsStore'), observer);
 
 export default enhance(CreateUploadModal);

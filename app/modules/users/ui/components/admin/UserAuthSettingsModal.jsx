@@ -24,7 +24,7 @@ class UserAuthSettingsModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.usersStore = props.usersStore;
+    this.usersAdminStore = props.usersAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.aclStore = props.aclStore;
     this.rolesStore = props.rolesStore;
@@ -36,7 +36,7 @@ class UserAuthSettingsModal extends React.Component {
   }
 
   open(id) {
-    this.usersStore.loadById(id).then(() => {
+    this.usersAdminStore.loadById(id).then(() => {
       if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.acl.view')) {
         this.rolesStore.loadAllRolesForSelection().then(() => {
           this.modal.current.open();
@@ -48,13 +48,13 @@ class UserAuthSettingsModal extends React.Component {
   }
 
   close() {
-    this.usersStore.loadAll();
+    this.usersAdminStore.loadAll();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.usersStore;
-    this.usersStore.update(item).then(data => {
+    const { item } = this.usersAdminStore;
+    this.usersAdminStore.update(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully updated {item}',
@@ -66,17 +66,17 @@ class UserAuthSettingsModal extends React.Component {
   }
 
   generateApiKey() {
-    const { setItem } = this.usersStore;
+    const { setItem } = this.usersAdminStore;
     setItem({ apiKey: uuidv1() });
   }
 
   clearApiKey() {
-    const { setItem } = this.usersStore;
+    const { setItem } = this.usersAdminStore;
     setItem({ apiKey: '' });
   }
 
   resendAccountVerification(userId) {
-    this.usersStore.resendAccountVerification(userId).then(data => {
+    this.usersAdminStore.resendAccountVerification(userId).then(data => {
       if (data.success) {
         this.notificationsStore.push({
           title: 'Success',
@@ -95,7 +95,7 @@ class UserAuthSettingsModal extends React.Component {
   }
 
   render() {
-    const { item, setItem, getFormData, setCheckboxItemValue, allVerificationStatuses } = this.usersStore;
+    const { item, setItem, getFormData, setCheckboxItemValue, allVerificationStatuses } = this.usersAdminStore;
     const { allRolesForSelection } = this.rolesStore;
     return (
       <Modal
@@ -229,12 +229,12 @@ class UserAuthSettingsModal extends React.Component {
 }
 
 UserAuthSettingsModal.propTypes = {
-  usersStore: PropTypes.object.isRequired,
+  usersAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
   aclStore: PropTypes.object.isRequired,
   rolesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('usersStore', 'notificationsStore', 'aclStore', 'rolesStore'), observer);
+const enhance = compose(inject('usersAdminStore', 'notificationsStore', 'aclStore', 'rolesStore'), observer);
 
 export default enhance(UserAuthSettingsModal);

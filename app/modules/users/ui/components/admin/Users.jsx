@@ -16,7 +16,7 @@ const { dateFormat } = window.app.config;
 class Users extends React.Component {
   constructor(props) {
     super(props);
-    this.entityStore = props.usersStore;
+    this.entityStore = props.usersAdminStore;
     this.uiAdminStore = props.uiAdminStore;
     this.filter = this.filter.bind(this);
     this.filterByDateRange = this.filterByDateRange.bind(this);
@@ -128,10 +128,10 @@ class Users extends React.Component {
 }
 
 Users.propTypes = {
-  usersStore: PropTypes.object.isRequired,
+  usersAdminStore: PropTypes.object.isRequired,
   uiAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('usersStore', 'uiAdminStore'), observer);
+const enhance = compose(inject('usersAdminStore', 'uiAdminStore'), observer);
 
 export default enhance(Users);

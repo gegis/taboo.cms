@@ -19,7 +19,7 @@ class UserForm extends React.Component {
   constructor(props) {
     super(props);
     this.aclStore = props.aclStore;
-    this.usersStore = props.usersStore;
+    this.usersAdminStore = props.usersAdminStore;
     this.rolesStore = props.rolesStore;
     this.countriesAdminStore = props.countriesAdminStore;
     this.getUserDocumentsPreview = this.getUserDocumentsPreview.bind(this);
@@ -50,7 +50,7 @@ class UserForm extends React.Component {
   }
 
   getUserDocumentsPreview() {
-    const { item, userDocumentNames, toggleUserDocumentVerified } = this.usersStore;
+    const { item, userDocumentNames, toggleUserDocumentVerified } = this.usersAdminStore;
     let preview = [];
     userDocumentNames.map(docName => {
       if (item[docName]) {
@@ -74,7 +74,7 @@ class UserForm extends React.Component {
   }
 
   render() {
-    const { item, setItem, setCheckboxItemValue, allVerificationStatuses } = this.usersStore;
+    const { item, setItem, setCheckboxItemValue, allVerificationStatuses } = this.usersAdminStore;
     const { allRolesForSelection } = this.rolesStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item} autoComplete="off">
@@ -223,11 +223,11 @@ class UserForm extends React.Component {
 
 UserForm.propTypes = {
   aclStore: PropTypes.object.isRequired,
-  usersStore: PropTypes.object.isRequired,
+  usersAdminStore: PropTypes.object.isRequired,
   rolesStore: PropTypes.object.isRequired,
   countriesAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('aclStore', 'usersStore', 'rolesStore', 'countriesAdminStore'), observer);
+const enhance = compose(inject('aclStore', 'usersAdminStore', 'rolesStore', 'countriesAdminStore'), observer);
 
 export default enhance(UserForm);

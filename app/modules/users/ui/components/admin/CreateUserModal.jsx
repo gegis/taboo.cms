@@ -11,7 +11,7 @@ class CreateUserModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.usersStore = props.usersStore;
+    this.usersAdminStore = props.usersAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.aclStore = props.aclStore;
     this.rolesStore = props.rolesStore;
@@ -21,7 +21,7 @@ class CreateUserModal extends React.Component {
   }
 
   open() {
-    this.usersStore.resetItem();
+    this.usersAdminStore.resetItem();
     if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.acl.view')) {
       this.rolesStore.loadAllRolesForSelection().then(() => {
         this.modal.current.open();
@@ -36,16 +36,16 @@ class CreateUserModal extends React.Component {
   }
 
   onSave() {
-    const { item } = this.usersStore;
-    this.usersStore.create(item).then(data => {
+    const { item } = this.usersAdminStore;
+    this.usersAdminStore.create(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully created {item}',
         translationVars: { item: data.email },
         translate: true,
       });
-      this.usersStore.resetItem();
-      this.usersStore.loadAll();
+      this.usersAdminStore.resetItem();
+      this.usersAdminStore.loadAll();
       this.close();
     });
   }
@@ -68,12 +68,12 @@ class CreateUserModal extends React.Component {
 }
 
 CreateUserModal.propTypes = {
-  usersStore: PropTypes.object.isRequired,
+  usersAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
   aclStore: PropTypes.object.isRequired,
   rolesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('usersStore', 'notificationsStore', 'aclStore', 'rolesStore'), observer);
+const enhance = compose(inject('usersAdminStore', 'notificationsStore', 'aclStore', 'rolesStore'), observer);
 
 export default enhance(CreateUserModal);

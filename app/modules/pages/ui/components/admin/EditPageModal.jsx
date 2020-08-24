@@ -12,7 +12,7 @@ class EditPageModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.pagesStore = props.pagesStore;
+    this.pagesAdminStore = props.pagesAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -21,21 +21,21 @@ class EditPageModal extends React.Component {
   }
 
   open(id) {
-    this.pagesStore.resetItem();
-    this.pagesStore.loadById(id).then(() => {
+    this.pagesAdminStore.resetItem();
+    this.pagesAdminStore.loadById(id).then(() => {
       this.modal.current.open();
     });
   }
 
   close() {
-    this.pagesStore.resetItem();
+    this.pagesAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.pagesStore;
+    const { item } = this.pagesAdminStore;
     const page = Object.assign({}, item);
-    this.pagesStore.update(page).then(data => {
+    this.pagesAdminStore.update(page).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully updated {item}',
@@ -47,7 +47,7 @@ class EditPageModal extends React.Component {
   }
 
   loadPreviousVersion() {
-    this.pagesStore.loadPreviousVersion();
+    this.pagesAdminStore.loadPreviousVersion();
   }
 
   getCustomButton() {
@@ -77,10 +77,10 @@ class EditPageModal extends React.Component {
 }
 
 EditPageModal.propTypes = {
-  pagesStore: PropTypes.object.isRequired,
+  pagesAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('pagesStore', 'notificationsStore'), observer);
+const enhance = compose(inject('pagesAdminStore', 'notificationsStore'), observer);
 
 export default enhance(EditPageModal);

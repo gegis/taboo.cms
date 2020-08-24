@@ -9,7 +9,7 @@ import DateTime from 'modules/core/ui/components/DateTime';
 class LogsApiList extends React.Component {
   constructor(props) {
     super(props);
-    this.logsApiStore = props.logsApiStore;
+    this.logsApiAdminStore = props.logsApiAdminStore;
     this.handleDelete = props.handleDelete;
   }
 
@@ -41,7 +41,7 @@ class LogsApiList extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.logsApiStore.items.map(item => (
+          {this.logsApiAdminStore.items.map(item => (
             <tr key={item._id}>
               <td>{item.action}</td>
               <td className="id">{item.token}</td>
@@ -61,10 +61,10 @@ class LogsApiList extends React.Component {
 }
 
 LogsApiList.propTypes = {
-  logsApiStore: PropTypes.object.isRequired,
+  logsApiAdminStore: PropTypes.object.isRequired,
   handleDelete: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('logsApiStore'), observer);
+const enhance = compose(inject('logsApiAdminStore'), observer);
 
 export default enhance(LogsApiList);

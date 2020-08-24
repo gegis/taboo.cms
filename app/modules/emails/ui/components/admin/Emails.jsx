@@ -11,7 +11,7 @@ import EditModal from './EditEmailModal';
 class Emails extends React.Component {
   constructor(props) {
     super(props);
-    this.entityStore = props.emailsStore;
+    this.entityStore = props.emailsAdminStore;
   }
 
   render() {
@@ -28,9 +28,9 @@ class Emails extends React.Component {
 }
 
 Emails.propTypes = {
-  emailsStore: PropTypes.object.isRequired,
+  emailsAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('emailsStore'), observer);
+const enhance = compose(inject('emailsAdminStore'), observer);
 
 export default enhance(Emails);

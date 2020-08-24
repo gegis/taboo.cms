@@ -10,7 +10,7 @@ class EditUploadModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.uploadsStore = props.uploadsStore;
+    this.uploadsAdminStore = props.uploadsAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -18,19 +18,19 @@ class EditUploadModal extends React.Component {
   }
 
   open(id) {
-    this.uploadsStore.resetItem();
-    this.uploadsStore.loadById(id).then(() => {
+    this.uploadsAdminStore.resetItem();
+    this.uploadsAdminStore.loadById(id).then(() => {
       this.modal.current.open();
     });
   }
 
   close() {
-    this.uploadsStore.resetItem();
+    this.uploadsAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.uploadsStore;
+    const { item } = this.uploadsAdminStore;
     const updateItem = {
       _id: item._id,
       name: item.name,
@@ -39,7 +39,7 @@ class EditUploadModal extends React.Component {
       verified: item.verified,
       note: item.note,
     };
-    this.uploadsStore.update(updateItem).then(data => {
+    this.uploadsAdminStore.update(updateItem).then(data => {
       this.notificationsStore.push({
         html: 'Successfully updated {item}',
         translationVars: { item: data.name },
@@ -67,10 +67,10 @@ class EditUploadModal extends React.Component {
 }
 
 EditUploadModal.propTypes = {
-  uploadsStore: PropTypes.object.isRequired,
+  uploadsAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('uploadsStore', 'notificationsStore'), observer);
+const enhance = compose(inject('uploadsAdminStore', 'notificationsStore'), observer);
 
 export default enhance(EditUploadModal);

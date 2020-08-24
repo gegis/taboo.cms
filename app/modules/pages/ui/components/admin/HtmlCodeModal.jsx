@@ -1,6 +1,4 @@
 import React from 'react';
-import { compose } from 'recompose';
-import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
 import Modal from 'app/modules/core/ui/components/admin/Modal';
 import Translation from 'modules/core/ui/components/Translation';
@@ -89,6 +87,4 @@ HtmlCodeModal.propTypes = {
   setProps: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('pagesStore', 'localeStore'), observer);
-
-export default enhance(HtmlCodeModal);
+export default HtmlCodeModal;

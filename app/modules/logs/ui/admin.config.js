@@ -16,7 +16,7 @@ const routes = [
 ];
 
 const stores = {
-  logsApiStore: LogsApiAdminStore,
+  logsApiAdminStore: LogsApiAdminStore,
 };
 
 const primaryMenu = [

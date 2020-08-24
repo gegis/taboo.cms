@@ -9,7 +9,7 @@ class CKEditor extends React.Component {
     super(props);
     this.uploadSelectModal = React.createRef();
     const { enterMode = 1, height = '', minHeight = 0, maxHeight = 0, startupFocus = 'end' } = props;
-    const { contentsCss = ['/css/_shared/lib.css', '/css/_shared/index.css', '/css/_shared/editor.css'] } = props;
+    const { contentsCss = ['/css/_shared/lib.css', '/css/_shared/index.css'] } = props;
     this.defultConfig = {
       startupFocus: startupFocus,
       allowedContent: true,

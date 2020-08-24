@@ -14,15 +14,15 @@ class Settings extends React.Component {
     super(props);
     const { match: { params: { category = 'generic' } = {} } = {} } = props;
     this.state = { category };
-    this.entityStore = props.settingsStore;
+    this.entityStore = props.settingsAdminStore;
     this.entityStore.setFilter({ category });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { match: { params: { category = 'generic' } = {} } = {} } = nextProps;
     if (category !== prevState.category) {
-      nextProps.settingsStore.setFilter({ category });
-      nextProps.settingsStore.loadAll();
+      nextProps.settingsAdminStore.setFilter({ category });
+      nextProps.settingsAdminStore.loadAll();
       return { category };
     }
     return null;
@@ -48,9 +48,9 @@ class Settings extends React.Component {
 
 Settings.propTypes = {
   match: PropTypes.object,
-  settingsStore: PropTypes.object.isRequired,
+  settingsAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(withRouter, inject('settingsStore'), observer);
+const enhance = compose(withRouter, inject('settingsAdminStore'), observer);
 
 export default enhance(Settings);

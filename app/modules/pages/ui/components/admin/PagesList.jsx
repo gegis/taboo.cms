@@ -10,7 +10,7 @@ import BooleanIcon from 'modules/core/ui/components/admin/BooleanIcon';
 class PagesList extends React.Component {
   constructor(props) {
     super(props);
-    this.pagesStore = props.pagesStore;
+    this.pagesAdminStore = props.pagesAdminStore;
     this.templatesAdminStore = props.templatesAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
@@ -46,7 +46,7 @@ class PagesList extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.pagesStore.items.map(item => (
+          {this.pagesAdminStore.items.map(item => (
             <tr key={item._id}>
               <td className="id rs-hidden-sm">{item._id}</td>
               <td className="mobile-view-td">
@@ -90,13 +90,13 @@ class PagesList extends React.Component {
 }
 
 PagesList.propTypes = {
-  pagesStore: PropTypes.object.isRequired,
+  pagesAdminStore: PropTypes.object.isRequired,
   templatesAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('pagesStore', 'templatesAdminStore'), observer);
+const enhance = compose(inject('pagesAdminStore', 'templatesAdminStore'), observer);
 
 export default enhance(PagesList);

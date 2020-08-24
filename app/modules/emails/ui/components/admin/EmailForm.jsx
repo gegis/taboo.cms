@@ -10,7 +10,7 @@ import RichTextEditor from 'modules/core/ui/components/admin/RichTextEditor';
 class EmailForm extends React.Component {
   constructor(props) {
     super(props);
-    this.emailsStore = props.emailsStore;
+    this.emailsAdminStore = props.emailsAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.localeStore = props.localeStore;
   }
@@ -18,7 +18,7 @@ class EmailForm extends React.Component {
   onCodeEditorChange(key, value) {
     const option = {};
     option[key] = value;
-    this.emailsStore.setItem(option);
+    this.emailsAdminStore.setItem(option);
   }
 
   copyVariableValue(value, event) {
@@ -35,7 +35,7 @@ class EmailForm extends React.Component {
   }
 
   getActionVariables() {
-    const { item, actions } = this.emailsStore;
+    const { item, actions } = this.emailsAdminStore;
     const variables = [];
     if (item && item.action) {
       for (let i = 0; i < actions.length; i++) {
@@ -57,7 +57,7 @@ class EmailForm extends React.Component {
   }
 
   render() {
-    const { setItem, item } = this.emailsStore;
+    const { setItem, item } = this.emailsAdminStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
@@ -73,7 +73,7 @@ class EmailForm extends React.Component {
           <ControlLabel>
             <Translation message="Action" />
           </ControlLabel>
-          <FormControl name="action" data={this.emailsStore.actionsOptions} accepter={InputPicker} />
+          <FormControl name="action" data={this.emailsAdminStore.actionsOptions} accepter={InputPicker} />
         </FormGroup>
         <FormGroup controlId="language" className="inline">
           <ControlLabel>
@@ -114,11 +114,11 @@ class EmailForm extends React.Component {
 }
 
 EmailForm.propTypes = {
-  emailsStore: PropTypes.object.isRequired,
+  emailsAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('emailsStore', 'notificationsStore', 'localeStore'), observer);
+const enhance = compose(inject('emailsAdminStore', 'notificationsStore', 'localeStore'), observer);
 
 export default enhance(EmailForm);

@@ -16,7 +16,7 @@ const routes = [
 ];
 
 const stores = {
-  settingsStore: SettingsAdminStore,
+  settingsAdminStore: SettingsAdminStore,
 };
 
 const primaryMenu = [

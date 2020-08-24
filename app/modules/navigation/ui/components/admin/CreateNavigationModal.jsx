@@ -11,7 +11,7 @@ class CreateNavigationModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -19,26 +19,26 @@ class CreateNavigationModal extends React.Component {
   }
 
   open() {
-    this.navigationStore.resetItem();
+    this.navigationAdminStore.resetItem();
     this.modal.current.open();
   }
 
   close() {
-    this.navigationStore.resetItem();
+    this.navigationAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.navigationStore;
-    this.navigationStore.create(item).then(data => {
+    const { item } = this.navigationAdminStore;
+    this.navigationAdminStore.create(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully created {item}',
         translationVars: { item: data._id },
         translate: true,
       });
-      this.navigationStore.resetItem();
-      this.navigationStore.loadAll();
+      this.navigationAdminStore.resetItem();
+      this.navigationAdminStore.loadAll();
       this.close();
     });
   }
@@ -62,10 +62,10 @@ class CreateNavigationModal extends React.Component {
 }
 
 CreateNavigationModal.propTypes = {
-  navigationStore: PropTypes.object.isRequired,
+  navigationAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore', 'notificationsStore'), observer);
+const enhance = compose(inject('navigationAdminStore', 'notificationsStore'), observer);
 
 export default enhance(CreateNavigationModal);

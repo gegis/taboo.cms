@@ -9,11 +9,11 @@ import Translation from 'app/modules/core/ui/components/Translation';
 class ModelNameForm extends React.Component {
   constructor(props) {
     super(props);
-    this.moduleNameStore = props.moduleNameStore;
+    this.moduleNameAdminStore = props.moduleNameAdminStore;
   }
 
   render() {
-    const { setItem, item, setCheckboxItemValue } = this.moduleNameStore;
+    const { setItem, item, setCheckboxItemValue } = this.moduleNameAdminStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
@@ -45,9 +45,9 @@ class ModelNameForm extends React.Component {
 }
 
 ModelNameForm.propTypes = {
-  moduleNameStore: PropTypes.object.isRequired,
+  moduleNameAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('moduleNameStore'), observer);
+const enhance = compose(inject('moduleNameAdminStore'), observer);
 
 export default enhance(ModelNameForm);

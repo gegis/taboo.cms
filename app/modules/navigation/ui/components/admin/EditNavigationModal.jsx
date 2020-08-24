@@ -10,7 +10,7 @@ class EditNavigationModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -18,20 +18,20 @@ class EditNavigationModal extends React.Component {
   }
 
   open(id) {
-    this.navigationStore.resetItem();
-    this.navigationStore.loadById(id).then(() => {
+    this.navigationAdminStore.resetItem();
+    this.navigationAdminStore.loadById(id).then(() => {
       this.modal.current.open();
     });
   }
 
   close() {
-    this.navigationStore.resetItem();
+    this.navigationAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.navigationStore;
-    this.navigationStore.update(item).then(data => {
+    const { item } = this.navigationAdminStore;
+    this.navigationAdminStore.update(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully updated {item}',
@@ -61,10 +61,10 @@ class EditNavigationModal extends React.Component {
 }
 
 EditNavigationModal.propTypes = {
-  navigationStore: PropTypes.object.isRequired,
+  navigationAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore', 'notificationsStore'), observer);
+const enhance = compose(inject('navigationAdminStore', 'notificationsStore'), observer);
 
 export default enhance(EditNavigationModal);

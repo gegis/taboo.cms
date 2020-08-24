@@ -10,12 +10,12 @@ import CodeEditor from 'modules/core/ui/components/CodeEditor';
 class SettingsForm extends React.Component {
   constructor(props) {
     super(props);
-    this.settingsStore = props.settingsStore;
+    this.settingsAdminStore = props.settingsAdminStore;
     this.onCodeEditorChange = this.onCodeEditorChange.bind(this);
   }
 
   onCodeEditorChange(editorValue) {
-    this.settingsStore.setItem({ originalValue: editorValue });
+    this.settingsAdminStore.setItem({ originalValue: editorValue });
   }
 
   getValueInput() {
@@ -23,7 +23,7 @@ class SettingsForm extends React.Component {
       item,
       setCheckboxItemValue,
       item: { type = '' },
-    } = this.settingsStore;
+    } = this.settingsAdminStore;
     let element = <FormControl name="value" />;
 
     if (type === 'json') {
@@ -49,7 +49,7 @@ class SettingsForm extends React.Component {
   }
 
   render() {
-    const { setItem, item, setCheckboxItemValue } = this.settingsStore;
+    const { setItem, item, setCheckboxItemValue } = this.settingsAdminStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
@@ -71,7 +71,7 @@ class SettingsForm extends React.Component {
           <ControlLabel>
             <Translation message="Type" />
           </ControlLabel>
-          <FormControl name="type" accepter={SelectPicker} data={this.settingsStore.types} cleanable={false} />
+          <FormControl name="type" accepter={SelectPicker} data={this.settingsAdminStore.types} cleanable={false} />
         </FormGroup>
         <FormGroup controlId="category" className="inline">
           <ControlLabel>
@@ -99,9 +99,9 @@ class SettingsForm extends React.Component {
 }
 
 SettingsForm.propTypes = {
-  settingsStore: PropTypes.object.isRequired,
+  settingsAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('settingsStore'), observer);
+const enhance = compose(inject('settingsAdminStore'), observer);
 
 export default enhance(SettingsForm);

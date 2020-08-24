@@ -10,7 +10,7 @@ import Translation from 'modules/core/ui/components/Translation';
 class SettingsList extends React.Component {
   constructor(props) {
     super(props);
-    this.settingsStore = props.settingsStore;
+    this.settingsAdminStore = props.settingsAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
@@ -33,7 +33,7 @@ class SettingsList extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.settingsStore.items.map(item => (
+          {this.settingsAdminStore.items.map(item => (
             <tr key={item._id}>
               <td>
                 <div>{item.key}</div>
@@ -74,12 +74,12 @@ class SettingsList extends React.Component {
 }
 
 SettingsList.propTypes = {
-  settingsStore: PropTypes.object.isRequired,
+  settingsAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('settingsStore'), observer);
+const enhance = compose(inject('settingsAdminStore'), observer);
 
 export default enhance(SettingsList);

@@ -11,7 +11,7 @@ import ListPage from 'modules/core/ui/components/admin/ListPage';
 class Navigation extends React.Component {
   constructor(props) {
     super(props);
-    this.entityStore = props.navigationStore;
+    this.entityStore = props.navigationAdminStore;
     this.createModal = React.createRef();
     this.editModal = React.createRef();
   }
@@ -32,9 +32,9 @@ class Navigation extends React.Component {
 Navigation.propTypes = {
   match: PropTypes.object,
   location: PropTypes.object,
-  navigationStore: PropTypes.object.isRequired,
+  navigationAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore'), observer);
+const enhance = compose(inject('navigationAdminStore'), observer);
 
 export default enhance(Navigation);

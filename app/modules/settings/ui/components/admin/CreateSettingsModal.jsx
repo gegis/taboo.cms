@@ -11,7 +11,7 @@ class CreateSettingsModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.settingsStore = props.settingsStore;
+    this.settingsAdminStore = props.settingsAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -19,26 +19,26 @@ class CreateSettingsModal extends React.Component {
   }
 
   open() {
-    this.settingsStore.resetItem();
+    this.settingsAdminStore.resetItem();
     this.modal.current.open();
   }
 
   close() {
-    this.settingsStore.resetItem();
+    this.settingsAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.settingsStore;
-    this.settingsStore.create(item).then(data => {
+    const { item } = this.settingsAdminStore;
+    this.settingsAdminStore.create(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully created {item}',
         translationVars: { item: data.key },
         translate: true,
       });
-      this.settingsStore.resetItem();
-      this.settingsStore.loadAll();
+      this.settingsAdminStore.resetItem();
+      this.settingsAdminStore.loadAll();
       this.close();
     });
   }
@@ -62,10 +62,10 @@ class CreateSettingsModal extends React.Component {
 }
 
 CreateSettingsModal.propTypes = {
-  settingsStore: PropTypes.object.isRequired,
+  settingsAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('settingsStore', 'notificationsStore'), observer);
+const enhance = compose(inject('settingsAdminStore', 'notificationsStore'), observer);
 
 export default enhance(CreateSettingsModal);

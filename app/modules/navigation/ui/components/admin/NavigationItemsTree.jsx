@@ -13,7 +13,7 @@ import EditNavigationItemModal from 'modules/navigation/ui/components/admin/Edit
 class NavigationList extends React.Component {
   constructor(props) {
     super(props);
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
     this.createModal = React.createRef();
     this.editModal = React.createRef();
     this.onNavigationItemCreate = this.onNavigationItemCreate.bind(this);
@@ -38,7 +38,7 @@ class NavigationList extends React.Component {
   }
 
   onNavigationItemDelete(row) {
-    const { deleteNavigationItem } = this.navigationStore;
+    const { deleteNavigationItem } = this.navigationAdminStore;
     deleteNavigationItem(row);
   }
 
@@ -81,11 +81,11 @@ class NavigationList extends React.Component {
   }
 
   onTreeChange(items) {
-    this.navigationStore.setItem({ items });
+    this.navigationAdminStore.setItem({ items });
   }
 
   getNavigationItems() {
-    const { item } = this.navigationStore;
+    const { item } = this.navigationAdminStore;
     const navigationItems = [];
     let i;
     for (i = 0; i < item.items.length; i++) {
@@ -131,9 +131,9 @@ class NavigationList extends React.Component {
 }
 
 NavigationList.propTypes = {
-  navigationStore: PropTypes.object.isRequired,
+  navigationAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore'), observer);
+const enhance = compose(inject('navigationAdminStore'), observer);
 
 export default enhance(NavigationList);

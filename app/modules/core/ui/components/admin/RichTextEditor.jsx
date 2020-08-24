@@ -7,7 +7,7 @@ class RichTextEditor extends React.Component {
   constructor(props) {
     super(props);
     const { enterMode = 2, height = 300, minHeight = 0, maxHeight = 0 } = props;
-    const { contentsCss = ['/css/_shared/lib.css', '/css/_shared/index.css', '/css/_shared/editor.css'] } = props;
+    const { contentsCss = ['/css/_shared/lib.css', '/css/_shared/index.css'] } = props;
     this.uploadSelectModal = React.createRef();
     this.defultConfig = {
       allowedContent: true,

@@ -16,7 +16,7 @@ const routes = [
 ];
 
 const stores = {
-  navigationStore: NavigationAdminStore,
+  navigationAdminStore: NavigationAdminStore,
 };
 
 const primaryMenu = [

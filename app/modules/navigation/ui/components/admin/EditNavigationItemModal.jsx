@@ -11,7 +11,7 @@ class EditNavigationItemModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -19,19 +19,19 @@ class EditNavigationItemModal extends React.Component {
 
   open(row) {
     const { node } = row;
-    this.navigationStore.resetNavigationItem();
-    this.navigationStore.setNavigationItem(node);
-    this.navigationStore.setNavigationItemRow(row);
+    this.navigationAdminStore.resetNavigationItem();
+    this.navigationAdminStore.setNavigationItem(node);
+    this.navigationAdminStore.setNavigationItemRow(row);
     this.modal.current.open();
   }
 
   close() {
-    this.navigationStore.resetNavigationItem();
+    this.navigationAdminStore.resetNavigationItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { updateNavigationItem, navigationItem, navigationItemRow } = this.navigationStore;
+    const { updateNavigationItem, navigationItem, navigationItemRow } = this.navigationAdminStore;
     updateNavigationItem(navigationItem, navigationItemRow);
     this.close();
   }
@@ -55,9 +55,9 @@ class EditNavigationItemModal extends React.Component {
 }
 
 EditNavigationItemModal.propTypes = {
-  navigationStore: PropTypes.object.isRequired,
+  navigationAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore'), observer);
+const enhance = compose(inject('navigationAdminStore'), observer);
 
 export default enhance(EditNavigationItemModal);

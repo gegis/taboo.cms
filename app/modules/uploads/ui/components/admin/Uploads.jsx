@@ -15,7 +15,7 @@ const { dateFormat } = window.app.config;
 class Uploads extends React.Component {
   constructor(props) {
     super(props);
-    this.entityStore = props.uploadsStore;
+    this.entityStore = props.uploadsAdminStore;
     this.uiAdminStore = props.uiAdminStore;
     this.entityStore.setFilter(null);
     this.filterByDateRange = this.filterByDateRange.bind(this);
@@ -63,10 +63,10 @@ class Uploads extends React.Component {
 }
 
 Uploads.propTypes = {
-  uploadsStore: PropTypes.object.isRequired,
+  uploadsAdminStore: PropTypes.object.isRequired,
   uiAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('uploadsStore', 'uiAdminStore'), observer);
+const enhance = compose(inject('uploadsAdminStore', 'uiAdminStore'), observer);
 
 export default enhance(Uploads);

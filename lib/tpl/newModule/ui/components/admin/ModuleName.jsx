@@ -11,7 +11,7 @@ import EditModal from './EditModelNameModal';
 class ModuleName extends React.Component {
   constructor(props) {
     super(props);
-    this.entityStore = props.moduleNameStore;
+    this.entityStore = props.moduleNameAdminStore;
   }
 
   render() {
@@ -28,9 +28,9 @@ class ModuleName extends React.Component {
 }
 
 ModuleName.propTypes = {
-  moduleNameStore: PropTypes.object.isRequired,
+  moduleNameAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('moduleNameStore'), observer);
+const enhance = compose(inject('moduleNameAdminStore'), observer);
 
 export default enhance(ModuleName);

@@ -10,7 +10,7 @@ class EditModelNameModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.moduleNameStore = props.moduleNameStore;
+    this.moduleNameAdminStore = props.moduleNameAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -18,27 +18,27 @@ class EditModelNameModal extends React.Component {
   }
 
   open(id) {
-    this.moduleNameStore.resetItem();
-    this.moduleNameStore.loadById(id).then(() => {
+    this.moduleNameAdminStore.resetItem();
+    this.moduleNameAdminStore.loadById(id).then(() => {
       this.modal.current.open();
     });
   }
 
   close() {
-    this.moduleNameStore.resetItem();
+    this.moduleNameAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.moduleNameStore;
-    this.moduleNameStore.update(item).then(data => {
+    const { item } = this.moduleNameAdminStore;
+    this.moduleNameAdminStore.update(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully updated {item}',
         translationVars: { item: data._id },
         translate: true,
       });
-      this.moduleNameStore.resetItem();
+      this.moduleNameAdminStore.resetItem();
       this.close();
     });
   }
@@ -62,10 +62,10 @@ class EditModelNameModal extends React.Component {
 }
 
 EditModelNameModal.propTypes = {
-  moduleNameStore: PropTypes.object.isRequired,
+  moduleNameAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('moduleNameStore', 'notificationsStore'), observer);
+const enhance = compose(inject('moduleNameAdminStore', 'notificationsStore'), observer);
 
 export default enhance(EditModelNameModal);

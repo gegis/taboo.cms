@@ -8,7 +8,7 @@ import ActionButtons from 'app/modules/core/ui/components/admin/ActionButtons';
 class EmailsList extends React.Component {
   constructor(props) {
     super(props);
-    this.emailsStore = props.emailsStore;
+    this.emailsAdminStore = props.emailsAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
@@ -30,7 +30,7 @@ class EmailsList extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.emailsStore.items.map(item => (
+          {this.emailsAdminStore.items.map(item => (
             <tr key={item._id}>
               <td>{item.subject}</td>
               <td>{item.from}</td>
@@ -54,12 +54,12 @@ class EmailsList extends React.Component {
 }
 
 EmailsList.propTypes = {
-  emailsStore: PropTypes.object.isRequired,
+  emailsAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('emailsStore'), observer);
+const enhance = compose(inject('emailsAdminStore'), observer);
 
 export default enhance(EmailsList);

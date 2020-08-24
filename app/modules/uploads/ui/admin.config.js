@@ -16,7 +16,7 @@ const routes = [
 ];
 
 const stores = {
-  uploadsStore: UploadsAdminStore,
+  uploadsAdminStore: UploadsAdminStore,
 };
 
 const primaryMenu = [

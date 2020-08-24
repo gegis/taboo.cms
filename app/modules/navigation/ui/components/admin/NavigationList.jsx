@@ -10,7 +10,7 @@ import Translation from 'modules/core/ui/components/Translation';
 class NavigationList extends React.Component {
   constructor(props) {
     super(props);
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
@@ -33,7 +33,7 @@ class NavigationList extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.navigationStore.items.map(item => (
+          {this.navigationAdminStore.items.map(item => (
             <tr key={item._id}>
               <td>
                 <div>{item.title}</div>
@@ -80,12 +80,12 @@ class NavigationList extends React.Component {
 }
 
 NavigationList.propTypes = {
-  navigationStore: PropTypes.object.isRequired,
+  navigationAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('navigationStore'), observer);
+const enhance = compose(inject('navigationAdminStore'), observer);
 
 export default enhance(NavigationList);

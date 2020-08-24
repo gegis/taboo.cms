@@ -240,4 +240,8 @@ module.exports = {
   'Meta Description': 'Meta Description',
   'Edit Country': 'Edit Country',
   Icon: 'Icon',
+  'Edit Email': 'Edit Email',
+  'Create New Email': 'Create New Email',
+  Action: 'Action',
+  Subject: 'Subject',
 };

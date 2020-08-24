@@ -11,7 +11,7 @@ import EditModal from './EditPageModal';
 class Pages extends React.Component {
   constructor(props) {
     super(props);
-    this.entityStore = props.pagesStore;
+    this.entityStore = props.pagesAdminStore;
     this.entityStore.setFilter(null);
   }
 
@@ -29,9 +29,9 @@ class Pages extends React.Component {
 }
 
 Pages.propTypes = {
-  pagesStore: PropTypes.object.isRequired,
+  pagesAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('pagesStore'), observer);
+const enhance = compose(inject('pagesAdminStore'), observer);
 
 export default enhance(Pages);

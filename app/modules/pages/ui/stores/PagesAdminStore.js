@@ -25,8 +25,10 @@ const newItem = {
   headerBackground: '',
   fullWidth: false,
   language: language,
-  meta: {},
   published: true,
+  metaTitle: '',
+  metaDescription: '',
+  metaKeywords: '',
 };
 
 class PagesAdminStore extends AbstractAdminStore {

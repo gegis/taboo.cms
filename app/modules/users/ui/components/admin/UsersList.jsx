@@ -12,7 +12,7 @@ import UserAuthSettingsModal from 'modules/users/ui/components/admin/UserAuthSet
 class UsersList extends React.Component {
   constructor(props) {
     super(props);
-    this.usersStore = props.usersStore;
+    this.usersAdminStore = props.usersAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
@@ -52,8 +52,8 @@ class UsersList extends React.Component {
   }
 
   handleSelect(user) {
-    const { usersStore } = this.props;
-    const { selected = [] } = usersStore;
+    const { usersAdminStore } = this.props;
+    const { selected = [] } = usersAdminStore;
     let data = selected;
     let index = data.indexOf(user._id);
     if (index === -1) {
@@ -61,7 +61,7 @@ class UsersList extends React.Component {
     } else {
       data.splice(index, 1);
     }
-    usersStore.setSelected(data);
+    usersAdminStore.setSelected(data);
   }
 
   handleAction(event) {
@@ -71,10 +71,10 @@ class UsersList extends React.Component {
   }
 
   updateExported(value) {
-    const { usersStore } = this.props;
-    const { selected } = usersStore;
+    const { usersAdminStore } = this.props;
+    const { selected } = usersAdminStore;
     if (selected.length > 0) {
-      usersStore.updateSelectedUsersFields('exported', value);
+      usersAdminStore.updateSelectedUsersFields('exported', value);
     }
   }
 
@@ -100,7 +100,7 @@ class UsersList extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.usersStore.items.map(item => (
+            {this.usersAdminStore.items.map(item => (
               <tr key={item._id}>
                 {/*<td className="rs-hidden-sm">*/}
                 {/*  <Checkbox onChange={this.handleSelect.bind(this, item)} />*/}
@@ -159,12 +159,12 @@ class UsersList extends React.Component {
 }
 
 UsersList.propTypes = {
-  usersStore: PropTypes.object.isRequired,
+  usersAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('usersStore'), observer);
+const enhance = compose(inject('usersAdminStore'), observer);
 
 export default enhance(UsersList);

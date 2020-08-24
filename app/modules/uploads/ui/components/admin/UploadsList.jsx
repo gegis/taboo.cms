@@ -12,7 +12,7 @@ import UnitsHelper from 'modules/core/ui/helpers/UnitsHelper';
 class UploadsList extends React.Component {
   constructor(props) {
     super(props);
-    this.uploadsStore = props.uploadsStore;
+    this.uploadsAdminStore = props.uploadsAdminStore;
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
@@ -70,7 +70,7 @@ class UploadsList extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.uploadsStore.items.map(item => (
+          {this.uploadsAdminStore.items.map(item => (
             <tr key={item._id}>
               <td className="upload-preview-wrapper rs-hidden-sm max-overflow">{this.getUploadPreview(item)}</td>
               <td className="mobile-view-td">
@@ -107,12 +107,12 @@ class UploadsList extends React.Component {
 }
 
 UploadsList.propTypes = {
-  uploadsStore: PropTypes.object.isRequired,
+  uploadsAdminStore: PropTypes.object.isRequired,
   openEditModal: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
 };
 
-const enhance = compose(inject('uploadsStore'), observer);
+const enhance = compose(inject('uploadsAdminStore'), observer);
 
 export default enhance(UploadsList);

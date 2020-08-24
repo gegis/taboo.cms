@@ -14,7 +14,7 @@ const enabled = true;
 
 const stores = {
   authStore: AuthStore,
-  usersStore: UsersAdminStore,
+  usersAdminStore: UsersAdminStore,
 };
 
 const routes = [

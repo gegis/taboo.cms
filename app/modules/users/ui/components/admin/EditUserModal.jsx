@@ -10,7 +10,7 @@ class EditUserModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.usersStore = props.usersStore;
+    this.usersAdminStore = props.usersAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.aclStore = props.aclStore;
     this.rolesStore = props.rolesStore;
@@ -21,8 +21,8 @@ class EditUserModal extends React.Component {
   }
 
   open(id) {
-    this.usersStore.resetItem();
-    this.usersStore.loadById(id).then(() => {
+    this.usersAdminStore.resetItem();
+    this.usersAdminStore.loadById(id).then(() => {
       if (this.aclStore.isAllowed(this.aclStore.userACL, 'admin.acl.view')) {
         this.rolesStore.loadAllRolesForSelection().then(() => {
           this.modal.current.open();
@@ -34,18 +34,18 @@ class EditUserModal extends React.Component {
   }
 
   close() {
-    const { search = '', filter = null } = this.usersStore;
+    const { search = '', filter = null } = this.usersAdminStore;
     this.uiAdminStore.setLoading(true);
-    this.usersStore.loadAll({ search, filter }).then(() => {
+    this.usersAdminStore.loadAll({ search, filter }).then(() => {
       this.uiAdminStore.setLoading(false);
     });
-    this.usersStore.resetItem();
+    this.usersAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.usersStore;
-    this.usersStore.update(item).then(data => {
+    const { item } = this.usersAdminStore;
+    this.usersAdminStore.update(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully updated {item}',
@@ -74,13 +74,16 @@ class EditUserModal extends React.Component {
 }
 
 EditUserModal.propTypes = {
-  usersStore: PropTypes.object.isRequired,
+  usersAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
   aclStore: PropTypes.object.isRequired,
   rolesStore: PropTypes.object.isRequired,
   uiAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('usersStore', 'notificationsStore', 'aclStore', 'rolesStore', 'uiAdminStore'), observer);
+const enhance = compose(
+  inject('usersAdminStore', 'notificationsStore', 'aclStore', 'rolesStore', 'uiAdminStore'),
+  observer
+);
 
 export default enhance(EditUserModal);

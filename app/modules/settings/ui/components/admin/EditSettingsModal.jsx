@@ -10,7 +10,7 @@ class EditSettingsModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.settingsStore = props.settingsStore;
+    this.settingsAdminStore = props.settingsAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -18,20 +18,20 @@ class EditSettingsModal extends React.Component {
   }
 
   open(id) {
-    this.settingsStore.resetItem();
-    this.settingsStore.loadById(id).then(() => {
+    this.settingsAdminStore.resetItem();
+    this.settingsAdminStore.loadById(id).then(() => {
       this.modal.current.open();
     });
   }
 
   close() {
-    this.settingsStore.resetItem();
+    this.settingsAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.settingsStore;
-    this.settingsStore.update(item).then(data => {
+    const { item } = this.settingsAdminStore;
+    this.settingsAdminStore.update(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully updated {item}',
@@ -61,10 +61,10 @@ class EditSettingsModal extends React.Component {
 }
 
 EditSettingsModal.propTypes = {
-  settingsStore: PropTypes.object.isRequired,
+  settingsAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('settingsStore', 'notificationsStore'), observer);
+const enhance = compose(inject('settingsAdminStore', 'notificationsStore'), observer);
 
 export default enhance(EditSettingsModal);

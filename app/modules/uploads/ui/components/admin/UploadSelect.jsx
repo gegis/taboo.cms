@@ -15,7 +15,7 @@ class UploadSelect extends React.Component {
     super(props);
     this.modal = React.createRef();
     this.createModal = React.createRef();
-    this.uploadsStore = props.uploadsStore;
+    this.uploadsAdminStore = props.uploadsAdminStore;
     this.localeStore = props.localeStore;
     this.notificationsStore = props.notificationsStore;
     this.uiAdminStore = props.uiAdminStore;
@@ -41,7 +41,7 @@ class UploadSelect extends React.Component {
     if (onSelect) {
       this.onOpenSelectCB = onSelect;
     }
-    this.uploadsStore.loadAll(opts);
+    this.uploadsAdminStore.loadAll(opts);
     this.modal.current.open();
   }
 
@@ -61,7 +61,7 @@ class UploadSelect extends React.Component {
     this.setState({ search });
     this.searchTimeout = setTimeout(() => {
       this.uiAdminStore.setLoading(true);
-      this.uploadsStore.loadAll({ search: search, filter: this.uploadsStore.filter }).then(() => {
+      this.uploadsAdminStore.loadAll({ search: search, filter: this.uploadsAdminStore.filter }).then(() => {
         this.uiAdminStore.setLoading(false);
       });
     }, 500);
@@ -77,7 +77,7 @@ class UploadSelect extends React.Component {
 
   onLoadMore() {
     this.uiAdminStore.setLoading(true);
-    this.uploadsStore.loadNextPage().then(() => {
+    this.uploadsAdminStore.loadNextPage().then(() => {
       this.uiAdminStore.setLoading(false);
     });
   }
@@ -108,7 +108,7 @@ class UploadSelect extends React.Component {
   getItems() {
     const items = [];
     const { closeOnSelect = false } = this.props;
-    this.uploadsStore.items.map(item => {
+    this.uploadsAdminStore.items.map(item => {
       items.push(
         <tr key={item._id}>
           <td className="rs-hidden-sm upload-preview-wrapper">{this.getUploadPreview(item)}</td>
@@ -171,7 +171,7 @@ class UploadSelect extends React.Component {
           ref={this.modal}
           cancelName="Close"
         >
-          {this.uploadsStore.items.length > 0 && (
+          {this.uploadsAdminStore.items.length > 0 && (
             <table>
               <thead>
                 <tr>
@@ -187,8 +187,8 @@ class UploadSelect extends React.Component {
               <tbody>{this.getItems()}</tbody>
             </table>
           )}
-          {this.uploadsStore.items.length > 0 && this.uploadsStore.hasMoreResults && this.getLoadMoreButton()}
-          {this.uploadsStore.items.length === 0 && (
+          {this.uploadsAdminStore.items.length > 0 && this.uploadsAdminStore.hasMoreResults && this.getLoadMoreButton()}
+          {this.uploadsAdminStore.items.length === 0 && (
             <div className="">
               <Translation message="No results found" />
             </div>
@@ -201,7 +201,7 @@ class UploadSelect extends React.Component {
 }
 
 UploadSelect.propTypes = {
-  uploadsStore: PropTypes.object.isRequired,
+  uploadsAdminStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
   uiAdminStore: PropTypes.object.isRequired,
@@ -210,6 +210,6 @@ UploadSelect.propTypes = {
   closeOnSelect: PropTypes.bool,
 };
 
-const enhance = compose(inject('uploadsStore', 'localeStore', 'notificationsStore', 'uiAdminStore'), observer);
+const enhance = compose(inject('uploadsAdminStore', 'localeStore', 'notificationsStore', 'uiAdminStore'), observer);
 
 export default enhance(UploadSelect);

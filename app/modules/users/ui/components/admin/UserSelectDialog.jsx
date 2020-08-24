@@ -12,7 +12,7 @@ class UserSelectDialog extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.usersStore = props.usersStore;
+    this.usersAdminStore = props.usersAdminStore;
     this.uiAdminStore = props.uiAdminStore;
     this.searchTimeout = null;
     this.open = this.open.bind(this);
@@ -22,7 +22,7 @@ class UserSelectDialog extends React.Component {
   }
 
   open() {
-    this.usersStore.loadAll();
+    this.usersAdminStore.loadAll();
     this.modal.current.open();
   }
 
@@ -34,7 +34,7 @@ class UserSelectDialog extends React.Component {
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
       this.uiAdminStore.setLoading(true);
-      this.usersStore.loadAll({ search: value, filter: this.usersStore.filter }).then(() => {
+      this.usersAdminStore.loadAll({ search: value, filter: this.usersAdminStore.filter }).then(() => {
         this.uiAdminStore.setLoading(false);
       });
     }, 500);
@@ -55,11 +55,11 @@ class UserSelectDialog extends React.Component {
               placeholder="Search Users"
               style={{ width: '45vw' }}
               onChange={this.onSearchChange}
-              value={this.usersStore.search}
+              value={this.usersAdminStore.search}
             />
           </FormGroup>
         </Form>
-        {this.usersStore.users.length > 0 && (
+        {this.usersAdminStore.users.length > 0 && (
           <table>
             <thead>
               <tr>
@@ -70,7 +70,7 @@ class UserSelectDialog extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.usersStore.users.map(item => (
+              {this.usersAdminStore.users.map(item => (
                 <tr key={item._id}>
                   <td className="">
                     <div className="subject sm">{item._id}</div>
@@ -101,11 +101,11 @@ class UserSelectDialog extends React.Component {
 }
 
 UserSelectDialog.propTypes = {
-  usersStore: PropTypes.object.isRequired,
+  usersAdminStore: PropTypes.object.isRequired,
   uiAdminStore: PropTypes.object.isRequired,
   onSelect: PropTypes.func,
 };
 
-const enhance = compose(inject('usersStore', 'uiAdminStore'), observer);
+const enhance = compose(inject('usersAdminStore', 'uiAdminStore'), observer);
 
 export default enhance(UserSelectDialog);

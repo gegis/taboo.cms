@@ -11,7 +11,7 @@ import ImagePicker from 'modules/core/ui/components/ImagePicker';
 class PageForm extends React.Component {
   constructor(props) {
     super(props);
-    this.pagesStore = props.pagesStore;
+    this.pagesAdminStore = props.pagesAdminStore;
     this.localeStore = props.localeStore;
     this.templatesAdminStore = props.templatesAdminStore;
   }
@@ -19,11 +19,11 @@ class PageForm extends React.Component {
   onImageChange(key, value) {
     const option = {};
     option[key] = value;
-    this.pagesStore.setItem(option);
+    this.pagesAdminStore.setItem(option);
   }
 
   render() {
-    const { setItem, item, setCheckboxItemValue } = this.pagesStore;
+    const { setItem, item, setCheckboxItemValue } = this.pagesAdminStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
@@ -150,11 +150,11 @@ class PageForm extends React.Component {
 }
 
 PageForm.propTypes = {
-  pagesStore: PropTypes.object.isRequired,
+  pagesAdminStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
   templatesAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('pagesStore', 'localeStore', 'templatesAdminStore'), observer);
+const enhance = compose(inject('pagesAdminStore', 'localeStore', 'templatesAdminStore'), observer);
 
 export default enhance(PageForm);

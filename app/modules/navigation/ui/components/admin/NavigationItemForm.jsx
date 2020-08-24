@@ -10,17 +10,17 @@ import ImagePicker from 'modules/core/ui/components/ImagePicker';
 class NavigationItemForm extends React.Component {
   constructor(props) {
     super(props);
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
   }
 
   onImageChange(key, value) {
     const option = {};
     option[key] = value;
-    this.navigationStore.setNavigationItem(option);
+    this.navigationAdminStore.setNavigationItem(option);
   }
 
   render() {
-    const { setNavigationItem, navigationItem, setCheckboxNavigationItemValue } = this.navigationStore;
+    const { setNavigationItem, navigationItem, setCheckboxNavigationItemValue } = this.navigationAdminStore;
     return (
       <Form layout="horizontal" fluid onChange={setNavigationItem} formValue={navigationItem}>
         {navigationItem.id && (
@@ -87,9 +87,9 @@ class NavigationItemForm extends React.Component {
 }
 
 NavigationItemForm.propTypes = {
-  navigationStore: PropTypes.object.isRequired,
+  navigationAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore'), observer);
+const enhance = compose(inject('navigationAdminStore'), observer);
 
 export default enhance(NavigationItemForm);

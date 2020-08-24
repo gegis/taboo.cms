@@ -11,7 +11,7 @@ class CreatePageModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.pagesStore = props.pagesStore;
+    this.pagesAdminStore = props.pagesAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -19,27 +19,27 @@ class CreatePageModal extends React.Component {
   }
 
   open() {
-    this.pagesStore.resetItem();
+    this.pagesAdminStore.resetItem();
     this.modal.current.open();
   }
 
   close() {
-    this.pagesStore.resetItem();
+    this.pagesAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.pagesStore;
+    const { item } = this.pagesAdminStore;
     const page = Object.assign({}, item);
-    this.pagesStore.create(page).then(data => {
+    this.pagesAdminStore.create(page).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully created {item}',
         translationVars: { item: data.title },
         translate: true,
       });
-      this.pagesStore.resetItem();
-      this.pagesStore.loadAll();
+      this.pagesAdminStore.resetItem();
+      this.pagesAdminStore.loadAll();
       this.close();
     });
   }
@@ -62,10 +62,10 @@ class CreatePageModal extends React.Component {
 }
 
 CreatePageModal.propTypes = {
-  pagesStore: PropTypes.object.isRequired,
+  pagesAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('pagesStore', 'notificationsStore'), observer);
+const enhance = compose(inject('pagesAdminStore', 'notificationsStore'), observer);
 
 export default enhance(CreatePageModal);

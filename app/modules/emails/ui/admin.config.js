@@ -16,7 +16,7 @@ const routes = [
 ];
 
 const stores = {
-  emailsStore: EmailsAdminStore,
+  emailsAdminStore: EmailsAdminStore,
 };
 
 const primaryMenu = [

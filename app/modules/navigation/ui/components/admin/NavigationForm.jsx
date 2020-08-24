@@ -10,12 +10,12 @@ import NavigationItemsTree from 'modules/navigation/ui/components/admin/Navigati
 class NavigationForm extends React.Component {
   constructor(props) {
     super(props);
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
     this.localeStore = props.localeStore;
   }
 
   render() {
-    const { setItem, item, setCheckboxItemValue } = this.navigationStore;
+    const { setItem, item, setCheckboxItemValue } = this.navigationAdminStore;
     return (
       <Form layout="horizontal" fluid onChange={setItem} formValue={item}>
         {item.id && (
@@ -65,10 +65,10 @@ class NavigationForm extends React.Component {
 }
 
 NavigationForm.propTypes = {
-  navigationStore: PropTypes.object.isRequired,
+  navigationAdminStore: PropTypes.object.isRequired,
   localeStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore', 'localeStore'), observer);
+const enhance = compose(inject('navigationAdminStore', 'localeStore'), observer);
 
 export default enhance(NavigationForm);

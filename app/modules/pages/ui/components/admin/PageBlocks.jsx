@@ -9,7 +9,7 @@ import AdminConfigHelper from 'modules/core/ui/helpers/AdminConfigHelper';
 class PageBlocks extends React.Component {
   constructor(props) {
     super(props);
-    this.pagesStore = props.pagesStore;
+    this.pagesAdminStore = props.pagesAdminStore;
     this.blocksPopover = null;
     this.state = {
       pageBlockMoving: false,
@@ -21,12 +21,12 @@ class PageBlocks extends React.Component {
   }
 
   addBlock(block) {
-    this.pagesStore.addBlock(block);
+    this.pagesAdminStore.addBlock(block);
     this.hideBlocksPopover();
   }
 
   deleteBlock(index) {
-    this.pagesStore.deleteBlock(index);
+    this.pagesAdminStore.deleteBlock(index);
   }
 
   getBlocksPopover() {
@@ -43,14 +43,14 @@ class PageBlocks extends React.Component {
   }
 
   setBlockProps(index, blockProps) {
-    this.pagesStore.setBlockProps(index, blockProps);
+    this.pagesAdminStore.setBlockProps(index, blockProps);
   }
 
   moveUp(index) {
     if (index > 0) {
       this.setState({ pageBlockMoving: true });
       setTimeout(() => {
-        this.pagesStore.reorderBlocks(index, index - 1);
+        this.pagesAdminStore.reorderBlocks(index, index - 1);
       }, 50);
       setTimeout(() => {
         this.setState({ pageBlockMoving: false });
@@ -59,11 +59,11 @@ class PageBlocks extends React.Component {
   }
 
   moveDown(index) {
-    const { item } = this.props.pagesStore;
+    const { item } = this.props.pagesAdminStore;
     if (index < item.blocks.length - 1) {
       this.setState({ pageBlockMoving: true });
       setTimeout(() => {
-        this.pagesStore.reorderBlocks(index, index + 1);
+        this.pagesAdminStore.reorderBlocks(index, index + 1);
       }, 50);
       setTimeout(() => {
         this.setState({ pageBlockMoving: false });
@@ -105,7 +105,7 @@ class PageBlocks extends React.Component {
 
   getPageBlocks() {
     const blocksMap = AdminConfigHelper.getPageBlocksMap();
-    const { item } = this.props.pagesStore;
+    const { item } = this.props.pagesAdminStore;
     const pageBlocks = [];
     item.blocks.map((block, index) => {
       if (blocksMap[block.name] && blocksMap[block.name].previewComponent) {
@@ -148,11 +148,10 @@ class PageBlocks extends React.Component {
 }
 
 PageBlocks.propTypes = {
-  pagesStore: PropTypes.object.isRequired,
-  localeStore: PropTypes.object.isRequired,
+  pagesAdminStore: PropTypes.object.isRequired,
   templatesStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('pagesStore', 'localeStore', 'templatesStore'), observer);
+const enhance = compose(inject('pagesAdminStore', 'templatesStore'), observer);
 
 export default enhance(PageBlocks);

@@ -11,26 +11,26 @@ class CreateNavigationItemModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.navigationStore = props.navigationStore;
+    this.navigationAdminStore = props.navigationAdminStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.onSave = this.onSave.bind(this);
   }
 
   open() {
-    this.navigationStore.resetNavigationItem();
+    this.navigationAdminStore.resetNavigationItem();
     this.modal.current.open();
   }
 
   close() {
-    this.navigationStore.resetNavigationItem();
+    this.navigationAdminStore.resetNavigationItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { navigationItem } = this.navigationStore;
-    this.navigationStore.addNewNavigationItem(navigationItem);
-    this.navigationStore.resetNavigationItem();
+    const { navigationItem } = this.navigationAdminStore;
+    this.navigationAdminStore.addNewNavigationItem(navigationItem);
+    this.navigationAdminStore.resetNavigationItem();
     this.close();
   }
 
@@ -53,9 +53,9 @@ class CreateNavigationItemModal extends React.Component {
 }
 
 CreateNavigationItemModal.propTypes = {
-  navigationStore: PropTypes.object.isRequired,
+  navigationAdminStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('navigationStore'), observer);
+const enhance = compose(inject('navigationAdminStore'), observer);
 
 export default enhance(CreateNavigationItemModal);

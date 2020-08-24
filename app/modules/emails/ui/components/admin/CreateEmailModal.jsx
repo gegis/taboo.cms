@@ -11,7 +11,7 @@ class CreateEmailModal extends React.Component {
   constructor(props) {
     super(props);
     this.modal = React.createRef();
-    this.emailsStore = props.emailsStore;
+    this.emailsAdminStore = props.emailsAdminStore;
     this.notificationsStore = props.notificationsStore;
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
@@ -19,26 +19,26 @@ class CreateEmailModal extends React.Component {
   }
 
   open() {
-    this.emailsStore.resetItem();
+    this.emailsAdminStore.resetItem();
     this.modal.current.open();
   }
 
   close() {
-    this.emailsStore.resetItem();
+    this.emailsAdminStore.resetItem();
     this.modal.current.close();
   }
 
   onSave() {
-    const { item } = this.emailsStore;
-    this.emailsStore.create(item).then(data => {
+    const { item } = this.emailsAdminStore;
+    this.emailsAdminStore.create(item).then(data => {
       this.notificationsStore.push({
         title: 'Success',
         html: 'Successfully created {item}',
         translationVars: { item: data._id },
         translate: true,
       });
-      this.emailsStore.resetItem();
-      this.emailsStore.loadAll();
+      this.emailsAdminStore.resetItem();
+      this.emailsAdminStore.loadAll();
       this.close();
     });
   }
@@ -62,10 +62,10 @@ class CreateEmailModal extends React.Component {
 }
 
 CreateEmailModal.propTypes = {
-  emailsStore: PropTypes.object.isRequired,
+  emailsAdminStore: PropTypes.object.isRequired,
   notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('emailsStore', 'notificationsStore'), observer);
+const enhance = compose(inject('emailsAdminStore', 'notificationsStore'), observer);
 
 export default enhance(CreateEmailModal);
