@@ -30,6 +30,7 @@ class AbstractController {
     this.defaultPopulate = defaultPopulate;
     this.filterRequestParams = filterRequestParams;
     this.getAll = this.getAll.bind(this);
+    this.parseGetAllItemsResult = this.parseGetAllItemsResult.bind(this);
     this.getAllItems = this.getAllItems.bind(this);
     this.getRandom = this.getRandom.bind(this);
     this.getRandomItems = this.getRandomItems.bind(this);
@@ -45,18 +46,40 @@ class AbstractController {
   }
 
   async getAll(ctx) {
-    ctx.body = await this.getAllItems(ctx);
+    const result = await this.getAllItems(ctx);
+    ctx.body = await this.parseGetAllItemsResult(result);
+  }
+
+  async parseGetAllItemsResult(result) {
+    const { items = [], params: { filter = null, options: { limit = 1, skip = 0, sort = null } = {} } = {} } = result;
+    const total = await this.model.countDocuments(filter);
+    const response = {
+      items: items,
+      page: parseInt(skip) / parseInt(limit) + 1,
+      limit: limit,
+      sort: sort,
+      filter: filter,
+      total: total,
+    };
+
+    return response;
   }
 
   async getAllItems(ctx) {
     let params = this.parseGetAllQuery(ctx);
     const populate = this.getPopulate(ctx, 'getAll');
+    let items = [];
     params = await this.beforeGetAll(ctx, params);
     const query = this.model.find(params.filter, params.fields, params.options);
     if (populate && populate.length > 0) {
       query.populate(populate);
     }
-    return query.exec();
+    items = await query.exec();
+
+    return {
+      items: items,
+      params: params,
+    };
   }
 
   async getRandom(ctx) {
