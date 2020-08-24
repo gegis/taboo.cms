@@ -31,7 +31,7 @@ const primaryMenu = [
   {
     order: 100,
     icon: React.createElement(Icon, { icon: 'dashboard' }),
-    text: 'Dashboard',
+    name: 'Dashboard',
     linkProps: {
       to: '/admin',
     },

@@ -25,13 +25,13 @@ const primaryMenu = [
   {
     order: 2000,
     icon: React.createElement(Icon, { icon: 'cog' }),
-    text: 'Settings',
+    name: 'Settings',
     acl: 'admin.settings.view',
     dropdown: [
       {
         order: 200,
         icon: React.createElement(Icon, { icon: 'globe' }),
-        text: 'Countries',
+        name: 'Countries',
         linkProps: {
           to: '/admin/countries',
         },

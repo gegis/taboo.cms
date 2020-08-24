@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Translation from 'app/modules/core/ui/components/Translation';
 import RichTextEditor from 'modules/core/ui/components/admin/RichTextEditor';
 import PageBlockFrame from 'modules/pages/ui/components/admin/PageBlockFrame';
+import FormHelper from 'modules/forms/ui/helpers/FormHelper';
 
 class FormForm extends React.Component {
   constructor(props) {
@@ -35,17 +36,17 @@ class FormForm extends React.Component {
   getTemplate() {
     const { item = {} } = this.formsAdminStore;
     const { formTemplates = {} } = this.formsStore;
-    let FormTemplate;
-    if (item.template && formTemplates[item.template]) {
-      FormTemplate = formTemplates[item.template].component;
+    const FormComponent = FormHelper.getTemplateComponent(item.template);
+    if (item.template && formTemplates[item.template] && FormComponent) {
       return (
         <PageBlockFrame style={{ height: '400px' }}>
           <div className={`form-page-block-preview form-${item.template}`}>
-            <FormTemplate />
+            <FormComponent />
           </div>
         </PageBlockFrame>
       );
     }
+
     return null;
   }
 
@@ -88,6 +89,12 @@ class FormForm extends React.Component {
     return recipients;
   }
 
+  hasConditionalRecipients() {
+    const { item = {} } = this.formsAdminStore;
+    const { formTemplates } = this.formsStore;
+    return item.template && formTemplates[item.template] && formTemplates[item.template].conditionalRecipients;
+  }
+
   render() {
     const { setItem, item, setCheckboxItemValue } = this.formsAdminStore;
     return (
@@ -122,10 +129,12 @@ class FormForm extends React.Component {
           <FormControl name="recipients" />
           <HelpBlock tooltip>Comma separated emails list</HelpBlock>
         </FormGroup>
-        <Panel header="Conditional Recipients" bordered={true}>
-          {this.getConditionalRecipients()}
-          <HelpBlock>If a conditional requirement is met - it will use the matching recipients list</HelpBlock>
-        </Panel>
+        {this.hasConditionalRecipients() && (
+          <Panel header="Conditional Recipients">
+            {this.getConditionalRecipients()}
+            <HelpBlock>If a conditional requirement is met - it will use the matching recipients list</HelpBlock>
+          </Panel>
+        )}
         <Panel header="Form Header">
           <RichTextEditor onChange={this.onCodeEditorChange.bind(this, 'header')} value={item.header} height="200" />
         </Panel>

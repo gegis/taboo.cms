@@ -32,4 +32,5 @@ module.exports = {
   settings: {
     types: shared.settingsTypes,
   },
+  formTemplates: shared.formTemplates,
 };

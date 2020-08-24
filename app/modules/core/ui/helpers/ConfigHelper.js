@@ -5,6 +5,7 @@ class ConfigHelper {
     this.modulesConfigs = this.importAllModulesConfigs();
     this.pageBlocks = [];
     this.pageBlocksMap = {};
+    this.config = null;
   }
 
   /**
@@ -73,6 +74,13 @@ class ConfigHelper {
         });
       }
     });
+  }
+
+  getConfig() {
+    if (this.config === null) {
+      this.config = this.getOptionsByKey('config');
+    }
+    return this.config;
   }
 
   getOptionsByKey(key) {

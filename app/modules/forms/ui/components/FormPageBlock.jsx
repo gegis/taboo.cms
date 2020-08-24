@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { Row, Col, Grid } from 'rsuite';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
+import FormHelper from 'modules/forms/ui/helpers/FormHelper';
 
 class FormPageBlock extends Component {
   constructor(props) {
@@ -29,14 +30,6 @@ class FormPageBlock extends Component {
     return {};
   }
 
-  getFormTemplate(form) {
-    const { formTemplates } = this.props.formsStore;
-    if (form && form.template && formTemplates[form.template]) {
-      return formTemplates[form.template].component;
-    }
-    return null;
-  }
-
   onSubmit(data, options) {
     return new Promise(resolve => {
       const { formsStore, formId } = this.props;
@@ -48,7 +41,7 @@ class FormPageBlock extends Component {
 
   render() {
     const form = this.getForm();
-    const FormTemplate = this.getFormTemplate(form);
+    const FormTemplate = FormHelper.getTemplateComponent(form.template);
     if (FormTemplate) {
       return (
         <div className={classNames('form-page-block-wrapper', `form-${form.template}`)}>

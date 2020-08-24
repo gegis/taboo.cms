@@ -23,7 +23,7 @@ const primaryMenu = [
   {
     order: 900,
     icon: React.createElement(Icon, { icon: 'file-upload' }),
-    text: 'Uploads',
+    name: 'Uploads',
     linkProps: {
       to: '/admin/uploads',
     },

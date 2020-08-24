@@ -1,26 +1,8 @@
 import { decorate, observable, action, runInAction } from 'mobx';
 import axios from 'axios';
 import ResponseHelper from 'modules/core/ui/helpers/ResponseHelper';
-import ContactUsTemplate from 'modules/forms/ui/components/formTemplates/ContactUsTemplate';
 
-const formTemplates = {
-  contactUs: {
-    name: 'Contact Us',
-    component: ContactUsTemplate,
-    conditionalRecipients: [
-      {
-        formField: 'requestType',
-        fieldValue: 'Customer support',
-        recipients: '',
-      },
-      {
-        formField: 'requestType',
-        fieldValue: 'Business stuff',
-        recipients: '',
-      },
-    ],
-  },
-};
+const { formTemplates = {} } = window.app.config;
 
 class FormsStore {
   constructor() {
@@ -29,7 +11,7 @@ class FormsStore {
     this.formTemplateOptions = [];
     Object.keys(this.formTemplates).map(templateKey => {
       this.formTemplateOptions.push({
-        label: this.formTemplates[templateKey].name,
+        label: this.formTemplates[templateKey].title,
         value: templateKey,
       });
     });

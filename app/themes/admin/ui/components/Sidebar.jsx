@@ -47,20 +47,20 @@ class Sidebar extends React.Component {
                   {...child.linkProps}
                   onSelect={this.onDropdownSelect.bind(this, i)}
                 >
-                  <Translation message={child.text} />
+                  <Translation message={child.name} />
                 </NavDropDownLink>
               );
             }
           });
           menuItems.push(
-            <Dropdown key={i} eventKey={i} trigger="click" title={item.text} icon={item.icon}>
+            <Dropdown key={i} eventKey={i} trigger="click" title={item.name} icon={item.icon}>
               {menuItemChildren}
             </Dropdown>
           );
         } else {
           menuItems.push(
             <NavLink key={i} eventKey={i} icon={item.icon} {...item.linkProps}>
-              <Translation message={item.text} />
+              <Translation message={item.name} />
             </NavLink>
           );
         }

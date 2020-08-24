@@ -23,7 +23,7 @@ const primaryMenu = [
   {
     order: 360,
     icon: React.createElement(Icon, { icon: 'envelope-o' }),
-    text: 'Emails',
+    name: 'Emails',
     linkProps: {
       to: '/admin/emails',
     },
