@@ -1,5 +1,6 @@
 import FormsStore from './stores/FormsStore';
 import FormPageBlock from 'modules/forms/ui/components/FormPageBlock';
+import ContactUsTemplate from 'modules/forms/ui/components/formTemplates/ContactUsTemplate';
 
 const enabled = true;
 
@@ -14,4 +15,10 @@ const pageBlocks = [
   },
 ];
 
-export { enabled, pageBlocks, stores };
+const config = {
+  formComponents: {
+    contactUs: ContactUsTemplate,
+  },
+};
+
+export { enabled, pageBlocks, stores, config };

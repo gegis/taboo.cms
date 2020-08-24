@@ -22,4 +22,26 @@ module.exports = {
     previewRoute: '/:language?/templates/preview/:template',
     themesPath: 'app/themes',
   },
+  formTemplates: {
+    contactUs: {
+      title: 'Contact Us',
+      conditionalRecipients: [
+        {
+          formField: 'requestType',
+          fieldValue: 'Generic',
+          recipients: '',
+        },
+        {
+          formField: 'requestType',
+          fieldValue: 'Request a callback',
+          recipients: '',
+        },
+        {
+          formField: 'requestType',
+          fieldValue: 'Customer Support',
+          recipients: '',
+        },
+      ],
+    },
+  },
 };

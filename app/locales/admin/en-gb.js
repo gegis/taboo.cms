@@ -244,4 +244,8 @@ module.exports = {
   'Create New Email': 'Create New Email',
   Action: 'Action',
   Subject: 'Subject',
+  'Edit Form': 'Edit Form',
+  'Create New Form': 'Create New Form',
+  'Form Records': 'Form Records',
+  Recipients: 'Recipients',
 };
