@@ -5,21 +5,7 @@ import { observer, inject } from 'mobx-react';
 import validator from 'validator';
 import PropTypes from 'prop-types';
 
-// TODO - move to config
-const requestTypes = [
-  {
-    label: 'Generic',
-    value: 'Generic',
-  },
-  {
-    label: 'Request a callback',
-    value: 'Request a callback',
-  },
-  {
-    label: 'Customer Support',
-    value: 'Customer Support',
-  },
-];
+const { formTemplates: { contactUs: { requestTypes = [] } = {} } = {} } = window.app.config;
 
 class ContactUsTemplate extends React.Component {
   constructor(props) {

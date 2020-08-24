@@ -25,6 +25,20 @@ module.exports = {
   formTemplates: {
     contactUs: {
       title: 'Contact Us',
+      requestTypes: [
+        {
+          label: 'Generic',
+          value: 'Generic',
+        },
+        {
+          label: 'Request a callback',
+          value: 'Request a callback',
+        },
+        {
+          label: 'Customer Support',
+          value: 'Customer Support',
+        },
+      ],
       conditionalRecipients: [
         {
           formField: 'requestType',

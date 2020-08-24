@@ -36,12 +36,12 @@ class FormForm extends React.Component {
   getTemplate() {
     const { item = {} } = this.formsAdminStore;
     const { formTemplates = {} } = this.formsStore;
-    const Component = FormHelper.getTemplateComponent(item.template);
-    if (item.template && formTemplates[item.template] && Component) {
+    const FormComponent = FormHelper.getTemplateComponent(item.template);
+    if (item.template && formTemplates[item.template] && FormComponent) {
       return (
         <PageBlockFrame style={{ height: '400px' }}>
           <div className={`form-page-block-preview form-${item.template}`}>
-            <Component />
+            <FormComponent />
           </div>
         </PageBlockFrame>
       );
