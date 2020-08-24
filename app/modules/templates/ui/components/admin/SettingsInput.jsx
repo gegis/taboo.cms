@@ -41,24 +41,26 @@ class SettingsInput extends React.Component {
     this.templatesAdminStore.setLanguage(value, true);
   }
 
-  getColorPicker({ settingsItem, settingsValueKey, settingsOnChange }) {
+  getColorPicker({ settingsItem, settingsValueKey, settingsOnChange, settingsOnClear }) {
     return (
       <ColorPicker
         input={<Input value={settingsItem[settingsValueKey]} onChange={settingsOnChange} />}
         value={settingsItem[settingsValueKey]}
         returnValueKey="hex"
         onChange={settingsOnChange}
+        onClear={settingsOnClear}
       />
     );
   }
 
-  getImagePicker({ settingsItem, settingsValueKey, settingsOnChange }) {
+  getImagePicker({ settingsItem, settingsValueKey, settingsOnChange, settingsOnClear }) {
     return (
       <ImagePicker
         input={<Input value={settingsItem[settingsValueKey]} onChange={settingsOnChange} />}
         value={settingsItem[settingsValueKey]}
         returnValueKey="url"
         onChange={settingsOnChange}
+        onClear={settingsOnClear}
       />
     );
   }
@@ -69,11 +71,13 @@ class SettingsInput extends React.Component {
     let input = null;
     let settingsItem = null;
     let settingsOnChange = null;
+    let settingsOnClear = null;
 
     switch (settingsKey) {
       case 'settings':
         settingsItem = this.templatesAdminStore.settings;
         settingsOnChange = this.onSettingsChange;
+        settingsOnClear = this.onSettingsChange;
         break;
       case 'languageSettings':
         settingsItem = this.templatesAdminStore.languageSettings;
@@ -83,6 +87,10 @@ class SettingsInput extends React.Component {
 
     if (settingsOnChange !== null && typeof settingsOnChange === 'function') {
       settingsOnChange = settingsOnChange.bind(this.templatesAdminStore, settingsValueKey);
+    }
+
+    if (settingsOnClear !== null && typeof settingsOnClear === 'function') {
+      settingsOnClear = settingsOnClear.bind(this.templatesAdminStore, settingsValueKey, '');
     }
 
     switch (type) {
@@ -115,10 +123,10 @@ class SettingsInput extends React.Component {
         );
         break;
       case 'ImagePicker':
-        input = this.getImagePicker({ settingsItem, settingsValueKey, settingsOnChange });
+        input = this.getImagePicker({ settingsItem, settingsValueKey, settingsOnChange, settingsOnClear });
         break;
       case 'ColorPicker':
-        input = this.getColorPicker({ settingsItem, settingsValueKey, settingsOnChange });
+        input = this.getColorPicker({ settingsItem, settingsValueKey, settingsOnChange, settingsOnClear });
         break;
     }
 

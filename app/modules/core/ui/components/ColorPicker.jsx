@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Button, Icon } from 'rsuite';
+import { Button, Icon, InputGroup } from 'rsuite';
 import { Sketch, ChromePicker } from 'react-color';
 
 class ColorPicker extends React.Component {
@@ -48,7 +48,7 @@ class ColorPicker extends React.Component {
       return button;
     }
     return (
-      <Button onClick={this.onButtonClick}>
+      <Button className="color-pick-btn" onClick={this.onButtonClick}>
         <Icon icon="eyedropper" />
       </Button>
     );
@@ -78,9 +78,20 @@ class ColorPicker extends React.Component {
   }
 
   getInput() {
-    const { input } = this.props;
+    const { input, onClear } = this.props;
     if (input) {
-      return <div className="input-wrapper">{input}</div>;
+      return (
+        <div className="input-wrapper">
+          <InputGroup inside>
+            {input}
+            {onClear && (
+              <InputGroup.Button onClick={onClear}>
+                <Icon icon="times-circle" />
+              </InputGroup.Button>
+            )}
+          </InputGroup>
+        </div>
+      );
     }
     return null;
   }
@@ -106,6 +117,7 @@ class ColorPicker extends React.Component {
 
 ColorPicker.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onClear: PropTypes.func,
   value: PropTypes.string,
   returnValueKey: PropTypes.string,
   type: PropTypes.oneOf(['ChromePicker', 'Sketch']),

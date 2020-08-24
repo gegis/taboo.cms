@@ -77,6 +77,7 @@ class NavigationItemForm extends React.Component {
               value={navigationItem.icon}
               returnValueKey="url"
               onChange={this.onImageChange.bind(this, 'icon')}
+              onClear={this.onImageChange.bind(this, 'icon', '')}
             />
           </div>
         </FormGroup>

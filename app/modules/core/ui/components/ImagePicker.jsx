@@ -32,7 +32,7 @@ class ImagePicker extends React.Component {
       return button;
     }
     return (
-      <Button onClick={this.onButtonClick} title="Select Image">
+      <Button className="select-upload-btn" onClick={this.onButtonClick} title="Select Image">
         <Icon icon="file-image-o" />
       </Button>
     );

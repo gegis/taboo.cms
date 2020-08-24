@@ -12,10 +12,15 @@ class CountryForm extends React.Component {
     super(props);
     this.countriesAdminStore = props.countriesAdminStore;
     this.onImageChange = this.onImageChange.bind(this);
+    this.onImageClear = this.onImageClear.bind(this);
   }
 
   onImageChange(url) {
     this.countriesAdminStore.setItem({ imageUrl: url });
+  }
+
+  onImageClear() {
+    this.countriesAdminStore.setItem({ imageUrl: '' });
   }
 
   render() {
@@ -55,6 +60,7 @@ class CountryForm extends React.Component {
               value={item.imageUrl}
               returnValueKey="url"
               onChange={this.onImageChange}
+              onClear={this.onImageClear}
             />
           </div>
         </FormGroup>

@@ -238,4 +238,6 @@ module.exports = {
   'Meta Title': 'Meta Title',
   'Meta Keywords': 'Meta Keywords',
   'Meta Description': 'Meta Description',
+  'Edit Country': 'Edit Country',
+  Icon: 'Icon',
 };
