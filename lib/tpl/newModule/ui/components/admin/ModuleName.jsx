@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 
 import ListPage from 'modules/core/ui/components/admin/ListPage';
 import ModuleNameList from './ModuleNameList';
-import CreateModal from './CreateModelNameModal';
-import EditModal from './EditModelNameModal';
+import Modal from './ModelNameModal';
 
 class ModuleName extends React.Component {
   constructor(props) {
@@ -20,8 +19,8 @@ class ModuleName extends React.Component {
         name="ModuleName"
         entityStore={this.entityStore}
         ItemsListComponent={ModuleNameList}
-        CreateModalComponent={CreateModal}
-        EditModalComponent={EditModal}
+        CreateModalComponent={Modal}
+        EditModalComponent={Modal}
       />
     );
   }
