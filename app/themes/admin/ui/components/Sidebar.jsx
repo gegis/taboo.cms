@@ -19,6 +19,7 @@ class Sidebar extends React.Component {
     this.handleToggle = this.handleToggle.bind(this);
     this.onDropdownOpen = this.onDropdownOpen.bind(this);
     this.onDropdownSelect = this.onDropdownSelect.bind(this);
+    this.getMenuItems = this.getMenuItems.bind(this);
   }
 
   onDropdownOpen(keys) {
