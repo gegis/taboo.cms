@@ -1,9 +1,12 @@
 const { config, logger } = require('@taboo/cms-core');
 const validator = require('validator');
+
 const CountriesService = require('modules/countries/services/CountriesService');
 const UsersService = require('modules/users/services/UsersService');
 const SettingsService = require('modules/settings/services/SettingsService');
 const CoreHelper = require('modules/core/helpers/CoreHelper');
+const AuthService = require('modules/users/services/AuthService');
+const UserValidationHelper = require('modules/users/helpers/UserValidationHelper');
 const UserModel = require('modules/users/models/UserModel');
 
 class UsersController {
@@ -74,7 +77,6 @@ class UsersController {
 
   /**
    * Landing page for user documents verification
-   * TODO rename this type of verification from account verification to documents verification
    */
   async verifyDocs(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
@@ -188,7 +190,7 @@ class UsersController {
   async register(ctx) {
     const { users: { signUpEnabled = false } = {} } = config;
     const { body: data = {} } = ctx.request;
-    const validationError = UsersService.validateUserRegisterFields(data);
+    const validationError = UserValidationHelper.validateUserRegisterFields(data);
     let user;
 
     if (!signUpEnabled) {
@@ -251,7 +253,8 @@ class UsersController {
    */
   async login(ctx) {
     const { body: { email = null, password = null, rememberMe = false } = {} } = ctx.request;
-    ctx.body = await UsersService.authenticateUser(ctx, email, password, rememberMe);
+    const user = await AuthService.authenticateUser(ctx, email, password, rememberMe);
+    ctx.body = await UsersService.setUserSession(ctx, user, rememberMe);
   }
 
   /**
@@ -266,7 +269,18 @@ class UsersController {
    */
   async logout(ctx) {
     ctx.body = {
-      success: await UsersService.logoutUser(ctx),
+      success: await AuthService.logoutUser(ctx),
+    };
+  }
+
+  async loginJwt(ctx) {
+    const { body: { email = null, password = null } = {} } = ctx.request;
+    ctx.body = await AuthService.authenticateUserJwt(ctx, email, password);
+  }
+
+  async logoutJwt(ctx) {
+    ctx.body = {
+      success: await AuthService.logoutUserJwt(ctx),
     };
   }
 
@@ -321,12 +335,7 @@ class UsersController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user;
     try {
-      user = await UserModel.findById(userId).populate([
-        'documentPersonal1',
-        'documentPersonal2',
-        'documentIncorporation',
-        'profilePicture',
-      ]);
+      user = await UsersService.getUserById(userId, { populateDocs: true });
     } catch (e) {
       ctx.throw(404, e);
     }
@@ -336,7 +345,7 @@ class UsersController {
   async updateCurrent(ctx) {
     const { body = {} } = ctx.request;
     const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const validationError = UsersService.validateUserAccountFields(body);
+    const validationError = UserValidationHelper.validateUserAccountFields(body);
     let user;
     try {
       if (validationError) {
@@ -347,7 +356,7 @@ class UsersController {
         delete body._id;
       }
       if (body.newPassword) {
-        body.password = await UsersService.hashPassword(body.newPassword);
+        body.password = await AuthService.hashPassword(body.newPassword);
       } else if (Object.prototype.hasOwnProperty.call(body, 'password')) {
         delete body.password;
       }

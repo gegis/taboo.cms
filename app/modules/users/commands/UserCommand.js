@@ -1,7 +1,7 @@
 const { Password, Confirm, Input } = require('enquirer');
 const CLIHelper = require('modules/cli/helpers/CLIHelper');
 const CoreHelper = require('modules/core/helpers/CoreHelper');
-const UsersService = require('modules/users/services/UsersService');
+const AuthService = require('modules/users/services/AuthService');
 const UserModel = require('modules/users/models/UserModel');
 const RoleModel = require('modules/acl/models/RoleModel');
 
@@ -34,7 +34,7 @@ class UserCommand {
       }
       this.user.roles = userRolesIds;
     }
-    this.user.password = await UsersService.hashPassword(this.user.password);
+    this.user.password = await AuthService.hashPassword(this.user.password);
     newUser = await UserModel.create(this.user);
     if (newUser) {
       CLIHelper.log(newUser, 'info');

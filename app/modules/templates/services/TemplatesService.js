@@ -42,6 +42,7 @@ class TemplatesService {
     let templateLanguageSettings = null;
     let newParams = {
       themeStyle: '',
+      footerCopyright: '',
       templatesHelper: {
         getNavigationHtml: this.getNavigationHtml,
         pluralize: this.pluralize,
@@ -55,14 +56,17 @@ class TemplatesService {
       template = await this.getByName(_template);
       templateLanguageSettings = await this.getTemplateLanguageSettings(template, language);
     }
+    if (template.style) {
+      newParams.themeStyle = template.style;
+    }
     if (template && templateLanguageSettings) {
       const { navigationPreload = [], userNavigationPreload = [] } = template;
       Object.assign(newParams, await this.getNavigationByKeys(navigationPreload, templateLanguageSettings));
       if (userId) {
         Object.assign(newParams, await this.getNavigationByKeys(userNavigationPreload, templateLanguageSettings));
       }
-      if (template.style) {
-        newParams.themeStyle = template.style;
+      if (templateLanguageSettings.footerCopyright) {
+        newParams.footerCopyright = templateLanguageSettings.footerCopyright;
       }
     }
 

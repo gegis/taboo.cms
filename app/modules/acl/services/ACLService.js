@@ -23,6 +23,7 @@ class ACLService {
    * @param subject - either ctx object either user session object
    * @param resource - string value for resource name
    */
+  // TODO - rethink to pass to this function only resource and acl list
   isAllowed(subject, resource) {
     let allowed = false;
     let user;
@@ -105,15 +106,6 @@ class ACLService {
           });
         }
       });
-    }
-  }
-
-  async deleteUserSession(user) {
-    const { session } = config.server;
-    let SessionModel;
-    if (user && session && session.options && session.options.store && session.options.store.model) {
-      SessionModel = session.options.store.model;
-      await SessionModel.findOneAndDelete({ 'value.user.id': user._id.toString() });
     }
   }
 }

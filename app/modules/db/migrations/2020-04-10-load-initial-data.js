@@ -1,6 +1,6 @@
 const { config, getAclResources } = require('@taboo/cms-core');
 const CLIHelper = require('modules/cli/helpers/CLIHelper');
-const UsersService = require('modules/users/services/UsersService');
+const AuthService = require('modules/users/services/AuthService');
 const RoleModel = require('modules/acl/models/RoleModel');
 const UserModel = require('modules/users/models/UserModel');
 const PageModel = require('modules/pages/models/PageModel');
@@ -215,7 +215,7 @@ module.exports = {
       email: initialUser.email,
       country: 'GB',
       username: CoreHelper.parseSlug(initialUser.firstName),
-      password: await UsersService.hashPassword(initialUser.pass),
+      password: await AuthService.hashPassword(initialUser.pass),
       roles: [role],
     };
   },

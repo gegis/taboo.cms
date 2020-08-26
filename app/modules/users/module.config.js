@@ -92,6 +92,24 @@ module.exports = {
     },
     {
       method: 'POST',
+      path: '/api/login/jwt',
+      action: UsersController.loginJwt,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/logout/jwt',
+      action: UsersController.logoutJwt,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
+      method: 'POST',
       path: '/api/reset-password',
       action: UsersController.resetPasswordApi,
       policies: [],
