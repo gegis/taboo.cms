@@ -17,7 +17,7 @@ module.exports = async (ctx, next) => {
     if (!token) {
       return ctx.throw(401, 'ApiKey token not found');
     }
-    user = await UserService.getUserData({ apiKey: token }, { loadAcl: true });
+    user = await UserService.getUser({ apiKey: token }, { loadAcl: true });
     if (!user) {
       return ctx.throw(403, 'Not Authorized');
     }

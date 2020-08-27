@@ -13,23 +13,39 @@ const RoleModel = require('modules/acl/models/RoleModel');
 const { server: { session: { options: { maxAge = 86400000 } = {}, rememberMeMaxAge = 86400000 } = {} } = {} } = config;
 
 class UsersService {
-  async getUserData(filter, { loadAcl = false, keepPassword = false, populateDocs = false } = {}) {
+  async getUser(
+    filter,
+    { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
+  ) {
     const query = await UserModel.findOne(filter);
-    return await this.getUser(query, { loadAcl, keepPassword, populateDocs });
+    return await this.getUserByQuery(query, { loadAcl, keepPassword, populateDocs, populateProfilePic });
   }
 
-  async getUserById(userId, { loadAcl = false, keepPassword = false, populateDocs = false } = {}) {
+  async getUserById(
+    userId,
+    { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
+  ) {
     const query = UserModel.findById(userId);
-    return await this.getUser(query, { loadAcl, keepPassword, populateDocs });
+    return await this.getUserByQuery(query, { loadAcl, keepPassword, populateDocs, populateProfilePic });
   }
 
-  async getUser(query, { loadAcl = false, keepPassword = false, populateDocs = false } = {}) {
-    if (populateDocs) {
-      query.populate(['documentPersonal1', 'documentPersonal2', 'documentIncorporation', 'profilePicture']);
-    }
-    const userResult = await query.exec();
+  async getUserByQuery(
+    query,
+    { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
+  ) {
+    let userResult;
     let user = null;
-
+    let populate = [];
+    if (populateDocs) {
+      populate = populate.concat(['documentPersonal1', 'documentPersonal2', 'documentIncorporation']);
+    }
+    if (populateProfilePic) {
+      populate = populate.concat(['profilePicture']);
+    }
+    if (populate.length > 0) {
+      query.populate(populate);
+    }
+    userResult = await query.exec();
     if (userResult) {
       user = userResult.toObject();
       if (loadAcl) {
@@ -43,15 +59,38 @@ class UsersService {
     return user;
   }
 
-  async setUserSession(ctx, user, rememberMe = false) {
-    ctx.session.user = await this.parseUserSessionData(user, { rememberMe });
-    if (rememberMe) {
-      ctx.session.maxAge = rememberMeMaxAge;
+  async verifyEmail(session, userId, token) {
+    const { user: { id: sessionUserId } = {} } = session;
+    const user = await this.getUserById(userId, { loadAcl: true });
+    let success = false;
+
+    if (user && user.accountVerificationCode && user.accountVerificationCode === token) {
+      user.emailVerified = true;
+      // TODO set to approved only if docs verification is not needed
+      // user.verified = true;
+      // user.verificationStatus = 'approved';
+      user.emailVerificationCode = '';
+      user.save();
+      success = true;
+    }
+    if (userId === sessionUserId) {
+      await this.setUserSession(session, user);
     } else {
-      ctx.session.maxAge = maxAge;
+      await this.updateUserSession(user);
+    }
+    this.socketsEmitUserChanges(user);
+    return { user, success };
+  }
+
+  async setUserSession(session, user, rememberMe = false) {
+    session.user = await this.parseUserSessionData(user, { rememberMe });
+    if (rememberMe) {
+      session.maxAge = rememberMeMaxAge;
+    } else {
+      session.maxAge = maxAge;
     }
 
-    return ctx.session.user;
+    return session.user;
   }
 
   async parseUserSessionData(user, { authenticated = false, rememberMe = false }) {
@@ -417,6 +456,7 @@ class UsersService {
       _id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
+      // username: user.username,
       email: user.email,
       verified: user.verified,
       active: user.active,

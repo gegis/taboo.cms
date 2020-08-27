@@ -56,7 +56,7 @@ class TemplatesService {
       template = await this.getByName(_template);
       templateLanguageSettings = await this.getTemplateLanguageSettings(template, language);
     }
-    if (template.style) {
+    if (template && template.style) {
       newParams.themeStyle = template.style;
     }
     if (template && templateLanguageSettings) {

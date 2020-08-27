@@ -151,7 +151,7 @@ class AccountSettings extends React.Component {
 
   render() {
     const { usersStore, countriesStore, templatesStore, authStore } = this.props;
-    const { verified = false } = authStore;
+    const { emailVerified = false } = authStore;
     const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     return (
       <Template
@@ -237,7 +237,7 @@ class AccountSettings extends React.Component {
                   </div>
                   <div className="clearfix" />
                 </FormGroup>
-                {!verified && (
+                {!emailVerified && (
                   <div>
                     <hr />
                     <FormGroup className="resend-verification-wrapper">

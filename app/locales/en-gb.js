@@ -65,4 +65,5 @@ module.exports = {
   'Repeat Password': 'Repeat Password',
   Change: 'Change',
   'Account Settings': 'Account Settings',
+  'Forgot password': 'Forgot password',
 };

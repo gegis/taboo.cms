@@ -1,6 +1,12 @@
 const { config, isAllowed } = require('@taboo/cms-core');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const UserModel = require('modules/users/models/UserModel');
+
+const {
+  auth: { jwt: { secret: jwtSecret, expiresIn: jwtExpiresIn } = {} } = {},
+  users: { signInEnabled = false } = {},
+} = config;
 
 class AuthService {
   isUserRequestAllowed(ctx, user) {
@@ -15,7 +21,6 @@ class AuthService {
   }
 
   async authenticateUser(ctx, email, password) {
-    const { users: { signInEnabled = false } = {} } = config;
     let passMatch;
     if (!email) {
       return ctx.throw(404, 'Email is required');
@@ -47,7 +52,22 @@ class AuthService {
     return user;
   }
 
-  async authenticateUserJwt() {}
+  signUserJwt(user) {
+    const userJson = user.toObject();
+    return jwt.sign(
+      {
+        exp: Math.floor(Date.now() / 1000) + jwtExpiresIn,
+        data: {
+          id: userJson._id,
+        },
+      },
+      jwtSecret
+    );
+  }
+
+  verifyUserJwt(ctx, token) {
+    return jwt.verify(token, jwtSecret);
+  }
 
   async passwordsMatch(plainPass, hashedPass) {
     return await bcrypt.compare(plainPass, hashedPass);
@@ -83,16 +103,11 @@ class AuthService {
     }
   }
 
-  async logoutUser(ctx) {
-    if (ctx.session.user && ctx.session.user.id) {
-      ctx.session.visitor = { viewedTopics: ctx.session.user.viewedTopics };
-      delete ctx.session.user;
+  async logoutUser(session) {
+    if (session.user && session.user.id) {
+      delete session.user;
       return true;
     }
-    return false;
-  }
-
-  async logoutUserJwt() {
     return false;
   }
 
