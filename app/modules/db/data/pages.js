@@ -1,6 +1,6 @@
 module.exports = [
   {
-    _id: '5dd575666a19cc6918296c6c',
+    _id: '5dd571630203d247ef37c257',
     title: 'Welcome to Taboo CMS',
     url: '/',
     template: 'standard',
@@ -8,7 +8,7 @@ module.exports = [
     language: 'en',
     blocks: [
       {
-        _id: '5dd571630203d247ef37c257',
+        _id: '5ec0493a436f1f2188de9d89',
         name: 'HTML',
         props: {
           html: `<section>
