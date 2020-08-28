@@ -1,120 +1,96 @@
-const { config, logger, isAllowed, events, sockets } = require('@taboo/cms-core');
+const { config, logger, events, sockets } = require('@taboo/cms-core');
 const moment = require('moment');
-const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
 const ACLService = require('modules/acl/services/ACLService');
 const SettingsService = require('modules/settings/services/SettingsService');
 const EmailsService = require('modules/emails/services/EmailsService');
 const MailerService = require('modules/mailer/services/MailerService');
-const ValidationHelper = require('modules/core/helpers/ValidationHelper');
+const AuthService = require('modules/users/services/AuthService');
+const UserValidationHelper = require('modules/users/helpers/UserValidationHelper');
 const UserModel = require('modules/users/models/UserModel');
 const RoleModel = require('modules/acl/models/RoleModel');
-const Json2csvParser = require('json2csv').Parser;
 
 const { server: { session: { options: { maxAge = 86400000 } = {}, rememberMeMaxAge = 86400000 } = {} } = {} } = config;
 
-const { users: { passwordMinLength = 6 } = {} } = config;
-
 class UsersService {
-  async passwordsMatch(plainPass, hashedPass) {
-    return await bcrypt.compare(plainPass, hashedPass);
+  async getUser(
+    filter,
+    { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
+  ) {
+    const query = UserModel.findOne(filter);
+    return await this.getUserByQuery(query, { loadAcl, keepPassword, populateDocs, populateProfilePic });
   }
 
-  async hashPassword(password) {
-    const { server: { bcryptSaltRounds = 10 } = {} } = config;
-    return await bcrypt.hash(password, bcryptSaltRounds);
+  async getUserById(
+    userId,
+    { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
+  ) {
+    const query = UserModel.findById(userId);
+    return await this.getUserByQuery(query, { loadAcl, keepPassword, populateDocs, populateProfilePic });
   }
 
-  parseAuthorizationToken(type, value) {
-    let token = null;
-    if (value) {
-      const parts = value.split(' ');
-      if (parts[0] === type) {
-        token = parts[1];
-      }
-    }
-    return token;
-  }
-
-  async getUserData(search, loadAcl = false) {
+  async getUserByQuery(
+    query,
+    { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
+  ) {
+    let userResult;
     let user = null;
-    const userResult = await UserModel.findOne(search);
+    let populate = [];
+    if (populateDocs) {
+      populate = populate.concat(['documentPersonal1', 'documentPersonal2', 'documentIncorporation']);
+    }
+    if (populateProfilePic) {
+      populate = populate.concat(['profilePicture']);
+    }
+    if (populate.length > 0) {
+      query.populate(populate);
+    }
+    userResult = await query.exec();
     if (userResult) {
-      user = Object.assign({}, userResult._doc);
+      user = userResult.toObject();
       if (loadAcl) {
         user.acl = await ACLService.getUserACL(user);
       }
+      if (!keepPassword) {
+        delete user.password;
+      }
     }
+
     return user;
   }
 
-  isUserRequestAllowed(ctx, user) {
-    const { routeParams: { aclResource } = {} } = ctx;
-    if (aclResource) {
-      // if isAllowed return value is undefined - it means acl is not enabled / implemented
-      if (isAllowed(user, aclResource) === false) {
-        return false;
-      }
-    }
-    return true;
-  }
+  async verifyEmail(session, userId, token) {
+    const { user: { id: sessionUserId } = {} } = session;
+    const user = await this.getUserById(userId, { loadAcl: true });
+    let success = false;
 
-  async authenticateUser(ctx, email, password, rememberMe = false) {
-    const { users: { signInEnabled = false } = {} } = config;
-    let passMatch;
-    if (!email) {
-      return ctx.throw(404, 'Email is required');
+    if (user && user.accountVerificationCode && user.accountVerificationCode === token) {
+      user.emailVerified = true;
+      // TODO set to approved only if docs verification is not needed
+      // user.verified = true;
+      // user.verificationStatus = 'approved';
+      user.emailVerificationCode = '';
+      user.save();
+      success = true;
     }
-    if (!password) {
-      return ctx.throw(404, 'Password is required');
-    }
-    const user = await UserModel.findOne({ email }).populate('profilePicture');
-    if (!user) {
-      return ctx.throw(404, 'User not found');
-    }
-    if (!user.active) {
-      return ctx.throw(404, 'User is not active');
-    }
-    passMatch = await this.passwordsMatch(password, user.password);
-    if (!passMatch) {
-      return await this.onPasswordMismatch(ctx, user);
+    if (userId === sessionUserId) {
+      await this.setUserSession(session, user);
     } else {
-      await UserModel.findByIdAndUpdate(user._id, {
-        lastLogin: new Date(),
-        loginAttempts: 0, // Successful login, reset loginAttempts
-      });
+      await this.updateUserSession(user);
     }
-
-    if (!signInEnabled && !user.admin) {
-      return ctx.throw(403, 'Forbidden');
-    }
-
-    await this.setUserSession(ctx, user, rememberMe);
-
-    return ctx.session.user;
+    this.socketsEmitUserChanges(user);
+    return { user, success };
   }
 
-  async onPasswordMismatch(ctx, user) {
-    const { auth: { maxLoginAttempts = 3 } = {} } = config;
-    if (user && user._id) {
-      await UserModel.findByIdAndUpdate(user._id, {
-        loginAttempts: user.loginAttempts + 1,
-      });
-    }
-    if (user && user.loginAttempts >= maxLoginAttempts) {
-      return ctx.throw(404, 'Too many attempts');
-    } else {
-      return ctx.throw(404, 'Login details are invalid');
-    }
-  }
-
-  async setUserSession(ctx, user, rememberMe = false) {
-    ctx.session.user = await this.parseUserSessionData(user, { rememberMe });
+  async setUserSession(session, user, rememberMe = false) {
+    session.user = await this.parseUserSessionData(user, { rememberMe });
     if (rememberMe) {
-      ctx.session.maxAge = rememberMeMaxAge;
+      session.maxAge = rememberMeMaxAge;
     } else {
-      ctx.session.maxAge = maxAge;
+      session.maxAge = maxAge;
     }
+
+    return session.user;
   }
 
   async parseUserSessionData(user, { authenticated = false, rememberMe = false }) {
@@ -184,15 +160,6 @@ class UsersService {
         );
       }
     }
-  }
-
-  async logoutUser(ctx) {
-    if (ctx.session.user && ctx.session.user.id) {
-      ctx.session.visitor = { viewedTopics: ctx.session.user.viewedTopics };
-      delete ctx.session.user;
-      return true;
-    }
-    return false;
   }
 
   async resetPassword(ctx, userEmail, linkPrefix = '') {
@@ -267,9 +234,9 @@ class UsersService {
       users: { signInEnabled = false } = {},
       auth: { passwordResetExpiryTime, maxLoginAttempts = 3 } = {},
     } = config;
+    const validationError = UserValidationHelper.validateUserPassword(data.newPass);
     let success = false;
     let user;
-    const validationError = this.validateUserPassword(data.newPass);
 
     if (validationError) {
       return ctx.throw(400, validationError);
@@ -310,7 +277,7 @@ class UsersService {
       return ctx.throw(400, 'Password reset has expired');
     }
     try {
-      user.password = await this.hashPassword(data.newPass);
+      user.password = await AuthService.hashPassword(data.newPass);
       user.passwordReset = '';
       user.passwordResetRequested = null;
       if (user.loginAttempts >= maxLoginAttempts) {
@@ -325,12 +292,12 @@ class UsersService {
     return success;
   }
 
-  async registerNewUser(ctx, data) {
+  async registerNewUser(ctx, data, userRoleName = 'User') {
     const userData = Object.assign({}, data);
-    const role = await RoleModel.findOne({ name: 'User' });
+    const role = await RoleModel.findOne({ name: userRoleName });
     let userDoc = null;
     let user;
-    userData.password = await this.hashPassword(data.password);
+    userData.password = await AuthService.hashPassword(data.password);
     if (!Object.prototype.hasOwnProperty.call(userData, 'active')) {
       userData.active = true;
     }
@@ -438,162 +405,11 @@ class UsersService {
     return `${ctx.origin}${linkPrefix}/verify-email/${userId}/${verificationToken}`;
   }
 
-  validateUserRegisterFields(data) {
-    const rules = Object.assign({}, this.getUserFieldsBasicRules(), {
-      agreeToTerms: [
-        {
-          test: 'isTrue',
-          message: 'You must agree with Terms & Conditions',
-        },
-      ],
-    });
-    const validationErrors = ValidationHelper.validateData(rules, data);
-    let response = null;
-
-    if (validationErrors && validationErrors.length > 0) {
-      response = {
-        validationMessage: 'Invalid Data',
-        validationErrors: validationErrors,
-      };
-    }
-
-    return response;
-  }
-
-  validateUserAccountFields(data) {
-    const addPasswordRule = !!(data && data.newPassword);
-    const rules = Object.assign({}, this.getUserFieldsBasicRules('newPassword', addPasswordRule));
-    const validationErrors = ValidationHelper.validateData(rules, data);
-    let response = null;
-
-    if (validationErrors && validationErrors.length > 0) {
-      response = {
-        validationMessage: 'Invalid Data',
-        validationErrors: validationErrors,
-      };
-    }
-
-    return response;
-  }
-
-  validateUserPassword(password) {
-    const rules = {
-      password: this.getUserPasswordRules(),
-    };
-    const validationErrors = ValidationHelper.validateData(rules, { password: password });
-    let response = null;
-    if (validationErrors && validationErrors.length > 0) {
-      response = {
-        validationMessage: 'Invalid Password',
-        validationErrors: validationErrors,
-      };
-    }
-
-    return response;
-  }
-
-  getUserFieldsBasicRules(passwordFieldName = 'password', addPasswordRule = true) {
-    const rules = {
-      firstName: [
-        {
-          test: 'isRequired',
-          message: 'First Name is required',
-        },
-      ],
-      lastName: [
-        {
-          test: 'isRequired',
-          message: 'Last Name is required',
-        },
-      ],
-      email: [
-        {
-          test: 'isRequired',
-          message: 'Email is required',
-        },
-        {
-          test: 'isEmail',
-          message: 'Email is not valid',
-        },
-      ],
-      country: [
-        {
-          test: 'isRequired',
-          message: 'Country is required',
-        },
-      ],
-      // username: this.getUsernameRules(),
-    };
-
-    if (addPasswordRule) {
-      rules[passwordFieldName] = this.getUserPasswordRules();
-    }
-
-    return rules;
-  }
-
-  getUserPasswordRules() {
-    return [
-      {
-        test: 'isLength',
-        options: { min: passwordMinLength },
-        message: `Password must be at least ${passwordMinLength} characters long`,
-      },
-      {
-        test: 'testRegexp',
-        regexp: RegExp(/[A-Z]+/),
-        message: 'Should contain at least one upper case letter',
-      },
-      {
-        test: 'testRegexp',
-        regexp: RegExp(/[a-z]+/),
-        message: 'Should contain at least one lower case letter',
-      },
-      {
-        test: 'testRegexp',
-        regexp: RegExp(/\d+/),
-        message: 'Should contain at least one digit',
-      },
-    ];
-  }
-
-  getUsernameRules() {
-    return [
-      {
-        test: 'isRequired',
-        message: 'Username is required',
-      },
-      {
-        test: 'isLength',
-        options: { min: 3 },
-        message: 'Username must be minimum 3 characters',
-      },
-      {
-        test: 'isLength',
-        options: { max: 20 },
-        message: 'Username must be maximum 20 characters',
-      },
-      {
-        test: 'notIndexOf',
-        options: {
-          caseSensitive: false,
-          values: ['admin', 'administrator'],
-        },
-        message: 'Username is already taken!',
-      },
-      {
-        test: 'testRegexp',
-        regexp: RegExp(/^[\w]+$/),
-        message: "Only alphanumeric symbols a-z, A-Z, 0-9 and '_'",
-      },
-    ];
-  }
-
   async deleteUser(userId) {
-    const user = await this.getUserData({ _id: userId });
+    const user = await this.getUserById(userId);
     if (user) {
       await this.onUserDelete(user);
-      await ACLService.deleteUserSession(user);
+      await this.deleteUserSession(user);
     }
     return user;
   }
@@ -606,9 +422,13 @@ class UsersService {
     return UserModel.find(filter, fields, { sort });
   }
 
-  async jsonToCsv(data, fields) {
-    const json2csvParser = new Json2csvParser({ fields });
-    return json2csvParser.parse(data);
+  async deleteUserSession(user) {
+    const { session } = config.server;
+    let SessionModel;
+    if (user && session && session.options && session.options.store && session.options.store.model) {
+      SessionModel = session.options.store.model;
+      await SessionModel.findOneAndDelete({ 'value.user.id': user._id.toString() });
+    }
   }
 
   /**
@@ -636,6 +456,7 @@ class UsersService {
       _id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
+      // username: user.username,
       email: user.email,
       verified: user.verified,
       active: user.active,

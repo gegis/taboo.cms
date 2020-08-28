@@ -1,11 +1,14 @@
 const { config } = require('@taboo/cms-core');
 const moment = require('moment');
+const Json2csvParser = require('json2csv').Parser;
+
 const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
 const CoreHelper = require('modules/core/helpers/CoreHelper');
 const CountriesService = require('modules/countries/services/CountriesService');
+const AuthService = require('modules/users/services/AuthService');
 const UsersService = require('modules/users/services/UsersService');
-const ACLService = require('modules/acl/services/ACLService');
 const UserModel = require('modules/users/models/UserModel');
+
 const {
   api: {
     users: { defaultSort = null },
@@ -51,14 +54,14 @@ class UsersAdminController extends AbstractAdminController {
 
   async beforeCreate(ctx, data) {
     await UsersService.validateUniqueApiKey(ctx, data);
-    data.password = await UsersService.hashPassword(data.password);
+    data.password = await AuthService.hashPassword(data.password);
     return data;
   }
 
   async beforeUpdate(ctx, id, data) {
     await UsersService.validateUniqueApiKey(ctx, data, id);
     if (data.password) {
-      data.password = await UsersService.hashPassword(data.password);
+      data.password = await AuthService.hashPassword(data.password);
     } else if (Object.prototype.hasOwnProperty.call(data, 'password')) {
       delete data.password;
     }
@@ -76,7 +79,7 @@ class UsersAdminController extends AbstractAdminController {
 
   async afterDelete(ctx, user) {
     await UsersService.onUserDelete(user);
-    await ACLService.deleteUserSession(user);
+    await UsersService.deleteUserSession(user);
     return user;
   }
 
@@ -130,7 +133,8 @@ class UsersAdminController extends AbstractAdminController {
       },
     ];
     const users = await UsersService.getUsers(params.filter, userFields);
-    const csv = await UsersService.jsonToCsv(users, jsonFields);
+    const json2csvParser = new Json2csvParser({ jsonFields });
+    const csv = json2csvParser.parse(users);
     const exportFileName = `Users-${moment().format('YYYY-MM-DD_hh_mm_ss')}.csv`;
     ctx.set('Content-type', 'text/csv');
     ctx.set('Content-disposition', `attachment; filename=${exportFileName}`);

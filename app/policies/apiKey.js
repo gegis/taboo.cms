@@ -1,6 +1,7 @@
 const { config } = require('@taboo/cms-core');
 const { api: { authorization: { type: { apiKeyName } = {} } = {} } = {} } = config;
 const LogsApiService = require('modules/logs/services/LogsApiService');
+const AuthService = require('modules/users/services/AuthService');
 const UserService = require('modules/users/services/UsersService');
 
 // TODO - Rethink global policies - because it first hits global policy 'acl'.... which checks for user in ctx session
@@ -12,15 +13,15 @@ module.exports = async (ctx, next) => {
     return ctx.throw(401, 'Authorization token not found');
   }
   try {
-    token = UserService.parseAuthorizationToken(apiKeyName, authorization);
+    token = AuthService.parseAuthorizationToken(apiKeyName, authorization);
     if (!token) {
       return ctx.throw(401, 'ApiKey token not found');
     }
-    user = await UserService.getUserData({ apiKey: token }, true);
+    user = await UserService.getUser({ apiKey: token }, { loadAcl: true });
     if (!user) {
       return ctx.throw(403, 'Not Authorized');
     }
-    allowed = UserService.isUserRequestAllowed(ctx, user);
+    allowed = AuthService.isUserRequestAllowed(ctx, user);
     if (allowed === false) {
       return ctx.throw(403, 'Forbidden');
     }

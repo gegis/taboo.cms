@@ -1,13 +1,18 @@
 const { config, logger } = require('@taboo/cms-core');
 const validator = require('validator');
+
 const CountriesService = require('modules/countries/services/CountriesService');
 const UsersService = require('modules/users/services/UsersService');
 const SettingsService = require('modules/settings/services/SettingsService');
 const CoreHelper = require('modules/core/helpers/CoreHelper');
+const AuthService = require('modules/users/services/AuthService');
+const UserValidationHelper = require('modules/users/helpers/UserValidationHelper');
 const UserModel = require('modules/users/models/UserModel');
 
 class UsersController {
-  constructor() {}
+  constructor() {
+    AuthService.setup({ usersService: UsersService });
+  }
 
   async userLandingPage() {}
   async signUp() {}
@@ -18,12 +23,7 @@ class UsersController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user, countryOptions;
     try {
-      user = await UserModel.findById(userId).populate([
-        'documentPersonal1',
-        'documentPersonal2',
-        'documentIncorporation',
-        'profilePicture',
-      ]);
+      user = await UsersService.getUserById(userId, { loadAcl: true, populateDocs: true });
       countryOptions = CountriesService.getAllArray();
     } catch (e) {
       ctx.throw(404, e);
@@ -37,55 +37,38 @@ class UsersController {
    */
   async verifyEmail(ctx) {
     const { session = {} } = ctx;
-    const { user: { id: sessionUserId } = {} } = session;
     const { userId, token } = ctx.params;
     const verifyAccountRedirectSuccess = await SettingsService.get('verifyEmailRedirectSuccess');
     const verifyAccountRedirectError = await SettingsService.get('verifyEmailRedirectError');
-    let success = false;
-    let user;
+    let result = {
+      user: null,
+      success: false,
+    };
     try {
-      user = await UserModel.findById(userId).populate('profilePicture');
-      if (user && user.accountVerificationCode && user.accountVerificationCode === token) {
-        user.emailVerified = true;
-        // TODO set to approved only if docs verification is not needed
-        // user.verified = true;
-        // user.verificationStatus = 'approved';
-        user.emailVerificationCode = '';
-        user.save();
-        success = true;
-      }
-      if (userId === sessionUserId) {
-        await UsersService.setUserSession(ctx, user);
-      } else {
-        await UsersService.updateUserSession(user);
-      }
-      UsersService.socketsEmitUserChanges(user);
+      result = await UsersService.verifyEmail(session, userId, token);
     } catch (e) {
       logger.error(e);
-      success = false;
+      result.success = false;
       ctx.throw(404, e);
     }
-    if (success && verifyAccountRedirectSuccess) {
+
+    if (result.success && verifyAccountRedirectSuccess) {
       ctx.redirect(verifyAccountRedirectSuccess.value);
     } else if (verifyAccountRedirectError) {
       ctx.redirect(verifyAccountRedirectError.value);
     }
+    ctx.viewParams.user = result.user;
+    ctx.viewParams.success = result.success;
   }
 
   /**
    * Landing page for user documents verification
-   * TODO rename this type of verification from account verification to documents verification
    */
   async verifyDocs(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user;
     try {
-      user = await UserModel.findById(userId).populate([
-        'documentPersonal1',
-        'documentPersonal2',
-        'documentIncorporation',
-        'profilePicture',
-      ]);
+      user = UsersService.getUserById(userId, { loadAcl: true, populateDocs: true });
     } catch (e) {
       ctx.throw(404, e);
     }
@@ -188,17 +171,16 @@ class UsersController {
   async register(ctx) {
     const { users: { signUpEnabled = false } = {} } = config;
     const { body: data = {} } = ctx.request;
-    const validationError = UsersService.validateUserRegisterFields(data);
+    let validationErrors;
     let user;
 
     if (!signUpEnabled) {
       return ctx.throw(403, 'Forbidden');
     }
-
-    if (validationError) {
-      return ctx.throw(400, validationError);
+    validationErrors = UserValidationHelper.validateUserRegisterFields(data);
+    if (validationErrors) {
+      return ctx.throw(400, validationErrors);
     }
-
     try {
       await UsersService.validateUniqueApiKey(ctx, data);
       user = await UsersService.registerNewUser(ctx, data);
@@ -251,7 +233,8 @@ class UsersController {
    */
   async login(ctx) {
     const { body: { email = null, password = null, rememberMe = false } = {} } = ctx.request;
-    ctx.body = await UsersService.authenticateUser(ctx, email, password, rememberMe);
+    const user = await AuthService.authenticateUser(ctx, email, password);
+    ctx.body = await UsersService.setUserSession(ctx.session, user, rememberMe);
   }
 
   /**
@@ -266,8 +249,26 @@ class UsersController {
    */
   async logout(ctx) {
     ctx.body = {
-      success: await UsersService.logoutUser(ctx),
+      success: await AuthService.logoutUser(ctx.session),
     };
+  }
+
+  async loginJwt(ctx) {
+    const { body: { email = null, password = null, uid = null } = {} } = ctx.request;
+    const user = await AuthService.authenticateUser(ctx, email, password);
+    ctx.body = await AuthService.signUserJwt(user, uid);
+  }
+
+  async renewJwt(ctx) {
+    const { body: { refreshToken = null, userId = null, uid = null } = {} } = ctx.request;
+    ctx.body = await AuthService.renewUserJwt(refreshToken, userId, uid);
+  }
+
+  async logoutJwt(ctx) {
+    const { header: { authorization } = {} } = ctx;
+    const jwtToken = AuthService.parseAuthorizationToken('Bearer', authorization);
+    const success = await AuthService.logoutUserJwt(jwtToken);
+    ctx.body = { success };
   }
 
   /**
@@ -318,25 +319,13 @@ class UsersController {
   }
 
   async getCurrent(ctx) {
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
-    let user;
-    try {
-      user = await UserModel.findById(userId).populate([
-        'documentPersonal1',
-        'documentPersonal2',
-        'documentIncorporation',
-        'profilePicture',
-      ]);
-    } catch (e) {
-      ctx.throw(404, e);
-    }
-    ctx.body = user;
+    ctx.body = await AuthService.getCurrentUser(ctx);
   }
 
   async updateCurrent(ctx) {
     const { body = {} } = ctx.request;
     const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const validationError = UsersService.validateUserAccountFields(body);
+    const validationError = UserValidationHelper.validateUserAccountFields(body);
     let user;
     try {
       if (validationError) {
@@ -347,7 +336,7 @@ class UsersController {
         delete body._id;
       }
       if (body.newPassword) {
-        body.password = await UsersService.hashPassword(body.newPassword);
+        body.password = await AuthService.hashPassword(body.newPassword);
       } else if (Object.prototype.hasOwnProperty.call(body, 'password')) {
         delete body.password;
       }
@@ -371,7 +360,7 @@ class UsersController {
 
   async deactivateCurrent(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const user = await UserModel.findById(userId);
+    const user = await UsersService.getUserById(userId);
     if (!user) {
       ctx.throw(404, 'Not Found');
     }
@@ -385,7 +374,7 @@ class UsersController {
 
   async resendVerification(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const user = await UserModel.findById(userId);
+    const user = await UsersService.getUserById(userId);
     if (!user) {
       ctx.throw(404, 'Not Found');
     }
@@ -407,7 +396,7 @@ class UsersController {
       return ctx.throw(400, 'Email Address is not valid');
     }
     if (isEmail) {
-      user = await UserModel.findOne({ email: escapeValue(email) }).populate('profilePicture');
+      user = await UsersService.getUser({ email: escapeValue(email) }, { populateProfilePic: true });
       if (!user) {
         return ctx.throw(404, 'User Not Found');
       }
