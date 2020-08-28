@@ -100,10 +100,19 @@ module.exports = {
       },
     },
     {
+      method: 'POST',
+      path: '/api/renew-jwt',
+      action: UsersController.renewJwt,
+      policies: [],
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
       method: 'GET',
       path: '/api/logout/jwt',
       action: UsersController.logoutJwt,
-      policies: [],
+      policies: ['isUser'],
       options: {
         errorResponseAsJson: true,
       },

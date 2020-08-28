@@ -17,7 +17,7 @@ class UsersService {
     filter,
     { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
   ) {
-    const query = await UserModel.findOne(filter);
+    const query = UserModel.findOne(filter);
     return await this.getUserByQuery(query, { loadAcl, keepPassword, populateDocs, populateProfilePic });
   }
 

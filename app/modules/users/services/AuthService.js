@@ -1,14 +1,56 @@
 const { config, isAllowed } = require('@taboo/cms-core');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const ApiError = require('modules/core/errors/ApiError');
+const ACLService = require('modules/acl/services/ACLService');
+const UserTokenModel = require('modules/users/models/UserTokenModel');
 const UserModel = require('modules/users/models/UserModel');
 
 const {
-  auth: { jwt: { secret: jwtSecret, expiresIn: jwtExpiresIn } = {} } = {},
+  auth: {
+    jwt: { secret: jwtSecret, authExpiresIn: jwtAuthExpiresIn, refreshExpiresIn: jwtRefreshExpiresIn } = {},
+  } = {},
   users: { signInEnabled = false } = {},
 } = config;
 
 class AuthService {
+  setup({ usersService = null }) {
+    this.usersService = usersService;
+  }
+
+  async getCurrentUser(ctx) {
+    let { session: { user: { id: userId } = {} } = {} } = ctx;
+    let user;
+    let userData;
+    if (!userId) {
+      userData = this.parseUserFromHeader(ctx.header);
+      userId = userData.id;
+    }
+    user = await this.usersService.getUserById(userId, { loadAcl: true, populateProfilePic: true });
+    if (!user) {
+      new ApiError('User not found', 404);
+    }
+
+    return user;
+  }
+
+  parseUserFromHeader(header) {
+    const { authorization = null } = header;
+    let user = null;
+    let jwtToken;
+    let verifiedJwt;
+
+    if (authorization) {
+      jwtToken = this.parseAuthorizationToken('Bearer', authorization);
+      verifiedJwt = this.verifyUserJwt(jwtToken);
+      if (verifiedJwt && verifiedJwt.data) {
+        user = verifiedJwt.data;
+      }
+    }
+
+    return user;
+  }
+
   isUserRequestAllowed(ctx, user) {
     const { routeParams: { aclResource } = {} } = ctx;
     if (aclResource) {
@@ -28,7 +70,7 @@ class AuthService {
     if (!password) {
       return ctx.throw(404, 'Password is required');
     }
-    const user = await UserModel.findOne({ email }).populate('profilePicture');
+    const user = await this.usersService.getUser({ email }, { populateProfilePic: true, keepPassword: true });
     if (!user) {
       return ctx.throw(404, 'User not found');
     }
@@ -52,21 +94,102 @@ class AuthService {
     return user;
   }
 
-  signUserJwt(user) {
-    const userJson = user.toObject();
-    return jwt.sign(
+  async signUserJwt(user, uid) {
+    if (!uid) {
+      throw new ApiError("Please specify 'uid'", 400);
+    }
+    const acl = await ACLService.getUserACL(user);
+    const authTokenExpiresAt = Date.now() + jwtAuthExpiresIn;
+    const refreshTokenExpiresAt = Date.now() + jwtRefreshExpiresIn;
+    const authToken = jwt.sign(
       {
-        exp: Math.floor(Date.now() / 1000) + jwtExpiresIn,
+        exp: Math.floor(authTokenExpiresAt / 1000),
         data: {
-          id: userJson._id,
+          id: user._id.toString(),
+          uid: uid,
+          acl: acl,
         },
       },
       jwtSecret
     );
+    const refreshToken = jwt.sign(
+      {
+        exp: Math.floor(refreshTokenExpiresAt / 1000),
+        data: {
+          id: user._id.toString(),
+          uid: uid,
+        },
+      },
+      jwtSecret
+    );
+    const authTokenParts = this.decodeUserJwt(authToken, true);
+    const refreshTokenParts = this.decodeUserJwt(refreshToken, true);
+
+    // TODO - if it appears that signature part is not always unique - use user id + uid for token value
+    await UserTokenModel.create({
+      user: user,
+      uid: uid,
+      type: 'jwtAuth',
+      token: authTokenParts.signature,
+      expiresAt: authTokenExpiresAt,
+    });
+
+    await UserTokenModel.create({
+      user: user,
+      uid: uid,
+      type: 'jwtRefresh',
+      token: refreshTokenParts.signature,
+      expiresAt: refreshTokenExpiresAt,
+    });
+
+    return { authToken, refreshToken, userId: user._id.toString(), uid };
   }
 
-  verifyUserJwt(ctx, token) {
-    return jwt.verify(token, jwtSecret);
+  /**
+   * Do not use this to verify if token is valid and signed!!!
+   * @param token
+   * @param complete
+   * @returns {ParsedUrlQuery | string | number[] | Promise<void>}
+   */
+  decodeUserJwt(token, complete = false) {
+    return jwt.decode(token, { complete });
+  }
+
+  verifyUserJwt(token) {
+    let verified = null;
+    try {
+      verified = jwt.verify(token, jwtSecret);
+    } catch (e) {
+      throw new ApiError(e.message, 400);
+    }
+    return verified;
+  }
+
+  async renewUserJwt(refreshToken, userId, uid) {
+    if (!userId) {
+      throw new ApiError("Please specify 'userId'", 400);
+    }
+    if (!uid) {
+      throw new ApiError("Please specify 'uid'", 400);
+    }
+    const refreshTokenParts = this.decodeUserJwt(refreshToken, true);
+    let tokens;
+    let user;
+
+    this.verifyUserJwt(refreshToken);
+    const dbToken = await UserTokenModel.findOne({
+      token: refreshTokenParts.signature,
+      user: userId,
+      type: 'jwtRefresh',
+    });
+    if (dbToken && dbToken.uid === uid) {
+      user = await this.usersService.getUserById(userId);
+      tokens = await this.signUserJwt(user, uid);
+      await dbToken.delete();
+      return tokens;
+    } else {
+      throw new ApiError('Refresh Token is invalid', 401);
+    }
   }
 
   async passwordsMatch(plainPass, hashedPass) {
@@ -111,35 +234,17 @@ class AuthService {
     return false;
   }
 
-  // createJwtToken(data) {
-  //   return jwt.sign(data, config.secret, {
-  //     expiresIn: '10s', //lower value for testing
-  //   });
-  // }
-  //
-  // createRefreshToken() {
-  //   //It doesn't always need to be in the /login endpoint route
-  //   let refreshToken = jwt.sign(
-  //     {
-  //       type: 'refresh',
-  //     },
-  //     config.secret,
-  //     {
-  //       expiresIn: '20s', // 1 hour
-  //     }
-  //   );
-  //   // return Users.findOneAndUpdate({
-  //   //   email: user.email
-  //   // }, {
-  //   //   refreshToken: refreshToken
-  //   // })
-  //   //   .then(() => {
-  //   //     return refreshToken;
-  //   //   })
-  //   //   .catch(err => {
-  //   //     throw err;
-  //   //   });
-  // }
+  async logoutUserJwt(token) {
+    const verified = this.verifyUserJwt(token);
+    let result;
+    if (verified && verified.data && verified.data.id) {
+      result = await UserTokenModel.deleteMany({ user: verified.data.id, type: { $in: ['jwtAuth', 'jwtRefresh'] } });
+      if (result && result.deletedCount) {
+        return true;
+      }
+    }
+    throw new ApiError('Failed to logout', 403);
+  }
 }
 
 module.exports = new AuthService();

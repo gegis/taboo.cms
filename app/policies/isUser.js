@@ -1,17 +1,16 @@
 const AuthService = require('modules/users/services/AuthService');
 
 module.exports = async (ctx, next) => {
+  const { session: { user: { id = null } = {} } = {} } = ctx;
   const { header: { authorization } = {} } = ctx;
-  let jwtToken;
-  let userData;
-  if (ctx.session && ctx.session.user && ctx.session.user.id) {
+  let user;
+
+  if (id) {
     return next();
   } else if (authorization) {
-    jwtToken = AuthService.parseAuthorizationToken('Bearer', authorization);
-    console.log(jwtToken);
-    if (jwtToken) {
-      userData = AuthService.verifyUserJwt(jwtToken);
-      console.log(userData);
+    user = AuthService.parseUserFromHeader(ctx.header);
+    if (user && user.id) {
+      return next();
     }
   }
   return ctx.throw(401, 'Not Authorized');

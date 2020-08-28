@@ -17,7 +17,8 @@ module.exports = {
     passwordResetExpiryTime: 1000 * 60 * 60 * 24,
     jwt: {
       secret: 'REPLACE-ME-123456789',
-      expiresIn: 60 * 60, // time in seconds
+      authExpiresIn: 1000 * 60 * 60, // time in ms
+      refreshExpiresIn: 1000 * 60 * 60 * 24 * 30, // time in ms
     },
   },
   admin: {

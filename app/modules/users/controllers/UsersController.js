@@ -10,7 +10,9 @@ const UserValidationHelper = require('modules/users/helpers/UserValidationHelper
 const UserModel = require('modules/users/models/UserModel');
 
 class UsersController {
-  constructor() {}
+  constructor() {
+    AuthService.setup({ usersService: UsersService });
+  }
 
   async userLandingPage() {}
   async signUp() {}
@@ -252,13 +254,20 @@ class UsersController {
   }
 
   async loginJwt(ctx) {
-    const { body: { email = null, password = null } = {} } = ctx.request;
+    const { body: { email = null, password = null, uid = null } = {} } = ctx.request;
     const user = await AuthService.authenticateUser(ctx, email, password);
-    ctx.body = await AuthService.signUserJwt(user);
+    ctx.body = await AuthService.signUserJwt(user, uid);
+  }
+
+  async renewJwt(ctx) {
+    const { body: { refreshToken = null, userId = null, uid = null } = {} } = ctx.request;
+    ctx.body = await AuthService.renewUserJwt(refreshToken, userId, uid);
   }
 
   async logoutJwt(ctx) {
-    const success = await AuthService.logoutUserJwt(ctx.session);
+    const { header: { authorization } = {} } = ctx;
+    const jwtToken = AuthService.parseAuthorizationToken('Bearer', authorization);
+    const success = await AuthService.logoutUserJwt(jwtToken);
     ctx.body = { success };
   }
 
@@ -310,14 +319,7 @@ class UsersController {
   }
 
   async getCurrent(ctx) {
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
-    let user;
-    try {
-      user = await UsersService.getUserById(userId);
-    } catch (e) {
-      ctx.throw(404, e);
-    }
-    ctx.body = user;
+    ctx.body = await AuthService.getCurrentUser(ctx);
   }
 
   async updateCurrent(ctx) {
