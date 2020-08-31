@@ -100,10 +100,6 @@ const UserModel = MongoDbAdapter.setupModel('User', {
     lastLogin: {
       type: Date,
     },
-    apiKey: {
-      type: String,
-      default: '',
-    },
     documentPersonal1: {
       type: SchemaTypes.ObjectId,
       ref: 'Upload',

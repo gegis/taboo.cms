@@ -140,6 +140,26 @@ class UsersAdminController extends AbstractAdminController {
     ctx.set('Content-disposition', `attachment; filename=${exportFileName}`);
     ctx.body = csv;
   }
+
+  async findUserApiKeys(ctx) {
+    const { params: { userId } = {} } = ctx;
+    ctx.body = await AuthService.getUserApiKeys(userId);
+  }
+
+  async createUserApiKey(ctx) {
+    const { params: { userId } = {} } = ctx;
+    ctx.body = await AuthService.createUserApiKey(userId);
+  }
+
+  async renewUserApiKey(ctx) {
+    const { params: { userId, apiKeyId } = {} } = ctx;
+    ctx.body = await AuthService.renewUserApiKey(userId, apiKeyId);
+  }
+
+  async deleteUserApiKey(ctx) {
+    const { params: { userId, apiKeyId } = {} } = ctx;
+    ctx.body = await AuthService.deleteUserApiKey(userId, apiKeyId);
+  }
 }
 
 module.exports = new UsersAdminController();

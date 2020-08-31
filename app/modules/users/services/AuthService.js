@@ -1,7 +1,9 @@
 const { config, isAllowed } = require('@taboo/cms-core');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const uuidv1 = require('uuid/v1');
 const ApiError = require('modules/core/errors/ApiError');
+const LogsApiService = require('modules/logs/services/LogsApiService');
 const ACLService = require('modules/acl/services/ACLService');
 const UserTokenModel = require('modules/users/models/UserTokenModel');
 const UserModel = require('modules/users/models/UserModel');
@@ -10,6 +12,7 @@ const {
   auth: {
     jwt: { secret: jwtSecret, authExpiresIn: jwtAuthExpiresIn, refreshExpiresIn: jwtRefreshExpiresIn } = {},
   } = {},
+  api: { authorization: { apiKeyName, apiKeyExpiresIn } = {} } = {},
   users: { signInEnabled = false } = {},
 } = config;
 
@@ -23,7 +26,7 @@ class AuthService {
     let user;
     let userData;
     if (!userId) {
-      userData = this.parseUserFromHeader(ctx.header);
+      userData = await this.parseUserFromHeader(ctx);
       userId = userData.id;
     }
     user = await this.usersService.getUserById(userId, { loadAcl: true, populateProfilePic: true });
@@ -34,17 +37,37 @@ class AuthService {
     return user;
   }
 
-  parseUserFromHeader(header) {
-    const { authorization = null } = header;
+  async parseUserFromHeader(ctx = {}) {
+    const { header: { authorization = null } = {}, routeParams: { moduleRoute = {} } = {} } = ctx;
     let user = null;
+    let apiToken;
+    let apiTokenEntry;
     let jwtToken;
     let verifiedJwt;
 
     if (authorization) {
-      jwtToken = this.parseAuthorizationToken('Bearer', authorization);
-      verifiedJwt = this.verifyUserJwt(jwtToken);
-      if (verifiedJwt && verifiedJwt.data) {
-        user = verifiedJwt.data;
+      if (authorization.indexOf('Bearer') !== -1) {
+        jwtToken = this.parseAuthorizationToken('Bearer', authorization);
+        verifiedJwt = this.verifyUserJwt(jwtToken);
+        if (verifiedJwt && verifiedJwt.data) {
+          user = verifiedJwt.data;
+        }
+      } else if (authorization.indexOf(apiKeyName) !== -1) {
+        apiToken = this.parseAuthorizationToken(apiKeyName, authorization);
+        // TODO maybe remove expiresAt from filter and log as a seprate error if expired
+        apiTokenEntry = await UserTokenModel.findOne({ token: apiToken, expiresAt: { $gt: Date.now() } });
+        if (!apiTokenEntry) {
+          await LogsApiService.create({
+            action: moduleRoute.path,
+            token: apiToken,
+            authType: apiKeyName,
+            user,
+            code: 401,
+            error: 'ApiKey not found',
+          });
+          throw new ApiError('ApiKey not found', 401);
+        }
+        user = await this.usersService.getUserById(apiTokenEntry.user, { loadAcl: true });
       }
     }
 
@@ -244,6 +267,53 @@ class AuthService {
       }
     }
     throw new ApiError('Failed to logout', 403);
+  }
+
+  async getUserApiKeys(userId) {
+    return UserTokenModel.find({ user: userId, type: 'apiKey' }, null, {
+      sort: { expiresAt: 'asc', createdAt: 'desc' },
+    });
+  }
+
+  async createUserApiKey(userId, expiresAt) {
+    if (!userId) {
+      throw new ApiError("'userId' is required", 400);
+    }
+    if (!expiresAt) {
+      expiresAt = this.getDefaultApiKeyExpiresAt();
+    }
+    return UserTokenModel.create({ user: userId, type: 'apiKey', expiresAt: expiresAt, token: uuidv1() });
+  }
+
+  async renewUserApiKey(userId, apiKeyId, expiresAt) {
+    if (!userId) {
+      throw new ApiError("'userId' is required", 400);
+    }
+    if (!apiKeyId) {
+      throw new ApiError("'apiKeyId' is required", 400);
+    }
+    if (!expiresAt) {
+      expiresAt = this.getDefaultApiKeyExpiresAt();
+    }
+    return UserTokenModel.findOneAndUpdate(
+      { _id: apiKeyId, user: userId, type: 'apiKey' },
+      { expiresAt: expiresAt },
+      { new: true, upsert: true, safe: true }
+    );
+  }
+
+  async deleteUserApiKey(userId, apiKeyId) {
+    if (!userId) {
+      throw new ApiError("'userId' is required", 400);
+    }
+    if (!apiKeyId) {
+      throw new ApiError("'apiKeyId' is required", 400);
+    }
+    return UserTokenModel.findOneAndDelete({ _id: apiKeyId, user: userId, type: 'apiKey' });
+  }
+
+  getDefaultApiKeyExpiresAt() {
+    return Date.now() + apiKeyExpiresIn;
   }
 }
 

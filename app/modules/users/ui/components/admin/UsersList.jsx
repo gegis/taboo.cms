@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import ActionButtons from 'app/modules/core/ui/components/admin/ActionButtons';
 import Translation from 'modules/core/ui/components/Translation';
 import BooleanIcon from 'modules/core/ui/components/admin/BooleanIcon';
-import UserAuthSettingsModal from 'modules/users/ui/components/admin/UserAuthSettingsModal';
+import UserApiKeysModal from 'modules/users/ui/components/admin/UserApiKeysModal';
 
 class UsersList extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class UsersList extends React.Component {
     this.openEditModal = props.openEditModal;
     this.handleDelete = props.handleDelete;
     this.handleCopy = props.handleCopy;
-    this.authModal = React.createRef();
+    this.apiKeysModal = React.createRef();
     this.handleSelect = this.handleSelect.bind(this);
     this.handleAction = this.handleAction.bind(this);
   }
@@ -32,7 +32,7 @@ class UsersList extends React.Component {
   }
 
   handleAuth(id) {
-    const { current } = this.authModal;
+    const { current } = this.apiKeysModal;
     if (current) {
       current.open(id);
     }
@@ -45,7 +45,7 @@ class UsersList extends React.Component {
         key="auth"
         appearance="default"
         onClick={this.handleAuth.bind(this, id)}
-        title="User Authentication Settings"
+        title="API Keys"
         icon={<Icon icon="unlock-alt" />}
       />,
     ];
@@ -152,7 +152,7 @@ class UsersList extends React.Component {
             ))}
           </tbody>
         </table>
-        <UserAuthSettingsModal ref={this.authModal} />
+        <UserApiKeysModal ref={this.apiKeysModal} />
       </div>
     );
   }
