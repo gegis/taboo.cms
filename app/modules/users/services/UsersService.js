@@ -48,6 +48,7 @@ class UsersService {
     userResult = await query.exec();
     if (userResult) {
       user = userResult.toObject();
+      user.id = user._id.toString();
       if (loadAcl) {
         user.acl = await ACLService.getUserACL(user);
       }

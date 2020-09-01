@@ -248,4 +248,9 @@ module.exports = {
   'Create New Form': 'Create New Form',
   'Form Records': 'Form Records',
   Recipients: 'Recipients',
+  Actions: 'Actions',
+  'API Keys': 'API Keys',
+  'Generate API Key': 'Generate API Key',
+  'Expires At': 'Expires At',
+  'Resend Verification': 'Resend Verification',
 };

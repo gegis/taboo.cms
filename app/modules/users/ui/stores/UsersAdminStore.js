@@ -20,7 +20,6 @@ const newItem = {
   country: '',
   verificationStatus: 'new',
   verificationNote: '',
-  apiKey: '',
   agreeToTerms: false,
   // exported: false,
 };
@@ -52,25 +51,33 @@ class UsersAdminStore extends AbstractAdminStore {
         },
       },
     });
-
     this.userDocumentNames = userDocumentNames;
     this.allVerificationStatuses = [];
     userVerificationStatuses.map(item => {
       this.allVerificationStatuses.push({ label: item, value: item });
     });
+    this.selected = [];
+    this.userApiKeys = [];
     this.toggleUserDocumentVerified = this.toggleUserDocumentVerified.bind(this);
     this.updateSelectedUsersFields = this.updateSelectedUsersFields.bind(this);
-    this.selected = [];
   }
 
   setSelected(data) {
     this.selected = data;
   }
 
+  setUserApiKeys(data) {
+    this.userApiKeys = data;
+  }
+
+  resetUserApiKeys() {
+    this.userApiKeys = [];
+  }
+
   loadById(id) {
     return new Promise(resolve => {
       axios
-        .get('/api/admin/users/' + id)
+        .get(`/api/admin/users/${id}`)
         .then(response => {
           runInAction(() => {
             const { data = {} } = response;
@@ -84,6 +91,59 @@ class UsersAdminStore extends AbstractAdminStore {
             this.item = data;
             resolve(data);
           });
+        })
+        .catch(ResponseHelper.handleError);
+    });
+  }
+
+  createApiKey(userId) {
+    return new Promise(resolve => {
+      axios
+        .post(`/api/admin/users/${userId}/api-keys`)
+        .then(response => {
+          const { data = [] } = response;
+          resolve(data);
+        })
+        .catch(ResponseHelper.handleError);
+    });
+  }
+
+  loadApiKeysByUserId(userId) {
+    return new Promise(resolve => {
+      axios
+        .get(`/api/admin/users/${userId}/api-keys`)
+        .then(response => {
+          runInAction(() => {
+            const { data = [] } = response;
+            if (data) {
+              this.setUserApiKeys(data);
+            }
+            resolve(data);
+          });
+        })
+        .catch(ResponseHelper.handleError);
+    });
+  }
+
+  renewUserApiKey(userId, apiKeyId) {
+    return new Promise(resolve => {
+      axios
+        .put(`/api/admin/users/${userId}/api-keys/${apiKeyId}/renew`)
+        .then(response => {
+          const { data = [] } = response;
+          resolve(data);
+        })
+        .catch(ResponseHelper.handleError);
+    });
+  }
+
+  deleteUserApiKey(userId, apiKeyId) {
+    return new Promise(resolve => {
+      axios
+        .delete(`/api/admin/users/${userId}/api-keys/${apiKeyId}`)
+        .then(response => {
+          const { data = [] } = response;
+          resolve(data);
         })
         .catch(ResponseHelper.handleError);
     });
@@ -135,7 +195,7 @@ class UsersAdminStore extends AbstractAdminStore {
     });
   }
 
-  resendAccountVerification(userId) {
+  resendEmailVerification(userId) {
     return new Promise(resolve => {
       axios
         .get(`/api/admin/user/${userId}/resend-verify-email`)
@@ -157,10 +217,14 @@ class UsersAdminStore extends AbstractAdminStore {
 }
 
 decorate(UsersAdminStore, {
+  userApiKeys: observable,
   userDocumentNames: observable,
   allVerificationStatuses: observable,
   toggleUserDocumentVerified: action,
   updateSelectedUsersFields: action,
+  setUserApiKeys: action,
+  resetUserApiKeys: action,
+  loadApiKeysByUserId: action,
 });
 
 export default new UsersAdminStore();

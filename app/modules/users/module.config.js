@@ -240,6 +240,17 @@ module.exports = {
       path: '/api/admin/users/count',
       action: UsersAdminController.countFiltered,
       policies: ['isAdmin'],
+      order: 999,
+      options: {
+        errorResponseAsJson: true,
+        aclResource: 'admin.users.view',
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/admin/users/:userId/api-keys',
+      action: UsersAdminController.findUserApiKeys,
+      policies: ['isAdmin'],
       order: 1000,
       options: {
         errorResponseAsJson: true,
@@ -269,9 +280,21 @@ module.exports = {
     },
     {
       method: 'POST',
+      path: '/api/admin/users/:userId/api-keys',
+      action: UsersAdminController.createUserApiKey,
+      policies: ['isAdmin'],
+      order: 1000,
+      options: {
+        errorResponseAsJson: true,
+        aclResource: 'admin.users.view',
+      },
+    },
+    {
+      method: 'POST',
       path: '/api/admin/users',
       action: UsersAdminController.create,
       policies: ['isAdmin'],
+      order: 1002,
       options: {
         errorResponseAsJson: true,
         aclResource: 'admin.users.manage',
@@ -279,9 +302,21 @@ module.exports = {
     },
     {
       method: 'PUT',
+      path: '/api/admin/users/:userId/api-keys/:apiKeyId/renew',
+      action: UsersAdminController.renewUserApiKey,
+      policies: ['isAdmin'],
+      order: 1000,
+      options: {
+        errorResponseAsJson: true,
+        aclResource: 'admin.users.view',
+      },
+    },
+    {
+      method: 'PUT',
       path: '/api/admin/users/:id',
       action: UsersAdminController.update,
       policies: ['isAdmin'],
+      order: 1001,
       options: {
         errorResponseAsJson: true,
         aclResource: 'admin.users.manage',
@@ -289,9 +324,21 @@ module.exports = {
     },
     {
       method: 'DELETE',
+      path: '/api/admin/users/:userId/api-keys/:apiKeyId',
+      action: UsersAdminController.deleteUserApiKey,
+      policies: ['isAdmin'],
+      order: 1000,
+      options: {
+        errorResponseAsJson: true,
+        aclResource: 'admin.users.view',
+      },
+    },
+    {
+      method: 'DELETE',
       path: '/api/admin/users/:id',
       action: UsersAdminController.delete,
       policies: ['isAdmin'],
+      order: 1001,
       options: {
         errorResponseAsJson: true,
         aclResource: 'admin.users.manage',

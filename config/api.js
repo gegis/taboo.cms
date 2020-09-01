@@ -1,9 +1,8 @@
 module.exports = {
   routePrefix: '/api',
   authorization: {
-    type: {
-      apiKeyName: 'ApiKey',
-    },
+    apiKeyName: 'ApiKey',
+    apiKeyExpiresIn: 1000 * 60 * 60 * 24 * 365, // time in ms
   },
   defaultPageSize: 50,
   reservations: {

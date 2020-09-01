@@ -9,6 +9,7 @@ import {
   MultiCascader,
   SelectPicker,
   Icon,
+  Button,
 } from 'rsuite';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
@@ -22,6 +23,7 @@ class UserForm extends React.Component {
     this.usersAdminStore = props.usersAdminStore;
     this.rolesStore = props.rolesStore;
     this.countriesAdminStore = props.countriesAdminStore;
+    this.notificationsStore = props.notificationsStore;
     this.getUserDocumentsPreview = this.getUserDocumentsPreview.bind(this);
   }
 
@@ -71,6 +73,25 @@ class UserForm extends React.Component {
       }
     });
     return preview;
+  }
+
+  resendEmailVerification(userId) {
+    this.usersAdminStore.resendEmailVerification(userId).then(data => {
+      if (data.success) {
+        this.notificationsStore.push({
+          title: 'Success',
+          html: 'Verification email successfully sent',
+          translate: true,
+        });
+      } else {
+        this.notificationsStore.push({
+          type: 'error',
+          title: 'Failure',
+          html: 'Failed to send verification email',
+          translate: true,
+        });
+      }
+    });
   }
 
   render() {
@@ -193,7 +214,17 @@ class UserForm extends React.Component {
             <Translation message="Email Verified" />
           </ControlLabel>
           <div className="rs-form-control-wrapper">
-            <Checkbox checked={item.emailVerified} onChange={setCheckboxItemValue.bind(null, 'emailVerified')} />
+            <div className="pull-left">
+              <Checkbox checked={item.emailVerified} onChange={setCheckboxItemValue.bind(null, 'emailVerified')} />
+            </div>
+            <div className="pull-left">
+              {item.id && !item.emailVerified && (
+                <Button appearance="primary" onClick={this.resendEmailVerification.bind(this, item.id)}>
+                  <Translation message="Resend Verification" />
+                </Button>
+              )}
+            </div>
+            <div className="clearfix" />
           </div>
         </FormGroup>
         <FormGroup controlId="verificationStatus" className="inline">
@@ -226,8 +257,12 @@ UserForm.propTypes = {
   usersAdminStore: PropTypes.object.isRequired,
   rolesStore: PropTypes.object.isRequired,
   countriesAdminStore: PropTypes.object.isRequired,
+  notificationsStore: PropTypes.object.isRequired,
 };
 
-const enhance = compose(inject('aclStore', 'usersAdminStore', 'rolesStore', 'countriesAdminStore'), observer);
+const enhance = compose(
+  inject('aclStore', 'usersAdminStore', 'rolesStore', 'countriesAdminStore', 'notificationsStore'),
+  observer
+);
 
 export default enhance(UserForm);
