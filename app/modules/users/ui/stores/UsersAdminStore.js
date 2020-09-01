@@ -195,7 +195,7 @@ class UsersAdminStore extends AbstractAdminStore {
     });
   }
 
-  resendAccountVerification(userId) {
+  resendEmailVerification(userId) {
     return new Promise(resolve => {
       axios
         .get(`/api/admin/user/${userId}/resend-verify-email`)

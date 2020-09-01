@@ -252,4 +252,5 @@ module.exports = {
   'API Keys': 'API Keys',
   'Generate API Key': 'Generate API Key',
   'Expires At': 'Expires At',
+  'Resend Verification': 'Resend Verification',
 };

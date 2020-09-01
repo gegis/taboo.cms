@@ -89,25 +89,6 @@ class UserApiKeysModal extends React.Component {
     });
   }
 
-  resendAccountVerification(userId) {
-    this.usersAdminStore.resendAccountVerification(userId).then(data => {
-      if (data.success) {
-        this.notificationsStore.push({
-          title: 'Success',
-          html: 'Verification email successfully sent',
-          translate: true,
-        });
-      } else {
-        this.notificationsStore.push({
-          type: 'error',
-          title: 'Failure',
-          html: 'Failed to send verification email',
-          translate: true,
-        });
-      }
-    });
-  }
-
   deleteConfirm(title, handler, refId) {
     return (
       <Popover title={<Translation message={title} />}>
