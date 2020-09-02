@@ -12,7 +12,7 @@ class UploadsController {
       uploads: { appendTimestamp, userAllowedDocumentTypes, userAllowedImageTypes, userUploadsPath, userUrlPath } = {},
     } = config.server;
     const {
-      users: { documentNames = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'] },
+      users: { documentNames = ['documentPersonal1', 'documentPersonal2'] },
     } = config;
     let {
       files: { file = null } = {},

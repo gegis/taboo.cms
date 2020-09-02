@@ -13,31 +13,30 @@ const RoleModel = require('modules/acl/models/RoleModel');
 const { server: { session: { options: { maxAge = 86400000 } = {}, rememberMeMaxAge = 86400000 } = {} } = {} } = config;
 
 class UsersService {
-  async getUser(
+  async getUserData(
     filter,
     { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
   ) {
     const query = UserModel.findOne(filter);
-    return await this.getUserByQuery(query, { loadAcl, keepPassword, populateDocs, populateProfilePic });
+    return await this.getUserDataByQuery(query, { loadAcl, keepPassword, populateDocs, populateProfilePic });
   }
 
-  async getUserById(
+  async getUserDataById(
     userId,
     { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
   ) {
     const query = UserModel.findById(userId);
-    return await this.getUserByQuery(query, { loadAcl, keepPassword, populateDocs, populateProfilePic });
+    return await this.getUserDataByQuery(query, { loadAcl, keepPassword, populateDocs, populateProfilePic });
   }
 
-  async getUserByQuery(
+  async getUserDataByQuery(
     query,
     { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
   ) {
     let userResult;
-    let user = null;
     let populate = [];
     if (populateDocs) {
-      populate = populate.concat(['documentPersonal1', 'documentPersonal2', 'documentIncorporation']);
+      populate = populate.concat(['documentPersonal1', 'documentPersonal2']);
     }
     if (populateProfilePic) {
       populate = populate.concat(['profilePicture']);
@@ -46,8 +45,14 @@ class UsersService {
       query.populate(populate);
     }
     userResult = await query.exec();
-    if (userResult) {
-      user = userResult.toObject();
+
+    return this.parseDbUser(userResult, { loadAcl, keepPassword });
+  }
+
+  async parseDbUser(dbUser, { loadAcl = false, keepPassword = false } = {}) {
+    let user = null;
+    if (dbUser) {
+      user = dbUser.toObject();
       user.id = user._id.toString();
       if (loadAcl) {
         user.acl = await ACLService.getUserACL(user);
@@ -60,9 +65,18 @@ class UsersService {
     return user;
   }
 
+  async saveUserData(id, userData) {
+    let dbUser;
+    if (id && userData) {
+      dbUser = await UserModel.findByIdAndUpdate(id, userData);
+    }
+
+    return this.parseDbUser(dbUser);
+  }
+
   async verifyEmail(session, userId, token) {
     const { user: { id: sessionUserId } = {} } = session;
-    const user = await this.getUserById(userId, { loadAcl: true });
+    const user = await this.getUserDataById(userId, { loadAcl: true });
     let success = false;
 
     if (user && user.accountVerificationCode && user.accountVerificationCode === token) {
@@ -71,7 +85,7 @@ class UsersService {
       // user.verified = true;
       // user.verificationStatus = 'approved';
       user.emailVerificationCode = '';
-      user.save();
+      await this.saveUserData(user._id, user);
       success = true;
     }
     if (userId === sessionUserId) {
@@ -187,7 +201,7 @@ class UsersService {
           user.passwordReset = uuidv1();
           user.passwordResetRequested = new Date();
           email = await EmailsService.getEmail('passwordReset', language);
-          await user.save();
+          await this.saveUserData(user._id, user);
           resetLink = this.getResetLink(ctx, linkPrefix, user._id, user.passwordReset);
           if (email.from) {
             emailToSend.from = email.from;
@@ -284,7 +298,7 @@ class UsersService {
       if (user.loginAttempts >= maxLoginAttempts) {
         user.loginAttempts = 0;
       }
-      await user.save();
+      await this.saveUserData(user._id, user);
       success = true;
     } catch (e) {
       logger.error(e);
@@ -331,7 +345,7 @@ class UsersService {
       try {
         user.accountVerificationCode = uuidv1();
         user.accountVerificationCodeRequested = new Date();
-        user.save();
+        await this.saveUserData(user._id, user);
         verifyLink = this.getVerificationLink(ctx, linkPrefix, user._id, user.accountVerificationCode);
         if (email.from) {
           emailToSend.from = email.from;
@@ -407,7 +421,7 @@ class UsersService {
   }
 
   async deleteUser(userId) {
-    const user = await this.getUserById(userId);
+    const user = await this.getUserDataById(userId);
     if (user) {
       await this.onUserDelete(user);
       await this.deleteUserSession(user);

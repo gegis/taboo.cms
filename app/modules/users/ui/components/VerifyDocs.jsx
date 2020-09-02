@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { observer, inject } from 'mobx-react';
-import { Panel, Form, Message, Grid, Row, Col, Notification, Icon } from 'rsuite';
+import { Panel, Message, Grid, Row, Col, Notification, Icon } from 'rsuite';
 import Translation from 'app/modules/core/ui/components/Translation';
 import DocumentUpload from 'app/modules/uploads/ui/components/DocumentUpload';
 import TemplatesHelper from 'modules/templates/ui/helpers/TemplatesHelper';
@@ -107,7 +107,7 @@ class VerifyDocs extends React.Component {
   }
 
   render() {
-    const { usersStore, uploadsStore, templatesStore } = this.props;
+    const { usersStore, templatesStore } = this.props;
     const Template = TemplatesHelper.getDefaultTemplate({ templatesStore });
     return (
       <Template className="account-verification-page">
@@ -118,44 +118,31 @@ class VerifyDocs extends React.Component {
               <Panel className="account-verification-panel" bordered>
                 <h3>Status</h3>
                 {this.getVerificationMessage()}
-                <Form
-                  fluid
-                  ref={this.form}
-                  onChange={uploadsStore.setUserData}
-                  onCheck={uploadsStore.setUserError}
-                  formValue={uploadsStore.documents}
-                  formError={uploadsStore.userError}
-                  checkTrigger="blur"
-                  onSubmit={this.handleSubmit}
-                  autoComplete="off"
-                  className="account-verification"
-                >
-                  <Row>
-                    <Col sm={24}>
-                      <h3>ID Card</h3>
-                      <p>Upload clear images of the front and back side</p>
-                    </Col>
-                    <Col sm={24} md={11}>
-                      <DocumentUpload
-                        title="Front Side"
-                        onFileDrop={this.onDocumentDrop.bind(this, 'documentPersonal1')}
-                        documentName="documentPersonal1"
-                        currentDocument={usersStore.user.documentPersonal1}
-                      />
-                    </Col>
-                    <Col sm={24} md={2}>
-                      {' '}
-                    </Col>
-                    <Col sm={24} md={11}>
-                      <DocumentUpload
-                        title="Back Side"
-                        onFileDrop={this.onDocumentDrop.bind(this, 'documentPersonal2')}
-                        documentName="documentPersonal2"
-                        currentDocument={usersStore.user.documentPersonal2}
-                      />
-                    </Col>
-                  </Row>
-                </Form>
+                <Row>
+                  <Col sm={24}>
+                    <h3>ID Card</h3>
+                    <p>Upload clear images of the front and back side</p>
+                  </Col>
+                  <Col sm={24} md={11}>
+                    <DocumentUpload
+                      title="Front Side"
+                      onFileDrop={this.onDocumentDrop.bind(this, 'documentPersonal1')}
+                      documentName="documentPersonal1"
+                      currentDocument={usersStore.user.documentPersonal1}
+                    />
+                  </Col>
+                  <Col sm={24} md={2}>
+                    {' '}
+                  </Col>
+                  <Col sm={24} md={11}>
+                    <DocumentUpload
+                      title="Back Side"
+                      onFileDrop={this.onDocumentDrop.bind(this, 'documentPersonal2')}
+                      documentName="documentPersonal2"
+                      currentDocument={usersStore.user.documentPersonal2}
+                    />
+                  </Col>
+                </Row>
               </Panel>
             </Col>
           </Row>

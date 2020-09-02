@@ -23,7 +23,7 @@ class UsersController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user, countryOptions;
     try {
-      user = await UsersService.getUserById(userId, { loadAcl: true, populateDocs: true });
+      user = await UsersService.getUserDataById(userId, { loadAcl: true, populateDocs: true });
       countryOptions = CountriesService.getAllArray();
     } catch (e) {
       ctx.throw(404, e);
@@ -68,7 +68,7 @@ class UsersController {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
     let user;
     try {
-      user = UsersService.getUserById(userId, { loadAcl: true, populateDocs: true });
+      user = UsersService.getUserDataById(userId, { loadAcl: true, populateDocs: true });
     } catch (e) {
       ctx.throw(404, e);
     }
@@ -343,7 +343,6 @@ class UsersController {
       user = await UserModel.findByIdAndUpdate(userId, body, { new: true }).populate([
         'documentPersonal1',
         'documentPersonal2',
-        'documentIncorporation',
         'profilePicture',
       ]);
       ctx.session.user.username = user.username;
@@ -360,21 +359,20 @@ class UsersController {
 
   async deactivateCurrent(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const user = await UsersService.getUserById(userId);
+    const user = await UsersService.getUserDataById(userId);
     if (!user) {
       ctx.throw(404, 'Not Found');
     }
     user.active = false;
     user.verificationNote = 'User requested deactivation!';
-    await user.save();
-    // TODO - deactivated for now - as it needs new scope confirmed!
+    await UsersService.saveUserData(user._id, user);
     await UsersService.sendUserDeactivationEmail(ctx, user);
     ctx.body = user;
   }
 
   async resendVerification(ctx) {
     const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const user = await UsersService.getUserById(userId);
+    const user = await UsersService.getUserDataById(userId);
     if (!user) {
       ctx.throw(404, 'Not Found');
     }
@@ -396,7 +394,7 @@ class UsersController {
       return ctx.throw(400, 'Email Address is not valid');
     }
     if (isEmail) {
-      user = await UsersService.getUser({ email: escapeValue(email) }, { populateProfilePic: true });
+      user = await UsersService.getUserData({ email: escapeValue(email) }, { populateProfilePic: true });
       if (!user) {
         return ctx.throw(404, 'User Not Found');
       }

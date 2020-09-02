@@ -25,7 +25,7 @@ module.exports = [
           sustained modules.
         </p>
         <p>
-          <a href="/admin/login">Visit Admin Panel</a>
+          <a href="javascript:window.location = '/admin/login'">Visit Admin Panel</a>
         </p>
       </div>
     </div>
@@ -263,7 +263,7 @@ Home Page </a></p><p>&nbsp;</p></section></div>`,
           html: `<div class="rs-grid-container"><section class="section"><p>&nbsp</p><p style="text-align: center;">
 <strong>Your Account verification has failed. Please contact us and we will try to help you.</strong></p><p>&nbsp;</p>
 <p>&nbsp;</p><p style="text-align: center;">
-<a class="rs-btn rs-btn-ghost white" href="/contact-us">Contact Us</a></p>
+<a class="rs-btn rs-btn-ghost white" href="/contact">Contact Us</a></p>
 <p style="text-align: center;">&nbsp;</p></section></div>`,
         },
         template: { path: '/modules/pages/views/htmlPageBlock' },

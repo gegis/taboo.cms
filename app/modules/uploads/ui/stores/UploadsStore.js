@@ -7,7 +7,6 @@ class UploadsStore {
     this.documentsToUpload = {
       documentPersonal1: null,
       documentPersonal2: null,
-      documentIncorporation: null,
       profilePicture: null,
     };
     this.page = 1;

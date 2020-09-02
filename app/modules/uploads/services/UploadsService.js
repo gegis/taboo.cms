@@ -5,7 +5,7 @@ const path = require('path');
 const CoreHelper = require('modules/core/helpers/CoreHelper');
 const UploadsHelper = require('modules/uploads/helpers/UploadsHelper');
 const UploadModel = require('modules/uploads/models/UploadModel');
-const UserModel = require('modules/users/models/UserModel');
+const UsersService = require('modules/users/services/UsersService');
 
 const {
   uploads: { userUploadsPath, imageSizes = {}, userMaxFileSize = 0, userMaxGifFileSize = 0 } = {},
@@ -35,10 +35,8 @@ class UploadsService {
   }
 
   async updateUserFiles(ctx, userId, document) {
-    const {
-      users: { documentNames = ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'] } = {},
-    } = config;
-    const user = await UserModel.findById(userId);
+    const { users: { documentNames = ['documentPersonal1', 'documentPersonal2'] } = {} } = config;
+    const user = await UsersService.getUserDataById(userId);
     const documentName = document.documentName;
     const matchingTypes = [];
 
@@ -50,18 +48,7 @@ class UploadsService {
           matchingTypes.push(docType);
         }
       });
-      if (
-        user.businessAccount &&
-        matchingTypes.indexOf('documentPersonal1') !== -1 &&
-        matchingTypes.indexOf('documentPersonal2') !== -1 &&
-        matchingTypes.indexOf('documentIncorporation') !== -1
-      ) {
-        user.verificationStatus = 'pending';
-      } else if (
-        !user.businessAccount &&
-        matchingTypes.indexOf('documentPersonal1') !== -1 &&
-        matchingTypes.indexOf('documentPersonal2') !== -1
-      ) {
+      if (matchingTypes.indexOf('documentPersonal1') !== -1 && matchingTypes.indexOf('documentPersonal2') !== -1) {
         user.verificationStatus = 'pending';
       }
     }
@@ -70,8 +57,7 @@ class UploadsService {
       ctx.session.user.profilePictureUrl = document.url;
     }
 
-    await user.save();
-    return user;
+    return UsersService.saveUserData(user._id, user);
   }
 
   async processUserImage(filePath, defaultSize = null, resizeToAllSizes = false) {

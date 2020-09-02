@@ -29,7 +29,11 @@ class AuthService {
       userData = await this.parseUserFromHeader(ctx);
       userId = userData.id;
     }
-    user = await this.usersService.getUserById(userId, { loadAcl: true, populateProfilePic: true });
+    user = await this.usersService.getUserDataById(userId, {
+      loadAcl: true,
+      populateProfilePic: true,
+      populateDocs: true,
+    });
     if (!user) {
       new ApiError('User not found', 404);
     }
@@ -67,7 +71,7 @@ class AuthService {
           });
           throw new ApiError('ApiKey not found', 401);
         }
-        user = await this.usersService.getUserById(apiTokenEntry.user, { loadAcl: true });
+        user = await this.usersService.getUserDataById(apiTokenEntry.user, { loadAcl: true });
       }
     }
 
@@ -93,7 +97,7 @@ class AuthService {
     if (!password) {
       return ctx.throw(404, 'Password is required');
     }
-    const user = await this.usersService.getUser({ email }, { populateProfilePic: true, keepPassword: true });
+    const user = await this.usersService.getUserData({ email }, { populateProfilePic: true, keepPassword: true });
     if (!user) {
       return ctx.throw(404, 'User not found');
     }
@@ -206,7 +210,7 @@ class AuthService {
       type: 'jwtRefresh',
     });
     if (dbToken && dbToken.uid === uid) {
-      user = await this.usersService.getUserById(userId);
+      user = await this.usersService.getUserDataById(userId);
       tokens = await this.signUserJwt(user, uid);
       await dbToken.delete();
       return tokens;

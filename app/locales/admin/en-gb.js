@@ -212,7 +212,6 @@ module.exports = {
   Document: 'Document',
   documentPersonal1: 'Front Side',
   documentPersonal2: 'Back Side',
-  documentIncorporation: 'Certificate of Incorporation',
   'Account Verified': 'Account Verified',
   'External Email': 'External Email',
   'Edit External Wallet': 'Edit External Wallet',

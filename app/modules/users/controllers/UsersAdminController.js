@@ -23,7 +23,7 @@ class UsersAdminController extends AbstractAdminController {
       defaultSort,
       populate: {
         findAll: 'roles',
-        findById: ['documentPersonal1', 'documentPersonal2', 'documentIncorporation'],
+        findById: ['documentPersonal1', 'documentPersonal2'],
         create: 'roles',
         update: ['roles'],
       },
