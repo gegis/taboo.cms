@@ -4,6 +4,7 @@ module.exports = {
   port: process.env.PORT || shared.port,
   secretKeys: ['REPLACE-ME-123456', '654321-REPLACE-ME'],
   globalPolicies: ['acl', 'i18n'],
+  helmetEnabled: true,
   templates: {
     themesPath: 'app/themes',
     extension: 'ejs',
