@@ -31,6 +31,7 @@ module.exports = {
       renew: false,
       secure: false,
       encrypt: true,
+      sameSite: 'Lax',
     },
     rememberMeMaxAge: 1000 * 60 * 60 * 24 * 14, // 2 weeks
   },
