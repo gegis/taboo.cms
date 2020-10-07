@@ -72,7 +72,7 @@ class UsersAdminController extends AbstractAdminController {
   }
 
   async afterUpdate(ctx, user) {
-    await UsersService.updateUserSession(user);
+    await UsersService.updateUserSession(ctx, user);
     UsersService.socketsEmitUserChanges(user);
     return user;
   }

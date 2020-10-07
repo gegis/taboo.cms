@@ -30,6 +30,7 @@ const newUser = {
   verificationStatus: '',
   verificationNote: '',
   profilePicture: {},
+  profilePictureUrl: '',
 };
 
 class UsersStore {

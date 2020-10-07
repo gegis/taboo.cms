@@ -2,6 +2,7 @@ const { cmsHelper, config } = require('@taboo/cms-core');
 const LanguageService = require('modules/core/services/LanguageService');
 const CacheService = require('modules/cache/services/CacheService');
 const PageModel = require('modules/pages/models/PageModel');
+const UsersService = require('modules/users/services/UsersService');
 
 class PagesService {
   async getPageResponse(ctx, route) {
@@ -39,11 +40,13 @@ class PagesService {
   }
 
   async getPage(ctx, route) {
-    const { session: { user: { admin = false } = {} } = {} } = ctx;
+    const user = await UsersService.getCurrentUser(ctx);
+    const admin = !!(user && user.admin);
     let block;
     let beforeRenderModule;
     let page;
     let filter = { $or: [{ url: route }, { url: `${route}/` }] };
+
     if (!admin) {
       filter.published = true;
       // If not admin - try to get from cache

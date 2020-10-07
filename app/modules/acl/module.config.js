@@ -25,6 +25,22 @@ module.exports = {
   routes: [
     {
       method: 'GET',
+      path: '/api/acl/resources',
+      action: ResourcesController.getAll,
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/acl/resources/user',
+      action: ResourcesController.getUserACL,
+      options: {
+        errorResponseAsJson: true,
+      },
+    },
+    {
+      method: 'GET',
       path: '/api/admin/acl/roles',
       action: RolesAdminController.findAll,
       policies: ['isAdmin'],
@@ -71,22 +87,6 @@ module.exports = {
       options: {
         errorResponseAsJson: true,
         aclResource: 'admin.acl.manage',
-      },
-    },
-    {
-      method: 'GET',
-      path: '/api/acl/resources',
-      action: ResourcesController.getAll,
-      options: {
-        errorResponseAsJson: true,
-      },
-    },
-    {
-      method: 'GET',
-      path: '/api/acl/resources/user',
-      action: ResourcesController.getUserACL,
-      options: {
-        errorResponseAsJson: true,
       },
     },
   ],

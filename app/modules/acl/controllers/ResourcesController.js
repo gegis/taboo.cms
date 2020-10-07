@@ -1,4 +1,5 @@
 const ACLService = require('modules/acl/services/ACLService');
+const UsersService = require('modules/users/services/UsersService');
 
 class ResourcesController {
   async getAll(ctx) {
@@ -6,9 +7,12 @@ class ResourcesController {
   }
 
   async getUserACL(ctx) {
+    const user = await UsersService.getCurrentUser(ctx);
     let userACL = [];
-    if (ctx.session && ctx.session.user && ctx.session.user.acl) {
-      userACL = ctx.session.user.acl;
+    if (user && user.acl) {
+      userACL = user.acl;
+    } else if (user) {
+      userACL = ACLService.getUserACL(user);
     }
     ctx.body = userACL;
   }

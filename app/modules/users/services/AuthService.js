@@ -21,24 +21,45 @@ class AuthService {
     this.usersService = usersService;
   }
 
-  async getCurrentUser(ctx) {
-    let { session: { user: { id: userId } = {} } = {} } = ctx;
-    let user;
-    let userData;
-    if (!userId) {
-      userData = await this.parseUserFromHeader(ctx);
-      userId = userData.id;
+  async getCurrentUser(ctx, { reload = false } = {}) {
+    const { session: { user: sessionUser = null } = {} } = ctx;
+    let user = null;
+    let userId;
+    let userFromHeader;
+    if (sessionUser && !reload) {
+      user = Object.assign({}, sessionUser);
+    } else {
+      if (sessionUser && reload) {
+        userId = sessionUser.id;
+      } else {
+        userFromHeader = await this.parseUserFromHeader(ctx);
+        if (userFromHeader) {
+          userId = userFromHeader.id;
+        }
+      }
+      if (userId) {
+        user = await this.usersService.getUserDataById(userId, {
+          loadAcl: true,
+          populateProfilePic: true,
+          populateDocs: true,
+        });
+      }
     }
-    user = await this.usersService.getUserDataById(userId, {
-      loadAcl: true,
-      populateProfilePic: true,
-      populateDocs: true,
-    });
-    if (!user) {
-      new ApiError('User not found', 404);
-    }
+    // if (!user) {
+    //   new ApiError('User not found', 404);
+    // }
 
     return user;
+  }
+
+  async updateCurrentUser(ctx, userData = {}) {
+    const currentUser = await this.getCurrentUser(ctx);
+    if (currentUser && Object.keys(userData).length > 0) {
+      const user = await UserModel.findByIdAndUpdate(currentUser.id, userData, { new: true }).populate([
+        'profilePicture',
+      ]);
+      await this.usersService.updateUserSession(ctx, user, { updateCurrentSession: true });
+    }
   }
 
   async parseUserFromHeader(ctx = {}) {
@@ -58,7 +79,7 @@ class AuthService {
         }
       } else if (authorization.indexOf(apiKeyName) !== -1) {
         apiToken = this.parseAuthorizationToken(apiKeyName, authorization);
-        // TODO maybe remove expiresAt from filter and log as a seprate error if expired
+        // TODO maybe remove expiresAt from filter and log as a separate error if expired
         apiTokenEntry = await UserTokenModel.findOne({ token: apiToken, expiresAt: { $gt: Date.now() } });
         if (!apiTokenEntry) {
           await LogsApiService.create({
@@ -71,6 +92,7 @@ class AuthService {
           });
           throw new ApiError('ApiKey not found', 401);
         }
+        // TODO !!! check for apiTokenEntry.user value if it is user id
         user = await this.usersService.getUserDataById(apiTokenEntry.user, { loadAcl: true });
       }
     }
@@ -128,6 +150,7 @@ class AuthService {
     const acl = await ACLService.getUserACL(user);
     const authTokenExpiresAt = Date.now() + jwtAuthExpiresIn;
     const refreshTokenExpiresAt = Date.now() + jwtRefreshExpiresIn;
+    const profilePicture = await this.usersService.getUserProfilePicture(user);
     const authToken = jwt.sign(
       {
         exp: Math.floor(authTokenExpiresAt / 1000),
@@ -135,6 +158,7 @@ class AuthService {
           id: user._id.toString(),
           uid: uid,
           acl: acl,
+          profilePictureUrl: this.usersService.getUserProfilePictureUrl(profilePicture),
         },
       },
       jwtSecret

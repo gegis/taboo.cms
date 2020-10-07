@@ -2,6 +2,7 @@ const { config } = require('@taboo/cms-core');
 const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
 const PagesService = require('modules/pages/services/PagesService');
 const RevisionService = require('modules/core/services/RevisionService');
+const UsersService = require('modules/users/services/UsersService');
 const PageModel = require('modules/pages/models/PageModel');
 const {
   api: {
@@ -22,16 +23,16 @@ class PagesAdminController extends AbstractAdminController {
   }
 
   async beforeCreate(ctx, data) {
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
-    data.createdBy = userId;
+    const user = await UsersService.getCurrentUser(ctx);
+    data.createdBy = user.id;
     return data;
   }
 
   async beforeUpdate(ctx, id, data) {
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    const user = await UsersService.getCurrentUser(ctx);
     // Save current version as previous revision
     await RevisionService.saveById(PageModel, ctx.params.id);
-    data.updatedBy = userId;
+    data.updatedBy = user.id;
     return data;
   }
 

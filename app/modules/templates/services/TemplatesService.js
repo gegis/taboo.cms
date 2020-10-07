@@ -5,6 +5,7 @@ const NavigationService = require('modules/navigation/services/NavigationService
 const CacheService = require('modules/cache/services/CacheService');
 const TemplateModel = require('modules/templates/models/TemplateModel');
 const StringHelper = require('modules/core/ui/helpers/StringHelper');
+const UsersService = require('modules/users/services/UsersService');
 
 const { templates: { socketsEvents: { templatePreviewEmit = '', templatePreviewReceive = '' } = {} } = {} } = config;
 
@@ -34,11 +35,8 @@ class TemplatesService {
   }
 
   async beforeTemplateRender(ctx) {
-    const {
-      session: { user: { id: userId } = {} } = {},
-      viewParams: { _template } = {},
-      routeParams: { language } = {},
-    } = ctx;
+    const user = await UsersService.getCurrentUser(ctx);
+    const { viewParams: { _template } = {}, routeParams: { language } = {} } = ctx;
     let templateLanguageSettings = null;
     let newParams = {
       themeStyle: '',
@@ -62,7 +60,7 @@ class TemplatesService {
     if (template && templateLanguageSettings) {
       const { navigationPreload = [], userNavigationPreload = [] } = template;
       Object.assign(newParams, await this.getNavigationByKeys(navigationPreload, templateLanguageSettings));
-      if (userId) {
+      if (user && user.id) {
         Object.assign(newParams, await this.getNavigationByKeys(userNavigationPreload, templateLanguageSettings));
       }
       if (templateLanguageSettings.footerCopyright) {

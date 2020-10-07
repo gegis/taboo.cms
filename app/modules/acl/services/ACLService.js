@@ -1,4 +1,5 @@
 const { logger, config } = require('@taboo/cms-core');
+const AuthService = require('modules/users/services/AuthService');
 const SettingsService = require('modules/settings/services/SettingsService');
 const RoleModel = require('modules/acl/models/RoleModel');
 
@@ -20,7 +21,7 @@ class ACLService {
 
   /**
    * THIS IS THE IMPLEMENTATION OF Taboo CMS isAllowed method
-   * @param subject - either ctx object either user session object
+   * @param subject - either ctx object either user object
    * @param resource - string value for resource name
    */
   // TODO - rethink to pass to this function only resource and acl list
@@ -31,7 +32,7 @@ class ACLService {
       allowed = true;
     } else if (subject) {
       if (subject.request && subject.response) {
-        user = subject.session.user;
+        user = AuthService.getCurrentUser(subject);
       } else {
         user = subject;
       }
