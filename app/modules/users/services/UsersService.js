@@ -173,7 +173,7 @@ class UsersService {
     return pictureUrl;
   }
 
-  async updateUserSession(ctx, user, { updateCurrentSession = false }) {
+  async updateUserSession(ctx, user, { updateCurrentSession = false } = {}) {
     const { session: sessionConfig } = config.server;
     const acl = await ACLService.getUserACL(user);
     const roles = [];
