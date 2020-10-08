@@ -101,7 +101,7 @@ class UsersService {
     return { user, success };
   }
 
-  async setUserSession(ctx, user, { rememberMe = false, updateSessionStore = false }) {
+  async setUserSession(ctx, user, { rememberMe = false, updateSessionStore = false } = {}) {
     const { session = {} } = ctx;
     session.user = await this.parseUserSessionData(user, { rememberMe });
     if (rememberMe) {
