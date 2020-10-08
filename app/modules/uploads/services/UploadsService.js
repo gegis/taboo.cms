@@ -54,7 +54,9 @@ class UploadsService {
     }
 
     if (documentName === 'profilePicture' && ctx.session.user) {
-      ctx.session.user.profilePictureUrl = document.url;
+      await UsersService.updateCurrentUser(ctx, {
+        profilePicture: document,
+      });
     }
 
     return UsersService.saveUserData(user._id, user);

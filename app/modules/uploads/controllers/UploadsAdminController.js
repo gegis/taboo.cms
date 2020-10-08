@@ -3,6 +3,8 @@ const path = require('path');
 const AbstractAdminController = require('modules/core/controllers/AbstractAdminController');
 const UploadsService = require('modules/uploads/services/UploadsService');
 const UploadModel = require('modules/uploads/models/UploadModel');
+const UsersService = require('modules/users/services/UsersService');
+
 const {
   api: {
     uploads: { defaultSort = null },
@@ -32,7 +34,7 @@ class UploadsAdminController extends AbstractAdminController {
       uploads: { uploadsPath, allowedTypes, urlPath, appendTimestamp },
     } = config.server;
     const { files: { file = null } = {} } = ctx.request;
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    const user = await UsersService.getCurrentUser(ctx);
     const data = {};
     let tmpPath, fileName, url, filePath, prettyFileName;
     try {
@@ -58,7 +60,7 @@ class UploadsAdminController extends AbstractAdminController {
       data.type = file.type;
       data.url = url;
       data.path = filePath;
-      data.user = userId;
+      data.user = user.id;
     } catch (e) {
       if (filePath && filesHelper.fileExists(filePath)) {
         filesHelper.unlinkFile(filePath);

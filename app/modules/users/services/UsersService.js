@@ -9,10 +9,19 @@ const AuthService = require('modules/users/services/AuthService');
 const UserValidationHelper = require('modules/users/helpers/UserValidationHelper');
 const UserModel = require('modules/users/models/UserModel');
 const RoleModel = require('modules/acl/models/RoleModel');
+const UploadModel = require('modules/uploads/models/UploadModel');
 
 const { server: { session: { options: { maxAge = 86400000 } = {}, rememberMeMaxAge = 86400000 } = {} } = {} } = config;
 
 class UsersService {
+  async getCurrentUser(ctx, options = {}) {
+    return AuthService.getCurrentUser(ctx, options);
+  }
+
+  async updateCurrentUser(ctx, userData = {}) {
+    return AuthService.updateCurrentUser(ctx, userData);
+  }
+
   async getUserData(
     filter,
     { loadAcl = false, keepPassword = false, populateDocs = false, populateProfilePic = true } = {}
@@ -74,11 +83,9 @@ class UsersService {
     return this.parseDbUser(dbUser);
   }
 
-  async verifyEmail(session, userId, token) {
-    const { user: { id: sessionUserId } = {} } = session;
-    const user = await this.getUserDataById(userId, { loadAcl: true });
+  async verifyEmail(ctx, userId, token) {
+    const user = await this.getCurrentUser(ctx);
     let success = false;
-
     if (user && user.accountVerificationCode && user.accountVerificationCode === token) {
       user.emailVerified = true;
       // TODO set to approved only if docs verification is not needed
@@ -88,16 +95,14 @@ class UsersService {
       await this.saveUserData(user._id, user);
       success = true;
     }
-    if (userId === sessionUserId) {
-      await this.setUserSession(session, user);
-    } else {
-      await this.updateUserSession(user);
-    }
+    await this.updateUserSession(ctx, user, { updateCurrentSession: true });
+
     this.socketsEmitUserChanges(user);
     return { user, success };
   }
 
-  async setUserSession(session, user, rememberMe = false) {
+  async setUserSession(ctx, user, { rememberMe = false, updateSessionStore = false }) {
+    const { session = {} } = ctx;
     session.user = await this.parseUserSessionData(user, { rememberMe });
     if (rememberMe) {
       session.maxAge = rememberMeMaxAge;
@@ -105,17 +110,19 @@ class UsersService {
       session.maxAge = maxAge;
     }
 
+    if (updateSessionStore) {
+      await this.updateUserSession(ctx, user);
+    }
+
     return session.user;
   }
 
-  async parseUserSessionData(user, { authenticated = false, rememberMe = false }) {
+  async parseUserSessionData(user, { authenticated = null, rememberMe = null } = {}) {
     let userSessionData = null;
     let acl;
-    let profilePictureUrl;
+    let profilePicture;
     if (user) {
-      if (user.profilePicture && user.profilePicture.url) {
-        profilePictureUrl = user.profilePicture.url;
-      }
+      profilePicture = await this.getUserProfilePicture(user);
       acl = await ACLService.getUserACL(user);
       userSessionData = {
         id: user._id.toString(),
@@ -127,27 +134,52 @@ class UsersService {
         emailVerified: user.emailVerified,
         admin: user.admin,
         active: user.active,
-        profilePictureUrl: profilePictureUrl,
-        postsCount: user.postsCount,
-        viewedTopics: user.viewedTopics,
-        viewedTopicPosts: user.viewedTopicPosts,
+        country: user.country,
+        profilePicture: profilePicture,
+        profilePictureUrl: this.getUserProfilePictureUrl(profilePicture),
         roles: user.roles,
         acl: acl,
-        rememberMe: rememberMe,
       };
-      if (authenticated) {
-        userSessionData.authenticated = true;
+      if (rememberMe !== null) {
+        userSessionData.rememberMe = rememberMe;
+      }
+      if (authenticated !== null) {
+        userSessionData.authenticated = authenticated;
       }
     }
     return userSessionData;
   }
 
-  async updateUserSession(user) {
+  async getUserProfilePicture(user) {
+    let picture = null;
+    if (
+      user.profilePicture &&
+      typeof user.profilePicture === 'object' &&
+      Object.keys(user.profilePicture).indexOf('url') !== -1
+    ) {
+      picture = user.profilePicture;
+    } else if (user.profilePicture) {
+      picture = await UploadModel.findById(user.profilePicture);
+    }
+    return picture;
+  }
+
+  getUserProfilePictureUrl(profilePicture) {
+    let pictureUrl = null;
+    if (profilePicture && typeof profilePicture === 'object' && profilePicture.url) {
+      pictureUrl = profilePicture.url;
+    }
+
+    return pictureUrl;
+  }
+
+  async updateUserSession(ctx, user, { updateCurrentSession = false } = {}) {
     const { session: sessionConfig } = config.server;
     const acl = await ACLService.getUserACL(user);
     const roles = [];
     let SessionModel;
     let userSession;
+    let userSessionData;
     if (sessionConfig && sessionConfig.options && sessionConfig.options.store && sessionConfig.options.store.model) {
       SessionModel = sessionConfig.options.store.model;
       userSession = await SessionModel.findOne({ 'value.user._id': user._id });
@@ -174,6 +206,10 @@ class UsersService {
           }
         );
       }
+    }
+    if (updateCurrentSession && ctx.session && ctx.session.user) {
+      userSessionData = await this.parseUserSessionData(user);
+      ctx.session.user = Object.assign({}, ctx.session.user, userSessionData);
     }
   }
 

@@ -5,6 +5,7 @@ const CoreHelper = require('modules/core/helpers/CoreHelper');
 const UploadsService = require('modules/uploads/services/UploadsService');
 const UploadsHelper = require('modules/uploads/helpers/UploadsHelper');
 const UploadModel = require('modules/uploads/models/UploadModel');
+const UsersService = require('modules/users/services/UsersService');
 
 class UploadsController {
   async uploadUserFile(ctx) {
@@ -19,7 +20,7 @@ class UploadsController {
       header: { 'document-name': documentName = '', 'is-private': isPrivate = false },
     } = ctx.request;
     const data = {};
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    const user = await UsersService.getCurrentUser(ctx);
     // if one of documentNames, we assume it is user document and not image
     const isDocument = documentNames.indexOf(documentName) !== -1;
     const isProfilePicture = documentName === 'profilePicture';
@@ -51,7 +52,7 @@ class UploadsController {
       prettyFileName = file.name;
       fileName = UploadsHelper.getFileName(file.name, appendTimestamp);
       url = path.join(userUrlPath, file.type, fileName);
-      filePath = UploadsService.getUserFilePath(userId, file.type, fileName);
+      filePath = UploadsService.getUserFilePath(user.id, file.type, fileName);
       await filesHelper.moveFile(tmpPath, filePath);
 
       if (!isDocument && file.type !== 'image/gif') {
@@ -72,7 +73,7 @@ class UploadsController {
       data.type = file.type;
       data.url = url;
       data.path = filePath;
-      data.user = userId;
+      data.user = user.id;
       data.isUserFile = true;
       data.isPrivate = isPrivate;
       data.isDocument = isDocument;
@@ -81,7 +82,7 @@ class UploadsController {
       dbItem = await UploadModel.create(data);
       dbItem.url = path.join(userUrlPath, dbItem._id.toString());
       await dbItem.save();
-      await UploadsService.updateUserFiles(ctx, userId, dbItem);
+      await UploadsService.updateUserFiles(ctx, user.id, dbItem);
     } catch (e) {
       logger.error(e);
       if (filePath && filesHelper.fileExists(filePath)) {
@@ -93,14 +94,14 @@ class UploadsController {
   }
 
   async serveUserFiles(ctx) {
-    const { session: { user: { id: userId, admin } = {} } = {} } = ctx;
+    const user = await UsersService.getCurrentUser(ctx);
     const file = await UploadModel.findById(ctx.params.id);
     const params = Object.assign({}, ctx.request.query);
     let filePath;
     if (!file) {
       return ctx.throw(404, 'Not Found');
     }
-    if (file.isPrivate && file.isUserFile && !admin && file.user.toString() !== userId) {
+    if (file.isPrivate && file.isUserFile && !user.admin && file.user.toString() !== user.id) {
       return ctx.throw(401, 'Not Authorized');
     }
     filePath = file.path;
@@ -115,13 +116,13 @@ class UploadsController {
   }
 
   async apiGetUserUploads(ctx) {
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const defaultFilter = { user: userId, isUserFile: true };
+    const user = await UsersService.getCurrentUser(ctx);
+    const defaultFilter = { user: user.id, isUserFile: true };
     const defaultSort = { createdAt: 'desc' };
     const searchFields = ['name', 'url'];
     const params = CoreHelper.parseRequestParams(ctx, { defaultFilter, searchFields, defaultSort });
     let uploads = [];
-    if (userId) {
+    if (user && user.id) {
       uploads = await UploadModel.find(params.filter, params.fields, params.options);
     }
     ctx.body = uploads;

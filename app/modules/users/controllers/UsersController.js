@@ -20,10 +20,10 @@ class UsersController {
   async resetPassword() {}
   async changePassword() {}
   async accountSettings(ctx) {
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    const currentUser = await UsersService.getCurrentUser(ctx);
     let user, countryOptions;
     try {
-      user = await UsersService.getUserDataById(userId, { loadAcl: true, populateDocs: true });
+      user = await UsersService.getUserDataById(currentUser.id, { loadAcl: true, populateDocs: true });
       countryOptions = CountriesService.getAllArray();
     } catch (e) {
       ctx.throw(404, e);
@@ -36,7 +36,6 @@ class UsersController {
    * Verifies user's email (accountVerification link landing page for new account registration)
    */
   async verifyEmail(ctx) {
-    const { session = {} } = ctx;
     const { userId, token } = ctx.params;
     const verifyAccountRedirectSuccess = await SettingsService.get('verifyEmailRedirectSuccess');
     const verifyAccountRedirectError = await SettingsService.get('verifyEmailRedirectError');
@@ -45,7 +44,7 @@ class UsersController {
       success: false,
     };
     try {
-      result = await UsersService.verifyEmail(session, userId, token);
+      result = await UsersService.verifyEmail(ctx, userId, token);
     } catch (e) {
       logger.error(e);
       result.success = false;
@@ -65,14 +64,11 @@ class UsersController {
    * Landing page for user documents verification
    */
   async verifyDocs(ctx) {
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
-    let user;
     try {
-      user = UsersService.getUserDataById(userId, { loadAcl: true, populateDocs: true });
+      ctx.viewParams.userData = await UsersService.getCurrentUser(ctx);
     } catch (e) {
       ctx.throw(404, e);
     }
-    ctx.viewParams.userData = user;
   }
 
   /**
@@ -234,7 +230,7 @@ class UsersController {
   async login(ctx) {
     const { body: { email = null, password = null, rememberMe = false } = {} } = ctx.request;
     const user = await AuthService.authenticateUser(ctx, email, password);
-    ctx.body = await UsersService.setUserSession(ctx.session, user, rememberMe);
+    ctx.body = await UsersService.setUserSession(ctx, user, { rememberMe });
   }
 
   /**
@@ -313,43 +309,39 @@ class UsersController {
   }
 
   async getAuth(ctx) {
-    // TODO - double check if it needs 'refresh' get params to update user info from db!!!
-    const authUser = ctx.session.user || {};
-    ctx.body = authUser;
+    ctx.body = await UsersService.getCurrentUser(ctx);
   }
 
   async getCurrent(ctx) {
-    ctx.body = await AuthService.getCurrentUser(ctx);
+    ctx.body = await UsersService.getCurrentUser(ctx, { reload: true });
   }
 
   async updateCurrent(ctx) {
     const { body = {} } = ctx.request;
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
+    const userFieldsToUpdate = ['country', 'email', 'firstName', 'lastName'];
+    const userData = {};
+    const currentUser = await UsersService.getCurrentUser(ctx);
     const validationError = UserValidationHelper.validateUserAccountFields(body);
     let user;
     try {
       if (validationError) {
         return ctx.throw(400, validationError);
       }
-      await UsersService.validateUniqueApiKey(ctx, body, userId);
-      if (Object.prototype.hasOwnProperty.call(body, 'id')) {
-        delete body._id;
-      }
+      await UsersService.validateUniqueApiKey(ctx, body, currentUser.id);
+      userFieldsToUpdate.map(field => {
+        if (Object.keys(body).indexOf(field) !== -1) {
+          userData[field] = body[field];
+        }
+      });
       if (body.newPassword) {
-        body.password = await AuthService.hashPassword(body.newPassword);
-      } else if (Object.prototype.hasOwnProperty.call(body, 'password')) {
-        delete body.password;
+        userData.password = await AuthService.hashPassword(body.newPassword);
       }
-      user = await UserModel.findByIdAndUpdate(userId, body, { new: true }).populate([
+      user = await UserModel.findByIdAndUpdate(currentUser.id, userData, { new: true }).populate([
         'documentPersonal1',
         'documentPersonal2',
         'profilePicture',
       ]);
-      ctx.session.user.username = user.username;
-      ctx.session.user.email = user.email;
-      if (user.profilePicture && user.profilePicture.url) {
-        ctx.session.user.profilePictureUrl = user.profilePicture.url;
-      }
+      await UsersService.updateUserSession(ctx, user, { updateCurrentSession: true });
       UsersService.socketsEmitUserChanges(user);
     } catch (e) {
       ctx.throw(400, e);
@@ -358,21 +350,19 @@ class UsersController {
   }
 
   async deactivateCurrent(ctx) {
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const user = await UsersService.getUserDataById(userId);
+    const user = await UsersService.getCurrentUser(ctx);
     if (!user) {
       ctx.throw(404, 'Not Found');
     }
     user.active = false;
     user.verificationNote = 'User requested deactivation!';
-    await UsersService.saveUserData(user._id, user);
+    await UsersService.saveUserData(user.id, user);
     await UsersService.sendUserDeactivationEmail(ctx, user);
     ctx.body = user;
   }
 
   async resendVerification(ctx) {
-    const { session: { user: { id: userId } = {} } = {} } = ctx;
-    const user = await UsersService.getUserDataById(userId);
+    const user = await UsersService.getCurrentUser(ctx);
     if (!user) {
       ctx.throw(404, 'Not Found');
     }
