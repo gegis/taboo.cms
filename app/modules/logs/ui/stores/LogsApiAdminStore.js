@@ -6,7 +6,7 @@ const newItem = {
   token: '',
   user: '',
   code: '',
-  error: '',
+  message: '',
 };
 
 class LogsApiAdminStore extends AbstractAdminStore {

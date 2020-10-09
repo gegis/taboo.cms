@@ -109,6 +109,7 @@ public/*
 !public/.gitkeep
 logs/*
 !logs/.gitkeep
+!app/logs/*
 !public/uploads/.gitkeep
 data/*
 !data/.gitkeep

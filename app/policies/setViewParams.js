@@ -1,6 +1,9 @@
+const UsersService = require('modules/users/services/UsersService');
+
 module.exports = async (ctx, next) => {
-  if (ctx.session && ctx.session.user && ctx.session.user.id) {
-    ctx.viewParams.user = ctx.session.user;
+  const user = await UsersService.getCurrentUser(ctx);
+  if (user) {
+    ctx.viewParams.user = user;
   } else {
     ctx.viewParams.user = {};
   }

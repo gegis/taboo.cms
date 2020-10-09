@@ -18,7 +18,7 @@ const LogApiModel = MongoDbAdapter.setupModel('LogApi', {
     code: {
       type: String,
     },
-    error: {
+    message: {
       type: String,
     },
     user: {

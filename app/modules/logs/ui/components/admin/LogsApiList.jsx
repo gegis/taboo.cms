@@ -35,7 +35,7 @@ class LogsApiList extends React.Component {
             <th>Token</th>
             <th>User</th>
             <th>Code</th>
-            <th>Error</th>
+            <th>Message</th>
             <th>Date</th>
             <th className="action-buttons-1">Actions</th>
           </tr>
@@ -47,7 +47,7 @@ class LogsApiList extends React.Component {
               <td className="id">{item.token}</td>
               <td>{this.getUser(item)}</td>
               <td>{item.code}</td>
-              <td>{item.error}</td>
+              <td>{item.message}</td>
               <td>{<DateTime value={item.createdAt} />}</td>
               <td>
                 <ActionButtons value={item._id} onDelete={this.handleDelete} />
