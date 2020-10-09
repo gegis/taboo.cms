@@ -5,9 +5,9 @@ const { api: { authorization: { apiKeyName } = {} } = {} } = config;
 
 class LogsApiService {
   async logApiAction(ctx, user, code = 200, message = '') {
-    const { header: { authorization = {} } = {}, routeParams: { moduleRoute = {} } = {} } = ctx;
+    const { header: { authorization = null } = {}, routeParams: { moduleRoute = {} } = {} } = ctx;
     let log = null;
-    if (authorization.indexOf(apiKeyName) !== -1) {
+    if (authorization && authorization.indexOf(apiKeyName) !== -1) {
       log = await this.create({
         action: moduleRoute.path,
         token: AuthService.parseAuthorizationToken(apiKeyName, authorization),
