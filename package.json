@@ -1,6 +1,6 @@
 {
   "name": "@taboo/cms",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "A node.js powered CMS (Content Management System) that is built on Koa web framework, uses mongoose for MongoDB connections and has admin dashboard built in React with Mobx and Rsuite. It can be used as React client side application, or as server side rendered templates (EJS) CMS, or simply as Headless CMS for your REST APIs.",
   "main": "index.js",
   "bin": {
