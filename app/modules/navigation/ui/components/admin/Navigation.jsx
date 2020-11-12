@@ -30,8 +30,6 @@ class Navigation extends React.Component {
 }
 
 Navigation.propTypes = {
-  match: PropTypes.object,
-  location: PropTypes.object,
   navigationAdminStore: PropTypes.object.isRequired,
 };
 

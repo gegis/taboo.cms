@@ -84,7 +84,7 @@ class UsersService {
   }
 
   async verifyEmail(ctx, userId, token) {
-    const user = await this.getCurrentUser(ctx);
+    const user = await this.getUserDataById(userId);
     let success = false;
     if (user && user.accountVerificationCode && user.accountVerificationCode === token) {
       user.emailVerified = true;

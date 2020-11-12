@@ -29,7 +29,7 @@ password reset, please contact us as soon as possible.</p>
     _id: '5f0483e433b66355cbd29b41',
     action: 'deactivatedAccount',
     language: 'en',
-    from: 'Classy Beef <noreply@classybeef.com>',
+    from: 'Taboo Solutions <noreply@taboo.solutions>',
     subject: 'Deactivated Account',
     body: `<p><a href="{{userLink}}">{{email}}</a> has deactivated account. Action is needed to completely 
 remove the user.</p>
