@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+ENVIRONMENT='production'
 BUILD_FOLDER='app-build'
 DEPLOY_FOLDER='app-deploy'
 BACKUP_FILE='app.backup.tar'
@@ -41,6 +42,13 @@ mv ./$DEPLOY_FOLDER $RUNNING_APP_PATH
 
 printf "\n # Start pm2 $PM2_APP_NAME";
 pm2 start $PM2_APP_NAME
+
+if [ $ENVIRONMENT != "production" ]
+then
+  printf "\n # Generating API Docs\n\n"
+  cd $RUNNING_APP_PATH
+  npm run generate-api-docs
+fi
 
 printf "\n # Deployment finished\n\n"
 exit 0;

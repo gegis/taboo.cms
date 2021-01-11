@@ -101,7 +101,7 @@ class UsersService {
     return { user, success };
   }
 
-  async setUserSession(ctx, user, { rememberMe = false, updateSessionStore = false } = {}) {
+  async setUserSession(ctx, user, { rememberMe = null, updateSessionStore = false } = {}) {
     const { session = {} } = ctx;
     session.user = await this.parseUserSessionData(user, { rememberMe });
     if (rememberMe) {
@@ -150,6 +150,25 @@ class UsersService {
     return userSessionData;
   }
 
+  setUserSessionAuthToken(ctx, token) {
+    const { session = {} } = ctx;
+    session.authToken = token;
+  }
+
+  getUserSessionAuthToken(ctx) {
+    const { session = {} } = ctx;
+    return session.authToken;
+  }
+
+  clearUserSession(session) {
+    if (session && session.user && session.user.id) {
+      delete session.authToken;
+      delete session.user;
+      return true;
+    }
+    return false;
+  }
+
   async getUserProfilePicture(user) {
     let picture = null;
     if (
@@ -178,8 +197,8 @@ class UsersService {
     const acl = await ACLService.getUserACL(user);
     const roles = [];
     let SessionModel;
+    let currentUser;
     let userSession;
-    let userSessionData;
     if (sessionConfig && sessionConfig.options && sessionConfig.options.store && sessionConfig.options.store.model) {
       SessionModel = sessionConfig.options.store.model;
       userSession = await SessionModel.findOne({ 'value.user._id': user._id });
@@ -202,14 +221,21 @@ class UsersService {
               'value.user.firstName': user.firstName,
               'value.user.lastName': user.lastName,
               'value.user.email': user.email,
+              'value.user.profilePictureUrl': user.profilePictureUrl,
             },
           }
         );
       }
     }
-    if (updateCurrentSession && ctx.session && ctx.session.user) {
-      userSessionData = await this.parseUserSessionData(user);
-      ctx.session.user = Object.assign({}, ctx.session.user, userSessionData);
+    if (updateCurrentSession) {
+      try {
+        currentUser = await this.getCurrentUser(ctx);
+        if (currentUser && currentUser._id.toString() === user._id.toString()) {
+          await this.setUserSession(ctx, user);
+        }
+      } catch (err) {
+        logger.error(err);
+      }
     }
   }
 

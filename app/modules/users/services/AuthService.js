@@ -278,11 +278,7 @@ class AuthService {
   }
 
   async logoutUser(session) {
-    if (session.user && session.user.id) {
-      delete session.user;
-      return true;
-    }
-    return false;
+    return this.usersService.clearUserSession(session);
   }
 
   async logoutUserJwt(token) {
